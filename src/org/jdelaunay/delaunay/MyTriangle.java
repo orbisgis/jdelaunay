@@ -11,19 +11,21 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 import java.util.*;
 
-public class MyTriangle {
+public class MyTriangle
+{
+
+	private static final long serialVersionUID = 1L;
 	protected MyPoint[] points;
 	protected MyEdge[] edges;
 
 	private MyPoint center;
 	private double radius;
-	
+
 	private static final double epsilon = 0.00001;
 	private static final double epsilon2 = epsilon * epsilon;
 
 	/**
-	 * Initialize data structure
-	 * This method is called by every constructor
+	 * Initialize data structure This method is called by every constructor
 	 */
 	private void init() {
 		points = new MyPoint[3];
@@ -45,7 +47,6 @@ public class MyTriangle {
 	public MyTriangle() {
 		init();
 	}
-
 
 	/**
 	 * Create a new triangle with edges Add the points from the edges
@@ -164,37 +165,37 @@ public class MyTriangle {
 		MyPoint p2 = points[1];
 		MyPoint p3 = points[2];
 
-		double p1Sq = p1.xy[0] * p1.xy[0] + p1.xy[1] * p1.xy[1];
-		double p2Sq = p2.xy[0] * p2.xy[0] + p2.xy[1] * p2.xy[1];
-		double p3Sq = p3.xy[0] * p3.xy[0] + p3.xy[1] * p3.xy[1];
+		double p1Sq = p1.x * p1.x + p1.y * p1.y;
+		double p2Sq = p2.x * p2.x + p2.y * p2.y;
+		double p3Sq = p3.x * p3.x + p3.y * p3.y;
 
-		double ux = p2.xy[0] - p1.xy[0];
-		double uy = p2.xy[1] - p1.xy[1];
-		double vx = p3.xy[0] - p1.xy[0];
-		double vy = p3.xy[1] - p1.xy[1];
+		double ux = p2.x - p1.x;
+		double uy = p2.y - p1.y;
+		double vx = p3.x - p1.x;
+		double vy = p3.y - p1.y;
 
 		double cp = ux * vy - uy * vx;
 		double cx, cy, cz;
 		cx = cy = cz = 0.0;
 
 		if (cp != 0) {
-			cx = (p1Sq * (p2.xy[1] - p3.xy[1]) + p2Sq * (p3.xy[1] - p1.xy[1]) + p3Sq
-					* (p1.xy[1] - p2.xy[1]))
+			cx = (p1Sq * (p2.y - p3.y) + p2Sq * (p3.y - p1.y) + p3Sq
+					* (p1.y - p2.y))
 					/ (2 * cp);
-			cy = (p1Sq * (p3.xy[0] - p2.xy[0]) + p2Sq * (p1.xy[0] - p3.xy[0]) + p3Sq
-					* (p2.xy[0] - p1.xy[0]))
+			cy = (p1Sq * (p3.x - p2.x) + p2Sq * (p1.x - p3.x) + p3Sq
+					* (p2.x - p1.x))
 					/ (2 * cp);
 			cz = 0.0;
 
-			center.xy[0] = cx;
-			center.xy[1] = cy;
-			center.xy[2] = cz;
+			center.x = cx;
+			center.y = cy;
+			center.z = cz;
 
 			radius = center.squareDistance_2D(points[0]);
 		} else {
-			center.xy[0] = 0.0;
-			center.xy[1] = 0.0;
-			center.xy[2] = 0.0;
+			center.x = 0.0;
+			center.y = 0.0;
+			center.z = 0.0;
 
 			radius = -1;
 		}
@@ -223,18 +224,15 @@ public class MyTriangle {
 	 * the circle
 	 * 
 	 * @param aPoint
-	 * @return position
-	 * 0 = outside
-	 * 1 = iside
-	 * 2 = on the circle
+	 * @return position 0 = outside 1 = inside 2 = on the circle
 	 */
 	public int inCircle(MyPoint aPoint) {
 		// default is outside the circle
 		int returnedValue = 0;
 
 		// double distance = squareDistance(Center, aPoint);
-		double ux = aPoint.xy[0] - center.xy[0];
-		double uy = aPoint.xy[1] - center.xy[1];
+		double ux = aPoint.x - center.x;
+		double uy = aPoint.y - center.y;
 		double distance = ux * ux + uy * uy;
 		if (distance < radius - epsilon2)
 			// in the circle
@@ -254,15 +252,14 @@ public class MyTriangle {
 	 */
 	public boolean isInside(MyPoint aPoint) {
 		boolean isInside = true;
-		
+
 		int k = 0;
 		while ((k < 3) && (isInside)) {
 			MyEdge theEdge = edges[k];
 			if (theEdge.left == this) {
 				if (theEdge.isRight(aPoint))
 					isInside = false;
-			}
-			else {
+			} else {
 				if (theEdge.isLeft(aPoint))
 					isInside = false;
 			}
@@ -281,20 +278,21 @@ public class MyTriangle {
 		MyPoint p1 = points[0];
 		MyPoint p2 = points[1];
 		MyPoint p3 = points[2];
-		
-		double ux = p2.xy[0] - p1.xy[0];
-		double uy = p2.xy[1] - p1.xy[1];
-		double vx = p3.xy[0] - p1.xy[0];
-		double vy = p3.xy[1] - p1.xy[1];
-		double wx = p3.xy[0] - p2.xy[0];
-		double wy = p3.xy[1] - p3.xy[1];
-		
-		double a = Math.sqrt(ux*ux+uy*uy);
-		double b = Math.sqrt(vx*vx+vy*vy);
-		double c = Math.sqrt(wx*wx+wy*wy);
-		
-		double area = Math.sqrt((a+b+c)*(b+c-a)*(c+a-b)*(a+b-c));
-		
+
+		double ux = p2.x - p1.x;
+		double uy = p2.y - p1.y;
+		double vx = p3.x - p1.x;
+		double vy = p3.y - p1.y;
+		double wx = p3.x - p2.x;
+		double wy = p3.y - p3.y;
+
+		double a = Math.sqrt(ux * ux + uy * uy);
+		double b = Math.sqrt(vx * vx + vy * vy);
+		double c = Math.sqrt(wx * wx + wy * wy);
+
+		double area = Math.sqrt((a + b + c) * (b + c - a) * (c + a - b)
+				* (a + b - c));
+
 		return area;
 	}
 
@@ -314,10 +312,10 @@ public class MyTriangle {
 			MyPoint p2 = points[k1];
 			MyPoint p3 = points[k2];
 
-			double ux = p2.xy[0] - p1.xy[0];
-			double uy = p2.xy[1] - p1.xy[1];
-			double vx = p3.xy[0] - p1.xy[0];
-			double vy = p3.xy[1] - p1.xy[1];
+			double ux = p2.x - p1.x;
+			double uy = p2.y - p1.y;
+			double vx = p3.x - p1.x;
+			double vy = p3.y - p1.y;
 
 			double dp = ux * vx + uy * vy;
 
@@ -340,7 +338,48 @@ public class MyTriangle {
 	 */
 	public boolean checkTopology() {
 		boolean correct = true;
+
+		// check if we do not have a point twice
 		int j = 0;
+		while ((j < 3) && (correct)) {
+			int foundPoint = 0;
+			for (int k = 0; k < 3; k++) {
+				if (points[j] == points[k])
+					foundPoint++;
+			}
+			if (foundPoint != 1)
+				correct = false;
+			j++;
+		}
+
+		// check if we do not have an edge twice
+		j = 0;
+		while ((j < 3) && (correct)) {
+			int foundEdge = 0;
+			for (int k = 0; k < 3; k++) {
+				if (edges[j] == edges[k])
+					foundEdge++;
+			}
+			if (foundEdge != 1)
+				correct = false;
+			j++;
+		}
+
+		// check if each edge is connected to the triangle
+		j = 0;
+		while ((j < 3) && (correct)) {
+			int foundEdge = 0;
+			if (edges[j].left == this)
+				foundEdge++;
+			if (edges[j].right == this)
+				foundEdge++;
+			if (foundEdge != 1)
+				correct = false;
+			j++;
+		}
+
+		// Check if each edge is connected to a point of the triangle
+		j = 0;
 		while ((j < 3) && (correct)) {
 			MyEdge aEdge = edges[j];
 			int foundPoint = 0;
@@ -352,29 +391,33 @@ public class MyTriangle {
 			}
 			if (foundPoint != 2)
 				correct = false;
+			j++;
+		}
 
-			if (correct) {
-				MyPoint start = edges[j].start();
-				MyPoint end = edges[j].end();
-				boolean found = false;
-				int k = 0;
-				while ((k < 3) && (correct) && (!found)) {
-					if ((start != points[k]) && (end != points[k])) {
-						if (edges[j].isLeft(points[k])) {
-							if (edges[j].left != this)
-								correct = false;
-							if (edges[j].right == this)
-								correct = false;
-						} else {
-							if (edges[j].right != this)
-								correct = false;
-							if (edges[j].left == this)
-								correct = false;
-						}
-						found = true;
+		// check if each edge is connected on the right side of the triangle
+		j = 0;
+		if (false)
+		while ((j < 3) && (correct)) {
+			MyPoint start = edges[j].start();
+			MyPoint end = edges[j].end();
+			boolean found = false;
+			int k = 0;
+			while ((k < 3) && (correct) && (!found)) {
+				if ((start != points[k]) && (end != points[k])) {
+					if (edges[j].isLeft(points[k])) {
+						if (edges[j].left != this)
+							correct = false;
+						if (edges[j].right == this)
+							correct = false;
+					} else {
+						if (edges[j].right != this)
+							correct = false;
+						if (edges[j].left == this)
+							correct = false;
 					}
-					k++;
+					found = true;
 				}
+				k++;
 			}
 			j++;
 		}
@@ -382,8 +425,8 @@ public class MyTriangle {
 	}
 
 	/**
-	 * Check if the triangles respects Delaunay constraints.
-	 * the parameter thePoints is the list of points of the mesh
+	 * Check if the triangles respects Delaunay constraints. the parameter
+	 * thePoints is the list of points of the mesh
 	 * 
 	 * @param thePoints
 	 * @return
@@ -403,6 +446,13 @@ public class MyTriangle {
 		return correct;
 	}
 
+	public boolean isFlatTriangle() {
+		if (radius > 1e6)
+			return true;
+		else
+			return false;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -416,8 +466,7 @@ public class MyTriangle {
 	}
 
 	/**
-	 * Set the edge color
-	 * Must be used only when using package drawing
+	 * Set the edge color Must be used only when using package drawing
 	 * 
 	 * @param g
 	 */
@@ -426,8 +475,8 @@ public class MyTriangle {
 	}
 
 	/**
-	 * Display the triangle in a JPanel
-	 * Must be used only when using package drawing
+	 * Display the triangle in a JPanel Must be used only when using package
+	 * drawing
 	 * 
 	 * @param g
 	 * @param decalageX
@@ -438,13 +487,13 @@ public class MyTriangle {
 		xPoints = new int[3];
 		yPoints = new int[3];
 
-		xPoints[0] = (int) points[0].xy[0] + decalageX;
-		xPoints[1] = (int) points[1].xy[0] + decalageX;
-		xPoints[2] = (int) points[2].xy[0] + decalageX;
+		xPoints[0] = (int) points[0].x + decalageX;
+		xPoints[1] = (int) points[1].x + decalageX;
+		xPoints[2] = (int) points[2].x + decalageX;
 
-		yPoints[0] = decalageY - (int) points[0].xy[1];
-		yPoints[1] = decalageY - (int) points[1].xy[1];
-		yPoints[2] = decalageY - (int) points[2].xy[1];
+		yPoints[0] = decalageY - (int) points[0].y;
+		yPoints[1] = decalageY - (int) points[1].y;
+		yPoints[2] = decalageY - (int) points[2].y;
 
 		g.fillPolygon(xPoints, yPoints, 3);
 
@@ -455,8 +504,8 @@ public class MyTriangle {
 	}
 
 	/**
-	 * Display the triangle in a JPanel
-	 * Must be used only when using package drawing
+	 * Display the triangle in a JPanel Must be used only when using package
+	 * drawing
 	 * 
 	 * @param g
 	 * @param decalageX
@@ -465,9 +514,9 @@ public class MyTriangle {
 	public void displayObjectCircles(Graphics g, int decalageX, int decalageY) {
 		double r = Math.sqrt(radius);
 		g.setColor(Color.red);
-		g.drawOval((int) (center.xy[0]) + decalageX, decalageY
-				- (int) (center.xy[1]), 1, 1);
-		g.drawOval((int) (center.xy[0] - r) + decalageX, decalageY
-				- (int) (center.xy[1] + r), (int) r * 2, (int) r * 2);
+		g.drawOval((int) (center.x) + decalageX, decalageY
+				- (int) (center.y), 1, 1);
+		g.drawOval((int) (center.x - r) + decalageX, decalageY
+				- (int) (center.y + r), (int) r * 2, (int) r * 2);
 	}
 }

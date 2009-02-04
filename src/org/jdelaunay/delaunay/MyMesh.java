@@ -1,12 +1,12 @@
 package org.jdelaunay.delaunay;
+
 /**
  * Delaunay Package.
- *
+ * 
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.0
  */
-
 
 import java.awt.*;
 import java.io.*;
@@ -26,13 +26,13 @@ public class MyMesh {
 
 	// Display elements
 	private MyDrawing affiche;
-	public long duration;
+	private long duration;
 	private long startComputation;
 	private boolean displayCircles;
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
-	 *
+	 * 
 	 */
 	public MyMesh() {
 		// Generate vectors
@@ -54,7 +54,7 @@ public class MyMesh {
 
 	/**
 	 * Set bounding box for the generation
-	 *
+	 * 
 	 * @param maxx
 	 * @param maxy
 	 */
@@ -65,7 +65,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random points
-	 *
+	 * 
 	 * @param _NbPoints
 	 */
 	public void setRandomPoints(int _NbPoints) {
@@ -81,7 +81,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random edges Can be applied only if points are created
-	 *
+	 * 
 	 * @param _NbEdges
 	 */
 	public void setRandomEdges(int _NbEdges) {
@@ -101,7 +101,7 @@ public class MyMesh {
 
 	/**
 	 * Get JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @return
 	 */
 	public MyDrawing getAffiche() {
@@ -110,7 +110,7 @@ public class MyMesh {
 
 	/**
 	 * Set JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @param affiche
 	 */
 	public void setAffiche(MyDrawing affiche) {
@@ -118,8 +118,16 @@ public class MyMesh {
 	}
 
 	/**
+	 * Get Duration
+	 * @return
+	 */
+	public long getDuration() {
+		return duration;
+	}
+
+	/**
 	 * Display circles around triangles when displayed in the JPanel
-	 *
+	 * 
 	 * @param displayCircles
 	 */
 	public void setDisplayCircles(boolean displayCircles) {
@@ -193,7 +201,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of points in the Mesh
-	 *
+	 * 
 	 * @return NbPoints
 	 */
 	public int getNbPoints() {
@@ -202,7 +210,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of edges in the Mesh
-	 *
+	 * 
 	 * @return NbEdges
 	 */
 	public int getNbEdges() {
@@ -226,7 +234,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of triangles in the Mesh
-	 *
+	 * 
 	 * @return NbTriangles
 	 */
 	public int getNbTriangles() {
@@ -235,7 +243,7 @@ public class MyMesh {
 
 	/**
 	 * Get the points structure
-	 *
+	 * 
 	 * @return points
 	 */
 	public ArrayList<MyPoint> getPoints() {
@@ -243,8 +251,18 @@ public class MyMesh {
 	}
 
 	/**
+	 * Set the points
+	 * @param _point
+	 */
+	public void setPoints(ArrayList<MyPoint> _point) {
+		points = new ArrayList<MyPoint>();
+		for (MyPoint aPoint : _point)
+			points.add(aPoint);
+	}
+
+	/**
 	 * Get the edges structure
-	 *
+	 * 
 	 * @return edges
 	 */
 	public LinkedList<MyEdge> getEdges() {
@@ -252,9 +270,19 @@ public class MyMesh {
 	}
 
 	/**
-	 * Get the complementary edges structure
-	 * This structure emorize the edges that have to be added to the triangularization
-	 *
+	 * Set the edges
+	 * @param _edges
+	 */
+	public void setEdges(LinkedList<MyEdge> _edges) {
+		compEdges = new LinkedList<MyEdge>();
+		for (MyEdge anEdge : _edges)
+			compEdges.add(anEdge);
+	}
+
+	/**
+	 * Get the complementary edges structure This structure emorize the edges
+	 * that have to be added to the triangularization
+	 * 
 	 * @return edges
 	 */
 	public LinkedList<MyEdge> getCompEdges() {
@@ -263,7 +291,7 @@ public class MyMesh {
 
 	/**
 	 * Get the triangle structure
-	 *
+	 * 
 	 * @return triangle
 	 */
 	public LinkedList<MyTriangle> getTriangles() {
@@ -287,9 +315,8 @@ public class MyMesh {
 
 	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
-	 * also display it
-	 * Must be used only when using package drawing
-	 *
+	 * also display it Must be used only when using package drawing
+	 * 
 	 * @param g
 	 */
 	public void displayObject(Graphics g) {
@@ -307,29 +334,31 @@ public class MyMesh {
 			}
 
 			if (displayCircles)
-			for (MyTriangle aTriangle : triangles) {
-				aTriangle.setColor(g);
-				aTriangle.displayObjectCircles(g, decalageX, decalageY);
-			}
-}
+				for (MyTriangle aTriangle : triangles) {
+					aTriangle.setColor(g);
+					aTriangle.displayObjectCircles(g, decalageX, decalageY);
+				}
+		}
 		// Draw lines
 		if (false)
-		if (!edges.isEmpty())
-			for (MyEdge aVertex : edges) {
-				aVertex.setColor(g);
-				aVertex.displayObject(g, decalageX, decalageY);
-			}
+			if (!edges.isEmpty())
+				for (MyEdge aVertex : edges) {
+					aVertex.setColor(g);
+					aVertex.displayObject(g, decalageX, decalageY);
+				}
 
+		g.drawString(triangles.size() + " Triangles - " + edges.size() + " Edges - " + points.size() + " Points", decalageX,
+				20 + decalageY);
 		if (duration > 0) {
 			g.setColor(Color.black);
 			g.drawString("Computation time : " + duration + " ms", decalageX,
-					20 + decalageY);
+					35 + decalageY);
 		}
 	}
 
 	/**
-	 * Refresh Mesh display in the JPanel
-	 * Must be used only when using package drawing
+	 * Refresh Mesh display in the JPanel Must be used only when using package
+	 * drawing
 	 */
 	public void refresh() {
 		if (affiche != null)
@@ -348,9 +377,9 @@ public class MyMesh {
 			for (MyPoint aPoint : points) {
 				writer.write("\t\t<Point id=\"" + points.indexOf(aPoint)
 						+ "\">\n");
-				writer.write("\t\t\t<X>" + aPoint.xy[0] + "</X>\n");
-				writer.write("\t\t\t<Y>" + aPoint.xy[1] + "</Y>\n");
-				writer.write("\t\t\t<Z>" + aPoint.xy[2] + "</Z>\n");
+				writer.write("\t\t\t<X>" + aPoint.x + "</X>\n");
+				writer.write("\t\t\t<Y>" + aPoint.y + "</Y>\n");
+				writer.write("\t\t\t<Z>" + aPoint.z + "</Z>\n");
 				if (aPoint.type == null)
 					writer.write("\t\t\t<Type />\n");
 				else
@@ -374,11 +403,13 @@ public class MyMesh {
 				if (anEdge.left == null)
 					writer.write("\t\t\t<Left>-1</Left>\n");
 				else
-					writer.write("\t\t\t<Left>" + triangles.indexOf(anEdge.left) + "</Left>\n");
+					writer.write("\t\t\t<Left>"
+							+ triangles.indexOf(anEdge.left) + "</Left>\n");
 				if (anEdge.right == null)
 					writer.write("\t\t\t<Right>-1</Right>\n");
 				else
-					writer.write("\t\t\t<Right>" + triangles.indexOf(anEdge.right) + "</Right>\n");
+					writer.write("\t\t\t<Right>"
+							+ triangles.indexOf(anEdge.right) + "</Right>\n");
 				writer.write("\t\t</Segment>\n");
 			}
 			writer.write("\t</Edges>\n");
@@ -408,8 +439,8 @@ public class MyMesh {
 		try {
 			writer = new FileWriter("Mesh.txt");
 			for (MyPoint aPoint : points) {
-				writer.write(aPoint.xy[0] + "\t" + aPoint.xy[1] + "\t"
-						+ aPoint.xy[2] + "\t" + "\n");
+				writer.write(aPoint.x + "\t" + aPoint.y + "\t" + aPoint.z
+						+ "\t" + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -433,7 +464,17 @@ public class MyMesh {
 				int i = 0;
 				while (st.hasMoreTokens()) {
 					String mot = st.nextToken();
-					aPoint.xy[i] = Double.parseDouble(mot);
+					switch (i) {
+					case 0:
+						aPoint.x = Double.parseDouble(mot);
+						break;
+					case 1:
+						aPoint.y = Double.parseDouble(mot);
+						break;
+					case 2:
+						aPoint.z = Double.parseDouble(mot);
+						break;
+					}
 					i++;
 				}
 				if (i == 3)
@@ -446,7 +487,7 @@ public class MyMesh {
 
 	/**
 	 * Save Mesh
-	 *
+	 * 
 	 * @param path
 	 */
 	public void saveMesh(String path) {
@@ -464,13 +505,12 @@ public class MyMesh {
 				output.writeUTF(i + "\t");
 				for (int j = 0; j < 3; j++) {
 					MyPoint aPoint = aTriangle.points[j];
-					for (int k = 0; k < 3; k++) {
-						output.writeUTF(aPoint.xy[k] + "");
-						if ((k < 2) || (j < 2))
-							output.writeUTF("\t");
-						else
-							output.writeUTF("\n");
-					}
+					output.writeUTF(aPoint.x + "\t" + aPoint.y + "\t"
+							+ aPoint.z);
+					if (j < 2)
+						output.writeUTF("\t");
+					else
+						output.writeUTF("\n");
 				}
 			}
 			output.writeUTF("\n");
@@ -481,17 +521,6 @@ public class MyMesh {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void setPoints(ArrayList<MyPoint> points) {
-		this.points = points;
-	}
-
-
-	public void setEdges(LinkedList<MyEdge> breaklines) {
-		this.compEdges = breaklines;
-
-
 	}
 
 }

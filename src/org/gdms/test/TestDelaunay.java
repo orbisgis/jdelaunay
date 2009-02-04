@@ -105,7 +105,7 @@ public class TestDelaunay {
 
 		aMesh.setEnd();
 
-		System.out.println("Temps de triangulation et de sauvegarde " +  aMesh.duration);
+		System.out.println("Temps de triangulation et de sauvegarde " +  aMesh.getDuration());
 
 	}
 

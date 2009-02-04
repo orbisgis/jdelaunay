@@ -1,4 +1,5 @@
 package org.jdelaunay.delaunay;
+
 /**
  * Delaunay Package.
  * 
@@ -10,20 +11,16 @@ package org.jdelaunay.delaunay;
 import java.awt.Graphics;
 
 public class MyPoint {
-	protected double[] xy;
+	protected double x, y, z;
 	protected String type;
 
-	/**
-	 * Build a point at the origin
-	 * This method must be called by every constructor
-	 */
 	private void init() {
-		xy = new double[3];
-		for (int i = 0; i < 3; i++)
-			xy[i] = 0;
+		x = 0;
+		y = 0;
+		z = 0;
 		type = null;
 	}
-	
+
 	/**
 	 * Build a point at the origin
 	 */
@@ -39,8 +36,8 @@ public class MyPoint {
 	 */
 	public MyPoint(double _x, double _y) {
 		init();
-		xy[0] = _x;
-		xy[1] = _y;
+		x = _x;
+		y = _y;
 	}
 
 	/**
@@ -52,9 +49,9 @@ public class MyPoint {
 	 */
 	public MyPoint(double _x, double _y, double _z) {
 		init();
-		xy[0] = _x;
-		xy[1] = _y;
-		xy[2] = _z;
+		x = _x;
+		y = _y;
+		z = _z;
 	}
 
 	/**
@@ -67,9 +64,9 @@ public class MyPoint {
 	 */
 	public MyPoint(double _x, double _y, double _z, String _type) {
 		init();
-		xy[0] = _x;
-		xy[1] = _y;
-		xy[2] = _z;
+		x = _x;
+		y = _y;
+		z = _z;
 		if (_type != null)
 			type = new String(_type);
 	}
@@ -79,8 +76,9 @@ public class MyPoint {
 	 */
 	public MyPoint(MyPoint _pt) {
 		init();
-		for (int i = 0; i < 3; i++)
-			xy[i] = _pt.xy[i];
+		x = _pt.x;
+		y = _pt.y;
+		z = _pt.z;
 		if (_pt.type != null)
 			type = new String(_pt.type);
 	}
@@ -91,7 +89,7 @@ public class MyPoint {
 	 * @return x
 	 */
 	public double getX() {
-		return xy[0];
+		return x;
 	}
 
 	/**
@@ -100,7 +98,7 @@ public class MyPoint {
 	 * @return y
 	 */
 	public double getY() {
-		return xy[1];
+		return y;
 	}
 
 	/**
@@ -109,7 +107,7 @@ public class MyPoint {
 	 * @return z
 	 */
 	public double getZ() {
-		return xy[2];
+		return z;
 	}
 
 	/**
@@ -117,7 +115,7 @@ public class MyPoint {
 	 * 
 	 * @return Type
 	 */
-	public void setType(String _gid) {
+	public void setPointType(String _gid) {
 		type = new String(_gid);
 	}
 
@@ -126,7 +124,7 @@ public class MyPoint {
 	 * 
 	 * @return Type
 	 */
-	public String getType() {
+	public String getPointType() {
 		return type;
 	}
 
@@ -137,7 +135,7 @@ public class MyPoint {
 	 * @return distance
 	 */
 	public double squareDistance_1D(MyPoint aPoint) {
-		return (xy[0] - aPoint.xy[0]) * (xy[0] - aPoint.xy[0]);
+		return (x - aPoint.x) * (x - aPoint.x);
 	}
 
 	/**
@@ -147,8 +145,8 @@ public class MyPoint {
 	 * @return distance
 	 */
 	public double squareDistance_2D(MyPoint aPoint) {
-		return (xy[0] - aPoint.xy[0]) * (xy[0] - aPoint.xy[0])
-				+ (xy[1] - aPoint.xy[1]) * (xy[1] - aPoint.xy[1]);
+		return (x - aPoint.x) * (x - aPoint.x) + (y - aPoint.y)
+				* (y - aPoint.y);
 	}
 
 	/**
@@ -158,9 +156,8 @@ public class MyPoint {
 	 * @return distance
 	 */
 	public double squareDistance(MyPoint aPoint) {
-		return (xy[0] - aPoint.xy[0]) * (xy[0] - aPoint.xy[0])
-				+ (xy[1] - aPoint.xy[1]) * (xy[1] - aPoint.xy[1])
-				+ (xy[2] - aPoint.xy[2]) * (xy[2] - aPoint.xy[2]);
+		return (x - aPoint.x) * (x - aPoint.x) + (y - aPoint.y)
+				* (y - aPoint.y) + (z - aPoint.z) * (z - aPoint.z);
 	}
 
 	/*
@@ -169,19 +166,19 @@ public class MyPoint {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Point " + xy[0] + " " + xy[1] + " " + xy[2];
+		return "Point [" + x + " " + y + " " + z + "]";
 	}
 
 	/**
-	 * Display the point in a JPanel
-	 * Must be used only when using package drawing
+	 * Display the point in a JPanel Must be used only when using package
+	 * drawing
 	 * 
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
 	 */
 	public void displayObject(Graphics g, int decalageX, int decalageY) {
-		g.drawOval((int) (xy[0] + decalageX)-1, decalageY - (int) (xy[1])-1, 3, 3);
+		g.drawOval((int) (x + decalageX) - 1, decalageY - (int) (y) - 1, 3, 3);
 	}
 
 }

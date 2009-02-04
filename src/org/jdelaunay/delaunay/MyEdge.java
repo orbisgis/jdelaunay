@@ -1,7 +1,7 @@
 package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
- *
+ * 
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.0
@@ -9,11 +9,15 @@ package org.jdelaunay.delaunay;
 
 import java.awt.*;
 
-public class MyEdge {
+public class MyEdge
+{
+	/**
+	 * 
+	 */
 	protected MyPoint[] point;
 	protected MyTriangle left, right;
 	protected String type;
-	public int marked;
+	protected int marked;
 
 	private static final double epsilon = 0.00001;
 
@@ -22,10 +26,6 @@ public class MyEdge {
 	 */
 	private void init() {
 		point = new MyPoint[2];
-
-		for (int i = 0; i < 2; i++) {
-			point[i] = null;
-		}
 		left=null;
 		right=null;
 		type = null;
@@ -36,12 +36,13 @@ public class MyEdge {
 	 * Generate a new edge
 	 */
 	public MyEdge() {
+		super();
 		init();
 	}
 
 	/**
 	 * Generate an edge from two points
-	 *
+	 * 
 	 * @param s
 	 * @param e
 	 */
@@ -53,7 +54,7 @@ public class MyEdge {
 
 	/**
 	 * Generate an edge from another edge
-	 *
+	 * 
 	 * @param _ed
 	 */
 	public MyEdge(MyEdge _ed) {
@@ -70,7 +71,7 @@ public class MyEdge {
 
 	/**
 	 * Generate a typed edge from two points
-	 *
+	 * 
 	 * @param s
 	 * @param e
 	 * @param _type
@@ -91,7 +92,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge left triangle
-	 *
+	 * 
 	 * @return leftTriangle
 	 */
 	public MyTriangle leftTriangle() {
@@ -100,7 +101,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge right triangle
-	 *
+	 * 
 	 * @return rightTriangle
 	 */
 	public MyTriangle rightTriangle() {
@@ -109,7 +110,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge start point
-	 *
+	 * 
 	 * @return end
 	 */
 	public MyPoint start() {
@@ -118,7 +119,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge end point
-	 *
+	 * 
 	 * @return end
 	 */
 	public MyPoint end() {
@@ -127,7 +128,7 @@ public class MyEdge {
 
 	/**
 	 * Set edge start point
-	 *
+	 * 
 	 * @param p
 	 */
 	public void setStart(MyPoint p) {
@@ -136,7 +137,7 @@ public class MyEdge {
 
 	/**
 	 * Set edge end point
-	 *
+	 * 
 	 * @param p
 	 */
 	public void setEnd(MyPoint p) {
@@ -145,25 +146,41 @@ public class MyEdge {
 
 	/**
 	 * Get edge type
-	 *
+	 * 
 	 * @return
 	 */
-	public String getType() {
+	public String getEdgeType() {
 		return type;
 	}
 
 	/**
 	 * Set edge type
-	 *
+	 * 
 	 * @param type
 	 */
-	public void setType(String type) {
+	public void setEdgeType(String type) {
 		this.type = type;
 	}
 
 	/**
+	 * get the mark of the edge
+	 * @return marked
+	 */
+	public int getMarked() {
+		return marked;
+	}
+
+	/**
+	 * set the mark of the edge
+	 * @param marked
+	 */
+	public void setMarked(int marked) {
+		this.marked = marked;
+	}
+
+	/**
 	 * intersects two edges returns null if there is no intersection
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @return intersection
@@ -175,12 +192,12 @@ public class MyEdge {
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
 
-		double a1 = p2.xy[0] - p1.xy[0];
-		double b1 = p4.xy[0] - p3.xy[0];
-		double c1 = p3.xy[0] - p1.xy[0];
-		double a2 = p2.xy[1] - p1.xy[1];
-		double b2 = p4.xy[1] - p3.xy[1];
-		double c2 = p3.xy[1] - p1.xy[1];
+		double a1 = p2.x - p1.x;
+		double b1 = p4.x - p3.x;
+		double c1 = p3.x - p1.x;
+		double a2 = p2.y - p1.y;
+		double b2 = p4.y - p3.y;
+		double c2 = p3.y - p1.y;
 		double t1, t2;
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
@@ -198,24 +215,24 @@ public class MyEdge {
 			}
 		} else {
 			// Check if p3 is between p1 and p2
-			if (Math.abs(p2.xy[0] - p1.xy[0]) > epsilon)
-				t1 = (p3.xy[0] - p1.xy[0]) / (p2.xy[0] - p1.xy[0]);
+			if (Math.abs(p2.x - p1.x) > epsilon)
+				t1 = (p3.x - p1.x) / (p2.x - p1.x);
 			else
-				t1 = (p3.xy[1] - p1.xy[1]) / (p2.xy[1] - p1.xy[1]);
+				t1 = (p3.y - p1.y) / (p2.y - p1.y);
 
 			if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 				// Check if p4 is between p1 and p2
-				if (Math.abs(p2.xy[0] - p1.xy[0]) > epsilon)
-					t1 = (p4.xy[0] - p1.xy[0]) / (p2.xy[0] - p1.xy[0]);
+				if (Math.abs(p2.x - p1.x) > epsilon)
+					t1 = (p4.x - p1.x) / (p2.x - p1.x);
 				else
-					t1 = (p4.xy[1] - p1.xy[1]) / (p2.xy[1] - p1.xy[1]);
+					t1 = (p4.y - p1.y) / (p2.y - p1.y);
 
 				if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 					// Check if p1 is between p3 and p4
-					if (Math.abs(p4.xy[0] - p3.xy[0]) > epsilon)
-						t1 = (p1.xy[0] - p3.xy[0]) / (p4.xy[0] - p3.xy[0]);
+					if (Math.abs(p4.x - p3.x) > epsilon)
+						t1 = (p1.x - p3.x) / (p4.x - p3.x);
 					else
-						t1 = (p1.xy[1] - p3.xy[1]) / (p4.xy[1] - p3.xy[1]);
+						t1 = (p1.y - p3.y) / (p4.y - p3.y);
 
 					if ((-epsilon > t1) || (t1 > 1 + epsilon))
 						// we do not check for p2 because it is now impossible
@@ -234,7 +251,7 @@ public class MyEdge {
 
 	/**
 	 * intersects two edges returns null if there is no intersection
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @return intersection
@@ -247,12 +264,12 @@ public class MyEdge {
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
 
-		double a1 = p2.xy[0] - p1.xy[0];
-		double b1 = p4.xy[0] - p3.xy[0];
-		double c1 = p3.xy[0] - p1.xy[0];
-		double a2 = p2.xy[1] - p1.xy[1];
-		double b2 = p4.xy[1] - p3.xy[1];
-		double c2 = p3.xy[1] - p1.xy[1];
+		double a1 = p2.x - p1.x;
+		double b1 = p4.x - p3.x;
+		double c1 = p3.x - p1.x;
+		double a2 = p2.y - p1.y;
+		double b2 = p4.y - p3.y;
+		double c2 = p3.y - p1.y;
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = b1 * a2 - b2 * a1;
@@ -278,9 +295,9 @@ public class MyEdge {
 					// x = x2 t1 + (1 - t1) x1
 					// y = y2 t1 + (1 - t1) y1
 					// z = z2 t1 + (1 - t1) z1
-					double x = p2.xy[0] * t1 + (1 - t1) * p1.xy[0];
-					double y = p2.xy[1] * t1 + (1 - t1) * p1.xy[1];
-					double z = p2.xy[2] * t1 + (1 - t1) * p1.xy[2];
+					double x = p2.x * t1 + (1 - t1) * p1.x;
+					double y = p2.y * t1 + (1 - t1) * p1.y;
+					double z = p2.z * t1 + (1 - t1) * p1.z;
 
 					intersection = new MyPoint(x, y, z);
 
@@ -302,7 +319,7 @@ public class MyEdge {
 
 	/**
 	 * intersects two edges returns null if there is no intersection
-	 *
+	 * 
 	 * @param anEdge
 	 * @return intersection
 	 */
@@ -312,41 +329,41 @@ public class MyEdge {
 
 	/**
 	 * Check if the point p is on the left
-	 *
+	 * 
 	 * @param p
 	 * @return
 	 */
 	public boolean isLeft(MyPoint p) {
 		MyPoint p1 = point[0];
 		MyPoint p2 = point[1];
-		double ux = p2.xy[0] - p1.xy[0];
-		double uy = p2.xy[1] - p1.xy[1];
-		double vx = p.xy[0] - p1.xy[0];
-		double vy = p.xy[1] - p1.xy[1];
+		double ux = p2.x - p1.x;
+		double uy = p2.y - p1.y;
+		double vx = p.x - p1.x;
+		double vy = p.y - p1.y;
 
 		return ux * vy - uy * vx > 0;
 	}
 
 	/**
 	 * Check if the point p is on the right
-	 *
+	 * 
 	 * @param p
 	 * @return
 	 */
 	public boolean isRight(MyPoint p) {
 		MyPoint p1 = point[0];
 		MyPoint p2 = point[1];
-		double ux = p2.xy[0] - p1.xy[0];
-		double uy = p2.xy[1] - p1.xy[1];
-		double vx = p.xy[0] - p1.xy[0];
-		double vy = p.xy[1] - p1.xy[1];
+		double ux = p2.x - p1.x;
+		double uy = p2.y - p1.y;
+		double vx = p.x - p1.x;
+		double vy = p.y - p1.y;
 
 		return ux * vy - uy * vx < 0;
 	}
 
 	/**
 	 * Set the edge color for the JFrame panel
-	 *
+	 * 
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
@@ -364,15 +381,15 @@ public class MyEdge {
 
 	/**
 	 * Display the edge in a JPanel
-	 *
+	 * 
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
 	 */
 	public void displayObject(Graphics g, int decalageX, int decalageY) {
-		g.drawLine((int) (point[0].xy[0] + decalageX), decalageY
-				- (int) (point[0].xy[1]), (int) (point[1].xy[0] + decalageX),
-				decalageY - (int) (point[1].xy[1]));
+		g.drawLine((int) (point[0].x + decalageX), decalageY
+				- (int) (point[0].y), (int) (point[1].x + decalageX),
+				decalageY - (int) (point[1].y));
 		if (marked > 0) {
 			point[0].displayObject(g, decalageX, decalageY);
 			point[1].displayObject(g, decalageX, decalageY);

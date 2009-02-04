@@ -107,7 +107,7 @@ public class TestConstrainedDelaunay {
 						points.add(p1);
 
 						MyEdge edge = new MyEdge(p0, p1);
-						edge.marked = 1;
+						edge.setMarked(1);
 						breaklines.add(edge);
 
 					}
@@ -140,7 +140,7 @@ public class TestConstrainedDelaunay {
 		aMesh.setEnd();
 
 		System.out.println("Temps de triangulation et de sauvegarde "
-				+ aMesh.duration);
+				+ aMesh.getDuration());
 
 	}
 
