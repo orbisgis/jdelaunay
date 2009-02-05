@@ -34,13 +34,13 @@ public class TestConstrainedDelaunay {
 
 	public static DataSourceFactory dsf = new DataSourceFactory();
 
-	// public static String path = "data/courbesZ.shp";
+	public static String path = "data/courbesZ.shp";
 
 	// public static String path = "data/pointsaltimercier.shp";
 
 	// public static String path = "data/cantons.shp";
 
-	public static String path = "data/courbesdem10_zone.shp";
+	//public static String path = "data/courbesdem10_zone.shp";
 
 
 
@@ -103,11 +103,8 @@ public class TestConstrainedDelaunay {
 						MyPoint p1 = new MyPoint(coord1.x, coord1.y, coord1.z);
 
 						points.add(p0);
-
 						points.add(p1);
-
 						MyEdge edge = new MyEdge(p0, p1);
-						edge.setMarked(1);
 						breaklines.add(edge);
 
 					}
