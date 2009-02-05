@@ -369,10 +369,10 @@ public class MyMesh {
 					aVertex.displayObject(g, decalageX, decalageY);
 				}
 
+		g.setColor(Color.black);
 		g.drawString(triangles.size() + " Triangles - " + edges.size() + " Edges - " + points.size() + " Points", decalageX,
 				20 + decalageY);
 		if (duration > 0) {
-			g.setColor(Color.black);
 			g.drawString("Computation time : " + duration + " ms", decalageX,
 					35 + decalageY);
 		}
