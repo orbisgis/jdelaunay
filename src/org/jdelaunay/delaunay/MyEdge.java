@@ -95,7 +95,7 @@ public class MyEdge
 	 * 
 	 * @return leftTriangle
 	 */
-	public MyTriangle leftTriangle() {
+	public MyTriangle getLeft() {
 		return left;
 	}
 
@@ -104,7 +104,7 @@ public class MyEdge
 	 * 
 	 * @return rightTriangle
 	 */
-	public MyTriangle rightTriangle() {
+	public MyTriangle getRight() {
 		return right;
 	}
 
@@ -113,7 +113,7 @@ public class MyEdge
 	 * 
 	 * @return end
 	 */
-	public MyPoint start() {
+	public MyPoint getStart() {
 		return point[0];
 	}
 
@@ -122,7 +122,7 @@ public class MyEdge
 	 * 
 	 * @return end
 	 */
-	public MyPoint end() {
+	public MyPoint getEnd() {
 		return point[1];
 	}
 

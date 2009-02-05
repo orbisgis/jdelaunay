@@ -62,12 +62,12 @@ public class MyTriangle
 		edges[1] = e2;
 		edges[2] = e3;
 
-		points[0] = e1.start();
-		points[1] = e1.end();
-		if (e2.start() == points[1])
-			points[2] = e2.end();
+		points[0] = e1.getStart();
+		points[1] = e1.getEnd();
+		if (e2.getStart() == points[1])
+			points[2] = e2.getEnd();
 		else
-			points[2] = e2.start();
+			points[2] = e2.getStart();
 
 		reconnectEdges();
 		recomputeCenter();
@@ -384,9 +384,9 @@ public class MyTriangle
 			MyEdge aEdge = edges[j];
 			int foundPoint = 0;
 			for (int k = 0; k < 3; k++) {
-				if (aEdge.start() == points[k])
+				if (aEdge.getStart() == points[k])
 					foundPoint++;
-				else if (aEdge.end() == points[k])
+				else if (aEdge.getEnd() == points[k])
 					foundPoint++;
 			}
 			if (foundPoint != 2)
@@ -398,8 +398,8 @@ public class MyTriangle
 		j = 0;
 		if (false)
 		while ((j < 3) && (correct)) {
-			MyPoint start = edges[j].start();
-			MyPoint end = edges[j].end();
+			MyPoint start = edges[j].getStart();
+			MyPoint end = edges[j].getEnd();
 			boolean found = false;
 			int k = 0;
 			while ((k < 3) && (correct) && (!found)) {

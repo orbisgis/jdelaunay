@@ -332,17 +332,17 @@ public class Delaunay {
 			// build first triangle
 			MyTriangle aTriangle1 = new MyTriangle();
 			aTriangle1.edges[0] = aTriangle.edges[0];
-			aTriangle1.points[0] = aTriangle1.edges[0].start();
-			aTriangle1.points[1] = aTriangle1.edges[0].end();
+			aTriangle1.points[0] = aTriangle1.edges[0].getStart();
+			aTriangle1.points[1] = aTriangle1.edges[0].getEnd();
 			aTriangle1.points[2] = aPoint;
 			int k = 1;
 			for (int i = 0; i < 3; i++) {
 				if (anEdge[i] != null)
-					if (aTriangle1.points[0] == anEdge[i].start()) {
+					if (aTriangle1.points[0] == anEdge[i].getStart()) {
 						aTriangle1.edges[k] = anEdge[i];
 						anEdge[i] = null;
 						k++;
-					} else if (aTriangle1.points[1] == anEdge[i].start()) {
+					} else if (aTriangle1.points[1] == anEdge[i].getStart()) {
 						aTriangle1.edges[k] = anEdge[i];
 						anEdge[i] = null;
 						k++;
@@ -353,17 +353,17 @@ public class Delaunay {
 			// Second triangle
 			MyTriangle aTriangle2 = new MyTriangle();
 			aTriangle2.edges[0] = aTriangle.edges[1];
-			aTriangle2.points[0] = aTriangle2.edges[0].start();
-			aTriangle2.points[1] = aTriangle2.edges[0].end();
+			aTriangle2.points[0] = aTriangle2.edges[0].getStart();
+			aTriangle2.points[1] = aTriangle2.edges[0].getEnd();
 			aTriangle2.points[2] = aPoint;
 			k = 1;
 			for (int i = 3; i < 6; i++) {
 				if (anEdge[i] != null)
-					if (aTriangle2.points[0] == anEdge[i].start()) {
+					if (aTriangle2.points[0] == anEdge[i].getStart()) {
 						aTriangle2.edges[k] = anEdge[i];
 						anEdge[i] = null;
 						k++;
-					} else if (aTriangle2.points[1] == anEdge[i].start()) {
+					} else if (aTriangle2.points[1] == anEdge[i].getStart()) {
 						aTriangle2.edges[k] = anEdge[i];
 						anEdge[i] = null;
 						k++;
@@ -383,8 +383,8 @@ public class Delaunay {
 				}
 			}
 			// Add the points
-			aTriangle.points[0] = aTriangle.edges[2].start();
-			aTriangle.points[1] = aTriangle.edges[2].end();
+			aTriangle.points[0] = aTriangle.edges[2].getStart();
+			aTriangle.points[1] = aTriangle.edges[2].getEnd();
 			aTriangle.points[2] = aPoint;
 
 			// Rebuild all topologies
@@ -449,15 +449,15 @@ public class Delaunay {
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
 		else if (!meshComputed)
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else if (anEdge.start().squareDistance(anEdge.end()) < tolarence)
+		else if (anEdge.getStart().squareDistance(anEdge.getEnd()) < tolarence)
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
-		else if (!points.contains(anEdge.start()))
+		else if (!points.contains(anEdge.getStart()))
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
-		else if (!points.contains(anEdge.end()))
+		else if (!points.contains(anEdge.getEnd()))
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
-			processEdgeIntersection(anEdge.start(), anEdge.end());
+			processEdgeIntersection(anEdge.getStart(), anEdge.getEnd());
 		}
 	}
 
@@ -495,9 +495,9 @@ public class Delaunay {
 				// In the edge
 				boolean thereIsOne = false;
 				if (k == 0)
-					aPoint = anEdge.start();
+					aPoint = anEdge.getStart();
 				else
-					aPoint = anEdge.end();
+					aPoint = anEdge.getEnd();
 				for (int j = 0; j < 3; j++)
 					if (aPoint == aTriangle.points[j]) {
 						if (k == 0)
@@ -586,7 +586,7 @@ public class Delaunay {
 		double minDistance = -1;
 		for (int i = 0; i < 3; i++) {
 			MyEdge anEdge = aTriangle.edges[i];
-			double dist = anEdge.start().squareDistance_2D(anEdge.end());
+			double dist = anEdge.getStart().squareDistance_2D(anEdge.getEnd());
 			if ((badVertice == -1) || (dist < minDistance)) {
 				minDistance = dist;
 				badVertice = i;
@@ -701,8 +701,8 @@ public class Delaunay {
 			currentEdge = iterEdge.next();
 
 			// Compute edge intersection with the Mesh
-			MyPoint p1 = currentEdge.start();
-			MyPoint p2 = currentEdge.end();
+			MyPoint p1 = currentEdge.getStart();
+			MyPoint p2 = currentEdge.getEnd();
 
 			processEdgeIntersection(p1, p2);
 		}
@@ -856,8 +856,8 @@ public class Delaunay {
 			// point is on the left for the reverse order of the edge
 			// So, the point must be on the right of the BoundaryEdge
 			if (anEdge.isRight(aPoint)) {
-				p1 = anEdge.end();
-				p2 = anEdge.start();
+				p1 = anEdge.getEnd();
+				p2 = anEdge.getStart();
 
 				// triangle points order is p1, p2, aPoint
 
@@ -918,8 +918,8 @@ public class Delaunay {
 			MyEdge anEdge, boolean forced) {
 		boolean exchange = false;
 		if ((aTriangle1 != null) && (aTriangle2 != null)) {
-			MyPoint p1 = anEdge.start();
-			MyPoint p2 = anEdge.end();
+			MyPoint p1 = anEdge.getStart();
+			MyPoint p2 = anEdge.getEnd();
 			MyPoint p3, p4;
 
 			p3 = p4 = null;
@@ -1029,10 +1029,10 @@ public class Delaunay {
 			if (anEdge.marked != 1) {
 				// We cannot process marked edges
 				// We check if the two triangles around the edge are ok
-				if ((anEdge.leftTriangle() != null)
-						&& (anEdge.rightTriangle() != null)) {
-					MyTriangle aTriangle1 = anEdge.leftTriangle();
-					MyTriangle aTriangle2 = anEdge.rightTriangle();
+				MyTriangle aTriangle1 = anEdge.getLeft();
+				MyTriangle aTriangle2 = anEdge.getRight();
+				if ((aTriangle1 != null)
+						&& (aTriangle2 != null)) {
 
 					if (swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
 						// Add the edges to the bad edges list
@@ -1080,10 +1080,10 @@ public class Delaunay {
 	private void removeTriangle(MyTriangle aTriangle) {
 		// get longest edge
 		MyEdge longest = aTriangle.edges[0];
-		double maxLength = longest.start().squareDistance_2D(longest.end());
+		double maxLength = longest.getStart().squareDistance_2D(longest.getEnd());
 		for (int i = 1; i < 3; i++) {
-			double length = aTriangle.edges[i].start().squareDistance_2D(
-					aTriangle.edges[i].end());
+			double length = aTriangle.edges[i].getStart().squareDistance_2D(
+					aTriangle.edges[i].getEnd());
 			if (length > maxLength) {
 				maxLength = length;
 				longest = aTriangle.edges[i];
@@ -1108,8 +1108,8 @@ public class Delaunay {
 		// Use the flip-flop algorithm on the longest edge
 		int marked = removeEdge.marked;
 		String type = removeEdge.type;
-		MyTriangle aTriangle1 = removeEdge.leftTriangle();
-		MyTriangle aTriangle2 = removeEdge.rightTriangle();
+		MyTriangle aTriangle1 = removeEdge.getLeft();
+		MyTriangle aTriangle2 = removeEdge.getRight();
 		if ((aTriangle1 != null) && (aTriangle2 != null)) {
 			// Flip-flop the two triangle - so keep the same number of triangle
 			// but rearrange them
@@ -1173,8 +1173,8 @@ public class Delaunay {
 		// We need then because we have to compare alterPoint with this list of
 		// points
 		for (MyEdge anEdge : edges) {
-			MyPoint start = anEdge.start();
-			MyPoint end = anEdge.end();
+			MyPoint start = anEdge.getStart();
+			MyPoint end = anEdge.getEnd();
 
 			switch (anEdge.intersects(p1, p2)) {
 			case 0:
@@ -1218,8 +1218,8 @@ public class Delaunay {
 
 			if (! points.contains(IntersectionPoint))
 			if (anEdge != null) {
-				MyPoint start = anEdge.start();
-				MyPoint end = anEdge.end();
+				MyPoint start = anEdge.getStart();
+				MyPoint end = anEdge.getEnd();
 
 				// if the intersection point is one of the start or end
 				// points, do nothing
@@ -1270,11 +1270,11 @@ public class Delaunay {
 								MyEdge alterEdge1 = null;
 								for (int j = 0; j < 3; j++) {
 									MyEdge testEdge = aTriangle1.edges[j];
-									if ((testEdge.start() == start)
-											&& (testEdge.end() == alterPoint))
+									if ((testEdge.getStart() == start)
+											&& (testEdge.getEnd() == alterPoint))
 										alterEdge1 = testEdge;
-									else if ((testEdge.start() == alterPoint)
-											&& (testEdge.end() == start))
+									else if ((testEdge.getStart() == alterPoint)
+											&& (testEdge.getEnd() == start))
 										alterEdge1 = testEdge;
 								}
 
@@ -1283,11 +1283,11 @@ public class Delaunay {
 								MyEdge alterEdge2 = null;
 								for (int j = 0; j < 3; j++) {
 									MyEdge testEdge = aTriangle1.edges[j];
-									if ((testEdge.start() == end)
-											&& (testEdge.end() == alterPoint))
+									if ((testEdge.getStart() == end)
+											&& (testEdge.getEnd() == alterPoint))
 										alterEdge2 = testEdge;
-									else if ((testEdge.start() == alterPoint)
-											&& (testEdge.end() == end))
+									else if ((testEdge.getStart() == alterPoint)
+											&& (testEdge.getEnd() == end))
 										alterEdge2 = testEdge;
 								}
 
@@ -1419,9 +1419,9 @@ public class Delaunay {
 				ListIterator<MyEdge> iterEdge = edges.listIterator();
 				while ((iterEdge.hasNext()) && (!found)) {
 					MyEdge anEdge = iterEdge.next();
-					if (anEdge.start() == aPoint)
+					if (anEdge.getStart() == aPoint)
 						found = true;
-					else if (anEdge.end() == aPoint)
+					else if (anEdge.getEnd() == aPoint)
 						found = true;
 				}
 				if (!found)
