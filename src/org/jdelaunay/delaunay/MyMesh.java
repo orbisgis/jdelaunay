@@ -221,6 +221,10 @@ public class MyMesh {
 	 * Add an edge to the mesh
 	 */
 	public void addEdge(MyPoint aPoint1, MyPoint aPoint2) {
+		if (! points.contains(aPoint1))
+			points.add(aPoint1);
+		if (! points.contains(aPoint2))
+			points.add(aPoint2);
 		MyEdge anEdge = new MyEdge(aPoint1, aPoint2);
 		compEdges.add(anEdge);
 	}
@@ -229,7 +233,9 @@ public class MyMesh {
 	 * Add an edge to the mesh
 	 */
 	public void addEdge(MyEdge anEdge) {
-		compEdges.add(new MyEdge(anEdge));
+		MyPoint aPoint1 = anEdge.getStart();
+		MyPoint aPoint2 = anEdge.getEnd();
+		addEdge(aPoint1, aPoint2);
 	}
 
 	/**
@@ -251,13 +257,21 @@ public class MyMesh {
 	}
 
 	/**
-	 * Set the points
+	 * Set the points as the points of the array
 	 * @param _point
 	 */
 	public void setPoints(ArrayList<MyPoint> _point) {
 		points = new ArrayList<MyPoint>();
 		for (MyPoint aPoint : _point)
 			points.add(aPoint);
+	}
+
+	/**
+	 * Set the points as the array
+	 * @param _point
+	 */
+	public void setPointsRef(ArrayList<MyPoint> _point) {
+		points = _point;
 	}
 
 	/**
@@ -270,13 +284,21 @@ public class MyMesh {
 	}
 
 	/**
-	 * Set the edges
+	 * Set the edges as the edges of the linkedlist
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
 		compEdges = new LinkedList<MyEdge>();
 		for (MyEdge anEdge : _edges)
 			compEdges.add(anEdge);
+	}
+
+	/**
+	 * Set the edges as the LinkedList
+	 * @param _edges
+	 */
+	public void setEdgesRef(LinkedList<MyEdge> _edges) {
+		compEdges = _edges;
 	}
 
 	/**

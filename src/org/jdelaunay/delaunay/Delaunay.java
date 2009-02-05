@@ -1382,7 +1382,8 @@ public class Delaunay {
 
 		// Then we mark all edges from p1 to p2
 		int size = addedPoints.size();
-		quickSort(addedPoints, 0, size - 1);
+		if (size > 2)
+			quickSort(addedPoints, 0, size - 1);
 		MyPoint LastPoint = null;
 		for (MyPoint p : addedPoints) {
 			MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
