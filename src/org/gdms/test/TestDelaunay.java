@@ -19,10 +19,10 @@ import org.gdms.driver.driverManager.DriverLoadException;
 import org.gdms.driver.memory.ObjectMemoryDriver;
 import org.jdelaunay.delaunay.Delaunay;
 import org.jdelaunay.delaunay.DelaunayError;
-import org.jdelaunay.delaunay.MyDrawing;
 import org.jdelaunay.delaunay.MyEdge;
 import org.jdelaunay.delaunay.MyMesh;
 import org.jdelaunay.delaunay.MyPoint;
+import org.jdelaunay.delaunay.MyTriangle;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -32,14 +32,13 @@ public class TestDelaunay {
 
 	public static DataSourceFactory dsf = new DataSourceFactory();
 
-	//public static String path = "data/courbesZ.shp";
+	 public static String path = "data/courbesZ.shp";
 
 	//public static String path = "data/courbesdem10_zone.shp";
 
-	public static String path = "data/multilinestring2d.shp";
+	// public static String path = "data/multilinestring2d.shp";
 
-
-	//public static String path = "data/cantons.shp";
+	// public static String path = "data/cantons.shp";
 
 	/**
 	 * @param args
@@ -51,8 +50,6 @@ public class TestDelaunay {
 	public static void main(String[] args) throws DriverLoadException,
 			DataSourceCreationException, DriverException, DelaunayError {
 
-
-		long start = System.currentTimeMillis();
 		ArrayList<MyPoint> points = new ArrayList<MyPoint>();
 
 		DataSource mydata = dsf.getDataSource(new File(path));
@@ -84,10 +81,9 @@ public class TestDelaunay {
 		MyMesh aMesh = new MyMesh();
 
 		aMesh.setPoints(points);
-		//aMesh.setMax(1300, 700);
+		// aMesh.setMax(1300, 700);
 
 		Delaunay delaunay = new Delaunay(aMesh);
-
 
 		aMesh.setStart();
 
@@ -96,36 +92,39 @@ public class TestDelaunay {
 		// Refine Mesh
 		delaunay.refineMesh();
 
-
-
-
-		//aMesh.saveMeshXML();
+		// aMesh.saveMeshXML();
 
 		saveEdges(delaunay);
 
 		aMesh.setEnd();
 
-		System.out.println("Temps de triangulation et de sauvegarde " +  aMesh.getDuration());
+
+	System.out.println("Temps de triangulation et de sauvegarde " +  aMesh.getDuration());
 
 	}
 
-
 	public static void saveEdges(Delaunay delaunay) throws DriverException {
 
-
 		Metadata metadata = new DefaultMetadata(new Type[] {
-				TypeFactory.createType(Type.SHORT),
+				TypeFactory.createType(Type.INT),
+				TypeFactory.createType(Type.INT),
+				TypeFactory.createType(Type.INT),
+				TypeFactory.createType(Type.INT),
+				TypeFactory.createType(Type.INT),
+				TypeFactory.createType(Type.STRING),
 				TypeFactory.createType(Type.GEOMETRY) }, new String[] { "gid",
-				"the_geom" });
+				"start_node", "end_node", "left_triangle", "right_triangle",
+				"type", "the_geom" });
 
 		ObjectMemoryDriver driver = new ObjectMemoryDriver(metadata);
 
-
-
 		GeometryFactory gf = new GeometryFactory();
+
+		ArrayList<MyPoint> points = delaunay.getMesh().getPoints();
 
 		LinkedList<MyEdge> edges = delaunay.getMesh().getEdges();
 
+		LinkedList<MyTriangle> triangles = delaunay.getMesh().getTriangles();
 
 		for (int i = 0; i < edges.size(); i++) {
 
@@ -135,14 +134,43 @@ public class TestDelaunay {
 
 			MyPoint p2 = edge.point(1);
 
-			Coordinate[] coords = new Coordinate[]{new Coordinate(p1.getX(), p1.getY(), p1.getZ()),new Coordinate(p2.getX(), p2.getY(), p2.getZ())};
+			Coordinate[] coords = new Coordinate[] {
+					new Coordinate(p1.getX(), p1.getY(), p1.getZ()),
+					new Coordinate(p2.getX(), p2.getY(), p2.getZ()) };
+
 			Geometry line = gf.createLineString(coords);
 
-			driver.addValues(new Value[] { ValueFactory.createValue(i),
+			int edgeId = edges.indexOf(edge);
+
+			int startIdPoints = points.indexOf(edge.getStart());
+
+			int endIdPoints = points.indexOf(edge.getEnd());
+
+			int leftId = -1;
+			if (edge.getLeft() == null) {
+
+			} else {
+				leftId = triangles.indexOf(edge.getLeft());
+			}
+
+			int rightId = -1;
+			if (edge.getRight() == null) {
+
+			} else {
+				rightId = triangles.indexOf(edge.getRight());
+			}
+
+			String edgeType = edge.getEdgeType();
+
+			driver.addValues(new Value[] { ValueFactory.createValue(edgeId),
+					ValueFactory.createValue(startIdPoints),
+					ValueFactory.createValue(endIdPoints),
+					ValueFactory.createValue(leftId),
+					ValueFactory.createValue(rightId),
+					ValueFactory.createValue(edgeType),
 					ValueFactory.createValue(line) });
 
 		}
-
 
 		File gdmsFile = new File("tinEdges.shp");
 		gdmsFile.delete();
