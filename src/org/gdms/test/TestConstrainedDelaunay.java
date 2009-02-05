@@ -85,24 +85,27 @@ public class TestConstrainedDelaunay {
 
 				else {
 
+
 					UniqueSegmentsExtracter uniqueSegmentsExtracter = new UniqueSegmentsExtracter(
 							geom);
 					List<LineString> list = uniqueSegmentsExtracter
 							.getSegmentAsLineString();
 
+					LineString ls = (LineString) list.get(0);
+					Coordinate coord0 = ls.getCoordinates()[0];
+					MyPoint p1 = new MyPoint(coord0.x, coord0.y, coord0.z);
+					MyPoint p0;
+					points.add(p1);
+
 					for (int l = 0; l < list.size(); l++) {
 
-						LineString ls = (LineString) list.get(l);
-
-						Coordinate coord0 = ls.getCoordinates()[0];
+						ls = (LineString) list.get(l);
 
 						Coordinate coord1 = ls.getCoordinates()[1];
 
-						MyPoint p0 = new MyPoint(coord0.x, coord0.y, coord0.z);
+						p0 = p1;
+						p1 = new MyPoint(coord1.x, coord1.y, coord1.z);
 
-						MyPoint p1 = new MyPoint(coord1.x, coord1.y, coord1.z);
-
-						points.add(p0);
 						points.add(p1);
 						MyEdge edge = new MyEdge(p0, p1);
 						breaklines.add(edge);
@@ -118,7 +121,7 @@ public class TestConstrainedDelaunay {
 		sds.close();
 
 		MyMesh aMesh = new MyMesh();
-		aMesh.setPoints(points);
+		aMesh.setPointsRef(points);
 		aMesh.setEdges(breaklines);
 
 		Delaunay delaunay = new Delaunay(aMesh);
