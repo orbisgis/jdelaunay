@@ -34,13 +34,8 @@ public class TestConstrainedDelaunay {
 
 	public static DataSourceFactory dsf = new DataSourceFactory();
 
-	public static String path = "data/courbesZ.shp";
+	public static String path = "data/chezinecourbe.shp";
 
-	// public static String path = "data/pointsaltimercier.shp";
-
-	// public static String path = "data/cantons.shp";
-
-	//public static String path = "data/courbesdem10_zone.shp";
 
 
 
@@ -78,7 +73,7 @@ public class TestConstrainedDelaunay {
 
 						Coordinate coord = subGeom.getCoordinates()[k];
 
-						points.add(new MyPoint(coord.x, coord.y, coord.z));
+						points.add(new MyPoint(coord.x, coord.y, 0));
 					}
 
 				}
@@ -93,7 +88,7 @@ public class TestConstrainedDelaunay {
 
 					LineString ls = (LineString) list.get(0);
 					Coordinate coord0 = ls.getCoordinates()[0];
-					MyPoint p1 = new MyPoint(coord0.x, coord0.y, coord0.z);
+					MyPoint p1 = new MyPoint(coord0.x, coord0.y,0);
 					MyPoint p0;
 					points.add(p1);
 
@@ -104,7 +99,7 @@ public class TestConstrainedDelaunay {
 						Coordinate coord1 = ls.getCoordinates()[1];
 
 						p0 = p1;
-						p1 = new MyPoint(coord1.x, coord1.y, coord1.z);
+						p1 = new MyPoint(coord1.x, coord1.y, 0);
 
 						points.add(p1);
 						MyEdge edge = new MyEdge(p0, p1);

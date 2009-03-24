@@ -32,13 +32,15 @@ public class TestDelaunay {
 
 	public static DataSourceFactory dsf = new DataSourceFactory();
 
-	 public static String path = "data/courbesZ.shp";
+	 //public static String path = "data/courbesZ.shp";
 
 	//public static String path = "data/courbesdem10_zone.shp";
 
 	// public static String path = "data/multilinestring2d.shp";
 
 	// public static String path = "data/cantons.shp";
+
+	 public static String path = "data/pointsaltimercier.shp";
 
 	/**
 	 * @param args
@@ -61,6 +63,7 @@ public class TestDelaunay {
 
 			Geometry geom = sds.getGeometry(i);
 
+			double altitude = sds.getFieldValue(i, sds.getFieldIndexByName("Altitude")).getAsDouble();
 			for (int j = 0; j < geom.getNumGeometries(); j++) {
 
 				Geometry subGeom = geom.getGeometryN(j);
@@ -68,7 +71,7 @@ public class TestDelaunay {
 				for (int k = 0; k < subGeom.getCoordinates().length; k++) {
 					Coordinate coord = subGeom.getCoordinates()[k];
 
-					points.add(new MyPoint(coord.x, coord.y, coord.z));
+					points.add(new MyPoint(coord.x, coord.y, altitude));
 
 				}
 
@@ -172,7 +175,7 @@ public class TestDelaunay {
 
 		}
 
-		File gdmsFile = new File("tinEdges.shp");
+		File gdmsFile = new File("/tmp/tinEdges.shp");
 		gdmsFile.delete();
 		dsf.getSourceManager().register("result", gdmsFile);
 
