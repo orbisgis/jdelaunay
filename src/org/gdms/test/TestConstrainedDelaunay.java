@@ -128,9 +128,9 @@ public class TestConstrainedDelaunay {
 		// Refine Mesh
 		delaunay.refineMesh();
 
-		// aMesh.saveMeshXML();
+		aMesh.saveMeshXML();
 
-		saveEdges(delaunay);
+		//saveEdges(delaunay);
 
 		aMesh.setEnd();
 
