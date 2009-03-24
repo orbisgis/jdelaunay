@@ -2,7 +2,7 @@ package org.jdelaunay.delaunay;
 
 /**
  * Delaunay Package.
- * 
+ *
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.0
@@ -15,7 +15,7 @@ public class MyTriangle
 {
 
 	private static final long serialVersionUID = 1L;
-	protected MyPoint[] points;
+	public MyPoint[] points;
 	protected MyEdge[] edges;
 
 	private MyPoint center;
@@ -36,7 +36,7 @@ public class MyTriangle
 
 	/**
 	 * Create a new triangle with points and edges
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param p3
@@ -50,7 +50,7 @@ public class MyTriangle
 
 	/**
 	 * Create a new triangle with edges Add the points from the edges
-	 * 
+	 *
 	 * @param e1
 	 * @param e2
 	 * @param e3
@@ -76,7 +76,7 @@ public class MyTriangle
 
 	/**
 	 * Create a new triangle with points and edges
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param p3
@@ -104,7 +104,7 @@ public class MyTriangle
 	/**
 	 * Create a Triangle from another triangle NB : it doesn't update edges
 	 * connection
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	public MyTriangle(MyTriangle aTriangle) {
@@ -121,7 +121,7 @@ public class MyTriangle
 
 	/**
 	 * Get the ith points
-	 * 
+	 *
 	 * @param i
 	 * @return
 	 */
@@ -131,7 +131,7 @@ public class MyTriangle
 
 	/**
 	 * Get the center of the circle that joins the three points
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPoint center() {
@@ -140,7 +140,7 @@ public class MyTriangle
 
 	/**
 	 * Get the radius of the circle
-	 * 
+	 *
 	 * @return
 	 */
 	public double radius() {
@@ -149,7 +149,7 @@ public class MyTriangle
 
 	/**
 	 * Get the ith edge
-	 * 
+	 *
 	 * @param i
 	 * @return
 	 */
@@ -222,7 +222,7 @@ public class MyTriangle
 	/**
 	 * Check if the point is in or on the Circle 0 = outside 1 = inside 2 = on
 	 * the circle
-	 * 
+	 *
 	 * @param aPoint
 	 * @return position 0 = outside 1 = inside 2 = on the circle
 	 */
@@ -246,7 +246,7 @@ public class MyTriangle
 
 	/**
 	 * Check if the point is inside the triangle / not
-	 * 
+	 *
 	 * @param aPoint
 	 * @return isInside
 	 */
@@ -271,7 +271,7 @@ public class MyTriangle
 
 	/**
 	 * compute triangle area
-	 * 
+	 *
 	 * @return area
 	 */
 	public double computeArea() {
@@ -298,7 +298,7 @@ public class MyTriangle
 
 	/**
 	 * check if one of the triangle's angle is less than minimum
-	 * 
+	 *
 	 * @return minAngle
 	 */
 	protected int badAngle(double tolarance) {
@@ -333,7 +333,7 @@ public class MyTriangle
 
 	/**
 	 * Check if triangle topology is correct / not
-	 * 
+	 *
 	 * @return correct
 	 */
 	public boolean checkTopology() {
@@ -427,7 +427,7 @@ public class MyTriangle
 	/**
 	 * Check if the triangles respects Delaunay constraints. the parameter
 	 * thePoints is the list of points of the mesh
-	 * 
+	 *
 	 * @param thePoints
 	 * @return
 	 */
@@ -455,7 +455,7 @@ public class MyTriangle
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -467,7 +467,7 @@ public class MyTriangle
 
 	/**
 	 * Set the edge color Must be used only when using package drawing
-	 * 
+	 *
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
@@ -477,7 +477,7 @@ public class MyTriangle
 	/**
 	 * Display the triangle in a JPanel Must be used only when using package
 	 * drawing
-	 * 
+	 *
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
@@ -506,7 +506,7 @@ public class MyTriangle
 	/**
 	 * Display the triangle in a JPanel Must be used only when using package
 	 * drawing
-	 * 
+	 *
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY

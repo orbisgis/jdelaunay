@@ -2,7 +2,7 @@ package org.jdelaunay.delaunay;
 
 /**
  * Delaunay Package.
- * 
+ *
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.0
@@ -11,8 +11,9 @@ package org.jdelaunay.delaunay;
 import java.awt.Graphics;
 
 public class MyPoint {
-	protected double x, y, z;
-	protected String type;
+	public double x;
+	public double y, z;
+	public String type;
 
 	private void init() {
 		x = 0;
@@ -30,7 +31,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, 0.0 with no type
-	 * 
+	 *
 	 * @param _x
 	 * @param _y
 	 */
@@ -42,7 +43,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, _z with no type
-	 * 
+	 *
 	 * @param _x
 	 * @param _y
 	 * @param _z
@@ -56,7 +57,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, _z with a type
-	 * 
+	 *
 	 * @param _x
 	 * @param _y
 	 * @param _z
@@ -85,7 +86,7 @@ public class MyPoint {
 
 	/**
 	 * Get X coordinate
-	 * 
+	 *
 	 * @return x
 	 */
 	public double getX() {
@@ -94,7 +95,7 @@ public class MyPoint {
 
 	/**
 	 * Get Y coordinate
-	 * 
+	 *
 	 * @return y
 	 */
 	public double getY() {
@@ -103,7 +104,7 @@ public class MyPoint {
 
 	/**
 	 * Get Z coordinate
-	 * 
+	 *
 	 * @return z
 	 */
 	public double getZ() {
@@ -112,7 +113,7 @@ public class MyPoint {
 
 	/**
 	 * Set Type
-	 * 
+	 *
 	 * @return Type
 	 */
 	public void setPointType(String _gid) {
@@ -121,7 +122,7 @@ public class MyPoint {
 
 	/**
 	 * Get Type
-	 * 
+	 *
 	 * @return Type
 	 */
 	public String getPointType() {
@@ -130,7 +131,7 @@ public class MyPoint {
 
 	/**
 	 * linear square distance to another point
-	 * 
+	 *
 	 * @param aPoint
 	 * @return distance
 	 */
@@ -140,7 +141,7 @@ public class MyPoint {
 
 	/**
 	 * plane square distance to another point
-	 * 
+	 *
 	 * @param aPoint
 	 * @return distance
 	 */
@@ -151,7 +152,7 @@ public class MyPoint {
 
 	/**
 	 * square distance to another point
-	 * 
+	 *
 	 * @param aPoint
 	 * @return distance
 	 */
@@ -162,7 +163,7 @@ public class MyPoint {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -172,7 +173,7 @@ public class MyPoint {
 	/**
 	 * Display the point in a JPanel Must be used only when using package
 	 * drawing
-	 * 
+	 *
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
