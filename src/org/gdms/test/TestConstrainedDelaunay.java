@@ -36,9 +36,6 @@ public class TestConstrainedDelaunay {
 
 	public static String path = "data/chezinecourbe.shp";
 
-
-
-
 	/**
 	 * @param args
 	 * @throws DriverException
@@ -57,7 +54,6 @@ public class TestConstrainedDelaunay {
 
 		SpatialDataSourceDecorator sds = new SpatialDataSourceDecorator(mydata);
 		sds.open();
-
 
 		for (int i = 0; i < sds.getRowCount(); i++) {
 
@@ -80,7 +76,6 @@ public class TestConstrainedDelaunay {
 
 				else {
 
-
 					UniqueSegmentsExtracter uniqueSegmentsExtracter = new UniqueSegmentsExtracter(
 							geom);
 					List<LineString> list = uniqueSegmentsExtracter
@@ -88,7 +83,7 @@ public class TestConstrainedDelaunay {
 
 					LineString ls = (LineString) list.get(0);
 					Coordinate coord0 = ls.getCoordinates()[0];
-					MyPoint p1 = new MyPoint(coord0.x, coord0.y,0);
+					MyPoint p1 = new MyPoint(coord0.x, coord0.y, 0);
 					MyPoint p0;
 					points.add(p1);
 
@@ -130,7 +125,7 @@ public class TestConstrainedDelaunay {
 
 		aMesh.saveMeshXML();
 
-		//saveEdges(delaunay);
+		// saveEdges(delaunay);
 
 		aMesh.setEnd();
 
