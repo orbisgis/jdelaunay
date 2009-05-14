@@ -137,7 +137,7 @@ public class MyMesh {
 	/**
 	 * Compute Mesh bounding box
 	 */
-	private void getBoundingBox() {
+	public void getBoundingBox() {
 		bminx = bmaxx = bminy = bmaxy = 0.0;
 		pminx = pmaxx = pminy = pmaxy = null;
 
@@ -342,17 +342,29 @@ public class MyMesh {
 	 * @param g
 	 */
 	public void displayObject(Graphics g) {
+		getBoundingBox();
+		double scaleX, scaleY;
+		double minX, minY;
+		
+		scaleX = 1200 / (bmaxx - bminx);
+		scaleY = 600 / (bmaxy - bminy);
+		if (scaleX > scaleY)
+			scaleX = scaleY;
+		else
+			scaleY = scaleX;
+		minX = bminx;
+		minY = bmaxy;
 		int decalageX = 10;
-		int decalageY = maxy + 30;
+		int decalageY = 630;
 
 		g.setColor(Color.white);
-		g.fillRect(decalageX - 5, 30 - 5, maxx + 5, maxy + 5);
+		g.fillRect(decalageX - 5, 30 - 5, decalageX - 5 + 1200, 30 - 5 + 600);
 
 		// Draw triangles
 		if (!triangles.isEmpty()) {
 			for (MyTriangle aTriangle : triangles) {
 				aTriangle.setColor(g);
-				aTriangle.displayObject(g, decalageX, decalageY);
+				aTriangle.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 			}
 
 			if (displayCircles)
@@ -366,15 +378,15 @@ public class MyMesh {
 			if (!edges.isEmpty())
 				for (MyEdge aVertex : edges) {
 					aVertex.setColor(g);
-					aVertex.displayObject(g, decalageX, decalageY);
+					aVertex.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 				}
 
 		g.setColor(Color.black);
 		g.drawString(triangles.size() + " Triangles - " + edges.size() + " Edges - " + points.size() + " Points", decalageX,
-				20 + decalageY);
+				30 + decalageY);
 		if (duration > 0) {
 			g.drawString("Computation time : " + duration + " ms", decalageX,
-					35 + decalageY);
+					45 + decalageY);
 		}
 	}
 

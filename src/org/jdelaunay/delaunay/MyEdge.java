@@ -386,13 +386,14 @@ public class MyEdge
 	 * @param decalageX
 	 * @param decalageY
 	 */
-	public void displayObject(Graphics g, int decalageX, int decalageY) {
-		g.drawLine((int) (point[0].x + decalageX), decalageY
-				- (int) (point[0].y), (int) (point[1].x + decalageX),
-				decalageY - (int) (point[1].y));
+	public void displayObject(Graphics g, int decalageX, int decalageY, double minX, double minY, double scaleX, double scaleY) {
+		g.drawLine((int) ((point[0].x-minX)*scaleX + decalageX),
+					decalageY + (int) ((point[0].y - minY)*scaleY),
+					(int) ((point[1].x-minX)*scaleX + decalageX),
+					decalageY + (int) ((point[1].y - minY)*scaleY));
 		if (marked > 0) {
-			point[0].displayObject(g, decalageX, decalageY);
-			point[1].displayObject(g, decalageX, decalageY);
+			point[0].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
+			point[1].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 		}
 	}
 }

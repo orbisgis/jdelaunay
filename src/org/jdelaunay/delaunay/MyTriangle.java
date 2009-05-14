@@ -482,24 +482,24 @@ public class MyTriangle
 	 * @param decalageX
 	 * @param decalageY
 	 */
-	public void displayObject(Graphics g, int decalageX, int decalageY) {
+	public void displayObject(Graphics g, int decalageX, int decalageY, double minX, double minY, double scaleX, double scaleY) {
 		int[] xPoints, yPoints;
 		xPoints = new int[3];
 		yPoints = new int[3];
 
-		xPoints[0] = (int) points[0].x + decalageX;
-		xPoints[1] = (int) points[1].x + decalageX;
-		xPoints[2] = (int) points[2].x + decalageX;
+		xPoints[0] = (int) ((points[0].x-minX)*scaleX + decalageX);
+		xPoints[1] = (int) ((points[1].x-minX)*scaleX + decalageX);
+		xPoints[2] = (int) ((points[2].x-minX)*scaleX + decalageX);
 
-		yPoints[0] = decalageY - (int) points[0].y;
-		yPoints[1] = decalageY - (int) points[1].y;
-		yPoints[2] = decalageY - (int) points[2].y;
+		yPoints[0] = (int) ((points[0].y-minY)*scaleY + decalageY);
+		yPoints[1] = (int) ((points[1].y-minY)*scaleY + decalageY);
+		yPoints[2] = (int) ((points[2].y-minY)*scaleY + decalageY);
 
 		g.fillPolygon(xPoints, yPoints, 3);
 
 		for (int i = 0; i < 3; i++) {
 			edges[i].setColor(g);
-			edges[i].displayObject(g, decalageX, decalageY);
+			edges[i].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 		}
 	}
 
