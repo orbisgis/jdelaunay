@@ -17,10 +17,10 @@ public class Test {
 //		aMesh.setDisplayCircles(true);
 //		aMesh.readMeshPoints();
 		aMesh.setRandomPoints(10000);
-		aMesh.setRandomEdges(200);
+		aMesh.setRandomEdges(500);
 //		aMesh.saveMeshPoints();
 //		aMesh.addBoundingBox();
-		
+
 		aMesh.setStart();
 		try {
 			// process triangularization
@@ -29,12 +29,12 @@ public class Test {
 			// Refine Mesh
 			testDelaunay.refineMesh();
 //			testDelaunay.refineMeshAngles();
-			
+
 		} catch (DelaunayError e) {
 			e.printStackTrace();
 		}
 		aMesh.setEnd();
-	
+
 		MyDrawing aff = new MyDrawing();
 		aff.add(aMesh);
 		aMesh.setAffiche(aff);
