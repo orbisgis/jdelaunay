@@ -34,7 +34,10 @@ public class TestConstrainedDelaunay {
 
 	public static DataSourceFactory dsf = new DataSourceFactory();
 
-	public static String path = "data/chezinecourbe.shp";
+	//public static String path = "data/chezinecourbe.shp";
+
+	public static String path = "data/courbesZ.shp";
+
 
 	/**
 	 * @param args
@@ -165,7 +168,7 @@ public class TestConstrainedDelaunay {
 
 		}
 
-		File gdmsFile = new File("tinEdges.shp");
+		File gdmsFile = new File("/tmp/tinEdges.shp");
 		gdmsFile.delete();
 		dsf.getSourceManager().register("result", gdmsFile);
 
