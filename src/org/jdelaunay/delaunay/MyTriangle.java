@@ -24,6 +24,16 @@ public class MyTriangle
 	private static final double epsilon = 0.00001;
 	private static final double epsilon2 = epsilon * epsilon;
 
+	protected  int gid;
+
+	public int getGid() {
+		return gid;
+	}
+
+	public void setGid(int gid) {
+		this.gid = gid;
+	}
+
 	/**
 	 * Initialize data structure This method is called by every constructor
 	 */
