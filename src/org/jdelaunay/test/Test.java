@@ -2,7 +2,6 @@ package org.jdelaunay.test;
 
 import org.jdelaunay.delaunay.*;
 
-
 public class Test {
 
 	/**
@@ -14,12 +13,12 @@ public class Test {
 		testDelaunay.setPrecision(1.0e-3);
 
 		aMesh.setMax(1300, 700);
-//		aMesh.setDisplayCircles(true);
-//		aMesh.readMeshPoints();
-		aMesh.setRandomPoints(10000);
-		aMesh.setRandomEdges(500);
-//		aMesh.saveMeshPoints();
-//		aMesh.addBoundingBox();
+		// aMesh.setDisplayCircles(true);
+		// aMesh.readMeshPoints();
+		aMesh.setRandomPoints(1000);
+		aMesh.setRandomEdges(50);
+		// aMesh.saveMeshPoints();
+		// aMesh.addBoundingBox();
 
 		aMesh.setStart();
 		try {
@@ -28,7 +27,7 @@ public class Test {
 
 			// Refine Mesh
 			testDelaunay.refineMesh();
-//			testDelaunay.refineMeshAngles();
+			// testDelaunay.refineMeshAngles();
 
 		} catch (DelaunayError e) {
 			e.printStackTrace();
@@ -39,6 +38,6 @@ public class Test {
 		aff.add(aMesh);
 		aMesh.setAffiche(aff);
 
-//		aMesh.saveMeshXML();
+		aMesh.saveMeshXML();
 	}
 }
