@@ -15,9 +15,9 @@ import java.util.*;
 public class MyMesh {
 	// Vectors with points and edges
 	protected ArrayList<MyPoint> points;
-	protected LinkedList<MyEdge> edges;
+	protected ArrayList<MyEdge> edges;
 	protected LinkedList<MyTriangle> triangles;
-	protected LinkedList<MyEdge> compEdges;
+	protected ArrayList<MyEdge> compEdges;
 
 	// bounding box
 	protected int maxx, maxy;
@@ -37,9 +37,9 @@ public class MyMesh {
 	public MyMesh() {
 		// Generate vectors
 		points = new ArrayList<MyPoint>();
-		edges = new LinkedList<MyEdge>();
+		edges = new ArrayList<MyEdge>();
 		triangles = new LinkedList<MyTriangle>();
-		compEdges = new LinkedList<MyEdge>();
+		compEdges = new ArrayList<MyEdge>();
 
 		maxx = 1200;
 		maxy = 700;
@@ -279,16 +279,26 @@ public class MyMesh {
 	 * 
 	 * @return edges
 	 */
-	public LinkedList<MyEdge> getEdges() {
+	public ArrayList<MyEdge> getEdges() {
 		return edges;
 	}
 
 	/**
-	 * Set the edges as the edges of the linkedlist
+	 * Set the edges as the edges of the ArrayList
+	 * @param _edges
+	 */
+	public void setEdges(ArrayList<MyEdge> _edges) {
+		compEdges = new ArrayList<MyEdge>();
+		for (MyEdge anEdge : _edges)
+			compEdges.add(anEdge);
+	}
+
+	/**
+	 * Set the edges as the edges of the LinkedList
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
-		compEdges = new LinkedList<MyEdge>();
+		compEdges = new ArrayList<MyEdge>();
 		for (MyEdge anEdge : _edges)
 			compEdges.add(anEdge);
 	}
@@ -297,7 +307,7 @@ public class MyMesh {
 	 * Set the edges as the LinkedList
 	 * @param _edges
 	 */
-	public void setEdgesRef(LinkedList<MyEdge> _edges) {
+	public void setEdgesRef(ArrayList<MyEdge> _edges) {
 		compEdges = _edges;
 	}
 
@@ -307,7 +317,7 @@ public class MyMesh {
 	 * 
 	 * @return edges
 	 */
-	public LinkedList<MyEdge> getCompEdges() {
+	public ArrayList<MyEdge> getCompEdges() {
 		return compEdges;
 	}
 

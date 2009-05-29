@@ -2,17 +2,17 @@ package org.jdelaunay.delaunay;
 
 /**
  * Delaunay Package.
- *
+ * 
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
- * @version 1.0
+ * @version 1.1
  */
 
 import java.util.*;
 
 /**
  * @author kwyhr
- *
+ * 
  */
 public class Delaunay {
 	// the Mesh
@@ -33,7 +33,7 @@ public class Delaunay {
 
 	// Mesh data access
 	private ArrayList<MyPoint> points;
-	private LinkedList<MyEdge> edges;
+	private ArrayList<MyEdge> edges;
 	private LinkedList<MyTriangle> triangles;
 
 	// Working index vector
@@ -72,7 +72,7 @@ public class Delaunay {
 
 	/**
 	 * Return associated Mesh.
-	 *
+	 * 
 	 * @return
 	 */
 	public MyMesh getMesh() {
@@ -81,7 +81,7 @@ public class Delaunay {
 
 	/**
 	 * Set current Mesh
-	 *
+	 * 
 	 * @param _theMesh
 	 */
 	public void setMesh(MyMesh _theMesh) {
@@ -90,7 +90,7 @@ public class Delaunay {
 
 	/**
 	 * Set precision for proximity.
-	 *
+	 * 
 	 * @param _precision
 	 */
 	public void setPrecision(double _precision) {
@@ -99,7 +99,7 @@ public class Delaunay {
 
 	/**
 	 * Get precision for proximity.
-	 *
+	 * 
 	 * @return
 	 */
 	public double getPrecision() {
@@ -108,7 +108,7 @@ public class Delaunay {
 
 	/**
 	 * Get maximum area for refinement.
-	 *
+	 * 
 	 * @return maxArea
 	 */
 	public double getMaxArea() {
@@ -117,7 +117,7 @@ public class Delaunay {
 
 	/**
 	 * Set maximum area for refinement.
-	 *
+	 * 
 	 * @param maxArea
 	 */
 	public void setMaxArea(double maxArea) {
@@ -126,7 +126,7 @@ public class Delaunay {
 
 	/**
 	 * Get minimum area for refinement.
-	 *
+	 * 
 	 * @return minArea
 	 */
 	public double getMinArea() {
@@ -135,7 +135,7 @@ public class Delaunay {
 
 	/**
 	 * Set minimum area for refinement.
-	 *
+	 * 
 	 * @param minArea
 	 */
 	public void setMinArea(double minArea) {
@@ -144,7 +144,7 @@ public class Delaunay {
 
 	/**
 	 * Get minimum angle for triangles.
-	 *
+	 * 
 	 * @return minAngle
 	 */
 	public double getMinAngle() {
@@ -153,7 +153,7 @@ public class Delaunay {
 
 	/**
 	 * Set minimum angle for triangles.
-	 *
+	 * 
 	 * @param minAngle
 	 */
 	public void setMinAngle(double minAngle) {
@@ -165,7 +165,7 @@ public class Delaunay {
 	 * refinement_minArea = remove triangles with a too small area
 	 * refinement_maxArea = split too large triangles refinement_minAngle =
 	 * remove triangle with a too small angle
-	 *
+	 * 
 	 * @param refinement
 	 */
 	public void setRefinment(int refinement) {
@@ -176,7 +176,7 @@ public class Delaunay {
 	 * Generate the Delaunay triangularization with a flip-flop algorithm. Mesh
 	 * must have been set. Triangularization can only be done once. Otherwise
 	 * call reprocessDelaunay
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void processDelaunay() throws DelaunayError {
@@ -236,29 +236,64 @@ public class Delaunay {
 			}
 
 			// remove flat triangles
-			removeFlatTriangles();
+			// removeFlatTriangles();
+/*			int s1 = 0, s2 = 0, s3 = 0;
+			int NbPoints = points.size();
+			int nbEdges = edges.size();
+			int nbGenerated = theMesh.compEdges.size();
+			theMesh.compEdges = new ArrayList<MyEdge>();
+			int count = 0;
+			for (int i = 0; i < nbGenerated; i++) {
+				int index = (int) Math.round(Math.random() * nbEdges);
+				if (index < nbEdges) {
+					double test = Math.random() * 100.0 ;
+					if ((test > 50.0) || (count == 1)) {
+						theMesh.compEdges.add(edges.get(index));
+						s1++;
+					} else if (test > -0.05) {
+						count = 1;
+						MyEdge anEdge = edges.get(index);
+						MyTriangle t1 = anEdge.left;
+						MyTriangle t2 = anEdge.right;
+						MyPoint z1 = anEdge.getStart();
+						MyPoint z2 = anEdge.getEnd();
+						MyPoint start = null;
+						MyPoint end = null;
+						if (t1 != null) {
+							for (int j = 0; j < 3; j++)
+								if ((t1.points[j] != z1)
+										&& (t1.points[j] != z2))
+									start = t1.points[j];
+						}
+						if (t2 != null) {
+							for (int j = 0; j < 3; j++)
+								if ((t2.points[j] != z1)
+										&& (t2.points[j] != z2))
+									end = t2.points[j];
+						}
 
+						if ((start != null) && (end != null)) {
+							MyEdge newEdge = new MyEdge(start, end);
+							theMesh.compEdges.add(newEdge);
+						}
+						s2++;
+					} else {
+						int start = (int) Math.round(Math.random() * NbPoints);
+						int end = (int) Math.round(Math.random() * NbPoints);
+						while (end == start)
+							end = (int) Math.round(Math.random() * NbPoints);
+						MyEdge anEdge = new MyEdge(points.get(start), points
+								.get(end));
+						theMesh.compEdges.add(anEdge);
+						s3++;
+					}
+				}
+			}
+			System.out.println("test : " + s1 + " " + s2 + " " + s3);
+*/
 			// Add the edges in the edges array
-			processOtherEdges(theMesh.compEdges);
-			removeFlatTriangles();
-
-			// Set gid
-			int i = 0;
-			for (MyPoint point : points) {
-				i++;
-				point.setGid(i);
-			}
-			i = 0;
-			for (MyEdge edge : edges) {
-				i++;
-				edge.setGid(i);
-			}
-
-			i = 0;
-			for (MyTriangle triangle : triangles) {
-				i++;
-				triangle.setGid(i);
-			}
+			processEdges(theMesh.compEdges);
+			// removeFlatTriangles();
 
 			// It's fine, we computed the mesh
 			meshComputed = true;
@@ -269,14 +304,14 @@ public class Delaunay {
 	 * Re-Generate the Delaunay triangularization with a flip-flop algorithm.
 	 * Mesh must have been set. Every triangle and edge is removed to restart
 	 * the process.
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void reprocessDelaunay() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
 		else {
-			edges = new LinkedList<MyEdge>();
+			edges = new ArrayList<MyEdge>();
 			triangles = new LinkedList<MyTriangle>();
 			meshComputed = false;
 
@@ -287,7 +322,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point in the mesh and rebuild triangularization
-	 *
+	 * 
 	 * @param aPoint
 	 * @throws DelaunayError
 	 */
@@ -326,7 +361,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point inside a triangle and rebuild triangularization
-	 *
+	 * 
 	 * @param aTriangle
 	 * @param aPoint
 	 * @throws DelaunayError
@@ -433,7 +468,7 @@ public class Delaunay {
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
 	 * triangularization has not been done, it generates an error.
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @throws DelaunayError
@@ -451,14 +486,17 @@ public class Delaunay {
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
-			processEdgeIntersection(p1, p2);
+			ArrayList<MyEdge> theList = new ArrayList<MyEdge>();
+			MyEdge anEdge = new MyEdge(p1, p2);
+			theList.add(anEdge);
+			processEdges(theList);
 		}
 	}
 
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
 	 * triangularization has not been done, it generates an error.
-	 *
+	 * 
 	 * @param anEdge
 	 * @throws DelaunayError
 	 */
@@ -475,7 +513,9 @@ public class Delaunay {
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
-			processEdgeIntersection(anEdge.getStart(), anEdge.getEnd());
+			ArrayList<MyEdge> theList = new ArrayList<MyEdge>();
+			theList.add(anEdge);
+			processEdges(theList);
 		}
 	}
 
@@ -483,7 +523,7 @@ public class Delaunay {
 	 * Process a triangle with a too small area : - merge the three point as a
 	 * new point and remove the three points - remove the three edges - process
 	 * the neighbors
-	 *
+	 * 
 	 * @param aTriangle
 	 */
 	private void processSmallAreaTriangle(MyTriangle aTriangle,
@@ -573,7 +613,7 @@ public class Delaunay {
 	 * middle - generate three triangles in place of the current one That mean
 	 * we generate two more triangles and we replace the current one Then we
 	 * rebuild the delaunay triangularization
-	 *
+	 * 
 	 * @param aTriangle
 	 */
 	private void processLargeAreaTriangle(MyTriangle aTriangle)
@@ -595,7 +635,7 @@ public class Delaunay {
 
 	/**
 	 * Process a triangle with a too small angle :
-	 *
+	 * 
 	 * @param aTriangle
 	 */
 	private void processSmallAngleTriangle(MyTriangle aTriangle,
@@ -707,11 +747,49 @@ public class Delaunay {
 
 	/**
 	 * Add edges defined at the beginning of the process
-	 *
+	 * 
 	 * @param compEdges
 	 */
-	private void processOtherEdges(LinkedList<MyEdge> compEdges) {
-		MyEdge currentEdge;
+	public void processEdges(ArrayList<MyEdge> compEdges) {
+		int nbEdges = edges.size();
+		if (nbEdges > 0)
+			quickSort_Edges(edges, 0, nbEdges - 1, false);
+
+		int nbEdges2 = compEdges.size();
+		if (nbEdges2 > 0)
+			quickSort_Edges(compEdges, 0, nbEdges2 - 1, false);
+
+		// Process exact existing edges
+		ArrayList<MyEdge> remain1 = processEdges_Step1(compEdges);
+
+		// next try
+		ArrayList<MyEdge> remain2 = processEdges_Step2(remain1);
+		
+		// Process remaining edges
+		int nbEdges4 = remain2.size();
+		if (nbEdges4 > 0)
+			quickSort_Edges(remain2, 0, nbEdges4 - 1, true);
+		processOtherEdges(remain2);
+	}
+
+	/**
+	 * Mark existing edges (compEdges and edges are supposed to be sorted)
+	 * 
+	 * @param compEdges
+	 * @return list of remaining edges
+	 */
+	private ArrayList<MyEdge> processEdges_Step1(
+			ArrayList<MyEdge> compEdges) {
+		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
+
+		MyEdge currentEdge = null;
+		MyEdge currentEdge2 = null;
+		int index = 0;
+		int maxIndex = edges.size();
+		double cle_ref1, cle_ref2, cle_ref3, cle_ref4;
+		double cle1, cle2, cle3, cle4;
+		double x;
+
 		// While there is still an edge to process
 		ListIterator<MyEdge> iterEdge = compEdges.listIterator();
 		while (iterEdge.hasNext()) {
@@ -722,8 +800,530 @@ public class Delaunay {
 			MyPoint p1 = currentEdge.getStart();
 			MyPoint p2 = currentEdge.getEnd();
 
-			processEdgeIntersection(p1, p2);
+			cle_ref1 = p1.getX();
+			cle_ref2 = p1.getY();
+			cle_ref3 = p2.getX();
+			cle_ref4 = p2.getY();
+			if (cle_ref3 < cle_ref1) {
+				x = cle_ref3;
+				cle_ref3 = cle_ref1;
+				cle_ref1 = x;
+
+				x = cle_ref4;
+				cle_ref4 = cle_ref2;
+				cle_ref2 = x;
+			} else if ((cle_ref3 == cle_ref1) && (cle_ref4 < cle_ref2)) {
+				x = cle_ref4;
+				cle_ref4 = cle_ref2;
+				cle_ref2 = x;
+			}
+
+			boolean found = false;
+			boolean ended = false;
+			int i = index;
+			while ((!found) && (!ended) && (i < maxIndex)) {
+				currentEdge2 = edges.get(i);
+				MyPoint p3 = currentEdge2.getStart();
+				MyPoint p4 = currentEdge2.getEnd();
+				cle1 = p3.getX();
+				cle2 = p3.getY();
+				cle3 = p4.getX();
+				cle4 = p4.getY();
+				if (cle3 < cle1) {
+					x = cle3;
+					cle3 = cle1;
+					cle1 = x;
+
+					x = cle4;
+					cle4 = cle2;
+					cle2 = x;
+				} else if ((cle3 == cle1) && (cle4 < cle2)) {
+					x = cle4;
+					cle4 = cle2;
+					cle2 = x;
+				}
+
+				if (cle1 < cle_ref1) {
+					// possible edge not reached
+					i++;
+					index++;
+				} else if (cle1 > cle_ref1) {
+					// possible edge over
+					ended = true;
+				} else if (cle2 < cle_ref2) {
+					// possible edge not reached
+					i++;
+					index++;
+				} else if (cle2 > cle_ref2) {
+					// possible edge over
+					ended = true;
+				} else if (cle3 < cle_ref3) {
+					// possible edge not reached
+					i++;
+					index++;
+				} else if (cle3 > cle_ref3) {
+					// possible edge over
+					ended = true;
+				} else if (cle4 < cle_ref4) {
+					// possible edge not reached
+					i++;
+					index++;
+				} else if (cle4 > cle_ref4) {
+					// possible edge over
+					ended = true;
+				} else {
+					// probable equality
+					if ((p1 == p3) && (p2 == p4))
+						found = true;
+					else if ((p1 == p4) && (p2 == p3))
+						found = true;
+					else
+						i++;
+				}
+			}
+
+			if (found) {
+				// Edge exists => mark it
+				currentEdge2.marked = 1;
+			} else {
+				// Not found
+				remainEdges.add(currentEdge);
+			}
 		}
+		return remainEdges;
+	}
+
+	private MyEdge lookForSwap(MyEdge testEdge, MyPoint start, MyPoint end) {
+		MyEdge canLink = null;
+		int i = 0;
+		
+		while ((canLink == null) && (i<2)) {
+			MyTriangle aTriangle;
+			if (i==0)
+				aTriangle = testEdge.left;
+			else
+				aTriangle = testEdge.right;
+			
+			if (aTriangle != null) {
+				// Check for the edge that does not include start
+				MyEdge possibleEdge = null;
+				for (int j=0; j<3; j++) {
+					MyEdge anEdge = aTriangle.edges[j];
+					if ((anEdge.getStart() != start) && (anEdge.getEnd() != start))
+						possibleEdge = anEdge;
+				}
+				
+				// Check for the triangle that is not aTriangle;
+				MyTriangle alterTriangle = null;
+				if (possibleEdge != null)
+					if (possibleEdge.left == aTriangle)
+						alterTriangle = possibleEdge.right;
+					else
+						alterTriangle = possibleEdge.left;
+				
+				// Check if the last point is end
+				boolean match = false;
+				if (alterTriangle != null)
+				for (int j=0; j<3; j++) {
+					if (alterTriangle.points[j] == end)
+						match = true;
+				}
+				
+				// Check if we can swap that edge
+				if (match) {
+					if (possibleEdge.marked == 0)
+						if (possibleEdge.getIntersection(start, end) != null)
+							canLink = possibleEdge;
+				}
+			}
+			i++;
+		}
+		
+		return canLink;
+	}
+	
+	/**
+	 * Mark existing edges (compEdges and edges are supposed to be sorted)
+	 * 
+	 * @param compEdges
+	 * @return list of remaining edges
+	 */
+	private ArrayList<MyEdge> processEdges_Step2(
+			ArrayList<MyEdge> compEdges) {
+		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
+		ArrayList<MyEdge> EdgesToSwap = new ArrayList<MyEdge>();
+
+		MyEdge currentEdge = null;
+		MyEdge currentEdge2 = null;
+		int index = 0;
+		int maxIndex = edges.size();
+		double cle_ref1, cle_ref3;
+		double cle1, cle3;
+		double x;
+
+		// While there is still an edge to process
+		ListIterator<MyEdge> iterEdge = compEdges.listIterator();
+		while (iterEdge.hasNext()) {
+			// Get first edge then remove it from the list
+			currentEdge = iterEdge.next();
+			boolean found = false;
+				
+			// Compute edge intersection with the Mesh
+			MyPoint p1 = currentEdge.getStart();
+			MyPoint p2 = currentEdge.getEnd();
+
+			cle_ref1 = p1.getX();
+			cle_ref3 = p2.getX();
+			if (cle_ref3 < cle_ref1) {
+				x = cle_ref3;
+				cle_ref3 = cle_ref1;
+				cle_ref1 = x;
+			}
+
+			boolean ended = false;
+			int i = index;
+			while ((!found) && (!ended) && (i < maxIndex)) {
+				currentEdge2 = edges.get(i);
+				MyPoint p3 = currentEdge2.getStart();
+				MyPoint p4 = currentEdge2.getEnd();
+				cle1 = p3.getX();
+				cle3 = p4.getX();
+				if (cle3 < cle1) {
+					x = cle3;
+					cle3 = cle1;
+					cle1 = x;
+				}
+
+				if (cle1 < cle_ref1) {
+					// possible edge not reached
+					i++;
+					index++;
+				}
+				else if (cle3 < cle_ref1) {
+					// possible edge not reached
+					i++;
+				} else if (cle1 > cle_ref3)  {
+					// possible edge over
+					ended = true;
+				} else {
+					// probable equality
+					boolean mayTest = false;
+					MyPoint start=null, end=null;
+					if ((p1 == p3) || (p1 == p4)) {
+						mayTest = true;
+						start = p1;
+						end = p2;
+					}
+					else if ((p2 == p4) || (p2 == p3)) {
+						mayTest = true;
+						start = p2;
+						end = p1;
+					}
+					
+					if (mayTest) {
+						MyEdge swapEdge = lookForSwap(currentEdge2, start, end);
+						if (swapEdge != null) {
+							EdgesToSwap.add(swapEdge);
+							found = true;
+						}
+					}
+
+					if (! found)
+						i++;
+				}
+			}
+			if (! found) {
+				remainEdges.add(currentEdge);
+			}
+		}
+		
+		// swap edges
+		for (MyEdge anEdge : EdgesToSwap) {
+			if (anEdge.marked == 0)
+				swapTriangle(anEdge.left, anEdge.right,anEdge, true);
+			anEdge.marked = 1;
+		}
+
+		return remainEdges;
+	}
+
+	/**
+	 * Mark existing edges (compEdges and edges are supposed to be sorted)
+	 * 
+	 * @param compEdges
+	 * @return list of remaining edges
+	 */
+	private void processOtherEdges(ArrayList<MyEdge> compEdges) {
+		// List of triangles that are created when there is an intersection
+		MyTriangle TriangleList[] = new MyTriangle[4];
+		MyEdge CurrentEdge = null;
+
+		// While there is still an edge to process
+		ListIterator<MyEdge> iterEdge = compEdges.listIterator();
+		while (iterEdge.hasNext()) {
+			// Get first edge then remove it from the list
+			CurrentEdge = iterEdge.next();
+
+			// Compute edge intersection with the Mesh
+			MyPoint p1 = CurrentEdge.getStart();
+			MyPoint p2 = CurrentEdge.getEnd();
+
+			// Edges added during the process
+			ArrayList<MyEdge> addedEdges = new ArrayList<MyEdge>();
+			// Intersection points - this is an ArrayList because we need to
+			// sort it
+			ArrayList<MyPoint> addedPoints = new ArrayList<MyPoint>();
+			ArrayList<MyEdge> IntersectedEdges = new ArrayList<MyEdge>();
+			// Edges that can participate to p1 p2
+			ArrayList<MyEdge> possibleEdges = new ArrayList<MyEdge>();
+
+			// First we get all intersection points
+			// We need then because we have to compare alterPoint with this list
+			// of points
+
+			for (MyEdge anEdge : edges) {
+				MyPoint p3 = anEdge.getStart();
+				MyPoint p4 = anEdge.getEnd();
+
+				// possible intersection
+				MyPoint IntersectionPoint1 = null;
+				MyPoint IntersectionPoint2 = null;
+				MyEdge saveEdge = anEdge;
+
+				int testIntersection = anEdge.intersects(p1, p2);
+				switch (testIntersection) {
+				case 0:
+					// No intersection => don't care
+					break;
+				case 3:
+					// There is an intersection point
+					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
+					saveEdge = null;
+				case 1:
+					// There is an intersection point
+					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
+					break;
+				case 2:
+					// points are on the same line and intersects
+
+					// p1 and p2 cannot be inside the edge because they
+					// participate
+					// to the mesh
+					// so, start and end MUST be inside p1-p2
+					IntersectionPoint1 = p3;
+					IntersectionPoint2 = p4;
+					possibleEdges.add(anEdge);
+					saveEdge = null;
+					break;
+				}
+				if (IntersectionPoint1 != null) {
+					if (!addedPoints.contains(IntersectionPoint1)) {
+						addedPoints.add(IntersectionPoint1);
+						IntersectedEdges.add(saveEdge);
+					}
+				}
+				if (IntersectionPoint2 != null) {
+					if (!addedPoints.contains(IntersectionPoint2)) {
+						addedPoints.add(IntersectionPoint2);
+						IntersectedEdges.add(saveEdge);
+					}
+				}
+			}
+
+			// Intersect p1-p2 with all found edges
+			ListIterator<MyEdge> intersect1 = IntersectedEdges.listIterator();
+			ListIterator<MyPoint> intersect2 = addedPoints.listIterator();
+			while (intersect1.hasNext()) {
+				MyEdge anEdge = intersect1.next();
+				MyPoint IntersectionPoint = intersect2.next();
+
+				if (anEdge != null) {
+					MyPoint start = anEdge.getStart();
+					MyPoint end = anEdge.getEnd();
+
+					// if the intersection point is one of the start or end
+					// points, do nothing
+					if ((IntersectionPoint != start)
+							&& (IntersectionPoint != end)) {
+						// add the intersection point to the list of points
+						// the order don't care
+						points.add(IntersectionPoint);
+
+						// split the edge at the intersection point
+						MyEdge alterEdge = new MyEdge(anEdge);
+						anEdge.point[1] = IntersectionPoint;
+						alterEdge.point[0] = IntersectionPoint;
+						addedEdges.add(alterEdge);
+
+						// split the two triangles around that edge
+						MyTriangle aTriangleLeft = anEdge.left;
+						MyTriangle aTriangleRight = anEdge.right;
+
+						// Do the same thing right and left
+						for (int k = 0; k < 2; k++) {
+							// Get base triangle
+							MyTriangle aTriangle1 = null;
+							if (k == 0)
+								aTriangle1 = aTriangleLeft;
+							else
+								aTriangle1 = aTriangleRight;
+
+							TriangleList[k * 2] = aTriangle1;
+							TriangleList[k * 2 + 1] = null;
+
+							if (aTriangle1 != null) {
+								// There is a triangle => process that side
+
+								// Get the point of the triangle that is
+								// neither
+								// start or end
+								MyPoint alterPoint = null;
+								for (int j = 0; j < 3; j++) {
+									if ((aTriangle1.points[j] != start)
+											&& (aTriangle1.points[j] != end))
+										alterPoint = aTriangle1.points[j];
+								}
+
+								// The alterPoint is not an intersection
+								// point
+
+								// Get alterEdge1 as the edge connected from
+								// start to alterPoint
+								MyEdge alterEdge1 = null;
+								for (int j = 0; j < 3; j++) {
+									MyEdge testEdge = aTriangle1.edges[j];
+									if ((testEdge.getStart() == start)
+											&& (testEdge.getEnd() == alterPoint))
+										alterEdge1 = testEdge;
+									else if ((testEdge.getStart() == alterPoint)
+											&& (testEdge.getEnd() == start))
+										alterEdge1 = testEdge;
+								}
+
+								// Get alterEdge2 as the edge connected from
+								// end to alterPoint
+								MyEdge alterEdge2 = null;
+								for (int j = 0; j < 3; j++) {
+									MyEdge testEdge = aTriangle1.edges[j];
+									if ((testEdge.getStart() == end)
+											&& (testEdge.getEnd() == alterPoint))
+										alterEdge2 = testEdge;
+									else if ((testEdge.getStart() == alterPoint)
+											&& (testEdge.getEnd() == end))
+										alterEdge2 = testEdge;
+								}
+
+								if (alterPoint == IntersectionPoint)
+									System.out.println("ERREUR");
+								else if ((alterEdge1 == null)
+										|| (alterEdge2 == null))
+									System.out.println("ERREUR");
+								else {
+									// Create an new edge from
+									// IntersectionPoint
+									// to alterPoint
+									MyEdge newEdge = new MyEdge(
+											IntersectionPoint, alterPoint);
+									addedEdges.add(newEdge);
+									possibleEdges.add(newEdge);
+
+									// Creates a new triangle
+									MyTriangle aTriangle2 = new MyTriangle();
+									triangles.add(aTriangle2);
+									TriangleList[k * 2 + 1] = aTriangle2;
+
+									// Triangle 1 will be made of points
+									// start, IntersectionPoint and
+									// alterPoint
+									aTriangle1.points[0] = start;
+									aTriangle1.points[1] = IntersectionPoint;
+									aTriangle1.points[2] = alterPoint;
+
+									// Triangle 2 will be made of points
+									// end, IntersectionPoint and alterPoint
+									aTriangle2.points[0] = end;
+									aTriangle2.points[1] = IntersectionPoint;
+									aTriangle2.points[2] = alterPoint;
+
+									// Triangle 1 will be connected to edges
+									// anEdge, newEdge, alterEdge1
+									aTriangle1.edges[0] = anEdge;
+									aTriangle1.edges[1] = newEdge;
+									aTriangle1.edges[2] = alterEdge1;
+
+									// Triangle 2 will be made of
+									// alterEdge, newEdge, alterEdge2
+									aTriangle2.edges[0] = alterEdge;
+									aTriangle2.edges[1] = newEdge;
+									aTriangle2.edges[2] = alterEdge2;
+
+									// Connect newEdge edges
+									if (newEdge.isLeft(end)) {
+										newEdge.left = aTriangle2;
+										newEdge.right = aTriangle1;
+									} else {
+										newEdge.left = aTriangle1;
+										newEdge.right = aTriangle2;
+									}
+
+									// Reconnect alterEdge
+									if (alterEdge.left == aTriangle1)
+										alterEdge.left = aTriangle2;
+									else
+										alterEdge.right = aTriangle2;
+
+									// Reconnect alterEdge2
+									if (alterEdge2.left == aTriangle1)
+										alterEdge2.left = aTriangle2;
+									else
+										alterEdge2.right = aTriangle2;
+
+									// Reset center and radius
+									aTriangle1.recomputeCenter();
+									aTriangle2.recomputeCenter();
+
+									// add the newEdge to the queue
+									badEdgesQueueList.add(newEdge);
+
+									// add all edges
+									for (int j = 0; j < 3; j++) {
+										if (!badEdgesQueueList
+												.contains(aTriangle1.edges[j]))
+											badEdgesQueueList
+													.add(aTriangle2.edges[j]);
+										if (!badEdgesQueueList
+												.contains(aTriangle2.edges[j]))
+											badEdgesQueueList
+													.add(aTriangle2.edges[j]);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// Then we mark all edges from p1 to p2
+			int size = addedPoints.size();
+			if (size > 2)
+				quickSort_Points(addedPoints, 0, size - 1);
+			MyPoint LastPoint = null;
+			for (MyPoint p : addedPoints) {
+				MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
+				if (anEdge != null) {
+					anEdge.marked = 1;
+				}
+
+				LastPoint = p;
+			}
+
+			// Add the edges that where created during the process
+			for (MyEdge anEdge : addedEdges)
+				edges.add(anEdge);
+		}
+
+		// Then apply the flip-flop algorithm
+		processBadEdges();
 	}
 
 	/**
@@ -738,7 +1338,7 @@ public class Delaunay {
 
 		// sort points
 		if (NbPoints > 0)
-			quickSort(points, 0, NbPoints - 1);
+			quickSort_Points(points, 0, NbPoints - 1);
 
 		// Remove same points double precision2 = precision precision;
 		MyPoint current;
@@ -789,55 +1389,61 @@ public class Delaunay {
 
 	/**
 	 * Quick sort on points Ordered according to x and y
-	 *
+	 * 
 	 * @param min_index
 	 * @param max_index
 	 */
-	private void quickSort(ArrayList<MyPoint> points, int min_index,
+	private void quickSort_Points(ArrayList<MyPoint> points, int min_index,
 			int max_index) {
 		int i, j;
 		int enreg_ref;
 		double cle_ref1, cle_ref2;
 		boolean found;
+		MyPoint aPoint;
 
 		i = min_index;
 		j = max_index;
 		enreg_ref = (max_index + min_index) / 2;
-		cle_ref1 = points.get(enreg_ref).getX();
-		cle_ref2 = points.get(enreg_ref).getY();
+		aPoint = points.get(enreg_ref);
+		cle_ref1 = aPoint.getX();
+		cle_ref2 = aPoint.getY();
 		do {
 			// first : increasing index
 			found = false;
 			while (!found) {
 				if (i > max_index)
 					found = true;
-				else if (points.get(i).getX() > cle_ref1)
-					found = true;
-				else if ((points.get(i).getX() == cle_ref1)
-						&& (points.get(i).getY() >= cle_ref2))
-					found = true;
-				else
-					i++;
+				else {
+					aPoint = points.get(i);
+					if (aPoint.getX() > cle_ref1)
+						found = true;
+					else if ((aPoint.getX() == cle_ref1)
+							&& (aPoint.getY() >= cle_ref2))
+						found = true;
+					else
+						i++;
+				}
 			}
-
 			// second : decreasing index
 			found = false;
 			while (!found) {
 				if (min_index > j)
 					found = true;
-				else if (points.get(j).getX() < cle_ref1)
-					found = true;
-				else if ((points.get(j).getX() == cle_ref1)
-						&& (points.get(j).getY() <= cle_ref2))
-					found = true;
-				else
-					j--;
+				else {
+					aPoint = points.get(j);
+					if (aPoint.getX() < cle_ref1)
+						found = true;
+					else if ((aPoint.getX() == cle_ref1)
+							&& (aPoint.getY() <= cle_ref2))
+						found = true;
+					else
+						j--;
+				}
 			}
-
 			// exchange values
 			if (i <= j) {
 				// we can change values
-				MyPoint aPoint = points.get(i);
+				aPoint = points.get(i);
 				points.set(i, points.get(j));
 				points.set(j, aPoint);
 
@@ -849,17 +1455,197 @@ public class Delaunay {
 		// Recurrent calls
 		if (min_index < j) {
 			// if left side is not empty
-			quickSort(points, min_index, j);
+			quickSort_Points(points, min_index, j);
 		}
 		if (max_index > i) {
 			// if right side is not empty
-			quickSort(points, i, max_index);
+			quickSort_Points(points, i, max_index);
+		}
+	}
+
+	/**
+	 * Quick sort on points Ordered according to minimum X, Y of both
+	 * extremities
+	 * 
+	 * @param min_index
+	 * @param max_index
+	 */
+	private void quickSort_Edges(ArrayList<MyEdge> edges, int min_index,
+			int max_index, boolean switchPoints) {
+		int i, j;
+		int enreg_ref;
+		double cle_ref1, cle_ref2, cle_ref3, cle_ref4;
+		double cle1, cle2, cle3, cle4;
+		double x;
+		boolean found;
+
+		i = min_index;
+		j = max_index;
+		enreg_ref = (max_index + min_index) / 2;
+		MyEdge anEdge = edges.get(enreg_ref);
+		cle_ref1 = anEdge.getStart().getX();
+		cle_ref2 = anEdge.getStart().getY();
+		cle_ref3 = anEdge.getEnd().getX();
+		cle_ref4 = anEdge.getEnd().getY();
+		if (cle_ref3 < cle_ref1) {
+			x = cle_ref3;
+			cle_ref3 = cle_ref1;
+			cle_ref1 = x;
+
+			x = cle_ref4;
+			cle_ref4 = cle_ref2;
+			cle_ref2 = x;
+		} else if ((cle_ref3 == cle_ref1) && (cle_ref4 < cle_ref2)) {
+			x = cle_ref4;
+			cle_ref4 = cle_ref2;
+			cle_ref2 = x;
+		}
+		if (switchPoints) {
+			x = cle_ref3;
+			cle_ref3 = cle_ref1;
+			cle_ref1 = x;
+
+			x = cle_ref4;
+			cle_ref4 = cle_ref2;
+			cle_ref2 = x;
+		}
+		do {
+			// first : increasing index
+			found = false;
+			while (!found) {
+				if (i > max_index)
+					found = true;
+				else {
+					anEdge = edges.get(i);
+					cle1 = anEdge.getStart().getX();
+					cle2 = anEdge.getStart().getY();
+					cle3 = anEdge.getEnd().getX();
+					cle4 = anEdge.getEnd().getY();
+					if (cle3 < cle1) {
+						x = cle3;
+						cle3 = cle1;
+						cle1 = x;
+
+						x = cle4;
+						cle4 = cle2;
+						cle2 = x;
+					} else if ((cle3 == cle1) && (cle4 < cle2)) {
+						x = cle4;
+						cle4 = cle2;
+						cle2 = x;
+					}
+					if (switchPoints) {
+						x = cle3;
+						cle3 = cle1;
+						cle1 = x;
+
+						x = cle4;
+						cle4 = cle2;
+						cle2 = x;
+					}
+
+					if (cle1 > cle_ref1)
+						found = true;
+					else if (cle1 < cle_ref1)
+						i++;
+					else if (cle2 > cle_ref2)
+						found = true;
+					else if (cle2 < cle_ref2)
+						i++;
+					else if (cle3 > cle_ref3)
+						found = true;
+					else if (cle3 < cle_ref3)
+						i++;
+					else if (cle4 > cle_ref4)
+						found = true;
+					else if (cle4 < cle_ref4)
+						i++;
+					else
+						found = true;
+				}
+			}
+
+			// second : decreasing index
+			found = false;
+			while (!found) {
+				if (min_index > j)
+					found = true;
+				else {
+					anEdge = edges.get(j);
+					cle1 = anEdge.getStart().getX();
+					cle2 = anEdge.getStart().getY();
+					cle3 = anEdge.getEnd().getX();
+					cle4 = anEdge.getEnd().getY();
+					if (cle3 < cle1) {
+						x = cle3;
+						cle3 = cle1;
+						cle1 = x;
+
+						x = cle4;
+						cle4 = cle2;
+						cle2 = x;
+					} else if ((cle3 == cle1) && (cle4 < cle2)) {
+						x = cle4;
+						cle4 = cle2;
+						cle2 = x;
+					}
+					if (switchPoints) {
+						x = cle3;
+						cle3 = cle1;
+						cle1 = x;
+
+						x = cle4;
+						cle4 = cle2;
+						cle2 = x;
+					}
+
+					if (cle1 < cle_ref1)
+						found = true;
+					else if (cle1 > cle_ref1)
+						j--;
+					else if (cle2 < cle_ref2)
+						found = true;
+					else if (cle2 > cle_ref2)
+						j--;
+					else if (cle3 < cle_ref3)
+						found = true;
+					else if (cle3 > cle_ref3)
+						j--;
+					else if (cle4 < cle_ref4)
+						found = true;
+					else if (cle4 > cle_ref4)
+						j--;
+					else
+						found = true;
+				}
+			}
+
+			// exchange values
+			if (i <= j) {
+				// we can change values
+				anEdge = edges.get(i);
+				edges.set(i, edges.get(j));
+				edges.set(j, anEdge);
+
+				i++;
+				j--;
+			}
+		} while (i <= j);
+
+		// Recurrent calls
+		if (min_index < j) {
+			// if left side is not empty
+			quickSort_Edges(edges, min_index, j, switchPoints);
+		}
+		if (max_index > i) {
+			// if right side is not empty
+			quickSort_Edges(edges, i, max_index, switchPoints);
 		}
 	}
 
 	/**
 	 * Insert o point to the current triangularization
-	 *
+	 * 
 	 * @param aPoint
 	 */
 	private void InsertPoint(MyPoint aPoint) {
@@ -966,72 +1752,72 @@ public class Delaunay {
 					exchange = true;
 
 			if (p3 != p4)
-			if ((exchange) || (forced)) {
-				// We need to exchange points of the triangles
+				if ((exchange) || (forced)) {
+					// We need to exchange points of the triangles
 
-				// rebuild the two triangles
-				MyEdge anEdge10, anEdge11, anEdge12;
-				MyEdge anEdge20, anEdge21, anEdge22;
+					// rebuild the two triangles
+					MyEdge anEdge10, anEdge11, anEdge12;
+					MyEdge anEdge20, anEdge21, anEdge22;
 
-				// Triangle 1 is p1, p2, p3 or p2, p1, p3
-				// Triangle 2 is p2, p1, p4 or p1, p2, p4
-				anEdge10 = anEdge;
-				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
-				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
+					// Triangle 1 is p1, p2, p3 or p2, p1, p3
+					// Triangle 2 is p2, p1, p4 or p1, p2, p4
+					anEdge10 = anEdge;
+					anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
+					anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
 
-				anEdge20 = anEdge;
-				anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
-				anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
-				if ((anEdge11 == null) || (anEdge12 == null)
-						|| (anEdge21 == null) || (anEdge22 == null))
-					System.out.println("ERREUR");
+					anEdge20 = anEdge;
+					anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
+					anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
+					if ((anEdge11 == null) || (anEdge12 == null)
+							|| (anEdge21 == null) || (anEdge22 == null))
+						System.out.println("ERREUR");
 
-				// Set points
-				anEdge.point[0] = p3;
-				anEdge.point[1] = p4;
+					// Set points
+					anEdge.point[0] = p3;
+					anEdge.point[1] = p4;
 
-				// First triangle becomes p3,p4,p1
-				// Second triangle becomes p4,p3,p2
-				aTriangle1.points[0] = p3;
-				aTriangle1.points[1] = p4;
-				aTriangle1.points[2] = p1;
+					// First triangle becomes p3,p4,p1
+					// Second triangle becomes p4,p3,p2
+					aTriangle1.points[0] = p3;
+					aTriangle1.points[1] = p4;
+					aTriangle1.points[2] = p1;
 
-				aTriangle2.points[0] = p4;
-				aTriangle2.points[1] = p3;
-				aTriangle2.points[2] = p2;
+					aTriangle2.points[0] = p4;
+					aTriangle2.points[1] = p3;
+					aTriangle2.points[2] = p2;
 
-				// Put it into triangles
-				aTriangle1.edges[0] = anEdge10;
-				aTriangle1.edges[1] = anEdge11;
-				aTriangle1.edges[2] = anEdge12;
+					// Put it into triangles
+					aTriangle1.edges[0] = anEdge10;
+					aTriangle1.edges[1] = anEdge11;
+					aTriangle1.edges[2] = anEdge12;
 
-				aTriangle2.edges[0] = anEdge20;
-				aTriangle2.edges[1] = anEdge21;
-				aTriangle2.edges[2] = anEdge22;
+					aTriangle2.edges[0] = anEdge20;
+					aTriangle2.edges[1] = anEdge21;
+					aTriangle2.edges[2] = anEdge22;
 
-				// We have to reconnect anEdge12 and anEdge22
-				if (anEdge12.left == aTriangle2)
-					anEdge12.left = aTriangle1;
-				else
-					anEdge12.right = aTriangle1;
-				if (anEdge22.left == aTriangle1)
-					anEdge22.left = aTriangle2;
-				else
-					anEdge22.right = aTriangle2;
+					// We have to reconnect anEdge12 and anEdge22
+					if (anEdge12.left == aTriangle2)
+						anEdge12.left = aTriangle1;
+					else
+						anEdge12.right = aTriangle1;
+					if (anEdge22.left == aTriangle1)
+						anEdge22.left = aTriangle2;
+					else
+						anEdge22.right = aTriangle2;
 
-				// The set right side for anEdge
-				if (anEdge.isLeft(p1)) {
-					anEdge.left = aTriangle1;
-					anEdge.right = aTriangle2;
-				} else {
-					anEdge.left = aTriangle2;
-					anEdge.right = aTriangle1;
+					// The set right side for anEdge
+					if (anEdge.isLeft(p1)) {
+						anEdge.left = aTriangle1;
+						anEdge.right = aTriangle2;
+					} else {
+						anEdge.left = aTriangle2;
+						anEdge.right = aTriangle1;
+					}
+
+					// do not forget to recompute circles
+					aTriangle1.recomputeCenter();
+					aTriangle2.recomputeCenter();
 				}
-
-				// do not forget to recompute circles
-				aTriangle1.recomputeCenter();
-				aTriangle2.recomputeCenter();
-			}
 		}
 		return exchange;
 	}
@@ -1049,8 +1835,7 @@ public class Delaunay {
 				// We check if the two triangles around the edge are ok
 				MyTriangle aTriangle1 = anEdge.getLeft();
 				MyTriangle aTriangle2 = anEdge.getRight();
-				if ((aTriangle1 != null)
-						&& (aTriangle2 != null)) {
+				if ((aTriangle1 != null) && (aTriangle2 != null)) {
 
 					if (swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
 						// Add the edges to the bad edges list
@@ -1098,7 +1883,8 @@ public class Delaunay {
 	private void removeTriangle(MyTriangle aTriangle) {
 		// get longest edge
 		MyEdge longest = aTriangle.edges[0];
-		double maxLength = longest.getStart().squareDistance_2D(longest.getEnd());
+		double maxLength = longest.getStart().squareDistance_2D(
+				longest.getEnd());
 		for (int i = 1; i < 3; i++) {
 			double length = aTriangle.edges[i].getStart().squareDistance_2D(
 					aTriangle.edges[i].getEnd());
@@ -1172,249 +1958,275 @@ public class Delaunay {
 
 	/**
 	 * Intersect the edge that started at p1 and ended at p2 with the whole mesh
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 */
-	private void processEdgeIntersection(MyPoint p1, MyPoint p2) {
+	private void processEdgeIntersection(ArrayList<MyEdge> compEdges) {
 		// List of triangles that are created when there is an intersection
 		MyTriangle TriangleList[] = new MyTriangle[4];
-		// Edges added during the process
-		ArrayList<MyEdge> addedEdges = new ArrayList<MyEdge>();
-		// Intersection points - this is an ArrayList because we need to sort it
-		ArrayList<MyPoint> addedPoints = new ArrayList<MyPoint>();
-		ArrayList<MyEdge> IntersectedEdges = new ArrayList<MyEdge>();
-		// Edges that can participate to p1 p2
-		ArrayList<MyEdge> possibleEdges = new ArrayList<MyEdge>();
 
-		// First we get all intersection points
-		// We need then because we have to compare alterPoint with this list of
-		// points
-		for (MyEdge anEdge : edges) {
-			MyPoint start = anEdge.getStart();
-			MyPoint end = anEdge.getEnd();
+		ListIterator<MyEdge> iterEdge = compEdges.listIterator();
+		while (iterEdge.hasNext()) {
+			MyEdge CurrentEdge = iterEdge.next();
 
-			switch (anEdge.intersects(p1, p2)) {
-			case 0:
-				// No intersection => don't care
-				break;
-			case 1:
-				// There is an intersection point
-				MyPoint IntersectionPoint = anEdge.getIntersection(p1, p2);
-				if (IntersectionPoint != null) {
-					if (!addedPoints.contains(IntersectionPoint)) {
-						addedPoints.add(IntersectionPoint);
-						IntersectedEdges.add(anEdge);
-					}
-				}
-				break;
-			case 2:
-				// points are on the same line and intersects
+			MyPoint p1 = CurrentEdge.getStart();
+			MyPoint p2 = CurrentEdge.getEnd();
 
-				// p1 and p2 cannot be inside the edge because they participate
-				// to the mesh
-				// so, start and end MUST be inside p1-p2
-				if (!addedPoints.contains(start)) {
-					addedPoints.add(start);
-					IntersectedEdges.add(anEdge);
-				}
-				if (!addedPoints.contains(end)) {
-					addedPoints.add(end);
-					IntersectedEdges.add(anEdge);
-				}
-				possibleEdges.add(anEdge);
-				break;
-			}
-		}
+			// Edges added during the process
+			ArrayList<MyEdge> addedEdges = new ArrayList<MyEdge>();
+			// Intersection points - this is an ArrayList because we need to
+			// sort it
+			ArrayList<MyPoint> addedPoints = new ArrayList<MyPoint>();
+			ArrayList<MyEdge> IntersectedEdges = new ArrayList<MyEdge>();
+			// Edges that can participate to p1 p2
+			ArrayList<MyEdge> possibleEdges = new ArrayList<MyEdge>();
 
-		// Intersect p1-p2 with all found edges
-		ListIterator<MyEdge> intersect1 = IntersectedEdges.listIterator();
-		ListIterator<MyPoint> intersect2 = addedPoints.listIterator();
-		while (intersect1.hasNext()) {
-			MyEdge anEdge = intersect1.next();
-			MyPoint IntersectionPoint = intersect2.next();
-
-			if (! points.contains(IntersectionPoint))
-			if (anEdge != null) {
+			// First we get all intersection points
+			// We need then because we have to compare alterPoint with this list
+			// of points
+			for (MyEdge anEdge : edges) {
 				MyPoint start = anEdge.getStart();
 				MyPoint end = anEdge.getEnd();
 
-				// if the intersection point is one of the start or end
-				// points, do nothing
-				if ((IntersectionPoint != start) && (IntersectionPoint != end)) {
-					// add the intersection point to the list of points
-					// the order don't care
-					points.add(IntersectionPoint);
+				MyPoint IntersectionPoint1 = null;
+				MyPoint IntersectionPoint2 = null;
+				MyEdge saveEdge = anEdge;
 
-					// split the edge at the intersection point
-					MyEdge alterEdge = new MyEdge(anEdge);
-					anEdge.point[1] = IntersectionPoint;
-					alterEdge.point[0] = IntersectionPoint;
-					addedEdges.add(alterEdge);
+				int testIntersection = anEdge.intersects(p1, p2);
+				switch (testIntersection) {
+				case 0:
+					// No intersection => don't care
+					break;
+				case 3:
+					// There is an intersection point
+					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
+					saveEdge = null;
+				case 1:
+					// There is an intersection point
+					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
+					break;
+				case 2:
+					// points are on the same line and intersects
 
-					// split the two triangles around that edge
-					MyTriangle aTriangleLeft = anEdge.left;
-					MyTriangle aTriangleRight = anEdge.right;
-
-					// Do the same thing right and left
-					for (int i = 0; i < 2; i++) {
-						// Get base triangle
-						MyTriangle aTriangle1 = null;
-						if (i == 0)
-							aTriangle1 = aTriangleLeft;
-						else
-							aTriangle1 = aTriangleRight;
-
-						TriangleList[i * 2] = aTriangle1;
-						TriangleList[i * 2 + 1] = null;
-
-						if (aTriangle1 != null) {
-							// There is a triangle => process that side
-
-							// Get the point of the triangle that is neither
-							// start or end
-							MyPoint alterPoint = null;
-							for (int j = 0; j < 3; j++) {
-								if ((aTriangle1.points[j] != start)
-										&& (aTriangle1.points[j] != end))
-									alterPoint = aTriangle1.points[j];
-							}
-
-//							if (!addedPoints.contains(alterPoint)) {
-								// The alterPoint is not an intersection point
-
-								// Get alterEdge1 as the edge connected from
-								// start to alterPoint
-								MyEdge alterEdge1 = null;
-								for (int j = 0; j < 3; j++) {
-									MyEdge testEdge = aTriangle1.edges[j];
-									if ((testEdge.getStart() == start)
-											&& (testEdge.getEnd() == alterPoint))
-										alterEdge1 = testEdge;
-									else if ((testEdge.getStart() == alterPoint)
-											&& (testEdge.getEnd() == start))
-										alterEdge1 = testEdge;
-								}
-
-								// Get alterEdge2 as the edge connected from
-								// end to alterPoint
-								MyEdge alterEdge2 = null;
-								for (int j = 0; j < 3; j++) {
-									MyEdge testEdge = aTriangle1.edges[j];
-									if ((testEdge.getStart() == end)
-											&& (testEdge.getEnd() == alterPoint))
-										alterEdge2 = testEdge;
-									else if ((testEdge.getStart() == alterPoint)
-											&& (testEdge.getEnd() == end))
-										alterEdge2 = testEdge;
-								}
-
-								if (alterPoint == IntersectionPoint)
-									System.out.println("ERREUR");
-								else if ((alterEdge1 == null)
-										|| (alterEdge2 == null))
-									System.out.println("ERREUR");
-								else {
-									// Create an new edge from IntersectionPoint
-									// to alterPoint
-									MyEdge newEdge = new MyEdge(
-											IntersectionPoint, alterPoint);
-									addedEdges.add(newEdge);
-									possibleEdges.add(newEdge);
-
-									// Creates a new triangle
-									MyTriangle aTriangle2 = new MyTriangle();
-									triangles.add(aTriangle2);
-									TriangleList[i * 2 + 1] = aTriangle2;
-
-									// Triangle 1 will be made of points
-									// start, IntersectionPoint and alterPoint
-									aTriangle1.points[0] = start;
-									aTriangle1.points[1] = IntersectionPoint;
-									aTriangle1.points[2] = alterPoint;
-
-									// Triangle 2 will be made of points
-									// end, IntersectionPoint and alterPoint
-									aTriangle2.points[0] = end;
-									aTriangle2.points[1] = IntersectionPoint;
-									aTriangle2.points[2] = alterPoint;
-
-									// Triangle 1 will be connected to edges
-									// anEdge, newEdge, alterEdge1
-									aTriangle1.edges[0] = anEdge;
-									aTriangle1.edges[1] = newEdge;
-									aTriangle1.edges[2] = alterEdge1;
-
-									// Triangle 2 will be made of
-									// alterEdge, newEdge, alterEdge2
-									aTriangle2.edges[0] = alterEdge;
-									aTriangle2.edges[1] = newEdge;
-									aTriangle2.edges[2] = alterEdge2;
-
-									// Connect newEdge edges
-									if (newEdge.isLeft(end)) {
-										newEdge.left = aTriangle2;
-										newEdge.right = aTriangle1;
-									} else {
-										newEdge.left = aTriangle1;
-										newEdge.right = aTriangle2;
-									}
-
-									// Reconnect alterEdge
-									if (alterEdge.left == aTriangle1)
-										alterEdge.left = aTriangle2;
-									else
-										alterEdge.right = aTriangle2;
-
-									// Reconnect alterEdge2
-									if (alterEdge2.left == aTriangle1)
-										alterEdge2.left = aTriangle2;
-									else
-										alterEdge2.right = aTriangle2;
-
-									// Reset center and radius
-									aTriangle1.recomputeCenter();
-									aTriangle2.recomputeCenter();
-
-									// add the newEdge to the queue
-									badEdgesQueueList.add(newEdge);
-
-									// add all edges
-									for (int j = 0; j < 3; j++) {
-										if (!badEdgesQueueList
-												.contains(aTriangle1.edges[j]))
-											badEdgesQueueList
-													.add(aTriangle2.edges[j]);
-										if (!badEdgesQueueList
-												.contains(aTriangle2.edges[j]))
-											badEdgesQueueList
-													.add(aTriangle2.edges[j]);
-									}
-								}
-//							}
-						}
+					// p1 and p2 cannot be inside the edge because they
+					// participate
+					// to the mesh
+					// so, start and end MUST be inside p1-p2
+					IntersectionPoint1 = start;
+					IntersectionPoint2 = end;
+					possibleEdges.add(anEdge);
+					saveEdge = null;
+					break;
+				}
+				if (IntersectionPoint1 != null) {
+					if (!addedPoints.contains(IntersectionPoint1)) {
+						addedPoints.add(IntersectionPoint1);
+						IntersectedEdges.add(saveEdge);
+					}
+				}
+				if (IntersectionPoint2 != null) {
+					if (!addedPoints.contains(IntersectionPoint2)) {
+						addedPoints.add(IntersectionPoint2);
+						IntersectedEdges.add(saveEdge);
 					}
 				}
 			}
-		}
 
-		// Then we mark all edges from p1 to p2
-		int size = addedPoints.size();
-		if (size > 2)
-			quickSort(addedPoints, 0, size - 1);
-		MyPoint LastPoint = null;
-		for (MyPoint p : addedPoints) {
-			MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
-			if (anEdge != null) {
-				anEdge.marked = 1;
+			// Intersect p1-p2 with all found edges
+			ListIterator<MyEdge> intersect1 = IntersectedEdges.listIterator();
+			ListIterator<MyPoint> intersect2 = addedPoints.listIterator();
+			if (false)
+				while (intersect1.hasNext()) {
+					MyEdge anEdge = intersect1.next();
+					MyPoint IntersectionPoint = intersect2.next();
+
+					if (anEdge != null) {
+						MyPoint start = anEdge.getStart();
+						MyPoint end = anEdge.getEnd();
+
+						// if the intersection point is one of the start or end
+						// points, do nothing
+						if ((IntersectionPoint != start)
+								&& (IntersectionPoint != end)) {
+							// add the intersection point to the list of points
+							// the order don't care
+							points.add(IntersectionPoint);
+
+							// split the edge at the intersection point
+							MyEdge alterEdge = new MyEdge(anEdge);
+							anEdge.point[1] = IntersectionPoint;
+							alterEdge.point[0] = IntersectionPoint;
+							addedEdges.add(alterEdge);
+
+							// split the two triangles around that edge
+							MyTriangle aTriangleLeft = anEdge.left;
+							MyTriangle aTriangleRight = anEdge.right;
+
+							// Do the same thing right and left
+							for (int i = 0; i < 2; i++) {
+								// Get base triangle
+								MyTriangle aTriangle1 = null;
+								if (i == 0)
+									aTriangle1 = aTriangleLeft;
+								else
+									aTriangle1 = aTriangleRight;
+
+								TriangleList[i * 2] = aTriangle1;
+								TriangleList[i * 2 + 1] = null;
+
+								if (aTriangle1 != null) {
+									// There is a triangle => process that side
+
+									// Get the point of the triangle that is
+									// neither
+									// start or end
+									MyPoint alterPoint = null;
+									for (int j = 0; j < 3; j++) {
+										if ((aTriangle1.points[j] != start)
+												&& (aTriangle1.points[j] != end))
+											alterPoint = aTriangle1.points[j];
+									}
+
+									// if (!addedPoints.contains(alterPoint)) {
+									// The alterPoint is not an intersection
+									// point
+
+									// Get alterEdge1 as the edge connected from
+									// start to alterPoint
+									MyEdge alterEdge1 = null;
+									for (int j = 0; j < 3; j++) {
+										MyEdge testEdge = aTriangle1.edges[j];
+										if ((testEdge.getStart() == start)
+												&& (testEdge.getEnd() == alterPoint))
+											alterEdge1 = testEdge;
+										else if ((testEdge.getStart() == alterPoint)
+												&& (testEdge.getEnd() == start))
+											alterEdge1 = testEdge;
+									}
+
+									// Get alterEdge2 as the edge connected from
+									// end to alterPoint
+									MyEdge alterEdge2 = null;
+									for (int j = 0; j < 3; j++) {
+										MyEdge testEdge = aTriangle1.edges[j];
+										if ((testEdge.getStart() == end)
+												&& (testEdge.getEnd() == alterPoint))
+											alterEdge2 = testEdge;
+										else if ((testEdge.getStart() == alterPoint)
+												&& (testEdge.getEnd() == end))
+											alterEdge2 = testEdge;
+									}
+
+									if (alterPoint == IntersectionPoint)
+										System.out.println("ERREUR");
+									else if ((alterEdge1 == null)
+											|| (alterEdge2 == null))
+										System.out.println("ERREUR");
+									else {
+										// Create an new edge from
+										// IntersectionPoint
+										// to alterPoint
+										MyEdge newEdge = new MyEdge(
+												IntersectionPoint, alterPoint);
+										addedEdges.add(newEdge);
+										possibleEdges.add(newEdge);
+
+										// Creates a new triangle
+										MyTriangle aTriangle2 = new MyTriangle();
+										triangles.add(aTriangle2);
+										TriangleList[i * 2 + 1] = aTriangle2;
+
+										// Triangle 1 will be made of points
+										// start, IntersectionPoint and
+										// alterPoint
+										aTriangle1.points[0] = start;
+										aTriangle1.points[1] = IntersectionPoint;
+										aTriangle1.points[2] = alterPoint;
+
+										// Triangle 2 will be made of points
+										// end, IntersectionPoint and alterPoint
+										aTriangle2.points[0] = end;
+										aTriangle2.points[1] = IntersectionPoint;
+										aTriangle2.points[2] = alterPoint;
+
+										// Triangle 1 will be connected to edges
+										// anEdge, newEdge, alterEdge1
+										aTriangle1.edges[0] = anEdge;
+										aTriangle1.edges[1] = newEdge;
+										aTriangle1.edges[2] = alterEdge1;
+
+										// Triangle 2 will be made of
+										// alterEdge, newEdge, alterEdge2
+										aTriangle2.edges[0] = alterEdge;
+										aTriangle2.edges[1] = newEdge;
+										aTriangle2.edges[2] = alterEdge2;
+
+										// Connect newEdge edges
+										if (newEdge.isLeft(end)) {
+											newEdge.left = aTriangle2;
+											newEdge.right = aTriangle1;
+										} else {
+											newEdge.left = aTriangle1;
+											newEdge.right = aTriangle2;
+										}
+
+										// Reconnect alterEdge
+										if (alterEdge.left == aTriangle1)
+											alterEdge.left = aTriangle2;
+										else
+											alterEdge.right = aTriangle2;
+
+										// Reconnect alterEdge2
+										if (alterEdge2.left == aTriangle1)
+											alterEdge2.left = aTriangle2;
+										else
+											alterEdge2.right = aTriangle2;
+
+										// Reset center and radius
+										aTriangle1.recomputeCenter();
+										aTriangle2.recomputeCenter();
+
+										// add the newEdge to the queue
+										badEdgesQueueList.add(newEdge);
+
+										// add all edges
+										for (int j = 0; j < 3; j++) {
+											if (!badEdgesQueueList
+													.contains(aTriangle1.edges[j]))
+												badEdgesQueueList
+														.add(aTriangle2.edges[j]);
+											if (!badEdgesQueueList
+													.contains(aTriangle2.edges[j]))
+												badEdgesQueueList
+														.add(aTriangle2.edges[j]);
+										}
+									}
+									// }
+								}
+							}
+						}
+					}
+				}
+
+			// Then we mark all edges from p1 to p2
+			int size = addedPoints.size();
+			if (size > 2)
+				quickSort_Points(addedPoints, 0, size - 1);
+			MyPoint LastPoint = null;
+			for (MyPoint p : addedPoints) {
+				MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
+				if (anEdge != null) {
+					anEdge.marked = 1;
+				}
+
+				LastPoint = p;
 			}
 
-			LastPoint = p;
+			// Add the edges that where created during the process
+			for (MyEdge anEdge : addedEdges)
+				edges.add(anEdge);
 		}
-
-		// Add the edges that where created during the process
-		for (MyEdge anEdge : addedEdges)
-			edges.add(anEdge);
 
 		// Then apply the flip-flop algorithm
 		processBadEdges();
@@ -1422,7 +2234,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the current mesh triangularization is correct or not
-	 *
+	 * 
 	 * @return NbError
 	 * @throws DelaunayError
 	 */
@@ -1466,7 +2278,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists returns null if it doesn't
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param EdgeList
@@ -1489,7 +2301,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists returns null if it doesn't
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param EdgeList
@@ -1512,12 +2324,12 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists. Returns null if it doesn't
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param EdgeQueueList
 	 * @param size
-	 *
+	 * 
 	 * @return
 	 */
 	private MyEdge checkTwoPointsEdge(MyPoint p1, MyPoint p2,

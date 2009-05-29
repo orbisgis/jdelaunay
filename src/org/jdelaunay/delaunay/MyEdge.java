@@ -1,7 +1,7 @@
 package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
- *
+ * 
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.0
@@ -12,13 +12,12 @@ import java.awt.*;
 public class MyEdge
 {
 	/**
-	 *
+	 * 
 	 */
 	protected MyPoint[] point;
 	protected MyTriangle left, right;
 	protected String type;
 	protected int marked;
-	protected int gid;
 
 	private static final double epsilon = 0.00001;
 
@@ -43,7 +42,7 @@ public class MyEdge
 
 	/**
 	 * Generate an edge from two points
-	 *
+	 * 
 	 * @param s
 	 * @param e
 	 */
@@ -55,7 +54,7 @@ public class MyEdge
 
 	/**
 	 * Generate an edge from another edge
-	 *
+	 * 
 	 * @param _ed
 	 */
 	public MyEdge(MyEdge _ed) {
@@ -72,7 +71,7 @@ public class MyEdge
 
 	/**
 	 * Generate a typed edge from two points
-	 *
+	 * 
 	 * @param s
 	 * @param e
 	 * @param _type
@@ -93,7 +92,7 @@ public class MyEdge
 
 	/**
 	 * Returned edge left triangle
-	 *
+	 * 
 	 * @return leftTriangle
 	 */
 	public MyTriangle getLeft() {
@@ -102,7 +101,7 @@ public class MyEdge
 
 	/**
 	 * Returned edge right triangle
-	 *
+	 * 
 	 * @return rightTriangle
 	 */
 	public MyTriangle getRight() {
@@ -111,7 +110,7 @@ public class MyEdge
 
 	/**
 	 * Returned edge start point
-	 *
+	 * 
 	 * @return end
 	 */
 	public MyPoint getStart() {
@@ -120,7 +119,7 @@ public class MyEdge
 
 	/**
 	 * Returned edge end point
-	 *
+	 * 
 	 * @return end
 	 */
 	public MyPoint getEnd() {
@@ -129,7 +128,7 @@ public class MyEdge
 
 	/**
 	 * Set edge start point
-	 *
+	 * 
 	 * @param p
 	 */
 	public void setStart(MyPoint p) {
@@ -138,7 +137,7 @@ public class MyEdge
 
 	/**
 	 * Set edge end point
-	 *
+	 * 
 	 * @param p
 	 */
 	public void setEnd(MyPoint p) {
@@ -147,7 +146,7 @@ public class MyEdge
 
 	/**
 	 * Get edge type
-	 *
+	 * 
 	 * @return
 	 */
 	public String getEdgeType() {
@@ -156,7 +155,7 @@ public class MyEdge
 
 	/**
 	 * Set edge type
-	 *
+	 * 
 	 * @param type
 	 */
 	public void setEdgeType(String type) {
@@ -180,11 +179,15 @@ public class MyEdge
 	}
 
 	/**
-	 * intersects two edges returns null if there is no intersection
-	 *
+	 * check if two edges intersects
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @return intersection
+	 * 0 = no intersection
+	 * 1 = intersects
+	 * 2 = co-linear
+	 * 3 = intersects at the extremity
 	 */
 	public int intersects(MyPoint p1, MyPoint p2) {
 		int result = 0;
@@ -211,9 +214,13 @@ public class MyEdge
 			t2 = (a1 * c2 - a2 * c1) / d;
 
 			if ((-epsilon <= t1) && (t1 <= 1 + epsilon) && (-epsilon <= t2)
-					&& (t2 <= 1 + epsilon)) {
-				result = 1;
-			}
+					&& (t2 <= 1 + epsilon))
+				if (((-epsilon <= t1) && (t1 <= epsilon)) || ((1-epsilon <= t1)
+						&& (t1 <= 1 + epsilon)))
+					result = 3;
+				else 
+					result = 1;
+			
 		} else {
 			// Check if p3 is between p1 and p2
 			if (Math.abs(p2.x - p1.x) > epsilon)
@@ -246,13 +253,12 @@ public class MyEdge
 			} else
 				result = 2;
 		}
-
 		return result;
 	}
 
 	/**
 	 * intersects two edges returns null if there is no intersection
-	 *
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @return intersection
@@ -320,7 +326,7 @@ public class MyEdge
 
 	/**
 	 * intersects two edges returns null if there is no intersection
-	 *
+	 * 
 	 * @param anEdge
 	 * @return intersection
 	 */
@@ -330,7 +336,7 @@ public class MyEdge
 
 	/**
 	 * Check if the point p is on the left
-	 *
+	 * 
 	 * @param p
 	 * @return
 	 */
@@ -347,7 +353,7 @@ public class MyEdge
 
 	/**
 	 * Check if the point p is on the right
-	 *
+	 * 
 	 * @param p
 	 * @return
 	 */
@@ -363,8 +369,29 @@ public class MyEdge
 	}
 
 	/**
+	 * Check if the point p is on the right
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public int hashCode() {
+		MyPoint p1 = point[0];
+		MyPoint p2 = point[1];
+		int hashValue = 0;
+
+		int v1 = p1.hashCode();
+		int v2 = p2.hashCode();
+		if (v1 < v2)
+			hashValue = v1;
+		else
+			hashValue = v2;
+		
+		return hashValue;
+	}
+
+	/**
 	 * Set the edge color for the JFrame panel
-	 *
+	 * 
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
@@ -382,7 +409,7 @@ public class MyEdge
 
 	/**
 	 * Display the edge in a JPanel
-	 *
+	 * 
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
@@ -396,13 +423,5 @@ public class MyEdge
 			point[0].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 			point[1].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 		}
-	}
-
-	public int getGid() {
-		return gid;
-	}
-
-	public void setGid(int gid) {
-		this.gid = gid;
 	}
 }
