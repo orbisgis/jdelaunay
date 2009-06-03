@@ -81,6 +81,42 @@ public class MyPoint {
 	}
 
 	/**
+	 * Build a point at coordinates _x, _y, _z with a type and a gid
+	 *
+	 * @param _x
+	 * @param _y
+	 * @param _z
+	 * @param _type
+	 * @param _gid
+	 */
+	public MyPoint(double _x, double _y, double _z, String _type, int _gid) {
+		init();
+		x = _x;
+		y = _y;
+		z = _z;
+		if (_type != null)
+			type = new String(_type);
+		gid=_gid;
+	}
+
+	/**
+	 * Build a point at coordinates _x, _y, _z with a gid
+	 *
+	 * @param _x
+	 * @param _y
+	 * @param _z
+	 * @param _type
+	 * @param _gid
+	 */
+	public MyPoint(double _x, double _y, double _z, int _gid) {
+		init();
+		x = _x;
+		y = _y;
+		z = _z;
+		gid=_gid;
+	}
+
+	/**
 	 * Build a point as a copy of another point
 	 */
 	public MyPoint(MyPoint _pt) {

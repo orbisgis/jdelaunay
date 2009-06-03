@@ -237,60 +237,7 @@ public class Delaunay {
 
 			// remove flat triangles
 			// removeFlatTriangles();
-/*			int s1 = 0, s2 = 0, s3 = 0;
-			int NbPoints = points.size();
-			int nbEdges = edges.size();
-			int nbGenerated = theMesh.compEdges.size();
-			theMesh.compEdges = new ArrayList<MyEdge>();
-			int count = 0;
-			for (int i = 0; i < nbGenerated; i++) {
-				int index = (int) Math.round(Math.random() * nbEdges);
-				if (index < nbEdges) {
-					double test = Math.random() * 100.0 ;
-					if ((test > 50.0) || (count == 1)) {
-						theMesh.compEdges.add(edges.get(index));
-						s1++;
-					} else if (test > -0.05) {
-						count = 1;
-						MyEdge anEdge = edges.get(index);
-						MyTriangle t1 = anEdge.left;
-						MyTriangle t2 = anEdge.right;
-						MyPoint z1 = anEdge.getStart();
-						MyPoint z2 = anEdge.getEnd();
-						MyPoint start = null;
-						MyPoint end = null;
-						if (t1 != null) {
-							for (int j = 0; j < 3; j++)
-								if ((t1.points[j] != z1)
-										&& (t1.points[j] != z2))
-									start = t1.points[j];
-						}
-						if (t2 != null) {
-							for (int j = 0; j < 3; j++)
-								if ((t2.points[j] != z1)
-										&& (t2.points[j] != z2))
-									end = t2.points[j];
-						}
 
-						if ((start != null) && (end != null)) {
-							MyEdge newEdge = new MyEdge(start, end);
-							theMesh.compEdges.add(newEdge);
-						}
-						s2++;
-					} else {
-						int start = (int) Math.round(Math.random() * NbPoints);
-						int end = (int) Math.round(Math.random() * NbPoints);
-						while (end == start)
-							end = (int) Math.round(Math.random() * NbPoints);
-						MyEdge anEdge = new MyEdge(points.get(start), points
-								.get(end));
-						theMesh.compEdges.add(anEdge);
-						s3++;
-					}
-				}
-			}
-			System.out.println("test : " + s1 + " " + s2 + " " + s3);
-*/
 			// Add the edges in the edges array
 			processEdges(theMesh.compEdges);
 			// removeFlatTriangles();
@@ -1372,6 +1319,15 @@ public class Delaunay {
 
 		// We have the replacement list - apply it in edges
 		for (MyEdge anEdge : edges) {
+			for (int i = 0; i < 2; i++) {
+				MyPoint aPoint = anEdge.point[i];
+				if (Replace.containsKey(aPoint)) {
+					anEdge.point[i] = Replace.get(aPoint);
+				}
+			}
+		}
+
+		for (MyEdge anEdge : theMesh.compEdges) {
 			for (int i = 0; i < 2; i++) {
 				MyPoint aPoint = anEdge.point[i];
 				if (Replace.containsKey(aPoint)) {

@@ -17,6 +17,7 @@ public class MyEdge
 	protected MyPoint[] point;
 	protected MyTriangle left, right;
 	protected String type;
+	protected int gid;
 	protected int marked;
 
 	private static final double epsilon = 0.00001;
@@ -30,6 +31,7 @@ public class MyEdge
 		right=null;
 		type = null;
 		marked = 0;
+		gid = -1;
 	}
 
 	/**
@@ -83,6 +85,40 @@ public class MyEdge
 		type = new String(_type);
 	}
 
+	/**
+	 * Generate a typed edge from two points
+	 * 
+	 * @param s
+	 * @param e
+	 * @param _type
+	 * @param _gid
+	 */
+	public MyEdge(MyPoint s, MyPoint e, String _type, int _gid) {
+		init();
+		point[0] = s;
+		point[1] = e;
+		type = new String(_type);
+		gid = _gid;
+	}
+
+	/**
+	 * Generate a typed edge from two points
+	 * 
+	 * @param s
+	 * @param e
+	 * @param _gid
+	 */
+	public MyEdge(MyPoint s, MyPoint e, int _gid) {
+		init();
+		point[0] = s;
+		point[1] = e;
+		gid = _gid;
+	}
+
+	/**
+	 * @param i
+	 * @return
+	 */
 	public MyPoint point(int i) {
 		if (i == 0)
 			return point[0];
@@ -176,6 +212,22 @@ public class MyEdge
 	 */
 	public void setMarked(int marked) {
 		this.marked = marked;
+	}
+
+	/**
+	 * get the gid of the edge
+	 * @return marked
+	 */
+	public int getgid() {
+		return gid;
+	}
+
+	/**
+	 * set the gid of the edge
+	 * @param marked
+	 */
+	public void setgid(int _gid) {
+		this.gid = _gid;
 	}
 
 	/**

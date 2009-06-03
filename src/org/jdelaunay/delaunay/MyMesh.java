@@ -75,7 +75,7 @@ public class MyMesh {
 			double y = Math.random() * maxy;
 			double z = Math.random() * 1000.0;
 
-			points.add(new MyPoint(x, y, z));
+			points.add(new MyPoint(x, y, z, i));
 		}
 	}
 
@@ -92,7 +92,8 @@ public class MyMesh {
 				int end = (int) Math.round(Math.random() * NbPoints);
 				while (end == start)
 					end = (int) Math.round(Math.random() * NbPoints);
-				MyEdge anEdge = new MyEdge(points.get(start), points.get(end));
+				MyEdge anEdge = new MyEdge(points.get(start), points.get(end),
+						i);
 				anEdge.marked = 1;
 				compEdges.add(anEdge);
 			}
@@ -119,6 +120,7 @@ public class MyMesh {
 
 	/**
 	 * Get Duration
+	 * 
 	 * @return
 	 */
 	public long getDuration() {
@@ -221,9 +223,9 @@ public class MyMesh {
 	 * Add an edge to the mesh
 	 */
 	public void addEdge(MyPoint aPoint1, MyPoint aPoint2) {
-		if (! points.contains(aPoint1))
+		if (!points.contains(aPoint1))
 			points.add(aPoint1);
-		if (! points.contains(aPoint2))
+		if (!points.contains(aPoint2))
 			points.add(aPoint2);
 		MyEdge anEdge = new MyEdge(aPoint1, aPoint2);
 		compEdges.add(anEdge);
@@ -258,6 +260,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
+	 * 
 	 * @param _point
 	 */
 	public void setPoints(ArrayList<MyPoint> _point) {
@@ -265,9 +268,10 @@ public class MyMesh {
 		for (MyPoint aPoint : _point)
 			points.add(aPoint);
 	}
-
+	
 	/**
 	 * Set the points as the array
+	 * 
 	 * @param _point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> _point) {
@@ -285,6 +289,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(ArrayList<MyEdge> _edges) {
@@ -295,6 +300,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the LinkedList
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
@@ -305,6 +311,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
+	 * 
 	 * @param _edges
 	 */
 	public void setEdgesRef(ArrayList<MyEdge> _edges) {
@@ -331,6 +338,48 @@ public class MyMesh {
 	}
 
 	/**
+	 * get a point from its GID
+	 * 
+	 * @param gid
+	 * @return aPoint
+	 */
+	public MyPoint getPointFromGID(int gid) {
+		MyPoint aPoint = null;
+		ListIterator<MyPoint> iterPoint = points.listIterator();
+		while ((aPoint == null) && (iterPoint.hasNext())) {
+			MyPoint vPoint = iterPoint.next();
+			if (vPoint.gid == gid)
+				aPoint = vPoint;
+		}
+		return aPoint;
+	}
+		
+	/**
+	 * get an edge from its GID
+	 * 
+	 * @param gid
+	 * @return aPoint
+	 */
+	public MyEdge getEdgeFromGID(int gid) {
+		MyEdge anEdge = null;
+		ListIterator<MyEdge> iterEdge = edges.listIterator();
+		while ((anEdge == null) && (iterEdge.hasNext())) {
+			MyEdge vEdge = iterEdge.next();
+			if (vEdge.gid == gid)
+				anEdge = vEdge;
+		}
+
+		iterEdge = compEdges.listIterator();
+		while ((anEdge == null) && (iterEdge.hasNext())) {
+			MyEdge vEdge = iterEdge.next();
+			if (vEdge.gid == gid)
+				anEdge = vEdge;
+		}
+		return anEdge;
+	}
+		
+
+	/**
 	 * Start timer
 	 */
 	public void setStart() {
@@ -355,7 +404,7 @@ public class MyMesh {
 		getBoundingBox();
 		double scaleX, scaleY;
 		double minX, minY;
-		
+
 		scaleX = 1200 / (bmaxx - bminx);
 		scaleY = 600 / (bmaxy - bminy);
 		if (scaleX > scaleY)
@@ -374,7 +423,8 @@ public class MyMesh {
 		if (!triangles.isEmpty()) {
 			for (MyTriangle aTriangle : triangles) {
 				aTriangle.setColor(g);
-				aTriangle.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
+				aTriangle.displayObject(g, decalageX, decalageY, minX, minY,
+						scaleX, scaleY);
 			}
 
 			if (displayCircles)
@@ -388,11 +438,13 @@ public class MyMesh {
 			if (!edges.isEmpty())
 				for (MyEdge aVertex : edges) {
 					aVertex.setColor(g);
-					aVertex.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
+					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
+							scaleX, scaleY);
 				}
 
 		g.setColor(Color.black);
-		g.drawString(triangles.size() + " Triangles - " + edges.size() + " Edges - " + points.size() + " Points", decalageX,
+		g.drawString(triangles.size() + " Triangles - " + edges.size()
+				+ " Edges - " + points.size() + " Points", decalageX,
 				30 + decalageY);
 		if (duration > 0) {
 			g.drawString("Computation time : " + duration + " ms", decalageX,
@@ -478,14 +530,25 @@ public class MyMesh {
 	/**
 	 * Save the Mesh points in a file
 	 */
-	public void saveMeshPoints() {
+	public void saveMesh() {
 		Writer writer;
 		try {
 			writer = new FileWriter("Mesh.txt");
 			for (MyPoint aPoint : points) {
 				writer.write(aPoint.x + "\t" + aPoint.y + "\t" + aPoint.z
-						+ "\t" + "\n");
+						+ "\t" + aPoint.gid + "\n");
 			}
+			
+			writer.write("\n");
+			for (MyEdge anEdge : edges) {
+				writer.write(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
+						+ "\t" + anEdge.gid + "\n");
+			}
+			for (MyEdge anEdge : compEdges) {
+				writer.write(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
+						+ "\t" + anEdge.gid + "\n");
+			}
+
 			writer.close();
 		} catch (IOException e) {
 		}
@@ -494,7 +557,7 @@ public class MyMesh {
 	/**
 	 * Read Mesh points from the file
 	 */
-	public void readMeshPoints() {
+	public void readMesh() {
 		Reader reader;
 		try {
 			String delimiteurs = "\t";
@@ -502,27 +565,64 @@ public class MyMesh {
 
 			BufferedReader in = new BufferedReader(reader);
 			String ligne = in.readLine();
+			int step = 0;
+			int i = 0;
 			while (ligne != null) {
 				StringTokenizer st = new StringTokenizer(ligne, delimiteurs);
-				MyPoint aPoint = new MyPoint();
-				int i = 0;
-				while (st.hasMoreTokens()) {
-					String mot = st.nextToken();
-					switch (i) {
-					case 0:
-						aPoint.x = Double.parseDouble(mot);
-						break;
-					case 1:
-						aPoint.y = Double.parseDouble(mot);
-						break;
-					case 2:
-						aPoint.z = Double.parseDouble(mot);
-						break;
+				switch (step) {
+				case 0:
+					MyPoint aPoint = new MyPoint();
+					i = 0;
+					while (st.hasMoreTokens()) {
+						String mot = st.nextToken();
+						switch (i) {
+						case 0:
+							aPoint.x = Double.parseDouble(mot);
+							break;
+						case 1:
+							aPoint.y = Double.parseDouble(mot);
+							break;
+						case 2:
+							aPoint.z = Double.parseDouble(mot);
+							break;
+						case 3:
+							aPoint.gid = Integer.parseInt(mot);
+							break;
+						}
+						i++;
 					}
-					i++;
+					if (i >= 3)
+						points.add(aPoint);
+					else
+						step++;
+					break;
+				case 1:
+					MyEdge anEdge = new MyEdge();
+					int gid;
+					i = 0;
+					while (st.hasMoreTokens()) {
+						String mot = st.nextToken();
+						switch (i) {
+						case 0:
+							gid = Integer.parseInt(mot);
+							anEdge.point[0] = getPointFromGID(gid);
+							break;
+						case 1:
+							gid = Integer.parseInt(mot);
+							anEdge.point[1] = getPointFromGID(gid);
+							break;
+						case 2:
+							anEdge.gid = Integer.parseInt(mot);
+							break;
+						}
+						i++;
+					}
+					if (i >= 1)
+						compEdges.add(anEdge);
+					else
+						step++;
+					break;
 				}
-				if (i == 3)
-					points.add(aPoint);
 				ligne = in.readLine();
 			}
 		} catch (IOException e) {
