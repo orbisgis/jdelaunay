@@ -218,7 +218,7 @@ public class MyEdge
 	 * get the gid of the edge
 	 * @return marked
 	 */
-	public int getgid() {
+	public int getGid() {
 		return gid;
 	}
 
@@ -226,7 +226,7 @@ public class MyEdge
 	 * set the gid of the edge
 	 * @param marked
 	 */
-	public void setgid(int _gid) {
+	public void setGid(int _gid) {
 		this.gid = _gid;
 	}
 

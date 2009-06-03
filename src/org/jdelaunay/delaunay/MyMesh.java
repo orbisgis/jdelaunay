@@ -528,7 +528,7 @@ public class MyMesh {
 	}
 
 	/**
-	 * Save the Mesh points in a file
+	 * Save the Mesh in a file
 	 */
 	public void saveMesh() {
 		Writer writer;
@@ -554,6 +554,34 @@ public class MyMesh {
 		}
 	}
 
+	/**
+	 * Save the Mesh in a file
+	 * @param path
+	 */
+	public void saveMesh(String path) {
+		try {
+			DataOutputStream writer = new DataOutputStream(
+					new FileOutputStream(path));
+			for (MyPoint aPoint : points) {
+				writer.writeUTF(aPoint.x + "\t" + aPoint.y + "\t" + aPoint.z
+						+ "\t" + aPoint.gid + "\n");
+			}
+			
+			writer.writeUTF("\n");
+			for (MyEdge anEdge : edges) {
+				writer.writeUTF(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
+						+ "\t" + anEdge.gid + "\n");
+			}
+			for (MyEdge anEdge : compEdges) {
+				writer.writeUTF(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
+						+ "\t" + anEdge.gid + "\n");
+			}
+
+			writer.close();
+		} catch (IOException e) {
+		}
+	}
+	
 	/**
 	 * Read Mesh points from the file
 	 */
@@ -634,7 +662,7 @@ public class MyMesh {
 	 * 
 	 * @param path
 	 */
-	public void saveMesh(String path) {
+	public void saveMeshUTF(String path) {
 		try {
 			DataOutputStream output = new DataOutputStream(
 					new FileOutputStream(path));
