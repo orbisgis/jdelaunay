@@ -24,6 +24,7 @@ public class Delaunay {
 	protected double minArea, maxArea;
 	protected double minAngle;
 	protected int refinement;
+	private boolean verbose;
 
 	// constants
 	public static final int refinement_minArea = 1;
@@ -53,6 +54,7 @@ public class Delaunay {
 		minAngle = 5;
 		refinement = 0;
 		meshComputed = false;
+		verbose = false;
 	}
 
 	/**
@@ -172,6 +174,14 @@ public class Delaunay {
 		this.refinement = refinement;
 	}
 
+	
+	/**
+	 * @param verbose mode
+	 */
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+
 	/**
 	 * Generate the Delaunay triangularization with a flip-flop algorithm. Mesh
 	 * must have been set. Triangularization can only be done once. Otherwise
@@ -191,11 +201,15 @@ public class Delaunay {
 			// general data structures
 			badEdgesQueueList = new LinkedList<MyEdge>();
 			boundaryEdges = new LinkedList<MyEdge>();
-
+			
 			// sort points
+			if (verbose)
+				System.out.println("Sorting points");
 			sortAndSimplify();
 
 			// we build a first triangle with the 3 first points we find
+			if (verbose)
+				System.out.println("Processing triangularization");
 			MyTriangle aTriangle;
 			MyPoint p1, p2, p3;
 			MyEdge e1, e2, e3;
@@ -239,6 +253,8 @@ public class Delaunay {
 			// removeFlatTriangles();
 
 			// Add the edges in the edges array
+			if (verbose)
+				System.out.println("Adding edges");
 			processEdges(theMesh.compEdges);
 			// removeFlatTriangles();
 
@@ -708,10 +724,13 @@ public class Delaunay {
 
 		// Process exact existing edges
 		ArrayList<MyEdge> remain1 = processEdges_Step1(compEdges);
-System.out.println("left : " + remain1.size());
+		if (verbose)
+			System.out.println("Edges left after phase 1 : " + remain1.size());
+		
 		// next try
 		ArrayList<MyEdge> remain2 = processEdges_Step2(remain1);
-System.out.println("left : " + remain2.size());
+		if (verbose)
+			System.out.println("Edges left after phase 2 : " + remain2.size());
 		
 		// Process remaining edges
 		int nbEdges4 = remain2.size();
@@ -1007,9 +1026,15 @@ System.out.println("left : " + remain2.size());
 		MyTriangle TriangleList[] = new MyTriangle[4];
 		MyEdge CurrentEdge = null;
 
+		int iter=0;
+		int maxIter = compEdges.size();
 		// While there is still an edge to process
 		ListIterator<MyEdge> iterEdge = compEdges.listIterator();
 		while (iterEdge.hasNext()) {
+			iter++;
+			if (verbose)
+				System.out.println("Processing edge " + iter + " / " + maxIter);
+			
 			// Get first edge then remove it from the list
 			CurrentEdge = iterEdge.next();
 
