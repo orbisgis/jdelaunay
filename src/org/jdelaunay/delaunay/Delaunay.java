@@ -41,6 +41,11 @@ public class Delaunay {
 	private LinkedList<MyEdge> badEdgesQueueList;
 	private LinkedList<MyEdge> boundaryEdges;
 	private boolean meshComputed;
+	
+	// GIDs
+	private int point_GID;
+	private int edge_GID;
+	private int triangle_GID;
 
 	/**
 	 * Generate empty Delaunay Structure.
@@ -62,6 +67,9 @@ public class Delaunay {
 	 */
 	public Delaunay() {
 		init();
+		point_GID = 0;
+		edge_GID = 0;
+		triangle_GID = 0;
 	}
 
 	/**
@@ -206,7 +214,7 @@ public class Delaunay {
 			if (verbose)
 				System.out.println("Sorting points");
 			sortAndSimplify();
-
+			
 			// we build a first triangle with the 3 first points we find
 			if (verbose)
 				System.out.println("Processing triangularization");
@@ -230,7 +238,7 @@ public class Delaunay {
 				e2 = new MyEdge(p1, p3);
 				e3 = new MyEdge(p3, p2);
 			}
-
+			
 			edges.add(e1);
 			edges.add(e2);
 			edges.add(e3);
@@ -258,7 +266,30 @@ public class Delaunay {
 			processEdges(theMesh.compEdges);
 			// removeFlatTriangles();
 
+			// adding GIDs
+			if (verbose)
+				System.out.println("set GIDs");
+			point_GID = 0;
+			for (MyPoint aPoint : points) {
+				point_GID++;
+				aPoint.setGid(point_GID);
+			}
+
+			edge_GID = 0;
+			for (MyEdge anEdge : edges) {
+				edge_GID++;
+				anEdge.setGid(edge_GID);
+			}
+
+			triangle_GID = 0;
+			for (MyTriangle aTriangle1 : triangles) {
+				triangle_GID++;
+				aTriangle1.setGid(triangle_GID);
+			}
+
 			// It's fine, we computed the mesh
+			if (verbose)
+				System.out.println("end processing");
 			meshComputed = true;
 		}
 	}

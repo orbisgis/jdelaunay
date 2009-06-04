@@ -26,14 +26,6 @@ public class MyTriangle
 
 	protected  int gid;
 
-	public int getGid() {
-		return gid;
-	}
-
-	public void setGid(int gid) {
-		this.gid = gid;
-	}
-
 	/**
 	 * Initialize data structure This method is called by every constructor
 	 */
@@ -165,6 +157,24 @@ public class MyTriangle
 	 */
 	public MyEdge edge(int i) {
 		return edges[i];
+	}
+
+	/**
+	 * get GID
+	 * 
+	 * @return
+	 */
+	public int getGid() {
+		return gid;
+	}
+
+	/**
+	 * set GID
+	 * 
+	 * @param gid
+	 */
+	public void setGid(int gid) {
+		this.gid = gid;
 	}
 
 	/**
