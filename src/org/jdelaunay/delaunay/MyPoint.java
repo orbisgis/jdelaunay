@@ -8,20 +8,13 @@ package org.jdelaunay.delaunay;
  * @version 1.0
  */
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 public class MyPoint {
 	public double x, y, z;
 	public String type;
 	protected int gid;
-
-	public int getGid() {
-		return gid;
-	}
-
-	public void setGid(int gid) {
-		this.gid = gid;
-	}
 
 	private void init() {
 		x = 0;
@@ -174,6 +167,24 @@ public class MyPoint {
 	}
 
 	/**
+	 * get GID
+	 * 
+	 * @return
+	 */
+	public int getGid() {
+		return gid;
+	}
+
+	/**
+	 * set GID
+	 * 
+	 * @param gid
+	 */
+	public void setGid(int gid) {
+		this.gid = gid;
+	}
+	
+	/**
 	 * linear square distance to another point
 	 *
 	 * @param aPoint
@@ -215,6 +226,15 @@ public class MyPoint {
 	}
 
 	/**
+	 * Set the point color for the JFrame panel
+	 * 
+	 * @param g
+	 */
+	public void setColor(Graphics g) {
+		g.setColor(Color.black);
+	}
+
+	/**
 	 * Display the point in a JPanel Must be used only when using package
 	 * drawing
 	 *
@@ -225,6 +245,11 @@ public class MyPoint {
 	public void displayObject(Graphics g, int decalageX, int decalageY, double minX, double minY, double scaleX, double scaleY) {
 		g.drawOval((int) ((x-minX)*scaleX + decalageX) - 1,
 				(int) ((y-minY)*scaleY + decalageY) - 1, 3, 3);
+		
+		if (gid >= 0) {
+			g.drawString(""+gid, (int) ((x-minX)*scaleX + decalageX),
+					(int) ((y-minY)*scaleY + decalageY) - 1);
+		}
 	}
 
 

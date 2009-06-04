@@ -416,6 +416,16 @@ public class MyMesh {
 		int decalageX = 10;
 		int decalageY = 630;
 
+		
+		g.setColor(Color.black);
+		g.drawString(triangles.size() + " Triangles - " + edges.size()
+				+ " Edges - " + points.size() + " Points", decalageX,
+				30 + decalageY);
+		if (duration > 0) {
+			g.drawString("Computation time : " + duration + " ms", decalageX,
+					45 + decalageY);
+		}
+
 		g.setColor(Color.white);
 		g.fillRect(decalageX - 5, 30 - 5, decalageX - 5 + 1200, 30 - 5 + 600);
 
@@ -435,20 +445,28 @@ public class MyMesh {
 		}
 		// Draw lines
 		if (false)
+		if (!compEdges.isEmpty())
+			for (MyEdge aVertex : compEdges) {
+				aVertex.setColor(g);
+				aVertex.displayObject(g, decalageX, decalageY, minX, minY,
+						scaleX, scaleY);
+			}
+
+		if (false)
 			if (!edges.isEmpty())
 				for (MyEdge aVertex : edges) {
 					aVertex.setColor(g);
 					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
 							scaleX, scaleY);
 				}
-
-		g.setColor(Color.black);
-		g.drawString(triangles.size() + " Triangles - " + edges.size()
-				+ " Edges - " + points.size() + " Points", decalageX,
-				30 + decalageY);
-		if (duration > 0) {
-			g.drawString("Computation time : " + duration + " ms", decalageX,
-					45 + decalageY);
+		
+		int psize = points.size();
+		if ((psize >0) && (psize<100)) {
+			for (MyPoint aPoint : points) {
+				aPoint.setColor(g);
+				aPoint.displayObject(g, decalageX, decalageY, minX, minY,
+						scaleX, scaleY);
+			}
 		}
 	}
 
@@ -531,9 +549,17 @@ public class MyMesh {
 	 * Save the Mesh in a file
 	 */
 	public void saveMesh() {
+		saveMesh("Mesh.txt");
+	}
+
+	/**
+	 * Save the Mesh in a file
+	 * @param path
+	 */
+	public void saveMesh(String path) {
 		Writer writer;
 		try {
-			writer = new FileWriter("Mesh.txt");
+			writer = new FileWriter(path);
 			for (MyPoint aPoint : points) {
 				writer.write(aPoint.x + "\t" + aPoint.y + "\t" + aPoint.z
 						+ "\t" + aPoint.gid + "\n");
@@ -553,43 +579,22 @@ public class MyMesh {
 		} catch (IOException e) {
 		}
 	}
-
-	/**
-	 * Save the Mesh in a file
-	 * @param path
-	 */
-	public void saveMesh(String path) {
-		try {
-			DataOutputStream writer = new DataOutputStream(
-					new FileOutputStream(path));
-			for (MyPoint aPoint : points) {
-				writer.writeUTF(aPoint.x + "\t" + aPoint.y + "\t" + aPoint.z
-						+ "\t" + aPoint.gid + "\n");
-			}
-			
-			writer.writeUTF("\n");
-			for (MyEdge anEdge : edges) {
-				writer.writeUTF(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
-						+ "\t" + anEdge.gid + "\n");
-			}
-			for (MyEdge anEdge : compEdges) {
-				writer.writeUTF(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
-						+ "\t" + anEdge.gid + "\n");
-			}
-
-			writer.close();
-		} catch (IOException e) {
-		}
-	}
 	
 	/**
 	 * Read Mesh points from the file
 	 */
 	public void readMesh() {
+		readMesh("Mesh.txt");
+	}
+	
+	/**
+	 * Read Mesh points from the file
+	 */
+	public void readMesh(String path) {
 		Reader reader;
 		try {
 			String delimiteurs = "\t";
-			reader = new FileReader("Mesh.txt");
+			reader = new FileReader(path);
 
 			BufferedReader in = new BufferedReader(reader);
 			String ligne = in.readLine();
@@ -693,6 +698,191 @@ public class MyMesh {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Quick sort on points Ordered according to x and y
+	 * 
+	 * @param min_index
+	 * @param max_index
+	 */
+	private void quickSort_Points(int min_index,
+			int max_index) {
+		int i, j;
+		int enreg_ref;
+		double cle_ref1;
+		boolean found;
+		MyPoint anObject;
+
+		i = min_index;
+		j = max_index;
+		enreg_ref = (max_index + min_index) / 2;
+		anObject = points.get(enreg_ref);
+		cle_ref1 = anObject.getGid();
+		do {
+			// first : increasing index
+			found = false;
+			while (!found) {
+				if (i > max_index)
+					found = true;
+				else {
+					anObject = points.get(i);
+					int cle = anObject.getGid();
+					if ((cle > cle_ref1) || (cle < 0))
+						found = true;
+					else
+						i++;
+				}
+			}
+			// second : decreasing index
+			found = false;
+			while (!found) {
+				if (min_index > j)
+					found = true;
+				else {
+					anObject = points.get(j);
+					int cle = anObject.getGid();
+					if ((cle < cle_ref1) && (cle >= 0))
+						found = true;
+					else
+						j--;
+				}
+			}
+			// exchange values
+			if (i <= j) {
+				// we can change values
+				anObject = points.get(i);
+				points.set(i, points.get(j));
+				points.set(j, anObject);
+
+				i++;
+				j--;
+			}
+		} while (i <= j);
+
+		// Recurrent calls
+		if (min_index < j) {
+			// if left side is not empty
+			quickSort_Points(min_index, j);
+		}
+		if (max_index > i) {
+			// if right side is not empty
+			quickSort_Points(i, max_index);
+		}
+	}
+
+	/**
+	 * Quick sort on points Ordered according to x and y
+	 * 
+	 * @param min_index
+	 * @param max_index
+	 */
+	private void quickSort_Edges(int min_index,
+			int max_index) {
+		int i, j;
+		int enreg_ref;
+		double cle_ref1;
+		boolean found;
+		MyEdge anObject;
+
+		i = min_index;
+		j = max_index;
+		enreg_ref = (max_index + min_index) / 2;
+		anObject = edges.get(enreg_ref);
+		cle_ref1 = anObject.getGid();
+		do {
+			// first : increasing index
+			found = false;
+			while (!found) {
+				if (i > max_index)
+					found = true;
+				else {
+					anObject = edges.get(i);
+					int cle = anObject.getGid();
+					if ((cle > cle_ref1) || (cle < 0))
+						found = true;
+					else
+						i++;
+				}
+			}
+			// second : decreasing index
+			found = false;
+			while (!found) {
+				if (min_index > j)
+					found = true;
+				else {
+					anObject = edges.get(j);
+					int cle = anObject.getGid();
+					if ((cle < cle_ref1) && (cle >= 0))
+						found = true;
+					else
+						j--;
+				}
+			}
+			// exchange values
+			if (i <= j) {
+				// we can change values
+				anObject = edges.get(i);
+				edges.set(i, edges.get(j));
+				edges.set(j, anObject);
+
+				i++;
+				j--;
+			}
+		} while (i <= j);
+
+		// Recurrent calls
+		if (min_index < j) {
+			// if left side is not empty
+			quickSort_Edges(min_index, j);
+		}
+		if (max_index > i) {
+			// if right side is not empty
+			quickSort_Edges(i, max_index);
+		}
+	}
+
+	/**
+	 * Set missing GIDs for edges and points
+	 */
+	public void setAllGids() {
+		quickSort_Points( 0, points.size()-1);
+		ListIterator<MyPoint> iterPoint = points.listIterator();
+		MyPoint vPoint = iterPoint.next();
+
+		int lastIndex = -1;
+		for (MyPoint aPoint:points) {
+			if (aPoint.gid < 0) {
+				lastIndex++;
+				int gid = vPoint.getGid();
+				while (gid == lastIndex) {
+					lastIndex++;
+					vPoint = iterPoint.next();
+					gid = vPoint.getGid();
+				}
+				aPoint.setGid(lastIndex);
+			}
+		}
+		quickSort_Points(0, points.size()-1);
+		
+		quickSort_Edges(0, edges.size()-1);
+		ListIterator<MyEdge> iterEdge = edges.listIterator();
+		MyEdge vEdge = iterEdge.next();
+
+		lastIndex = -1;
+		for (MyEdge anEdge:edges) {
+			if (anEdge.gid < 0) {
+				lastIndex++;
+				int gid = vEdge.getGid();
+				while (gid == lastIndex) {
+					lastIndex++;
+					vEdge = iterEdge.next();
+					gid = vEdge.getGid();
+				}
+				anEdge.setGid(lastIndex);
+			}
+		}
+		quickSort_Edges(0, edges.size()-1);
 	}
 
 }

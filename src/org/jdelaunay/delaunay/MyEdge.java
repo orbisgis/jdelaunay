@@ -9,16 +9,15 @@ package org.jdelaunay.delaunay;
 
 import java.awt.*;
 
-public class MyEdge
-{
+public class MyEdge {
 	/**
 	 * 
 	 */
 	protected MyPoint[] point;
 	protected MyTriangle left, right;
 	protected String type;
-	protected int gid;
 	protected int marked;
+	protected int gid;
 
 	private static final double epsilon = 0.00001;
 
@@ -215,19 +214,21 @@ public class MyEdge
 	}
 
 	/**
-	 * get the gid of the edge
-	 * @return marked
+	 * get GID
+	 * 
+	 * @return
 	 */
 	public int getGid() {
 		return gid;
 	}
 
 	/**
-	 * set the gid of the edge
-	 * @param marked
+	 * set GID
+	 * 
+	 * @param gid
 	 */
-	public void setGid(int _gid) {
-		this.gid = _gid;
+	public void setGid(int gid) {
+		this.gid = gid;
 	}
 
 	/**

@@ -708,16 +708,18 @@ public class Delaunay {
 
 		// Process exact existing edges
 		ArrayList<MyEdge> remain1 = processEdges_Step1(compEdges);
-
+System.out.println("left : " + remain1.size());
 		// next try
 		ArrayList<MyEdge> remain2 = processEdges_Step2(remain1);
+System.out.println("left : " + remain2.size());
 		
 		// Process remaining edges
 		int nbEdges4 = remain2.size();
 		if (nbEdges4 > 0)
 			quickSort_Edges(remain2, 0, nbEdges4 - 1, true);
 		processOtherEdges(remain2);
-	}
+
+		}
 
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
