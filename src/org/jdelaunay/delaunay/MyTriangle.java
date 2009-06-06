@@ -11,6 +11,10 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * @author kwyhr
+ *
+ */
 public class MyTriangle {
 
 	private static final long serialVersionUID = 1L;
@@ -176,6 +180,24 @@ public class MyTriangle {
 		this.gid = gid;
 	}
 
+	/**
+	 * Get points
+	 * 
+	 * @return
+	 */
+	public MyPoint[] getPoints() {
+		return points;
+	}
+
+	/**
+	 * Get Edges
+	 * 
+	 * @return
+	 */
+	public MyEdge[] getEdges() {
+		return edges;
+	}
+	
 	/**
 	 * Recompute the center of the circle that joins the points
 	 */
@@ -464,7 +486,7 @@ public class MyTriangle {
 
 		return correct;
 	}
-
+	
 	public boolean isFlatTriangle() {
 		if (radius > 1e6)
 			return true;
@@ -472,15 +494,80 @@ public class MyTriangle {
 			return false;
 	}
 
+	/**
+	 * Check if the triangle is flat or not
+	 * 
+	 * @return isFlat
+	 */
 	public boolean isFlatSlope() {
-		boolean flat = false;
-
-		if ((Math.abs(points[0].z - points[1].z) < epsilon)
-				&& (Math.abs(points[1].z - points[2].z) < epsilon)
-				&& (Math.abs(points[2].z - points[1].z) < epsilon)) {
-			flat = true;
+		boolean isFlat = true;
+		int i = 0;
+		while ((i < 3) && (isFlat)) {
+			if (!edges[i].isFlatSlope())
+				isFlat = false;
+			else
+				i++;
 		}
-		return flat;
+		return isFlat;
+	}
+
+	/**
+	 * Get the point of the triangle that does not belong to the edge
+	 * 
+	 * @return isFlat
+	 */
+	public MyPoint getAlterPoint(MyEdge anEdge) {
+		MyPoint alterPoint = null;
+		MyPoint start = anEdge.getStart();
+		MyPoint end = anEdge.getEnd();
+
+		int i = 0;
+		while ((i < 3) && (alterPoint == null)) {
+			if ((points[i] != start) && (points[i] != end))
+				alterPoint = points[i];
+			else
+				i++;
+		}
+
+		return alterPoint;
+	}
+
+	/**
+	 * Get the edge of the triangle that includes the two point
+	 * 
+	 * @return alterEdge
+	 */
+	public MyEdge getEdgeFromPoints(MyPoint p1, MyPoint p2) {
+		MyEdge alterEdge = null;
+		int i = 0;
+		while ((i < 3) && (alterEdge == null)) {
+			MyEdge testEdge = edges[i];
+			if ((testEdge.getStart() == p1) && (testEdge.getEnd() == p2))
+				alterEdge = testEdge;
+			else if ((testEdge.getStart() == p2) && (testEdge.getEnd() == p1))
+				alterEdge = testEdge;
+			i++;
+		}
+
+		return alterEdge;
+	}
+
+	/**
+	 * Get the barycenter of the triangle
+	 * 
+	 * @return isFlat
+	 */
+	public MyPoint getBarycenter() {
+		double x = 0, y = 0, z = 0;
+		for (int i = 0; i < 3; i++) {
+			x += points[i].x;
+			y += points[i].y;
+			z += points[i].z;
+		}
+		x /= 3;
+		y /= 3;
+		z /= 3;
+		return new MyPoint(x, y, z);
 	}
 
 	/*
@@ -550,32 +637,5 @@ public class MyTriangle {
 				1, 1);
 		g.drawOval((int) (center.x - r) + decalageX, decalageY
 				- (int) (center.y + r), (int) r * 2, (int) r * 2);
-	}
-
-	public MyPoint getBarycentre() {
-
-		double x = 0,y= 0, z = 0;
-
-		for (int i = 0; i < 3; i++) {
-
-			x += points[i].x;
-			y +=  points[i].y;
-			z +=  points[i].z;
-
-		}
-
-		x /=3;
-		y /=3;
-		z /=3;
-		return new MyPoint(x,y,z);
-
-	}
-
-	public MyPoint[] getPoints() {
-		return points;
-	}
-
-	public MyEdge[] getEdges() {
-		return edges;
 	}
 }
