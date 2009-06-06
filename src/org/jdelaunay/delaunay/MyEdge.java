@@ -388,6 +388,67 @@ public class MyEdge {
 	}
 
 	/**
+	 * check if the point is between the extremities of the edge (on the xy-plane)
+	 * 
+	 * @param p
+	 * @return isInside
+	 */
+	public boolean isInside(MyPoint p) {
+		boolean isInside = false;
+		
+		MyPoint p1 = point[0];
+		MyPoint p2 = point[1];
+
+		// x = x2 t1 + (1 - t1) x1
+		// y = y2 t1 + (1 - t1) y1
+		// z = z2 t1 + (1 - t1) z1
+
+		// (x2 - x1) t1 = (x - x1)
+		// (y2 - y1) t1 = (y - y1)
+
+		// t1 = (x - x1) / (x2 - x1) 
+		// t1 = (y - y1) / (y2 - y1)
+		double t1, t2;
+		
+		double a1 = p2.x - p1.x;
+		double c1 = p.x - p1.x;
+		double a2 = p2.y - p1.y;
+		double c2 = p.y - p1.y;
+
+		if (Math.abs(a1) > epsilon) {
+			t1 = c1/a1;
+			if ((-epsilon < t1) && (t1 < 1 + epsilon)) {
+				// p.x is between p1.x and p2.x
+				if (Math.abs(a2) > epsilon) {
+					t2 = c2/a2;
+					if ((-epsilon < t2) && (t2 < 1 + epsilon) && (Math.abs(t1-t2) < epsilon))
+						// same t value => ok
+						isInside = true;
+				}
+				else if (Math.abs(c2) < epsilon) {
+					// p1.y, p2.y and p.y are the same
+					isInside = true;					
+				}
+			}
+		}
+		else if (Math.abs(c1) < epsilon) {
+			// p1.x, p2.x and p.x are the same
+			if (Math.abs(a2) > epsilon) {
+				t2 = c2/a2;
+				if ((-epsilon < t2) && (t2 < 1 + epsilon))
+					isInside = true;
+			}
+			else if (Math.abs(c2) < epsilon) {
+				// p1.y, p2.y and p.y are also the same
+				isInside = true;					
+			}
+			
+		}
+
+		return isInside;
+	}
+
+	/**
 	 * Check if the point p is on the left
 	 * 
 	 * @param p
@@ -419,6 +480,36 @@ public class MyEdge {
 		double vy = p.y - p1.y;
 
 		return ux * vy - uy * vx < 0;
+	}
+
+	/**
+	 * Check if the edge is flat or not
+	 * 
+	 * @return isFlat
+	 */
+	public boolean isFlatSlope() {
+		boolean isFlat = true;
+		if (Math.abs(point[0].z - point[1].z) > epsilon)
+			isFlat = false;
+		return isFlat;
+	}
+
+	/**
+	 * Get the barycenter of the triangle
+	 * 
+	 * @return isFlat
+	 */
+	public MyPoint getBarycenter() {
+		double x=0, y=0, z=0;
+		for (int i=0; i<2; i++) {
+			x += point[i].x;
+			y += point[i].y;
+			z += point[i].z;
+		}
+		x /= 2;
+		y /= 2;
+		z /= 2;
+		return new MyPoint(x,y,z);
 	}
 
 	/**
