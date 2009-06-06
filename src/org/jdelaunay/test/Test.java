@@ -1,5 +1,7 @@
 package org.jdelaunay.test;
 
+import java.awt.Point;
+
 import org.jdelaunay.delaunay.*;
 
 public class Test {
@@ -15,8 +17,12 @@ public class Test {
 		aMesh.setMax(1300, 700);
 		// aMesh.setDisplayCircles(true);
 		// aMesh.readMeshPoints();
-		aMesh.setRandomPoints(1000);
-		aMesh.setRandomEdges(50);
+
+		for (int i = 0; i < 10; i++) {
+
+			aMesh.addEdge(new MyEdge(new MyPoint(i, i+10, i), new MyPoint(i+20, i +5, i)));
+		}
+		//aMesh.setRandomEdges(2);
 		// aMesh.saveMeshPoints();
 		// aMesh.addBoundingBox();
 
@@ -25,8 +31,16 @@ public class Test {
 			// process triangularization
 			testDelaunay.processDelaunay();
 
+/*
+			for (int i = 0; i < 100; i++) {
+
+
+				testDelaunay.addPoint(new MyPoint(i+ 5,10, i +12));
+			}*/
+
+
 			// Refine Mesh
-			testDelaunay.refineMesh();
+			//testDelaunay.refineMesh();
 			// testDelaunay.refineMeshAngles();
 
 		} catch (DelaunayError e) {
@@ -38,6 +52,6 @@ public class Test {
 		aff.add(aMesh);
 		aMesh.setAffiche(aff);
 
-		aMesh.saveMeshXML();
+		aMesh.saveMesh("/tmp/text.text");
 	}
 }
