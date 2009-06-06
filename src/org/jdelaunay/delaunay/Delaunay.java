@@ -2,7 +2,7 @@ package org.jdelaunay.delaunay;
 
 /**
  * Delaunay Package.
- * 
+ *
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.1
@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * @author kwyhr
- * 
+ *
  */
 public class Delaunay {
 	// the Mesh
@@ -41,11 +41,15 @@ public class Delaunay {
 	private LinkedList<MyEdge> badEdgesQueueList;
 	private LinkedList<MyEdge> boundaryEdges;
 	private boolean meshComputed;
-	
+
 	// GIDs
 	private int point_GID;
 	private int edge_GID;
 	private int triangle_GID;
+
+	private LinkedList<MyTriangle> flatTriangles;
+
+	private boolean removeFlatTriangles = false;
 
 	/**
 	 * Generate empty Delaunay Structure.
@@ -82,7 +86,7 @@ public class Delaunay {
 
 	/**
 	 * Return associated Mesh.
-	 * 
+	 *
 	 * @return
 	 */
 	public MyMesh getMesh() {
@@ -91,7 +95,7 @@ public class Delaunay {
 
 	/**
 	 * Set current Mesh
-	 * 
+	 *
 	 * @param _theMesh
 	 */
 	public void setMesh(MyMesh _theMesh) {
@@ -100,7 +104,7 @@ public class Delaunay {
 
 	/**
 	 * Set precision for proximity.
-	 * 
+	 *
 	 * @param _precision
 	 */
 	public void setPrecision(double _precision) {
@@ -109,7 +113,7 @@ public class Delaunay {
 
 	/**
 	 * Get precision for proximity.
-	 * 
+	 *
 	 * @return
 	 */
 	public double getPrecision() {
@@ -118,7 +122,7 @@ public class Delaunay {
 
 	/**
 	 * Get maximum area for refinement.
-	 * 
+	 *
 	 * @return maxArea
 	 */
 	public double getMaxArea() {
@@ -127,7 +131,7 @@ public class Delaunay {
 
 	/**
 	 * Set maximum area for refinement.
-	 * 
+	 *
 	 * @param maxArea
 	 */
 	public void setMaxArea(double maxArea) {
@@ -136,7 +140,7 @@ public class Delaunay {
 
 	/**
 	 * Get minimum area for refinement.
-	 * 
+	 *
 	 * @return minArea
 	 */
 	public double getMinArea() {
@@ -145,7 +149,7 @@ public class Delaunay {
 
 	/**
 	 * Set minimum area for refinement.
-	 * 
+	 *
 	 * @param minArea
 	 */
 	public void setMinArea(double minArea) {
@@ -154,7 +158,7 @@ public class Delaunay {
 
 	/**
 	 * Get minimum angle for triangles.
-	 * 
+	 *
 	 * @return minAngle
 	 */
 	public double getMinAngle() {
@@ -163,7 +167,7 @@ public class Delaunay {
 
 	/**
 	 * Set minimum angle for triangles.
-	 * 
+	 *
 	 * @param minAngle
 	 */
 	public void setMinAngle(double minAngle) {
@@ -175,16 +179,16 @@ public class Delaunay {
 	 * refinement_minArea = remove triangles with a too small area
 	 * refinement_maxArea = split too large triangles refinement_minAngle =
 	 * remove triangle with a too small angle
-	 * 
+	 *
 	 * @param refinement
 	 */
 	public void setRefinment(int refinement) {
 		this.refinement = refinement;
 	}
 
-	
 	/**
-	 * @param verbose mode
+	 * @param verbose
+	 *            mode
 	 */
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
@@ -194,7 +198,7 @@ public class Delaunay {
 	 * Generate the Delaunay triangularization with a flip-flop algorithm. Mesh
 	 * must have been set. Triangularization can only be done once. Otherwise
 	 * call reprocessDelaunay
-	 * 
+	 *
 	 * @throws DelaunayError
 	 */
 	public void processDelaunay() throws DelaunayError {
@@ -209,12 +213,12 @@ public class Delaunay {
 			// general data structures
 			badEdgesQueueList = new LinkedList<MyEdge>();
 			boundaryEdges = new LinkedList<MyEdge>();
-			
+
 			// sort points
 			if (verbose)
 				System.out.println("Sorting points");
 			sortAndSimplify();
-			
+
 			// we build a first triangle with the 3 first points we find
 			if (verbose)
 				System.out.println("Processing triangularization");
@@ -238,7 +242,7 @@ public class Delaunay {
 				e2 = new MyEdge(p1, p3);
 				e3 = new MyEdge(p3, p2);
 			}
-			
+
 			edges.add(e1);
 			edges.add(e2);
 			edges.add(e3);
@@ -257,14 +261,15 @@ public class Delaunay {
 				InsertPoint(aPoint);
 			}
 
-			// remove flat triangles
-			// removeFlatTriangles();
-
 			// Add the edges in the edges array
 			if (verbose)
 				System.out.println("Adding edges");
 			processEdges(theMesh.compEdges);
 			// removeFlatTriangles();
+
+			if (removeFlatTriangles)
+
+				removeFlatTriangle();
 
 			// adding GIDs
 			if (verbose)
@@ -281,6 +286,7 @@ public class Delaunay {
 				anEdge.setGid(edge_GID);
 			}
 
+			flatTriangles = new LinkedList<MyTriangle>();
 			triangle_GID = 0;
 			for (MyTriangle aTriangle1 : triangles) {
 				triangle_GID++;
@@ -289,7 +295,9 @@ public class Delaunay {
 
 			// It's fine, we computed the mesh
 			if (verbose)
-				System.out.println("end processing");
+				System.out
+						.println("Numbers of triangles : " + triangles.size());
+			System.out.println("end processing");
 			meshComputed = true;
 		}
 	}
@@ -298,7 +306,7 @@ public class Delaunay {
 	 * Re-Generate the Delaunay triangularization with a flip-flop algorithm.
 	 * Mesh must have been set. Every triangle and edge is removed to restart
 	 * the process.
-	 * 
+	 *
 	 * @throws DelaunayError
 	 */
 	public void reprocessDelaunay() throws DelaunayError {
@@ -316,7 +324,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point in the mesh and rebuild triangularization
-	 * 
+	 *
 	 * @param aPoint
 	 * @throws DelaunayError
 	 */
@@ -355,7 +363,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point inside a triangle and rebuild triangularization
-	 * 
+	 *
 	 * @param aTriangle
 	 * @param aPoint
 	 * @throws DelaunayError
@@ -462,7 +470,7 @@ public class Delaunay {
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
 	 * triangularization has not been done, it generates an error.
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @throws DelaunayError
@@ -490,7 +498,7 @@ public class Delaunay {
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
 	 * triangularization has not been done, it generates an error.
-	 * 
+	 *
 	 * @param anEdge
 	 * @throws DelaunayError
 	 */
@@ -517,7 +525,7 @@ public class Delaunay {
 	 * Process a triangle with a too small area : - merge the three point as a
 	 * new point and remove the three points - remove the three edges - process
 	 * the neighbors
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	private void processSmallAreaTriangle(MyTriangle aTriangle,
@@ -607,7 +615,7 @@ public class Delaunay {
 	 * middle - generate three triangles in place of the current one That mean
 	 * we generate two more triangles and we replace the current one Then we
 	 * rebuild the delaunay triangularization
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	private void processLargeAreaTriangle(MyTriangle aTriangle)
@@ -629,7 +637,7 @@ public class Delaunay {
 
 	/**
 	 * Process a triangle with a too small angle :
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	private void processSmallAngleTriangle(MyTriangle aTriangle,
@@ -741,7 +749,7 @@ public class Delaunay {
 
 	/**
 	 * Add edges defined at the beginning of the process
-	 * 
+	 *
 	 * @param compEdges
 	 */
 	public void processEdges(ArrayList<MyEdge> compEdges) {
@@ -757,28 +765,27 @@ public class Delaunay {
 		ArrayList<MyEdge> remain1 = processEdges_Step1(compEdges);
 		if (verbose)
 			System.out.println("Edges left after phase 1 : " + remain1.size());
-		
+
 		// next try
 		ArrayList<MyEdge> remain2 = processEdges_Step2(remain1);
 		if (verbose)
 			System.out.println("Edges left after phase 2 : " + remain2.size());
-		
+
 		// Process remaining edges
 		int nbEdges4 = remain2.size();
 		if (nbEdges4 > 0)
 			quickSort_Edges(remain2, 0, nbEdges4 - 1, true);
 		processOtherEdges(remain2);
 
-		}
+	}
 
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
-	 * 
+	 *
 	 * @param compEdges
 	 * @return list of remaining edges
 	 */
-	private ArrayList<MyEdge> processEdges_Step1(
-			ArrayList<MyEdge> compEdges) {
+	private ArrayList<MyEdge> processEdges_Step1(ArrayList<MyEdge> compEdges) {
 		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
 
 		MyEdge currentEdge = null;
@@ -895,23 +902,24 @@ public class Delaunay {
 	private MyEdge lookForSwap(MyEdge testEdge, MyPoint start, MyPoint end) {
 		MyEdge canLink = null;
 		int i = 0;
-		
-		while ((canLink == null) && (i<2)) {
+
+		while ((canLink == null) && (i < 2)) {
 			MyTriangle aTriangle;
-			if (i==0)
+			if (i == 0)
 				aTriangle = testEdge.left;
 			else
 				aTriangle = testEdge.right;
-			
+
 			if (aTriangle != null) {
 				// Check for the edge that does not include start
 				MyEdge possibleEdge = null;
-				for (int j=0; j<3; j++) {
+				for (int j = 0; j < 3; j++) {
 					MyEdge anEdge = aTriangle.edges[j];
-					if ((anEdge.getStart() != start) && (anEdge.getEnd() != start))
+					if ((anEdge.getStart() != start)
+							&& (anEdge.getEnd() != start))
 						possibleEdge = anEdge;
 				}
-				
+
 				// Check for the triangle that is not aTriangle;
 				MyTriangle alterTriangle = null;
 				if (possibleEdge != null)
@@ -919,15 +927,15 @@ public class Delaunay {
 						alterTriangle = possibleEdge.right;
 					else
 						alterTriangle = possibleEdge.left;
-				
+
 				// Check if the last point is end
 				boolean match = false;
 				if (alterTriangle != null)
-				for (int j=0; j<3; j++) {
-					if (alterTriangle.points[j] == end)
-						match = true;
-				}
-				
+					for (int j = 0; j < 3; j++) {
+						if (alterTriangle.points[j] == end)
+							match = true;
+					}
+
 				// Check if we can swap that edge
 				if (match) {
 					if (possibleEdge.marked == 0)
@@ -937,18 +945,17 @@ public class Delaunay {
 			}
 			i++;
 		}
-		
+
 		return canLink;
 	}
-	
+
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
-	 * 
+	 *
 	 * @param compEdges
 	 * @return list of remaining edges
 	 */
-	private ArrayList<MyEdge> processEdges_Step2(
-			ArrayList<MyEdge> compEdges) {
+	private ArrayList<MyEdge> processEdges_Step2(ArrayList<MyEdge> compEdges) {
 		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
 		ArrayList<MyEdge> EdgesToSwap = new ArrayList<MyEdge>();
 
@@ -966,7 +973,7 @@ public class Delaunay {
 			// Get first edge then remove it from the list
 			currentEdge = iterEdge.next();
 			boolean found = false;
-				
+
 			// Compute edge intersection with the Mesh
 			MyPoint p1 = currentEdge.getStart();
 			MyPoint p2 = currentEdge.getEnd();
@@ -997,28 +1004,26 @@ public class Delaunay {
 					// possible edge not reached
 					i++;
 					index++;
-				}
-				else if (cle3 < cle_ref1) {
+				} else if (cle3 < cle_ref1) {
 					// possible edge not reached
 					i++;
-				} else if (cle1 > cle_ref3)  {
+				} else if (cle1 > cle_ref3) {
 					// possible edge over
 					ended = true;
 				} else {
 					// probable equality
 					boolean mayTest = false;
-					MyPoint start=null, end=null;
+					MyPoint start = null, end = null;
 					if ((p1 == p3) || (p1 == p4)) {
 						mayTest = true;
 						start = p1;
 						end = p2;
-					}
-					else if ((p2 == p4) || (p2 == p3)) {
+					} else if ((p2 == p4) || (p2 == p3)) {
 						mayTest = true;
 						start = p2;
 						end = p1;
 					}
-					
+
 					if (mayTest) {
 						MyEdge swapEdge = lookForSwap(currentEdge2, start, end);
 						if (swapEdge != null) {
@@ -1027,19 +1032,19 @@ public class Delaunay {
 						}
 					}
 
-					if (! found)
+					if (!found)
 						i++;
 				}
 			}
-			if (! found) {
+			if (!found) {
 				remainEdges.add(currentEdge);
 			}
 		}
-		
+
 		// swap edges
 		for (MyEdge anEdge : EdgesToSwap) {
 			if (anEdge.marked == 0)
-				swapTriangle(anEdge.left, anEdge.right,anEdge, true);
+				swapTriangle(anEdge.left, anEdge.right, anEdge, true);
 			anEdge.marked = 1;
 		}
 
@@ -1048,7 +1053,7 @@ public class Delaunay {
 
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
-	 * 
+	 *
 	 * @param compEdges
 	 * @return list of remaining edges
 	 */
@@ -1057,7 +1062,7 @@ public class Delaunay {
 		MyTriangle TriangleList[] = new MyTriangle[4];
 		MyEdge CurrentEdge = null;
 
-		int iter=0;
+		int iter = 0;
 		int maxIter = compEdges.size();
 		// While there is still an edge to process
 		ListIterator<MyEdge> iterEdge = compEdges.listIterator();
@@ -1065,7 +1070,7 @@ public class Delaunay {
 			iter++;
 			if (verbose)
 				System.out.println("Processing edge " + iter + " / " + maxIter);
-			
+
 			// Get first edge then remove it from the list
 			CurrentEdge = iterEdge.next();
 
@@ -1403,7 +1408,7 @@ public class Delaunay {
 
 	/**
 	 * Quick sort on points Ordered according to x and y
-	 * 
+	 *
 	 * @param min_index
 	 * @param max_index
 	 */
@@ -1480,7 +1485,7 @@ public class Delaunay {
 	/**
 	 * Quick sort on points Ordered according to minimum X, Y of both
 	 * extremities
-	 * 
+	 *
 	 * @param min_index
 	 * @param max_index
 	 */
@@ -1659,7 +1664,7 @@ public class Delaunay {
 
 	/**
 	 * Insert o point to the current triangularization
-	 * 
+	 *
 	 * @param aPoint
 	 */
 	private void InsertPoint(MyPoint aPoint) {
@@ -1972,7 +1977,7 @@ public class Delaunay {
 
 	/**
 	 * Intersect the edge that started at p1 and ended at p2 with the whole mesh
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 */
@@ -2248,7 +2253,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the current mesh triangularization is correct or not
-	 * 
+	 *
 	 * @return NbError
 	 * @throws DelaunayError
 	 */
@@ -2292,7 +2297,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists returns null if it doesn't
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param EdgeList
@@ -2315,7 +2320,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists returns null if it doesn't
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param EdgeList
@@ -2338,12 +2343,12 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists. Returns null if it doesn't
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param EdgeQueueList
 	 * @param size
-	 * 
+	 *
 	 * @return
 	 */
 	private MyEdge checkTwoPointsEdge(MyPoint p1, MyPoint p2,
@@ -2361,5 +2366,94 @@ public class Delaunay {
 				i++;
 		}
 		return theEdge;
+	}
+
+	public void removeFlatTriangle() throws DelaunayError {
+
+		if (theMesh == null)
+			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
+		else {
+
+			// On fait une liste de triangles plats
+
+			LinkedList<MyTriangle> flatList = new LinkedList<MyTriangle>();
+
+			triangles = theMesh.getTriangles();
+
+			for (MyTriangle aTriangle1 : triangles) {
+
+				if (aTriangle1.isFlatSlope()) {
+
+					flatList.add(aTriangle1);
+				}
+			}
+
+			// On parcours la liste
+
+			for (MyTriangle myTriangle : flatList) {
+
+				// On regarde les edges
+
+				MyEdge[] f_edges = myTriangle.edges;
+
+				for (int i = 0; i < f_edges.length; i++) {
+
+					MyEdge f_edge = f_edges[i];
+					// Si l'edge est marqué
+
+					// alors on fait rien
+					if (f_edge.getMarked() == 0) {
+
+						MyTriangle left_t = f_edge.getLeft();
+						MyTriangle right_t = f_edge.getRight();
+						// Sinon regarde le triangle a côté
+
+						if (left_t != null) {
+
+							if (left_t.equals(myTriangle)) {
+
+								// Si triangle pas plat
+
+								// Alors calcul le z sur le centroide.
+								if (!left_t.isFlatSlope()) {
+									MyPoint p = left_t.getBarycentre();
+
+									addPoint(p);
+								}
+
+							}
+						}
+
+						if (right_t != null) {
+							if (right_t.equals(myTriangle)) {
+
+								if (!right_t.isFlatSlope()) {
+
+									MyPoint p = right_t.getBarycentre();
+
+									addPoint(p);
+								}
+							}
+
+						}
+
+					}
+				}
+			}
+
+			if (verbose)
+				System.out
+						.println("Numbers of triangles after removing process : "
+								+ triangles.size());
+
+		}
+	}
+
+	public boolean isRemoveFlatTriangles() {
+		return removeFlatTriangles;
+	}
+
+	public void setRemoveFlatTriangles(boolean removeFlatTriangles) {
+		this.removeFlatTriangles = removeFlatTriangles;
 	}
 }

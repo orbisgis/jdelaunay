@@ -11,8 +11,7 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 import java.util.*;
 
-public class MyTriangle
-{
+public class MyTriangle {
 
 	private static final long serialVersionUID = 1L;
 	public MyPoint[] points;
@@ -24,7 +23,7 @@ public class MyTriangle
 	private static final double epsilon = 0.00001;
 	private static final double epsilon2 = epsilon * epsilon;
 
-	protected  int gid;
+	protected int gid;
 
 	/**
 	 * Initialize data structure This method is called by every constructor
@@ -161,7 +160,7 @@ public class MyTriangle
 
 	/**
 	 * get GID
-	 * 
+	 *
 	 * @return
 	 */
 	public int getGid() {
@@ -170,7 +169,7 @@ public class MyTriangle
 
 	/**
 	 * set GID
-	 * 
+	 *
 	 * @param gid
 	 */
 	public void setGid(int gid) {
@@ -417,30 +416,30 @@ public class MyTriangle
 		// check if each edge is connected on the right side of the triangle
 		j = 0;
 		if (false)
-		while ((j < 3) && (correct)) {
-			MyPoint start = edges[j].getStart();
-			MyPoint end = edges[j].getEnd();
-			boolean found = false;
-			int k = 0;
-			while ((k < 3) && (correct) && (!found)) {
-				if ((start != points[k]) && (end != points[k])) {
-					if (edges[j].isLeft(points[k])) {
-						if (edges[j].left != this)
-							correct = false;
-						if (edges[j].right == this)
-							correct = false;
-					} else {
-						if (edges[j].right != this)
-							correct = false;
-						if (edges[j].left == this)
-							correct = false;
+			while ((j < 3) && (correct)) {
+				MyPoint start = edges[j].getStart();
+				MyPoint end = edges[j].getEnd();
+				boolean found = false;
+				int k = 0;
+				while ((k < 3) && (correct) && (!found)) {
+					if ((start != points[k]) && (end != points[k])) {
+						if (edges[j].isLeft(points[k])) {
+							if (edges[j].left != this)
+								correct = false;
+							if (edges[j].right == this)
+								correct = false;
+						} else {
+							if (edges[j].right != this)
+								correct = false;
+							if (edges[j].left == this)
+								correct = false;
+						}
+						found = true;
 					}
-					found = true;
+					k++;
 				}
-				k++;
+				j++;
 			}
-			j++;
-		}
 		return correct;
 	}
 
@@ -473,6 +472,17 @@ public class MyTriangle
 			return false;
 	}
 
+	public boolean isFlatSlope() {
+		boolean flat = false;
+
+		if ((Math.abs(points[0].z - points[1].z) < epsilon)
+				&& (Math.abs(points[1].z - points[2].z) < epsilon)
+				&& (Math.abs(points[2].z - points[1].z) < epsilon)) {
+			flat = true;
+		}
+		return flat;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -502,24 +512,26 @@ public class MyTriangle
 	 * @param decalageX
 	 * @param decalageY
 	 */
-	public void displayObject(Graphics g, int decalageX, int decalageY, double minX, double minY, double scaleX, double scaleY) {
+	public void displayObject(Graphics g, int decalageX, int decalageY,
+			double minX, double minY, double scaleX, double scaleY) {
 		int[] xPoints, yPoints;
 		xPoints = new int[3];
 		yPoints = new int[3];
 
-		xPoints[0] = (int) ((points[0].x-minX)*scaleX + decalageX);
-		xPoints[1] = (int) ((points[1].x-minX)*scaleX + decalageX);
-		xPoints[2] = (int) ((points[2].x-minX)*scaleX + decalageX);
+		xPoints[0] = (int) ((points[0].x - minX) * scaleX + decalageX);
+		xPoints[1] = (int) ((points[1].x - minX) * scaleX + decalageX);
+		xPoints[2] = (int) ((points[2].x - minX) * scaleX + decalageX);
 
-		yPoints[0] = (int) ((points[0].y-minY)*scaleY + decalageY);
-		yPoints[1] = (int) ((points[1].y-minY)*scaleY + decalageY);
-		yPoints[2] = (int) ((points[2].y-minY)*scaleY + decalageY);
+		yPoints[0] = (int) ((points[0].y - minY) * scaleY + decalageY);
+		yPoints[1] = (int) ((points[1].y - minY) * scaleY + decalageY);
+		yPoints[2] = (int) ((points[2].y - minY) * scaleY + decalageY);
 
 		g.fillPolygon(xPoints, yPoints, 3);
 
 		for (int i = 0; i < 3; i++) {
 			edges[i].setColor(g);
-			edges[i].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
+			edges[i].displayObject(g, decalageX, decalageY, minX, minY, scaleX,
+					scaleY);
 		}
 	}
 
@@ -534,9 +546,36 @@ public class MyTriangle
 	public void displayObjectCircles(Graphics g, int decalageX, int decalageY) {
 		double r = Math.sqrt(radius);
 		g.setColor(Color.red);
-		g.drawOval((int) (center.x) + decalageX, decalageY
-				- (int) (center.y), 1, 1);
+		g.drawOval((int) (center.x) + decalageX, decalageY - (int) (center.y),
+				1, 1);
 		g.drawOval((int) (center.x - r) + decalageX, decalageY
 				- (int) (center.y + r), (int) r * 2, (int) r * 2);
+	}
+
+	public MyPoint getBarycentre() {
+
+		double x = 0,y= 0, z = 0;
+
+		for (int i = 0; i < 3; i++) {
+
+			x += points[i].x;
+			y +=  points[i].y;
+			z +=  points[i].z;
+
+		}
+
+		x /=3;
+		y /=3;
+		z /=3;
+		return new MyPoint(x,y,z);
+
+	}
+
+	public MyPoint[] getPoints() {
+		return points;
+	}
+
+	public MyEdge[] getEdges() {
+		return edges;
 	}
 }

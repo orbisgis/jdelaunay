@@ -2,7 +2,7 @@ package org.jdelaunay.delaunay;
 
 /**
  * Delaunay Package.
- * 
+ *
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.0
@@ -32,7 +32,7 @@ public class MyMesh {
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
-	 * 
+	 *
 	 */
 	public MyMesh() {
 		// Generate vectors
@@ -54,7 +54,7 @@ public class MyMesh {
 
 	/**
 	 * Set bounding box for the generation
-	 * 
+	 *
 	 * @param maxx
 	 * @param maxy
 	 */
@@ -65,7 +65,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random points
-	 * 
+	 *
 	 * @param _NbPoints
 	 */
 	public void setRandomPoints(int _NbPoints) {
@@ -81,7 +81,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random edges Can be applied only if points are created
-	 * 
+	 *
 	 * @param _NbEdges
 	 */
 	public void setRandomEdges(int _NbEdges) {
@@ -102,7 +102,7 @@ public class MyMesh {
 
 	/**
 	 * Get JPanel in which Mesh is displayed
-	 * 
+	 *
 	 * @return
 	 */
 	public MyDrawing getAffiche() {
@@ -111,7 +111,7 @@ public class MyMesh {
 
 	/**
 	 * Set JPanel in which Mesh is displayed
-	 * 
+	 *
 	 * @param affiche
 	 */
 	public void setAffiche(MyDrawing affiche) {
@@ -120,7 +120,7 @@ public class MyMesh {
 
 	/**
 	 * Get Duration
-	 * 
+	 *
 	 * @return
 	 */
 	public long getDuration() {
@@ -129,7 +129,7 @@ public class MyMesh {
 
 	/**
 	 * Display circles around triangles when displayed in the JPanel
-	 * 
+	 *
 	 * @param displayCircles
 	 */
 	public void setDisplayCircles(boolean displayCircles) {
@@ -203,7 +203,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of points in the Mesh
-	 * 
+	 *
 	 * @return NbPoints
 	 */
 	public int getNbPoints() {
@@ -212,7 +212,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of edges in the Mesh
-	 * 
+	 *
 	 * @return NbEdges
 	 */
 	public int getNbEdges() {
@@ -242,7 +242,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of triangles in the Mesh
-	 * 
+	 *
 	 * @return NbTriangles
 	 */
 	public int getNbTriangles() {
@@ -251,7 +251,7 @@ public class MyMesh {
 
 	/**
 	 * Get the points structure
-	 * 
+	 *
 	 * @return points
 	 */
 	public ArrayList<MyPoint> getPoints() {
@@ -260,7 +260,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
-	 * 
+	 *
 	 * @param _point
 	 */
 	public void setPoints(ArrayList<MyPoint> _point) {
@@ -268,10 +268,10 @@ public class MyMesh {
 		for (MyPoint aPoint : _point)
 			points.add(aPoint);
 	}
-	
+
 	/**
 	 * Set the points as the array
-	 * 
+	 *
 	 * @param _point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> _point) {
@@ -280,7 +280,7 @@ public class MyMesh {
 
 	/**
 	 * Get the edges structure
-	 * 
+	 *
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getEdges() {
@@ -289,7 +289,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
-	 * 
+	 *
 	 * @param _edges
 	 */
 	public void setEdges(ArrayList<MyEdge> _edges) {
@@ -300,7 +300,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the LinkedList
-	 * 
+	 *
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
@@ -311,7 +311,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
-	 * 
+	 *
 	 * @param _edges
 	 */
 	public void setEdgesRef(ArrayList<MyEdge> _edges) {
@@ -321,7 +321,7 @@ public class MyMesh {
 	/**
 	 * Get the complementary edges structure This structure emorize the edges
 	 * that have to be added to the triangularization
-	 * 
+	 *
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getCompEdges() {
@@ -330,7 +330,7 @@ public class MyMesh {
 
 	/**
 	 * Get the triangle structure
-	 * 
+	 *
 	 * @return triangle
 	 */
 	public LinkedList<MyTriangle> getTriangles() {
@@ -339,7 +339,7 @@ public class MyMesh {
 
 	/**
 	 * get a point from its GID
-	 * 
+	 *
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -353,10 +353,10 @@ public class MyMesh {
 		}
 		return aPoint;
 	}
-		
+
 	/**
 	 * get an edge from its GID
-	 * 
+	 *
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -377,7 +377,7 @@ public class MyMesh {
 		}
 		return anEdge;
 	}
-		
+
 
 	/**
 	 * Start timer
@@ -397,7 +397,7 @@ public class MyMesh {
 	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
-	 * 
+	 *
 	 * @param g
 	 */
 	public void displayObject(Graphics g) {
@@ -416,7 +416,7 @@ public class MyMesh {
 		int decalageX = 10;
 		int decalageY = 630;
 
-		
+
 		g.setColor(Color.black);
 		g.drawString(triangles.size() + " Triangles - " + edges.size()
 				+ " Edges - " + points.size() + " Points", decalageX,
@@ -432,6 +432,10 @@ public class MyMesh {
 		// Draw triangles
 		if (!triangles.isEmpty()) {
 			for (MyTriangle aTriangle : triangles) {
+				if (aTriangle.isFlatSlope()){
+
+					System.out.println("Plat " + aTriangle.getGid());
+				}
 				aTriangle.setColor(g);
 				aTriangle.displayObject(g, decalageX, decalageY, minX, minY,
 						scaleX, scaleY);
@@ -459,7 +463,7 @@ public class MyMesh {
 					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
 							scaleX, scaleY);
 				}
-		
+
 		int psize = points.size();
 		if ((psize >0) && (psize<100)) {
 			for (MyPoint aPoint : points) {
@@ -564,14 +568,14 @@ public class MyMesh {
 				writer.write(aPoint.x + "\t" + aPoint.y + "\t" + aPoint.z
 						+ "\t" + aPoint.gid + "\n");
 			}
-			
+
 			writer.write("\n");
 			for (MyEdge anEdge : edges) {
-				writer.write(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
+				writer.write(anEdge.point[0].gid + "\t" + anEdge.point[1].gid
 						+ "\t" + anEdge.gid + "\n");
 			}
 			for (MyEdge anEdge : compEdges) {
-				writer.write(anEdge.point[0].gid + "\t" + anEdge.point[1].gid 
+				writer.write(anEdge.point[0].gid + "\t" + anEdge.point[1].gid
 						+ "\t" + anEdge.gid + "\n");
 			}
 
@@ -579,14 +583,14 @@ public class MyMesh {
 		} catch (IOException e) {
 		}
 	}
-	
+
 	/**
 	 * Read Mesh points from the file
 	 */
 	public void readMesh() {
 		readMesh("Mesh.txt");
 	}
-	
+
 	/**
 	 * Read Mesh points from the file
 	 */
@@ -664,7 +668,7 @@ public class MyMesh {
 
 	/**
 	 * Save Mesh
-	 * 
+	 *
 	 * @param path
 	 */
 	public void saveMeshUTF(String path) {
@@ -699,10 +703,10 @@ public class MyMesh {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Quick sort on points Ordered according to x and y
-	 * 
+	 *
 	 * @param min_index
 	 * @param max_index
 	 */
@@ -773,7 +777,7 @@ public class MyMesh {
 
 	/**
 	 * Quick sort on points Ordered according to x and y
-	 * 
+	 *
 	 * @param min_index
 	 * @param max_index
 	 */
@@ -864,7 +868,7 @@ public class MyMesh {
 			}
 		}
 		quickSort_Points(0, points.size()-1);
-		
+
 		quickSort_Edges(0, edges.size()-1);
 		ListIterator<MyEdge> iterEdge = edges.listIterator();
 		MyEdge vEdge = iterEdge.next();
