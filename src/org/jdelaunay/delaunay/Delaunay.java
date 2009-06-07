@@ -2049,6 +2049,9 @@ public class Delaunay {
 				aTriangle1.recomputeCenter();
 			}
 		}
+		// We remove all edges in badEdgesQueueList because we MUST NOT change them
+		while (!badEdgesQueueList.isEmpty())
+			badEdgesQueueList.removeFirst();
 	}
 
 	/**
@@ -2085,11 +2088,12 @@ public class Delaunay {
 						else
 							i++;
 					}
-					if (canRemove)
+					if (canRemove) {
 						badTrianglesList.add(aTriangle);
-					else
+					}
+					else {
 						veryBadTrianglesList.add(aTriangle);
-					aTriangle.color = 1;
+					}
 				}
 			}
 
@@ -2131,7 +2135,6 @@ public class Delaunay {
 					if (canChange) {
 						// We can change that triangle
 						todoList.add(aTriangle);
-						aTriangle.color = 2;
 					}
 				}
 
@@ -2170,7 +2173,6 @@ public class Delaunay {
 						if (canChange) {
 							// We can change that triangle
 							todoList.add(aTriangle);
-							aTriangle.color = 2;
 						}
 					}
 				}
@@ -2185,7 +2187,6 @@ public class Delaunay {
 					nbDone++;
 
 					badTrianglesList.remove(aTriangle);
-					aTriangle.color = 0;
 				}
 				if (verbose)
 					System.out.println("Remove " + nbDone + " flat triangles");
@@ -2197,7 +2198,6 @@ public class Delaunay {
 
 		}
 		theMesh.setAllGids();
-		processBadEdges();
 	}
 
 	private void removeTriangle(MyTriangle aTriangle) {
