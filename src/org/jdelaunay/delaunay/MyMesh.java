@@ -704,6 +704,119 @@ public class MyMesh {
 		}
 	}
 
+
+	public void VRMLexport() {
+		VRMLexport("Mesh.wrl");
+	}
+
+	public void VRMLexport(String path) {
+		try {
+			Writer writer = new FileWriter(path);
+
+			writer.write("#VRML V2.0 utf8\n");
+			writer.write("Background{\n");
+			writer.write("skyColor 0 0.3 0.8\n");
+			writer.write("}\n");
+			writer.write("\n");
+			writer.write("Transform {\n");
+			writer.write("scale 1 1 1\n");
+			writer.write("children [\n");
+			writer.write("Shape {\n");
+			writer.write("appearance Appearance {\n");
+			writer.write("material Material {\n");
+			writer.write("diffuseColor 1 1 .6\n");
+			writer.write("} # end material\n");
+			writer.write("} # end appearance\n");
+			writer.write("geometry IndexedFaceSet {\n");
+			writer.write("convex FALSE\n");
+			writer.write("solid FALSE\n");
+			writer.write("\n");
+			writer.write("coord Coordinate {\n");
+			writer.write("point [\n");
+			writer.write("#x y z pt\n");
+			double x=0, y=0, z=0, z1=0;
+			for (MyPoint aPoint : points) {
+				writer.write(" #Point "+ (aPoint.gid-1) +"\n");
+				writer.write(" " + aPoint.x + " "+aPoint.y + " " + aPoint.z +"\n");
+				
+				x += aPoint.x;
+				y += aPoint.y;
+				if (z < aPoint.z) z = aPoint.z;
+				if (z1 > aPoint.z) z1 = aPoint.z;
+			}
+			if (points.size() > 0) {
+				x /= points.size();
+				y /= points.size();
+			}
+			z += (z-z1) + 10;
+			writer.write("] # end point\n");
+			writer.write("} # end coord\n");
+			writer.write("\n");
+			writer.write("coordIndex [\n");
+			for (MyTriangle aTriangle : triangles) {
+				writer.write("#triangle " + (aTriangle.gid-1) + "\n");
+				for (int i=0; i<3; i++)
+					writer.write((aTriangle.points[i].gid-1) + "\t");
+				writer.write("-1\n");
+			}
+			writer.write("\n");
+			writer.write("] # end coordIndex\n");
+			writer.write("\n");
+			writer.write("# color definitions\n");
+			writer.write("colorPerVertex FALSE\n");
+			writer.write("color Color {\n");
+			writer.write("color [\n");
+			writer.write("#defining a palette of colors to use in the colorIndex\n");
+			writer.write("0.0 1.0 0.0 # color #0 is green\n");
+			writer.write("1.0 0.0 0.0 # color #1 is red\n");
+			writer.write("0.0 0.0 1.0 # color #2 is blue\n");
+			writer.write("] # end inner color group\n");
+			writer.write("} # end color node\n");
+			writer.write("colorIndex [\n");
+			writer.write("#color node\n");
+			for (MyTriangle aTriangle : triangles) {
+				writer.write("0 #triangle " + (aTriangle.gid-1)+ "\n");
+			}			
+			writer.write("] # end colorIndex\n");
+			writer.write("\n");
+			writer.write("} # end geometry\n");
+			writer.write("} # end shape\n");
+			writer.write("] # end children\n");
+			writer.write("} # end transform\n");
+			writer.write("\n");
+			writer.write("Viewpoint {\n");
+			writer.write("description \"middle\"\n");
+			writer.write("position "+x+" "+y+" "+z+"\n");
+			writer.write("} # end viewpoint\n");
+			writer.write("\n");
+
+			writer.close();
+		} catch (IOException e) {
+		}
+		
+	}
+
+	/**
+	 * sort criteria for GIDs
+	 * 
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	private int sortCriteria(int v1, int v2) {
+		int value = 0;
+		if (v1 == v2)
+			value = 0;
+		else if (v1 == -1)
+			value = -1;
+		else if (v2 == -1)
+			value = 1;
+		else if (v1 < v2)
+			value = 1;
+		else
+			value = -1;
+		return value;
+	}
 	/**
 	 * Quick sort on points Ordered according to x and y
 	 *
@@ -714,7 +827,7 @@ public class MyMesh {
 			int max_index) {
 		int i, j;
 		int enreg_ref;
-		double cle_ref1;
+		int cle_ref1;
 		boolean found;
 		MyPoint anObject;
 
@@ -732,7 +845,7 @@ public class MyMesh {
 				else {
 					anObject = points.get(i);
 					int cle = anObject.getGid();
-					if ((cle > cle_ref1) || (cle < 0))
+					if (sortCriteria(cle, cle_ref1) <= 0)
 						found = true;
 					else
 						i++;
@@ -746,7 +859,7 @@ public class MyMesh {
 				else {
 					anObject = points.get(j);
 					int cle = anObject.getGid();
-					if ((cle < cle_ref1) && (cle >= 0))
+					if (sortCriteria(cle, cle_ref1) >= 0)
 						found = true;
 					else
 						j--;
@@ -785,7 +898,7 @@ public class MyMesh {
 			int max_index) {
 		int i, j;
 		int enreg_ref;
-		double cle_ref1;
+		int cle_ref1;
 		boolean found;
 		MyEdge anObject;
 
@@ -803,7 +916,7 @@ public class MyMesh {
 				else {
 					anObject = edges.get(i);
 					int cle = anObject.getGid();
-					if ((cle > cle_ref1) || (cle < 0))
+					if (sortCriteria(cle, cle_ref1) <= 0)
 						found = true;
 					else
 						i++;
@@ -817,7 +930,7 @@ public class MyMesh {
 				else {
 					anObject = edges.get(j);
 					int cle = anObject.getGid();
-					if ((cle < cle_ref1) && (cle >= 0))
+					if (sortCriteria(cle, cle_ref1) >= 0)
 						found = true;
 					else
 						j--;
@@ -847,14 +960,86 @@ public class MyMesh {
 	}
 
 	/**
+	 * Quick sort on points Ordered according to x and y
+	 * 
+	 * @param min_index
+	 * @param max_index
+	 */
+	private void quickSort_Triangles( int min_index,
+			int max_index) {
+		int i, j;
+		int enreg_ref;
+		int cle_ref1;
+		boolean found;
+		MyTriangle anObject;
+
+		i = min_index;
+		j = max_index;
+		enreg_ref = (max_index + min_index) / 2;
+		anObject = triangles.get(enreg_ref);
+		cle_ref1 = anObject.getGid();
+		do {
+			// first : increasing index
+			found = false;
+			while (!found) {
+				if (i > max_index)
+					found = true;
+				else {
+					anObject = triangles.get(i);
+					int cle = anObject.getGid();
+					if (sortCriteria(cle, cle_ref1) <= 0)
+						found = true;
+					else
+						i++;
+				}
+			}
+			// second : decreasing index
+			found = false;
+			while (!found) {
+				if (min_index > j)
+					found = true;
+				else {
+					anObject = triangles.get(j);
+					int cle = anObject.getGid();
+					if (sortCriteria(cle, cle_ref1) >= 0)
+						found = true;
+					else
+						j--;
+				}
+			}
+			// exchange values
+			if (i <= j) {
+				// we can change values
+				anObject = triangles.get(i);
+				triangles.set(i, triangles.get(j));
+				triangles.set(j, anObject);
+
+				i++;
+				j--;
+			}
+		} while (i <= j);
+
+		// Recurrent calls
+		if (min_index < j) {
+			// if left side is not empty
+			quickSort_Triangles(min_index, j);
+		}
+		if (max_index > i) {
+			// if right side is not empty
+			quickSort_Triangles(i, max_index);
+		}
+	}
+
+	/**
 	 * Set missing GIDs for edges and points
 	 */
 	public void setAllGids() {
+		// Process points
 		quickSort_Points( 0, points.size()-1);
 		ListIterator<MyPoint> iterPoint = points.listIterator();
 		MyPoint vPoint = iterPoint.next();
 
-		int lastIndex = -1;
+		int lastIndex = 0;
 		for (MyPoint aPoint:points) {
 			if (aPoint.gid < 0) {
 				lastIndex++;
@@ -866,14 +1051,17 @@ public class MyMesh {
 				}
 				aPoint.setGid(lastIndex);
 			}
+			else
+				lastIndex = aPoint.gid;
 		}
 		quickSort_Points(0, points.size()-1);
 
+		// Process edges
 		quickSort_Edges(0, edges.size()-1);
 		ListIterator<MyEdge> iterEdge = edges.listIterator();
 		MyEdge vEdge = iterEdge.next();
 
-		lastIndex = -1;
+		lastIndex = 0;
 		for (MyEdge anEdge:edges) {
 			if (anEdge.gid < 0) {
 				lastIndex++;
@@ -885,8 +1073,30 @@ public class MyMesh {
 				}
 				anEdge.setGid(lastIndex);
 			}
+			else
+				lastIndex = anEdge.gid;
 		}
 		quickSort_Edges(0, edges.size()-1);
-	}
 
+		// Process triangles
+		quickSort_Triangles(0, triangles.size()-1);
+		ListIterator<MyTriangle> iterTriangle = triangles.listIterator();
+		MyTriangle vTriangle = iterTriangle.next();
+		lastIndex = 0;
+		for (MyTriangle aTriangle:triangles) {
+			if (aTriangle.gid < 0) {
+				lastIndex++;
+				int gid = vTriangle.getGid();
+				while (gid == lastIndex) {
+					lastIndex++;
+					vTriangle = iterTriangle.next();
+					gid = vTriangle.getGid();
+				}
+				aTriangle.setGid(lastIndex);
+			}
+			else
+				lastIndex = aTriangle.gid;
+		}
+		quickSort_Triangles(0, triangles.size()-1);
+	}
 }
