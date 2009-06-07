@@ -20,14 +20,14 @@ public class MyTriangle {
 	private static final long serialVersionUID = 1L;
 	public MyPoint[] points;
 	protected MyEdge[] edges;
-
+	protected int gid;
+	protected int color;
+	
 	private MyPoint center;
 	private double radius;
 
 	private static final double epsilon = 0.00001;
 	private static final double epsilon2 = epsilon * epsilon;
-
-	protected int gid;
 
 	/**
 	 * Initialize data structure This method is called by every constructor
@@ -37,6 +37,8 @@ public class MyTriangle {
 		edges = new MyEdge[3];
 		center = new MyPoint();
 		radius = -1;
+		gid = -1;
+		color = 0;
 	}
 
 	/**
@@ -163,24 +165,6 @@ public class MyTriangle {
 	}
 
 	/**
-	 * get GID
-	 *
-	 * @return
-	 */
-	public int getGid() {
-		return gid;
-	}
-
-	/**
-	 * set GID
-	 *
-	 * @param gid
-	 */
-	public void setGid(int gid) {
-		this.gid = gid;
-	}
-
-	/**
 	 * Get points
 	 * 
 	 * @return
@@ -198,6 +182,24 @@ public class MyTriangle {
 		return edges;
 	}
 	
+	/**
+	 * get GID
+	 * 
+	 * @return
+	 */
+	public int getGid() {
+		return gid;
+	}
+
+	/**
+	 * set GID
+	 * 
+	 * @param gid
+	 */
+	public void setGid(int gid) {
+		this.gid = gid;
+	}
+
 	/**
 	 * Recompute the center of the circle that joins the points
 	 */
@@ -248,6 +250,9 @@ public class MyTriangle {
 	 */
 	public void reconnectEdges() {
 		for (int j = 0; j < 3; j++) {
+			if (edges[j] == null)
+				System.out.println("ERREUR");
+			else {
 			MyPoint start = edges[j].point[0];
 			MyPoint end = edges[j].point[1];
 			for (int k = 0; k < 3; k++) {
@@ -256,6 +261,7 @@ public class MyTriangle {
 						edges[j].left = this;
 					else
 						edges[j].right = this;
+			}
 			}
 		}
 	}
@@ -517,9 +523,18 @@ public class MyTriangle {
 	 * @return isFlat
 	 */
 	public MyPoint getAlterPoint(MyEdge anEdge) {
-		MyPoint alterPoint = null;
 		MyPoint start = anEdge.getStart();
 		MyPoint end = anEdge.getEnd();
+		return getAlterPoint(start, end);
+	}
+
+	/**
+	 * Get the point of the triangle that does not belong to the 2 points
+	 * 
+	 * @return isFlat
+	 */
+	public MyPoint getAlterPoint(MyPoint start, MyPoint end) {
+		MyPoint alterPoint = null;
 
 		int i = 0;
 		while ((i < 3) && (alterPoint == null)) {
@@ -588,7 +603,17 @@ public class MyTriangle {
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
-		g.setColor(Color.cyan);
+		switch (color) {
+		case 0:
+			g.setColor(Color.cyan);
+			break;
+		case 1:
+			g.setColor(Color.red);
+			break;
+		case 2:
+			g.setColor(Color.green);
+			break;
+		}
 	}
 
 	/**
