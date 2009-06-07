@@ -1,7 +1,5 @@
 package org.jdelaunay.test;
 
-import java.awt.Point;
-
 import org.jdelaunay.delaunay.*;
 
 public class Test {
@@ -13,45 +11,35 @@ public class Test {
 		MyMesh aMesh = new MyMesh();
 		Delaunay testDelaunay = new Delaunay(aMesh);
 		testDelaunay.setPrecision(1.0e-3);
-
+		testDelaunay.setVerbose(true);
+		
 		aMesh.setMax(1300, 700);
-		// aMesh.setDisplayCircles(true);
-		// aMesh.readMeshPoints();
-
-		for (int i = 0; i < 10; i++) {
-
-			aMesh.addEdge(new MyEdge(new MyPoint(i, i+10, i), new MyPoint(i+20, i +5, i)));
-		}
-		//aMesh.setRandomEdges(2);
-		// aMesh.saveMeshPoints();
-		// aMesh.addBoundingBox();
+		aMesh.readMesh("test.txt");
+		// aMesh.setRandomPoints(10000);
+		// aMesh.setRandomEdges(200);
 
 		aMesh.setStart();
 		try {
 			// process triangularization
 			testDelaunay.processDelaunay();
 
-/*
-			for (int i = 0; i < 100; i++) {
-
-
-				testDelaunay.addPoint(new MyPoint(i+ 5,10, i +12));
-			}*/
-
-
+			testDelaunay.removeFlatTriangles();
 			// Refine Mesh
-			//testDelaunay.refineMesh();
+			// testDelaunay.setRefinment(Delaunay.refinement_maxArea);
+			// testDelaunay.refineMesh();
 			// testDelaunay.refineMeshAngles();
 
 		} catch (DelaunayError e) {
 			e.printStackTrace();
 		}
 		aMesh.setEnd();
+//		aMesh.saveMesh();
 
-		MyDrawing aff = new MyDrawing();
-		aff.add(aMesh);
-		aMesh.setAffiche(aff);
+		MyDrawing aff2 = new MyDrawing();
+		aff2.add(aMesh);
+		aMesh.setAffiche(aff2);
 
-		aMesh.saveMesh("/tmp/text.text");
+		// aMesh.saveMeshXML();
+		aMesh.VRMLexport();
 	}
 }
