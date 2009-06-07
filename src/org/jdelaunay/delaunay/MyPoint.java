@@ -14,13 +14,14 @@ import java.awt.Graphics;
 public class MyPoint {
 	public double x, y, z;
 	public String type;
-	protected int gid;
+	public int gid;
 
 	private void init() {
 		x = 0;
 		y = 0;
 		z = 0;
 		type = null;
+		gid = -1;
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class MyPoint {
 		z = _z;
 		if (_type != null)
 			type = new String(_type);
-		gid=_gid;
+		gid = _gid;
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class MyPoint {
 		x = _x;
 		y = _y;
 		z = _z;
-		gid=_gid;
+		gid = _gid;
 	}
 
 	/**
@@ -183,7 +184,7 @@ public class MyPoint {
 	public void setGid(int gid) {
 		this.gid = gid;
 	}
-	
+
 	/**
 	 * linear square distance to another point
 	 *
@@ -246,7 +247,7 @@ public class MyPoint {
 		g.drawOval((int) ((x-minX)*scaleX + decalageX) - 1,
 				(int) ((y-minY)*scaleY + decalageY) - 1, 3, 3);
 		
-		if (gid >= 0) {
+		if (gid > 0) {
 			g.drawString(""+gid, (int) ((x-minX)*scaleX + decalageX),
 					(int) ((y-minY)*scaleY + decalageY) - 1);
 		}
