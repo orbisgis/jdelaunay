@@ -605,7 +605,10 @@ public class MyTriangle {
 	public void setColor(Graphics g) {
 		switch (color) {
 		case 0:
-			g.setColor(Color.cyan);
+			if (isFlatSlope())
+				g.setColor(Color.green);
+			else
+				g.setColor(Color.cyan);
 			break;
 		case 1:
 			g.setColor(Color.red);
