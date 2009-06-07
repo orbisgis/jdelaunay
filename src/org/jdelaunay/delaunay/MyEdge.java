@@ -449,6 +449,22 @@ public class MyEdge {
 	}
 
 	/**
+	 * check if the point is one of the extremities of the edge (on the xy-plane)
+	 * 
+	 * @param p
+	 * @return isInside
+	 */
+	public boolean isExtremity(MyPoint p) {
+		boolean isExtremity = false;
+
+		if (point[0].squareDistance_2D(p) < epsilon)
+			isExtremity = true;
+		else if (point[1].squareDistance_2D(p) < epsilon)
+			isExtremity = true;
+		return isExtremity;
+	}
+	
+	/**
 	 * Check if the point p is on the left
 	 * 
 	 * @param p
