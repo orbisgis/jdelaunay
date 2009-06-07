@@ -447,8 +447,10 @@ public class Delaunay {
 	 * 
 	 * @param anEdge
 	 * @param aPoint
+	 * @return impactedTriangles
 	 */
-	private void processAddPoint(MyEdge anEdge, MyPoint aPoint) {
+	private LinkedList<MyTriangle> processAddPoint(MyEdge anEdge, MyPoint aPoint) {
+		LinkedList<MyTriangle> impactedTriangles = new LinkedList<MyTriangle>();
 		if (!anEdge.isExtremity(aPoint)) {
 			// point is not an extremity => insert it
 			MyPoint start = anEdge.getStart();
@@ -649,7 +651,16 @@ public class Delaunay {
 				if (new_triangleList[k] != null)
 					triangles.add(new_triangleList[k]);
 			}
+			
+			
+			for (int k = 0; k < 2; k++) {
+				if (triangleList[k] != null)
+					impactedTriangles.add(triangleList[k]);
+				if (new_triangleList[k] != null)
+					impactedTriangles.add(new_triangleList[k]);
+			}
 		}
+		return impactedTriangles;
 	}
 
 	/**
@@ -2026,12 +2037,17 @@ public class Delaunay {
 
 			// Split the edge in the middle
 			MyPoint middle = anEdge.getBarycenter();
-			processAddPoint(anEdge, middle);
+			LinkedList<MyTriangle> impactedTriangles = processAddPoint(anEdge, middle);
 
 			// Move middle to the barycenter
 			middle.x = barycenter.x;
 			middle.y = barycenter.y;
 			middle.z = barycenter.z;
+			
+			// Recompute all centers because it one point moved
+			for (MyTriangle aTriangle1 : impactedTriangles) {
+				aTriangle1.recomputeCenter();
+			}
 		}
 	}
 
