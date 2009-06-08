@@ -738,7 +738,7 @@ public class MyMesh {
 			for (MyPoint aPoint : points) {
 				writer.write(" #Point "+ (aPoint.gid-1) +"\n");
 				writer.write(" " + aPoint.x + " "+aPoint.y + " " + aPoint.z +"\n");
-				
+
 				x += aPoint.x;
 				y += aPoint.y;
 				if (z < aPoint.z) z = aPoint.z;
@@ -776,7 +776,7 @@ public class MyMesh {
 			writer.write("#color node\n");
 			for (MyTriangle aTriangle : triangles) {
 				writer.write("0 #triangle " + (aTriangle.gid-1)+ "\n");
-			}			
+			}
 			writer.write("] # end colorIndex\n");
 			writer.write("\n");
 			writer.write("} # end geometry\n");
@@ -793,12 +793,12 @@ public class MyMesh {
 			writer.close();
 		} catch (IOException e) {
 		}
-		
+
 	}
 
 	/**
 	 * sort criteria for GIDs
-	 * 
+	 *
 	 * @param v1
 	 * @param v2
 	 * @return
@@ -961,7 +961,7 @@ public class MyMesh {
 
 	/**
 	 * Quick sort on points Ordered according to x and y
-	 * 
+	 *
 	 * @param min_index
 	 * @param max_index
 	 */
@@ -1029,6 +1029,9 @@ public class MyMesh {
 			quickSort_Triangles(i, max_index);
 		}
 	}
+
+
+
 
 	/**
 	 * Set missing GIDs for edges and points
