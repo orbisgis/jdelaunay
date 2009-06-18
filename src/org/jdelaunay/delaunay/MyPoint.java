@@ -15,6 +15,7 @@ public class MyPoint {
 	public double x, y, z;
 	public String type;
 	public int gid;
+	protected boolean marked;
 
 	private void init() {
 		x = 0;
@@ -22,6 +23,7 @@ public class MyPoint {
 		z = 0;
 		type = null;
 		gid = -1;
+		marked = false;
 	}
 
 	/**
@@ -152,10 +154,11 @@ public class MyPoint {
 	/**
 	 * Set Type
 	 *
+	 *@param _type
 	 * @return Type
 	 */
-	public void setPointType(String _gid) {
-		type = new String(_gid);
+	public void setPointType(String _type) {
+		type = _type;
 	}
 
 	/**
@@ -247,6 +250,7 @@ public class MyPoint {
 		g.drawOval((int) ((x-minX)*scaleX + decalageX) - 1,
 				(int) ((y-minY)*scaleY + decalageY) - 1, 3, 3);
 		
+		if (false)
 		if (gid > 0) {
 			g.drawString(""+gid, (int) ((x-minX)*scaleX + decalageX),
 					(int) ((y-minY)*scaleY + decalageY) - 1);
