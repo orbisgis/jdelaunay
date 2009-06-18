@@ -21,14 +21,14 @@ public class MyMesh {
 
 	// bounding box
 	protected int maxx, maxy;
-	private double bminx, bmaxx, bminy, bmaxy;
-	private MyPoint pminx, pmaxx, pminy, pmaxy;
+	private MyBox theBox;
 
 	// Display elements
 	private MyDrawing affiche;
 	private long duration;
 	private long startComputation;
 	private boolean displayCircles;
+	private MyPoint lastSewerPoint;
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
@@ -45,11 +45,11 @@ public class MyMesh {
 		maxy = 700;
 
 		duration = 0;
-		bminx = bmaxx = bminy = bmaxy = 0.0;
-		pminx = pmaxx = pminy = pmaxy = null;
+		theBox = new MyBox();
 
 		affiche = null;
 		displayCircles = false;
+		lastSewerPoint = null;
 	}
 
 	/**
@@ -139,36 +139,13 @@ public class MyMesh {
 	/**
 	 * Compute Mesh bounding box
 	 */
-	public void getBoundingBox() {
-		bminx = bmaxx = bminy = bmaxy = 0.0;
-		pminx = pmaxx = pminy = pmaxy = null;
+	public MyBox getBoundingBox() {
+		theBox.init();
 
 		for (MyPoint aPoint : points) {
-			double x = aPoint.getX();
-			double y = aPoint.getY();
-
-			// update bounding box
-			if (pminx == null) {
-				bminx = bmaxx = x;
-				bminy = bmaxy = y;
-				pminx = pmaxx = pminy = pmaxy = aPoint;
-			} else {
-				if (bminx > x) {
-					bminx = x;
-					pminx = aPoint;
-				} else if (bmaxx < x) {
-					bmaxx = x;
-					pmaxx = aPoint;
-				}
-				if (bminy > y) {
-					bminy = y;
-					pminy = aPoint;
-				} else if (bmaxy < y) {
-					bmaxy = y;
-					pmaxy = aPoint;
-				}
-			}
+			theBox.alterBox(aPoint);
 		}
+		return theBox;
 	}
 
 	/**
@@ -178,27 +155,60 @@ public class MyMesh {
 		getBoundingBox();
 
 		// Add bounding Box
-		MyPoint aPoint1 = new MyPoint(bminx, bminy);
-		MyPoint aPoint2 = new MyPoint(bminx, bmaxy);
-		MyPoint aPoint3 = new MyPoint(bmaxx, bmaxy);
-		MyPoint aPoint4 = new MyPoint(bmaxx, bminy);
+		MyPoint aPoint1 = new MyPoint(theBox.minx, theBox.miny);
+		MyPoint aPoint2 = new MyPoint(theBox.minx, theBox.maxy);
+		MyPoint aPoint3 = new MyPoint(theBox.maxx, theBox.maxy);
+		MyPoint aPoint4 = new MyPoint(theBox.maxx, theBox.miny);
 
 		points.add(aPoint1);
 		points.add(aPoint2);
 		points.add(aPoint3);
 		points.add(aPoint4);
 
-		compEdges.add(new MyEdge(aPoint1, pminx));
-		compEdges.add(new MyEdge(pminx, aPoint2));
+		// Generate lines, taking into account the fact there are points withe the same x and y
+		MyTools.quickSort_Points(points);
+		MyPoint LastPoint;
+		
+		// Do not remove points order because it is linked to the order we chose for the points
+		// join points 1 and 2 - same x
+		LastPoint = aPoint1;
+		for (MyPoint aPoint : points) {
+			if (aPoint.x == LastPoint.x) {
+				compEdges.add(new MyEdge(LastPoint, aPoint));
+				LastPoint = aPoint;
+			}
+		}
+		compEdges.add(new MyEdge(LastPoint, aPoint2));
 
-		compEdges.add(new MyEdge(aPoint2, pmaxy));
-		compEdges.add(new MyEdge(pmaxy, aPoint3));
+		// join points 2 and 3 - same y
+		LastPoint = aPoint2;
+		for (MyPoint aPoint : points) {
+			if (aPoint.y == LastPoint.y) {
+				compEdges.add(new MyEdge(LastPoint, aPoint));
+				LastPoint = aPoint;
+			}
+		}
+		compEdges.add(new MyEdge(LastPoint, aPoint3));
 
-		compEdges.add(new MyEdge(aPoint3, pmaxx));
-		compEdges.add(new MyEdge(pmaxx, aPoint4));
+		// join points 1 and 4 - same y
+		LastPoint = aPoint1;
+		for (MyPoint aPoint : points) {
+			if (aPoint.y == LastPoint.y) {
+				compEdges.add(new MyEdge(LastPoint, aPoint));
+				LastPoint = aPoint;
+			}
+		}
+		compEdges.add(new MyEdge(LastPoint, aPoint4));
 
-		compEdges.add(new MyEdge(aPoint4, pminy));
-		compEdges.add(new MyEdge(pminy, aPoint1));
+		// join points 4 and 3 - same x
+		LastPoint = aPoint4;
+		for (MyPoint aPoint : points) {
+			if (aPoint.x == LastPoint.x) {
+				compEdges.add(new MyEdge(LastPoint, aPoint));
+				LastPoint = aPoint;
+			}
+		}
+		compEdges.add(new MyEdge(LastPoint, aPoint3));
 	}
 
 	/**
@@ -395,6 +405,83 @@ public class MyMesh {
 	}
 
 	/**
+	 * add a sewer entry
+	 * 
+	 * @param sewerPoint
+	 * @throws DelaunayError
+	 */
+	public void addSewerEntry(MyPoint sewerPoint) throws DelaunayError {
+		if (! points.contains(sewerPoint))
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerPoint);
+		else if (lastSewerPoint != null)
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerStart);
+		else {
+			sewerPoint.setPointType("Sewer");
+			lastSewerPoint = sewerPoint;
+		}
+	}
+
+	/**
+	 * add a sewer exit
+	 * 
+	 * @param sewerPoint
+	 * @throws DelaunayError
+	 */
+	public void addSewerExit(MyPoint sewerPoint) throws DelaunayError {
+		if (! points.contains(sewerPoint))
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerPoint);
+		else if (lastSewerPoint == null)
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerEnd);
+		else if (lastSewerPoint.z <= sewerPoint.z)
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerDirection);
+		else {
+			sewerPoint.setPointType("Sewer");
+			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint, "Sewer");
+			anEdge.marked = 1;
+			edges.add(anEdge);
+			lastSewerPoint = null;
+		}
+	}
+	
+	/**
+	 * add a sewer point (neither start or exit
+	 * 
+	 * @param sewerPoint
+	 * @throws DelaunayError
+	 */
+	public void addSewerPoint(MyPoint sewerPoint) throws DelaunayError {
+		if (lastSewerPoint == null)
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerPoint);
+		else if (lastSewerPoint.z <= sewerPoint.z)
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerDirection);
+		else {
+			sewerPoint.setPointType("Sewer");
+			points.add(sewerPoint);
+			sewerPoint.marked = true;
+			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint, "Sewer");
+			anEdge.marked = 1;
+			edges.add(anEdge);
+			lastSewerPoint = sewerPoint;
+		}
+	}
+
+	/**
+	 * use a sewer point to start a new branch
+	 * 
+	 * @param sewerPoint
+	 * @throws DelaunayError
+	 */
+	public void setSewerPoint(MyPoint sewerPoint) throws DelaunayError {
+		if (lastSewerPoint != null)
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerEnd);
+		else if (! sewerPoint.getPointType().equals("Sewer") )
+			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerStart);
+		else {
+			lastSewerPoint = sewerPoint;
+		}
+	}
+
+	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
 	 *
@@ -405,14 +492,14 @@ public class MyMesh {
 		double scaleX, scaleY;
 		double minX, minY;
 
-		scaleX = 1200 / (bmaxx - bminx);
-		scaleY = 600 / (bmaxy - bminy);
+		scaleX = 1200 / (theBox.maxx - theBox.minx);
+		scaleY = 600 / (theBox.maxy - theBox.miny);
 		if (scaleX > scaleY)
 			scaleX = scaleY;
 		else
 			scaleY = scaleX;
-		minX = bminx;
-		minY = bmaxy;
+		minX = theBox.minx;
+		minY = theBox.maxy;
 		int decalageX = 10;
 		int decalageY = 630;
 
@@ -432,10 +519,6 @@ public class MyMesh {
 		// Draw triangles
 		if (!triangles.isEmpty()) {
 			for (MyTriangle aTriangle : triangles) {
-				if (aTriangle.isFlatSlope()){
-
-					System.out.println("Plat " + aTriangle.getGid());
-				}
 				aTriangle.setColor(g);
 				aTriangle.displayObject(g, decalageX, decalageY, minX, minY,
 						scaleX, scaleY);
@@ -465,6 +548,7 @@ public class MyMesh {
 				}
 
 		int psize = points.size();
+		if (false)
 		if ((psize >0) && (psize<100)) {
 			for (MyPoint aPoint : points) {
 				aPoint.setColor(g);
@@ -705,10 +789,18 @@ public class MyMesh {
 	}
 
 
+	/**
+	 * Export to VRML file Mesh.wrl
+	 */
 	public void VRMLexport() {
 		VRMLexport("Mesh.wrl");
 	}
 
+	/**
+	 * Export to VRML file
+	 * 
+	 * @param path
+	 */
 	public void VRMLexport(String path) {
 		try {
 			Writer writer = new FileWriter(path);
@@ -731,54 +823,78 @@ public class MyMesh {
 			writer.write("convex FALSE\n");
 			writer.write("solid FALSE\n");
 			writer.write("\n");
-			writer.write("coord Coordinate {\n");
-			writer.write("point [\n");
-			writer.write("#x y z pt\n");
-			double x=0, y=0, z=0, z1=0;
-			for (MyPoint aPoint : points) {
-				writer.write(" #Point "+ (aPoint.gid-1) +"\n");
-				writer.write(" " + aPoint.x + " "+aPoint.y + " " + aPoint.z +"\n");
+			int size = points.size();
+			double zcamera = 0;
+			if (size > 3) {
+				double xmin=0, xmax=0;
+				double ymin=0, ymax=0;
+				double zmin=0, zmax=0;
+				xmin = points.get(0).x;
+				xmax = xmin;
+				ymin = points.get(0).y;
+				ymax = ymin;
+				zmin = points.get(0).z;
+				zmax = zmin;
+				for (MyPoint aPoint : points) {
+					if (xmax < aPoint.x) xmax = aPoint.x;
+					if (xmin > aPoint.x) xmin = aPoint.x;
+					if (ymax < aPoint.y) ymax = aPoint.y;
+					if (ymin > aPoint.y) ymin = aPoint.y;
+					if (zmax < aPoint.z) zmax = aPoint.z;
+					if (zmin > aPoint.z) zmin = aPoint.z;
+				}
 
-				x += aPoint.x;
-				y += aPoint.y;
-				if (z < aPoint.z) z = aPoint.z;
-				if (z1 > aPoint.z) z1 = aPoint.z;
+				double distance = xmax - xmin;
+				if (distance < ymax - ymin)
+					distance = ymax - ymin;
+				if (distance < zmax - zmin)
+					distance = zmax - zmin;
+
+				double dx, dy, dz;
+				dx = (xmax + xmin) / 2;
+				dy = (ymax + ymin) / 2;
+				dz = zmin;
+				zcamera = (zmax - zmin) + distance;
+				
+				writer.write("coord Coordinate {\n");
+				writer.write("point [\n");
+				writer.write("#x y z pt\n");
+				for (MyPoint aPoint : points) {
+					writer.write(" #Point "+ (aPoint.gid-1) +"\n");
+					writer.write(" " + (aPoint.x-dx) + " "+(aPoint.y-dy) + " " + (aPoint.z-dz) +"\n");
+				}
+
+				writer.write("] # end point\n");
+				writer.write("} # end coord\n");
+				writer.write("\n");
+				writer.write("coordIndex [\n");
+				for (MyTriangle aTriangle : triangles) {
+					writer.write("#triangle " + (aTriangle.gid-1) + "\n");
+					for (int i=0; i<3; i++)
+						writer.write((aTriangle.points[i].gid-1) + "\t");
+					writer.write("-1\n");
+				}
+				writer.write("\n");
+				writer.write("] # end coordIndex\n");
+				writer.write("\n");
+				writer.write("# color definitions\n");
+				writer.write("colorPerVertex FALSE\n");
+				writer.write("color Color {\n");
+				writer.write("color [\n");
+				writer.write("#defining a palette of colors to use in the colorIndex\n");
+				writer.write("0.0 1.0 0.0 # color #0 is green\n");
+				writer.write("1.0 0.0 0.0 # color #1 is red\n");
+				writer.write("0.0 0.0 1.0 # color #2 is blue\n");
+				writer.write("] # end inner color group\n");
+				writer.write("} # end color node\n");
+				writer.write("colorIndex [\n");
+				writer.write("#color node\n");
+				for (MyTriangle aTriangle : triangles) {
+					writer.write("0 #triangle " + (aTriangle.gid-1)+ "\n");
+				}			
+				writer.write("] # end colorIndex\n");
+				writer.write("\n");
 			}
-			if (points.size() > 0) {
-				x /= points.size();
-				y /= points.size();
-			}
-			z += (z-z1) + 10;
-			writer.write("] # end point\n");
-			writer.write("} # end coord\n");
-			writer.write("\n");
-			writer.write("coordIndex [\n");
-			for (MyTriangle aTriangle : triangles) {
-				writer.write("#triangle " + (aTriangle.gid-1) + "\n");
-				for (int i=0; i<3; i++)
-					writer.write((aTriangle.points[i].gid-1) + "\t");
-				writer.write("-1\n");
-			}
-			writer.write("\n");
-			writer.write("] # end coordIndex\n");
-			writer.write("\n");
-			writer.write("# color definitions\n");
-			writer.write("colorPerVertex FALSE\n");
-			writer.write("color Color {\n");
-			writer.write("color [\n");
-			writer.write("#defining a palette of colors to use in the colorIndex\n");
-			writer.write("0.0 1.0 0.0 # color #0 is green\n");
-			writer.write("1.0 0.0 0.0 # color #1 is red\n");
-			writer.write("0.0 0.0 1.0 # color #2 is blue\n");
-			writer.write("] # end inner color group\n");
-			writer.write("} # end color node\n");
-			writer.write("colorIndex [\n");
-			writer.write("#color node\n");
-			for (MyTriangle aTriangle : triangles) {
-				writer.write("0 #triangle " + (aTriangle.gid-1)+ "\n");
-			}
-			writer.write("] # end colorIndex\n");
-			writer.write("\n");
 			writer.write("} # end geometry\n");
 			writer.write("} # end shape\n");
 			writer.write("] # end children\n");
@@ -786,320 +902,142 @@ public class MyMesh {
 			writer.write("\n");
 			writer.write("Viewpoint {\n");
 			writer.write("description \"middle\"\n");
-			writer.write("position "+x+" "+y+" "+z+"\n");
+			writer.write("position 0 0 "+zcamera+"\n");
 			writer.write("} # end viewpoint\n");
 			writer.write("\n");
 
 			writer.close();
 		} catch (IOException e) {
 		}
-
+		
 	}
 
 	/**
-	 * sort criteria for GIDs
-	 *
-	 * @param v1
-	 * @param v2
-	 * @return
+	 * Set missing GIDs for points
 	 */
-	private int sortCriteria(int v1, int v2) {
-		int value = 0;
-		if (v1 == v2)
-			value = 0;
-		else if (v1 == -1)
-			value = -1;
-		else if (v2 == -1)
-			value = 1;
-		else if (v1 < v2)
-			value = 1;
-		else
-			value = -1;
-		return value;
+	protected void SetAllGIDs_Point() {
+		int theSize = points.size();
+		
+		int i=0;
+		while (i < theSize) {
+			MyPoint aPoint = points.get(i);
+			if (aPoint != null) {
+				int gid = aPoint.gid;
+				if (gid == i+1) {
+					// the point is at it's right place
+					i++;
+				}
+				else if ((gid > 0) && (gid <= theSize)) {
+					// switch with the other point
+					MyPoint altPoint = points.get(gid-1);
+					points.set(gid-1, aPoint);
+					points.set(i, altPoint);
+				}
+				else
+					i++;
+			}
+		}
+		
+		// then set remain values
+		for (i=0; i < theSize; i++) {
+			MyPoint aPoint = points.get(i);
+			if (aPoint != null) {
+				int gid = aPoint.gid;
+				if (gid <= 0) {
+					aPoint.setGid(i+1);
+				}
+			}
+		}
 	}
+	
 	/**
-	 * Quick sort on points Ordered according to x and y
-	 *
-	 * @param min_index
-	 * @param max_index
+	 * Set missing GIDs for edges
 	 */
-	private void quickSort_Points(int min_index,
-			int max_index) {
-		int i, j;
-		int enreg_ref;
-		int cle_ref1;
-		boolean found;
-		MyPoint anObject;
-
-		i = min_index;
-		j = max_index;
-		enreg_ref = (max_index + min_index) / 2;
-		anObject = points.get(enreg_ref);
-		cle_ref1 = anObject.getGid();
-		do {
-			// first : increasing index
-			found = false;
-			while (!found) {
-				if (i > max_index)
-					found = true;
-				else {
-					anObject = points.get(i);
-					int cle = anObject.getGid();
-					if (sortCriteria(cle, cle_ref1) <= 0)
-						found = true;
-					else
-						i++;
+	protected void SetAllGIDs_Edges() {
+		int theSize = edges.size();
+		
+		int i=0;
+		while (i < theSize) {
+			MyEdge anEdge = edges.get(i);
+			if (anEdge != null) {
+				int gid = anEdge.gid;
+				if (gid == i+1) {
+					// the point is at it's right place
+					i++;
 				}
-			}
-			// second : decreasing index
-			found = false;
-			while (!found) {
-				if (min_index > j)
-					found = true;
-				else {
-					anObject = points.get(j);
-					int cle = anObject.getGid();
-					if (sortCriteria(cle, cle_ref1) >= 0)
-						found = true;
-					else
-						j--;
+				else if ((gid > 0) && (gid <= theSize)) {
+					// switch with the other point
+					MyEdge altEdge = edges.get(gid-1);
+					edges.set(gid-1, anEdge);
+					edges.set(i, altEdge);
 				}
+				else
+					i++;
 			}
-			// exchange values
-			if (i <= j) {
-				// we can change values
-				anObject = points.get(i);
-				points.set(i, points.get(j));
-				points.set(j, anObject);
-
-				i++;
-				j--;
-			}
-		} while (i <= j);
-
-		// Recurrent calls
-		if (min_index < j) {
-			// if left side is not empty
-			quickSort_Points(min_index, j);
 		}
-		if (max_index > i) {
-			// if right side is not empty
-			quickSort_Points(i, max_index);
+		
+		// then set remain values
+		for (i=0; i < theSize; i++) {
+			MyEdge anEdge = edges.get(i);
+			if (anEdge != null) {
+				int gid = anEdge.gid;
+				if (gid <= 0) {
+					anEdge.setGid(i+1);
+				}
+			}
 		}
 	}
 
 	/**
-	 * Quick sort on points Ordered according to x and y
-	 *
-	 * @param min_index
-	 * @param max_index
+	 * Set missing GIDs for triangles
 	 */
-	private void quickSort_Edges(int min_index,
-			int max_index) {
-		int i, j;
-		int enreg_ref;
-		int cle_ref1;
-		boolean found;
-		MyEdge anObject;
-
-		i = min_index;
-		j = max_index;
-		enreg_ref = (max_index + min_index) / 2;
-		anObject = edges.get(enreg_ref);
-		cle_ref1 = anObject.getGid();
-		do {
-			// first : increasing index
-			found = false;
-			while (!found) {
-				if (i > max_index)
-					found = true;
-				else {
-					anObject = edges.get(i);
-					int cle = anObject.getGid();
-					if (sortCriteria(cle, cle_ref1) <= 0)
-						found = true;
-					else
-						i++;
+	protected void SetAllGIDs_Triangle() {
+		int theSize = triangles.size();
+		
+		int i=0;
+		while (i < theSize) {
+			MyTriangle aTriangle = triangles.get(i);
+			if (aTriangle != null) {
+				int gid = aTriangle.gid;
+				if (gid == i+1) {
+					// the point is at it's right place
+					i++;
 				}
-			}
-			// second : decreasing index
-			found = false;
-			while (!found) {
-				if (min_index > j)
-					found = true;
-				else {
-					anObject = edges.get(j);
-					int cle = anObject.getGid();
-					if (sortCriteria(cle, cle_ref1) >= 0)
-						found = true;
-					else
-						j--;
+				else if ((gid > 0) && (gid <= theSize)) {
+					// switch with the other point
+					MyTriangle altTriangle = triangles.get(gid-1);
+					triangles.set(gid-1, aTriangle);
+					triangles.set(i, altTriangle);
 				}
+				else
+					i++;
 			}
-			// exchange values
-			if (i <= j) {
-				// we can change values
-				anObject = edges.get(i);
-				edges.set(i, edges.get(j));
-				edges.set(j, anObject);
-
-				i++;
-				j--;
-			}
-		} while (i <= j);
-
-		// Recurrent calls
-		if (min_index < j) {
-			// if left side is not empty
-			quickSort_Edges(min_index, j);
 		}
-		if (max_index > i) {
-			// if right side is not empty
-			quickSort_Edges(i, max_index);
+		
+		// then set remain values
+		for (i=0; i < theSize; i++) {
+			MyTriangle aTriangle = triangles.get(i);
+			if (aTriangle != null) {
+				int gid = aTriangle.gid;
+				if (gid <= 0) {
+					aTriangle.setGid(i+1);
+				}
+			}
 		}
 	}
+	
 
 	/**
-	 * Quick sort on points Ordered according to x and y
-	 *
-	 * @param min_index
-	 * @param max_index
-	 */
-	private void quickSort_Triangles( int min_index,
-			int max_index) {
-		int i, j;
-		int enreg_ref;
-		int cle_ref1;
-		boolean found;
-		MyTriangle anObject;
-
-		i = min_index;
-		j = max_index;
-		enreg_ref = (max_index + min_index) / 2;
-		anObject = triangles.get(enreg_ref);
-		cle_ref1 = anObject.getGid();
-		do {
-			// first : increasing index
-			found = false;
-			while (!found) {
-				if (i > max_index)
-					found = true;
-				else {
-					anObject = triangles.get(i);
-					int cle = anObject.getGid();
-					if (sortCriteria(cle, cle_ref1) <= 0)
-						found = true;
-					else
-						i++;
-				}
-			}
-			// second : decreasing index
-			found = false;
-			while (!found) {
-				if (min_index > j)
-					found = true;
-				else {
-					anObject = triangles.get(j);
-					int cle = anObject.getGid();
-					if (sortCriteria(cle, cle_ref1) >= 0)
-						found = true;
-					else
-						j--;
-				}
-			}
-			// exchange values
-			if (i <= j) {
-				// we can change values
-				anObject = triangles.get(i);
-				triangles.set(i, triangles.get(j));
-				triangles.set(j, anObject);
-
-				i++;
-				j--;
-			}
-		} while (i <= j);
-
-		// Recurrent calls
-		if (min_index < j) {
-			// if left side is not empty
-			quickSort_Triangles(min_index, j);
-		}
-		if (max_index > i) {
-			// if right side is not empty
-			quickSort_Triangles(i, max_index);
-		}
-	}
-
-
-
-
-	/**
-	 * Set missing GIDs for edges and points
+	 * Set missing GIDs for points, edges and triangles
 	 */
 	public void setAllGids() {
 		// Process points
-		quickSort_Points( 0, points.size()-1);
-		ListIterator<MyPoint> iterPoint = points.listIterator();
-		MyPoint vPoint = iterPoint.next();
-
-		int lastIndex = 0;
-		for (MyPoint aPoint:points) {
-			if (aPoint.gid < 0) {
-				lastIndex++;
-				int gid = vPoint.getGid();
-				while (gid == lastIndex) {
-					lastIndex++;
-					vPoint = iterPoint.next();
-					gid = vPoint.getGid();
-				}
-				aPoint.setGid(lastIndex);
-			}
-			else
-				lastIndex = aPoint.gid;
-		}
-		quickSort_Points(0, points.size()-1);
+		SetAllGIDs_Point();
 
 		// Process edges
-		quickSort_Edges(0, edges.size()-1);
-		ListIterator<MyEdge> iterEdge = edges.listIterator();
-		MyEdge vEdge = iterEdge.next();
-
-		lastIndex = 0;
-		for (MyEdge anEdge:edges) {
-			if (anEdge.gid < 0) {
-				lastIndex++;
-				int gid = vEdge.getGid();
-				while (gid == lastIndex) {
-					lastIndex++;
-					vEdge = iterEdge.next();
-					gid = vEdge.getGid();
-				}
-				anEdge.setGid(lastIndex);
-			}
-			else
-				lastIndex = anEdge.gid;
-		}
-		quickSort_Edges(0, edges.size()-1);
+		SetAllGIDs_Edges();
 
 		// Process triangles
-		quickSort_Triangles(0, triangles.size()-1);
-		ListIterator<MyTriangle> iterTriangle = triangles.listIterator();
-		MyTriangle vTriangle = iterTriangle.next();
-		lastIndex = 0;
-		for (MyTriangle aTriangle:triangles) {
-			if (aTriangle.gid < 0) {
-				lastIndex++;
-				int gid = vTriangle.getGid();
-				while (gid == lastIndex) {
-					lastIndex++;
-					vTriangle = iterTriangle.next();
-					gid = vTriangle.getGid();
-				}
-				aTriangle.setGid(lastIndex);
-			}
-			else
-				lastIndex = aTriangle.gid;
-		}
-		quickSort_Triangles(0, triangles.size()-1);
+		SetAllGIDs_Triangle();
 	}
 }
