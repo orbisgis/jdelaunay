@@ -29,10 +29,16 @@ public class MyMesh {
 	private long startComputation;
 	private boolean displayCircles;
 	private MyPoint lastSewerPoint;
+	private MyPoint lastWallPoint;
+	private boolean meshComputed;
+
+	// const strings
+	static final public String MeshType_Wall = new String("Wall");
+	static final public String MeshType_Sewer = new String("Sewer");
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
-	 *
+	 * 
 	 */
 	public MyMesh() {
 		// Generate vectors
@@ -49,12 +55,14 @@ public class MyMesh {
 
 		affiche = null;
 		displayCircles = false;
+		meshComputed = false;
 		lastSewerPoint = null;
+		lastWallPoint = null;
 	}
 
 	/**
 	 * Set bounding box for the generation
-	 *
+	 * 
 	 * @param maxx
 	 * @param maxy
 	 */
@@ -65,7 +73,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random points
-	 *
+	 * 
 	 * @param _NbPoints
 	 */
 	public void setRandomPoints(int _NbPoints) {
@@ -81,7 +89,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random edges Can be applied only if points are created
-	 *
+	 * 
 	 * @param _NbEdges
 	 */
 	public void setRandomEdges(int _NbEdges) {
@@ -102,7 +110,7 @@ public class MyMesh {
 
 	/**
 	 * Get JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @return
 	 */
 	public MyDrawing getAffiche() {
@@ -111,7 +119,7 @@ public class MyMesh {
 
 	/**
 	 * Set JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @param affiche
 	 */
 	public void setAffiche(MyDrawing affiche) {
@@ -120,7 +128,7 @@ public class MyMesh {
 
 	/**
 	 * Get Duration
-	 *
+	 * 
 	 * @return
 	 */
 	public long getDuration() {
@@ -128,8 +136,22 @@ public class MyMesh {
 	}
 
 	/**
+	 * @return
+	 */
+	public boolean isMeshComputed() {
+		return meshComputed;
+	}
+
+	/**
+	 * @param meshComputed
+	 */
+	public void setMeshComputed(boolean meshComputed) {
+		this.meshComputed = meshComputed;
+	}
+
+	/**
 	 * Display circles around triangles when displayed in the JPanel
-	 *
+	 * 
 	 * @param displayCircles
 	 */
 	public void setDisplayCircles(boolean displayCircles) {
@@ -165,11 +187,13 @@ public class MyMesh {
 		points.add(aPoint3);
 		points.add(aPoint4);
 
-		// Generate lines, taking into account the fact there are points withe the same x and y
+		// Generate lines, taking into account the fact there are points withe
+		// the same x and y
 		MyTools.quickSort_Points(points);
 		MyPoint LastPoint;
-		
-		// Do not remove points order because it is linked to the order we chose for the points
+
+		// Do not remove points order because it is linked to the order we chose
+		// for the points
 		// join points 1 and 2 - same x
 		LastPoint = aPoint1;
 		for (MyPoint aPoint : points) {
@@ -213,7 +237,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of points in the Mesh
-	 *
+	 * 
 	 * @return NbPoints
 	 */
 	public int getNbPoints() {
@@ -222,7 +246,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of edges in the Mesh
-	 *
+	 * 
 	 * @return NbEdges
 	 */
 	public int getNbEdges() {
@@ -252,7 +276,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of triangles in the Mesh
-	 *
+	 * 
 	 * @return NbTriangles
 	 */
 	public int getNbTriangles() {
@@ -261,7 +285,7 @@ public class MyMesh {
 
 	/**
 	 * Get the points structure
-	 *
+	 * 
 	 * @return points
 	 */
 	public ArrayList<MyPoint> getPoints() {
@@ -270,7 +294,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
-	 *
+	 * 
 	 * @param _point
 	 */
 	public void setPoints(ArrayList<MyPoint> _point) {
@@ -281,7 +305,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the array
-	 *
+	 * 
 	 * @param _point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> _point) {
@@ -290,7 +314,7 @@ public class MyMesh {
 
 	/**
 	 * Get the edges structure
-	 *
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getEdges() {
@@ -299,7 +323,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(ArrayList<MyEdge> _edges) {
@@ -310,7 +334,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the LinkedList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
@@ -321,7 +345,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdgesRef(ArrayList<MyEdge> _edges) {
@@ -331,7 +355,7 @@ public class MyMesh {
 	/**
 	 * Get the complementary edges structure This structure emorize the edges
 	 * that have to be added to the triangularization
-	 *
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getCompEdges() {
@@ -340,7 +364,7 @@ public class MyMesh {
 
 	/**
 	 * Get the triangle structure
-	 *
+	 * 
 	 * @return triangle
 	 */
 	public LinkedList<MyTriangle> getTriangles() {
@@ -349,7 +373,7 @@ public class MyMesh {
 
 	/**
 	 * get a point from its GID
-	 *
+	 * 
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -366,7 +390,7 @@ public class MyMesh {
 
 	/**
 	 * get an edge from its GID
-	 *
+	 * 
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -387,7 +411,6 @@ public class MyMesh {
 		}
 		return anEdge;
 	}
-
 
 	/**
 	 * Start timer
@@ -411,12 +434,14 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addSewerEntry(MyPoint sewerPoint) throws DelaunayError {
-		if (! points.contains(sewerPoint))
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerPoint);
+		if (!points.contains(sewerPoint))
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidSewerPoint);
 		else if (lastSewerPoint != null)
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerStart);
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidSewerStart);
 		else {
-			sewerPoint.setPointType("Sewer");
+			sewerPoint.setPointType(MeshType_Sewer);
 			lastSewerPoint = sewerPoint;
 		}
 	}
@@ -428,21 +453,25 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addSewerExit(MyPoint sewerPoint) throws DelaunayError {
-		if (! points.contains(sewerPoint))
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerPoint);
+		if (!points.contains(sewerPoint))
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidSewerPoint);
 		else if (lastSewerPoint == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerEnd);
 		else if (lastSewerPoint.z <= sewerPoint.z)
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerDirection);
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidSewerDirection);
 		else {
-			sewerPoint.setPointType("Sewer");
-			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint, "Sewer");
+			sewerPoint.setPointType(MeshType_Sewer);
+			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint,
+					MeshType_Sewer);
 			anEdge.marked = 1;
-			edges.add(anEdge);
+			anEdge.outsideMesh = true;
+			compEdges.add(anEdge);
 			lastSewerPoint = null;
 		}
 	}
-	
+
 	/**
 	 * add a sewer point (neither start or exit
 	 * 
@@ -451,16 +480,20 @@ public class MyMesh {
 	 */
 	public void addSewerPoint(MyPoint sewerPoint) throws DelaunayError {
 		if (lastSewerPoint == null)
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerPoint);
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidSewerPoint);
 		else if (lastSewerPoint.z <= sewerPoint.z)
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerDirection);
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidSewerDirection);
 		else {
-			sewerPoint.setPointType("Sewer");
+			sewerPoint.setPointType(MeshType_Sewer);
 			points.add(sewerPoint);
 			sewerPoint.marked = true;
-			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint, "Sewer");
+			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint,
+					MeshType_Sewer);
 			anEdge.marked = 1;
-			edges.add(anEdge);
+			anEdge.outsideMesh = true;
+			compEdges.add(anEdge);
 			lastSewerPoint = sewerPoint;
 		}
 	}
@@ -474,17 +507,64 @@ public class MyMesh {
 	public void setSewerPoint(MyPoint sewerPoint) throws DelaunayError {
 		if (lastSewerPoint != null)
 			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerEnd);
-		else if (! sewerPoint.getPointType().equals("Sewer") )
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerStart);
+		else if (!sewerPoint.getPointType().equals("Sewer"))
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidSewerStart);
 		else {
 			lastSewerPoint = sewerPoint;
 		}
 	}
 
 	/**
+	 * Add a wall point start
+	 * 
+	 * @param wallPoint
+	 * @throws DelaunayError
+	 */
+	public void addWallStart(MyPoint wallPoint) throws DelaunayError {
+		if (!isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+		else if (!points.contains(wallPoint))
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidWallPoint);
+		else {
+			// Wall point start
+			lastWallPoint = wallPoint;
+			wallPoint.setPointType(MeshType_Wall);
+		}
+	}
+
+	/**
+	 * Add a wall point end
+	 * 
+	 * @param wallPoint
+	 * @throws DelaunayError
+	 */
+	public void addWallEnd(MyPoint wallPoint) throws DelaunayError {
+		if (!isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+		else if (!points.contains(wallPoint))
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidWallPoint);
+		else if (lastWallPoint == null)
+			throw new DelaunayError(
+					DelaunayError.DelaunayError_invalidWallStart);
+		else {
+			// Wall point end
+			wallPoint.setPointType(MeshType_Wall);
+
+			MyEdge anEdge = new MyEdge(lastWallPoint, wallPoint, MeshType_Wall);
+			anEdge.marked = 1;
+			compEdges.add(anEdge);
+
+			lastSewerPoint = null;
+		}
+	}
+
+	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
-	 *
+	 * 
 	 * @param g
 	 */
 	public void displayObject(Graphics g) {
@@ -502,7 +582,6 @@ public class MyMesh {
 		minY = theBox.maxy;
 		int decalageX = 10;
 		int decalageY = 630;
-
 
 		g.setColor(Color.black);
 		g.drawString(triangles.size() + " Triangles - " + edges.size()
@@ -532,12 +611,12 @@ public class MyMesh {
 		}
 		// Draw lines
 		if (false)
-		if (!compEdges.isEmpty())
-			for (MyEdge aVertex : compEdges) {
-				aVertex.setColor(g);
-				aVertex.displayObject(g, decalageX, decalageY, minX, minY,
-						scaleX, scaleY);
-			}
+			if (!compEdges.isEmpty())
+				for (MyEdge aVertex : compEdges) {
+					aVertex.setColor(g);
+					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
+							scaleX, scaleY);
+				}
 
 		if (false)
 			if (!edges.isEmpty())
@@ -549,13 +628,13 @@ public class MyMesh {
 
 		int psize = points.size();
 		if (false)
-		if ((psize >0) && (psize<100)) {
-			for (MyPoint aPoint : points) {
-				aPoint.setColor(g);
-				aPoint.displayObject(g, decalageX, decalageY, minX, minY,
-						scaleX, scaleY);
+			if ((psize > 0) && (psize < 100)) {
+				for (MyPoint aPoint : points) {
+					aPoint.setColor(g);
+					aPoint.displayObject(g, decalageX, decalageY, minX, minY,
+							scaleX, scaleY);
+				}
 			}
-		}
 	}
 
 	/**
@@ -642,6 +721,7 @@ public class MyMesh {
 
 	/**
 	 * Save the Mesh in a file
+	 * 
 	 * @param path
 	 */
 	public void saveMesh(String path) {
@@ -752,7 +832,7 @@ public class MyMesh {
 
 	/**
 	 * Save Mesh
-	 *
+	 * 
 	 * @param path
 	 */
 	public void saveMeshUTF(String path) {
@@ -787,7 +867,6 @@ public class MyMesh {
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * Export to VRML file Mesh.wrl
@@ -825,10 +904,11 @@ public class MyMesh {
 			writer.write("\n");
 			int size = points.size();
 			double zcamera = 0;
+			double dx=0, dy=0, dz=0;
 			if (size > 3) {
-				double xmin=0, xmax=0;
-				double ymin=0, ymax=0;
-				double zmin=0, zmax=0;
+				double xmin = 0, xmax = 0;
+				double ymin = 0, ymax = 0;
+				double zmin = 0, zmax = 0;
 				xmin = points.get(0).x;
 				xmax = xmin;
 				ymin = points.get(0).y;
@@ -836,12 +916,18 @@ public class MyMesh {
 				zmin = points.get(0).z;
 				zmax = zmin;
 				for (MyPoint aPoint : points) {
-					if (xmax < aPoint.x) xmax = aPoint.x;
-					if (xmin > aPoint.x) xmin = aPoint.x;
-					if (ymax < aPoint.y) ymax = aPoint.y;
-					if (ymin > aPoint.y) ymin = aPoint.y;
-					if (zmax < aPoint.z) zmax = aPoint.z;
-					if (zmin > aPoint.z) zmin = aPoint.z;
+					if (xmax < aPoint.x)
+						xmax = aPoint.x;
+					if (xmin > aPoint.x)
+						xmin = aPoint.x;
+					if (ymax < aPoint.y)
+						ymax = aPoint.y;
+					if (ymin > aPoint.y)
+						ymin = aPoint.y;
+					if (zmax < aPoint.z)
+						zmax = aPoint.z;
+					if (zmin > aPoint.z)
+						zmin = aPoint.z;
 				}
 
 				double distance = xmax - xmin;
@@ -850,18 +936,32 @@ public class MyMesh {
 				if (distance < zmax - zmin)
 					distance = zmax - zmin;
 
-				double dx, dy, dz;
 				dx = (xmax + xmin) / 2;
 				dy = (ymax + ymin) / 2;
 				dz = zmin;
 				zcamera = (zmax - zmin) + distance;
-				
+
 				writer.write("coord Coordinate {\n");
 				writer.write("point [\n");
 				writer.write("#x y z pt\n");
 				for (MyPoint aPoint : points) {
-					writer.write(" #Point "+ (aPoint.gid-1) +"\n");
-					writer.write(" " + (aPoint.x-dx) + " "+(aPoint.y-dy) + " " + (aPoint.z-dz) +"\n");
+					writer.write(" #Point " + (aPoint.gid - 1) + "\n");
+					writer.write(" " + (aPoint.x - dx) + " " + (aPoint.y - dy)
+							+ " " + (aPoint.z - dz) + "\n");
+				}
+				// add points for walls
+				for (MyEdge anEdge : compEdges) {
+					if (anEdge.getType() == MeshType_Wall) {
+						writer.write("#wall points\n");
+						for (int i = 0; i < 2; i++) {
+							MyPoint aPoint = anEdge.point[i];
+							writer.write(" #Wall Point " + (aPoint.gid - 1)
+									+ "\n");
+							writer.write(" " + (aPoint.x - dx) + " "
+									+ (aPoint.y - dy) + " "
+									+ (aPoint.z - dz + 2) + "\n");
+						}
+					}
 				}
 
 				writer.write("] # end point\n");
@@ -869,11 +969,26 @@ public class MyMesh {
 				writer.write("\n");
 				writer.write("coordIndex [\n");
 				for (MyTriangle aTriangle : triangles) {
-					writer.write("#triangle " + (aTriangle.gid-1) + "\n");
-					for (int i=0; i<3; i++)
-						writer.write((aTriangle.points[i].gid-1) + "\t");
+					writer.write("#triangle " + (aTriangle.gid - 1) + "\n");
+					for (int i = 0; i < 3; i++)
+						writer.write((aTriangle.points[i].gid - 1) + "\t");
 					writer.write("-1\n");
 				}
+
+				// add walls
+				int index = points.size();
+				for (MyEdge anEdge : compEdges) {
+					if (anEdge.getType() == MeshType_Wall) {
+						writer.write("#wall " + (anEdge.gid - 1) + "\n");
+						writer.write((anEdge.point[0].gid - 1) + "\t");
+						writer.write((anEdge.point[1].gid - 1) + "\t");
+						writer.write((index + 1) + "\t");
+						writer.write((index) + "\t");
+						writer.write("-1\n");
+						index += 2;
+					}
+				}
+
 				writer.write("\n");
 				writer.write("] # end coordIndex\n");
 				writer.write("\n");
@@ -881,17 +996,22 @@ public class MyMesh {
 				writer.write("colorPerVertex FALSE\n");
 				writer.write("color Color {\n");
 				writer.write("color [\n");
-				writer.write("#defining a palette of colors to use in the colorIndex\n");
+				writer
+						.write("#defining a palette of colors to use in the colorIndex\n");
 				writer.write("0.0 1.0 0.0 # color #0 is green\n");
-				writer.write("1.0 0.0 0.0 # color #1 is red\n");
-				writer.write("0.0 0.0 1.0 # color #2 is blue\n");
+				writer.write("1.0 0.75 0.5 # color #1 is wall\n");
 				writer.write("] # end inner color group\n");
 				writer.write("} # end color node\n");
 				writer.write("colorIndex [\n");
 				writer.write("#color node\n");
 				for (MyTriangle aTriangle : triangles) {
-					writer.write("0 #triangle " + (aTriangle.gid-1)+ "\n");
-				}			
+					writer.write("0 #triangle " + (aTriangle.gid - 1) + "\n");
+				}
+				for (MyEdge anEdge : compEdges) {
+					if (anEdge.getType() == MeshType_Wall) {
+						writer.write("1 #wall edge " + (anEdge.gid - 1) + "\n");
+					}
+				}
 				writer.write("] # end colorIndex\n");
 				writer.write("\n");
 			}
@@ -900,16 +1020,51 @@ public class MyMesh {
 			writer.write("] # end children\n");
 			writer.write("} # end transform\n");
 			writer.write("\n");
+
+			// Add sewer
+			if (false)
+			for (MyEdge anEdge : compEdges) {
+				if (anEdge.getType() == MeshType_Sewer) {
+					// Add sewer element NOT FINISHED SO LET IT UNREACHABLE
+					MyPoint aPoint1 = anEdge.getStart();
+					MyPoint aPoint2 = anEdge.getEnd();
+					double length = Math.sqrt(aPoint1.squareDistance(aPoint2));
+					
+					writer.write("# sewer\n");
+					writer.write("Transform {\n");
+					writer.write("translation " + (aPoint1.x - dx) + " " + (aPoint1.y - dy) + " " + (aPoint1.z - dz) + " " + "\n");
+					writer.write("rotation 1 0 0 0\n");
+					writer.write("children [\n");
+					writer.write(" Shape {\n");
+					writer.write("geometry Cylinder {\n");
+					writer.write("height "+length+"\n");
+					writer.write("radius .2\n");
+					writer.write("top TRUE\n");
+					writer.write("side TRUE\n");
+					writer.write("bottom FALSE\n");
+					writer.write("} # end geometry\n");
+					writer.write("appearance Appearance {\n");
+					writer.write(" material Material {\n");
+					writer.write("diffuseColor .8 1 .8\n");
+					writer.write("} # end material\n");
+					writer.write("} # end appearance\n");
+					writer.write("} # end shape\n");
+					writer.write("] # end chilren\n");
+					writer.write("} # end Transform\n");
+				}
+			}
+
+			writer.write("\n");
 			writer.write("Viewpoint {\n");
 			writer.write("description \"middle\"\n");
-			writer.write("position 0 0 "+zcamera+"\n");
+			writer.write("position 0 0 " + zcamera + "\n");
 			writer.write("} # end viewpoint\n");
 			writer.write("\n");
 
 			writer.close();
 		} catch (IOException e) {
 		}
-		
+
 	}
 
 	/**
@@ -917,72 +1072,68 @@ public class MyMesh {
 	 */
 	protected void SetAllGIDs_Point() {
 		int theSize = points.size();
-		
-		int i=0;
+
+		int i = 0;
 		while (i < theSize) {
 			MyPoint aPoint = points.get(i);
 			if (aPoint != null) {
 				int gid = aPoint.gid;
-				if (gid == i+1) {
+				if (gid == i + 1) {
 					// the point is at it's right place
 					i++;
-				}
-				else if ((gid > 0) && (gid <= theSize)) {
+				} else if ((gid > 0) && (gid <= theSize)) {
 					// switch with the other point
-					MyPoint altPoint = points.get(gid-1);
-					points.set(gid-1, aPoint);
+					MyPoint altPoint = points.get(gid - 1);
+					points.set(gid - 1, aPoint);
 					points.set(i, altPoint);
-				}
-				else
+				} else
 					i++;
 			}
 		}
-		
+
 		// then set remain values
-		for (i=0; i < theSize; i++) {
+		for (i = 0; i < theSize; i++) {
 			MyPoint aPoint = points.get(i);
 			if (aPoint != null) {
 				int gid = aPoint.gid;
 				if (gid <= 0) {
-					aPoint.setGid(i+1);
+					aPoint.setGid(i + 1);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Set missing GIDs for edges
 	 */
 	protected void SetAllGIDs_Edges() {
 		int theSize = edges.size();
-		
-		int i=0;
+
+		int i = 0;
 		while (i < theSize) {
 			MyEdge anEdge = edges.get(i);
 			if (anEdge != null) {
 				int gid = anEdge.gid;
-				if (gid == i+1) {
+				if (gid == i + 1) {
 					// the point is at it's right place
 					i++;
-				}
-				else if ((gid > 0) && (gid <= theSize)) {
+				} else if ((gid > 0) && (gid <= theSize)) {
 					// switch with the other point
-					MyEdge altEdge = edges.get(gid-1);
-					edges.set(gid-1, anEdge);
+					MyEdge altEdge = edges.get(gid - 1);
+					edges.set(gid - 1, anEdge);
 					edges.set(i, altEdge);
-				}
-				else
+				} else
 					i++;
 			}
 		}
-		
+
 		// then set remain values
-		for (i=0; i < theSize; i++) {
+		for (i = 0; i < theSize; i++) {
 			MyEdge anEdge = edges.get(i);
 			if (anEdge != null) {
 				int gid = anEdge.gid;
 				if (gid <= 0) {
-					anEdge.setGid(i+1);
+					anEdge.setGid(i + 1);
 				}
 			}
 		}
@@ -993,39 +1144,36 @@ public class MyMesh {
 	 */
 	protected void SetAllGIDs_Triangle() {
 		int theSize = triangles.size();
-		
-		int i=0;
+
+		int i = 0;
 		while (i < theSize) {
 			MyTriangle aTriangle = triangles.get(i);
 			if (aTriangle != null) {
 				int gid = aTriangle.gid;
-				if (gid == i+1) {
+				if (gid == i + 1) {
 					// the point is at it's right place
 					i++;
-				}
-				else if ((gid > 0) && (gid <= theSize)) {
+				} else if ((gid > 0) && (gid <= theSize)) {
 					// switch with the other point
-					MyTriangle altTriangle = triangles.get(gid-1);
-					triangles.set(gid-1, aTriangle);
+					MyTriangle altTriangle = triangles.get(gid - 1);
+					triangles.set(gid - 1, aTriangle);
 					triangles.set(i, altTriangle);
-				}
-				else
+				} else
 					i++;
 			}
 		}
-		
+
 		// then set remain values
-		for (i=0; i < theSize; i++) {
+		for (i = 0; i < theSize; i++) {
 			MyTriangle aTriangle = triangles.get(i);
 			if (aTriangle != null) {
 				int gid = aTriangle.gid;
 				if (gid <= 0) {
-					aTriangle.setGid(i+1);
+					aTriangle.setGid(i + 1);
 				}
 			}
 		}
 	}
-	
 
 	/**
 	 * Set missing GIDs for points, edges and triangles

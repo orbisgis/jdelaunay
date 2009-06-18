@@ -32,6 +32,10 @@ public class DelaunayError extends Throwable {
 	public final static int DelaunayError_invalidSewerEnd = 303;
 	public final static int DelaunayError_invalidSewerDirection = 304;
 
+	public final static int DelaunayError_invalidWallPoint = 311;
+	public final static int DelaunayError_invalidWallStart = 312;
+	public final static int DelaunayError_invalidWallEnd = 313;
+
 	public final static int DelaunayError_internalError = 999;
 
 	public DelaunayError(int ErrorCode) {
@@ -77,7 +81,13 @@ public class DelaunayError extends Throwable {
 			return "invalid sewer exit point";
 		case DelaunayError_invalidSewerDirection :
 			return "invalid sewer direction";
-			
+		case DelaunayError_invalidWallPoint :
+			return "invalid wall point";
+		case DelaunayError_invalidWallStart :
+			return "invalid wall point start";
+		case DelaunayError_invalidWallEnd :
+			return "invalid wall point end";
+		
 		default:
 			return "";
 		}

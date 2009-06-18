@@ -72,8 +72,7 @@ public class MyPoint {
 		x = _x;
 		y = _y;
 		z = _z;
-		if (_type != null)
-			type = new String(_type);
+		type = _type;
 	}
 
 	/**
@@ -90,8 +89,7 @@ public class MyPoint {
 		x = _x;
 		y = _y;
 		z = _z;
-		if (_type != null)
-			type = new String(_type);
+		type = _type;
 		gid = _gid;
 	}
 
@@ -120,8 +118,7 @@ public class MyPoint {
 		x = _pt.x;
 		y = _pt.y;
 		z = _pt.z;
-		if (_pt.type != null)
-			type = new String(_pt.type);
+		type = _pt.type;
 	}
 
 	/**

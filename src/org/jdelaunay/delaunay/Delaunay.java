@@ -40,7 +40,6 @@ public class Delaunay {
 	// Working index vector
 	private LinkedList<MyEdge> badEdgesQueueList;
 	private LinkedList<MyEdge> boundaryEdges;
-	private boolean meshComputed;
 
 	// GIDs
 	private int point_GID;
@@ -58,7 +57,6 @@ public class Delaunay {
 		minArea = 1;
 		minAngle = 5;
 		refinement = 0;
-		meshComputed = false;
 		verbose = false;
 	}
 
@@ -200,7 +198,7 @@ public class Delaunay {
 	public void processDelaunay() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (meshComputed)
+		else if (theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_Generated);
 		else if (theMesh.getNbPoints() < 3)
 			throw new DelaunayError(
@@ -292,7 +290,7 @@ public class Delaunay {
 			// It's fine, we computed the mesh
 			if (verbose)
 				System.out.println("end processing");
-			meshComputed = true;
+			theMesh.setMeshComputed(true);
 		}
 	}
 
@@ -309,7 +307,7 @@ public class Delaunay {
 		else {
 			edges = new ArrayList<MyEdge>();
 			triangles = new LinkedList<MyTriangle>();
-			meshComputed = false;
+			theMesh.setMeshComputed(false);
 
 			// Restart the process
 			processDelaunay();
@@ -727,7 +725,7 @@ public class Delaunay {
 	public void addEdge(MyPoint p1, MyPoint p2) throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!meshComputed)
+		else if (! theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else if (p1.squareDistance(p2) < tolarence)
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
@@ -754,7 +752,7 @@ public class Delaunay {
 	public void addEdge(MyEdge anEdge) throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!meshComputed)
+		else if (! theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else if (anEdge.getStart().squareDistance(anEdge.getEnd()) < tolarence)
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
@@ -910,7 +908,7 @@ public class Delaunay {
 	public void refineMesh() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!meshComputed)
+		else if (! theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 			// check all triangle to save all the ones with a bad area criteria
@@ -1001,7 +999,7 @@ public class Delaunay {
 	 * 
 	 * @param compEdges
 	 */
-	public void processEdges(ArrayList<MyEdge> compEdges) {
+	private void processEdges(ArrayList<MyEdge> compEdges) {
 		int nbEdges = edges.size();
 		if (nbEdges > 0)
 			quickSort_Edges(edges, 0, nbEdges - 1, false);
@@ -1010,8 +1008,13 @@ public class Delaunay {
 		if (nbEdges2 > 0)
 			quickSort_Edges(compEdges, 0, nbEdges2 - 1, false);
 
+		// Process unconnected edges
+		ArrayList<MyEdge> remain0 = processEdges_Step0(compEdges);
+		if (verbose)
+			System.out.println("Edges left after phase 1 : " + remain0.size());
+
 		// Process exact existing edges
-		ArrayList<MyEdge> remain1 = processEdges_Step1(compEdges);
+		ArrayList<MyEdge> remain1 = processEdges_Step1(remain0);
 		if (verbose)
 			System.out.println("Edges left after phase 1 : " + remain1.size());
 
@@ -1026,6 +1029,33 @@ public class Delaunay {
 			quickSort_Edges(remain2, 0, nbEdges4 - 1, true);
 		processOtherEdges(remain2);
 
+		// Post process some edges
+		postProcessEdges();
+
+	}
+
+	/**
+	 * Mark existing edges (compEdges and edges are supposed to be sorted)
+	 * 
+	 * @param compEdges
+	 * @return list of remaining edges
+	 */
+	private ArrayList<MyEdge> processEdges_Step0(ArrayList<MyEdge> compEdges) {
+		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
+
+		// While there is still an edge to process
+		for (MyEdge anEdge : compEdges) {
+			if (anEdge.outsideMesh) {
+				anEdge.marked = 1;
+				edges.add(anEdge);
+			}
+			else {
+				// To be connected
+				remainEdges.add(anEdge);
+			}
+		}
+
+		return remainEdges;
 	}
 
 	/**
@@ -1462,6 +1492,41 @@ public class Delaunay {
 		processBadEdges();
 	}
 
+	/**
+	 * post process the edges according to their type
+	 */
+	private void postProcessEdges() {
+		LinkedList<MyEdge> addedEdges = new LinkedList<MyEdge>();
+		for (MyEdge anEdge : edges) {
+			if (anEdge.getType() == MyMesh.MeshType_Wall) {
+				// Process wall : duplicate edge and changes connections
+				if ((anEdge.left != null) && (anEdge.right!=null)) {
+					// Something to do if and only if there are two triangles connected
+					MyEdge newEdge = new MyEdge(anEdge);			
+				
+					// Changes left triangle connection
+					MyTriangle aTriangle = anEdge.left;
+					for (int i=0; i<3; i++) {
+						if (aTriangle.edges[i] == anEdge)
+							aTriangle.edges[i] = newEdge;
+					}
+					
+					// Changes edges connections
+					newEdge.right = null;
+					anEdge.left = null;
+					
+					// add the new edge
+					addedEdges.add(newEdge);
+				}
+			}
+		}
+		
+		// add edges to the structure
+		for (MyEdge anEdge : addedEdges) {
+			edges.add(anEdge);
+		}
+	}
+	
 	/**
 	 * sort points, remove same points and reset points and edges
 	 */
@@ -1937,7 +2002,7 @@ public class Delaunay {
 	 * 
 	 * @param aTriangle
 	 */
-	private void changeFlatTriangle(MyTriangle aTriangle) {
+	private void changeFlatTriangle(MyTriangle aTriangle, LinkedList<MyPoint> addedPoints, LinkedList<MyPoint> impactPoints) {
 		// Save all possible (edges and triangles)
 		MyEdge edgeToProcess[] = new MyEdge[3];
 		MyTriangle trianglesToProcess[] = new MyTriangle[3];
@@ -1961,44 +2026,57 @@ public class Delaunay {
 		}
 		
 		// Then we split all possible edges
-		LinkedList<MyPoint> addedPoints = new LinkedList<MyPoint>();
-		double zComputed = 0;
 		for (int i = 0; i < nbElements; i++) {
 			MyEdge anEdge = edgeToProcess[i];
 			
 			MyTriangle alterTriangle = trianglesToProcess[i];
-
-			// Get the barycenter before we split the triangle
-			MyPoint barycenter = alterTriangle.getBarycenter();
+			MyPoint alterPoint = alterTriangle.getAlterPoint(anEdge);
+			double basicZ = anEdge.point[0].z;
+			double altZ = alterPoint.z;
 			
 			// Split the edge in the middle
 			MyPoint middle = anEdge.getBarycenter();
 			LinkedList<MyTriangle> impactedTriangles = processAddPoint(anEdge, middle);
 
-			// Move middle to the barycenter
-			middle.x = barycenter.x;
-			middle.y = barycenter.y;
-			middle.z = barycenter.z;
-			zComputed += barycenter.z;
-			addedPoints.add(middle);
+			// Move middle
+			middle.z = (basicZ + altZ)/2;
 			
 			// Recompute all centers because it one point moved
 			for (MyTriangle aTriangle1 : impactedTriangles) {
 				aTriangle1.recomputeCenter();
 			}
-		}
-		
-		// change Z value for the points
-		if (addedPoints.size() > 1) {
-			zComputed /= addedPoints.size();
-			for (MyPoint aPoint : addedPoints) {
-				aPoint.z = zComputed;
+			
+			addedPoints.add(middle);
+			impactPoints.add(alterPoint);
+			
+			int iter = 5;
+			while ((Math.abs(middle.z - basicZ) < MyTriangle.epsilon) && (iter > 0)) {
+				// too flat, change altitudes
+				LinkedList<MyPoint> todo = new LinkedList<MyPoint>();
+				todo.add(middle);
+				while (! todo.isEmpty()) {
+					MyPoint thePoint = todo.getFirst();
+					todo.removeFirst();
+					
+					ListIterator<MyPoint>iter0 = addedPoints.listIterator();
+					ListIterator<MyPoint>iter1 = impactPoints.listIterator();
+					while (iter0.hasNext()) {
+						MyPoint nextPoint = iter0.next();
+						MyPoint nextAlter = iter1.next();
+						if (nextPoint == thePoint) {
+							thePoint.z = (thePoint.z + nextAlter.z)/2;
+							todo.add(nextAlter);
+						}
+					}
+				}
+				iter--;
 			}
 		}
-		
+				
 		// We remove all edges in badEdgesQueueList because we MUST NOT change them
 		while (!badEdgesQueueList.isEmpty())
 			badEdgesQueueList.removeFirst();
+		
 	}
 
 	/**
@@ -2009,7 +2087,7 @@ public class Delaunay {
 	public void removeFlatTriangles() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!meshComputed)
+		else if (! theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 			// Check triangles to be removed
@@ -2045,6 +2123,8 @@ public class Delaunay {
 			}
 
 			// change flatness
+			LinkedList<MyPoint> addedPoints = new LinkedList<MyPoint>();
+			LinkedList<MyPoint> impactPoints = new LinkedList<MyPoint>();
 			int nbDone = 1;
 			while ((!badTrianglesList.isEmpty()) && (nbDone > 0)) {
 				LinkedList<MyTriangle> todoList = new LinkedList<MyTriangle>();
@@ -2130,7 +2210,7 @@ public class Delaunay {
 					MyTriangle aTriangle = todoList.getFirst();
 					todoList.removeFirst();
 					
-					changeFlatTriangle(aTriangle);
+					changeFlatTriangle(aTriangle, addedPoints, impactPoints);
 					nbDone++;
 
 					badTrianglesList.remove(aTriangle);
@@ -2508,7 +2588,7 @@ public class Delaunay {
 	public void checkTriangularization() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!meshComputed)
+		else if (! theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 			// First - check if every point belongs to at least one edge

@@ -26,7 +26,7 @@ public class MyTriangle {
 	private MyPoint center;
 	private double radius;
 
-	private static final double epsilon = 0.00001;
+	protected static final double epsilon = 0.00001;
 	private static final double epsilon2 = epsilon * epsilon;
 
 	/**

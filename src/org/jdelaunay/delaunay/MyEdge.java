@@ -16,8 +16,9 @@ public class MyEdge {
 	protected MyPoint[] point;
 	protected MyTriangle left, right;
 	protected String type;
-	protected int marked;
 	protected int gid;
+	protected int marked;
+	protected boolean outsideMesh;
 
 	private static final double epsilon = 0.00001;
 
@@ -29,8 +30,9 @@ public class MyEdge {
 		left=null;
 		right=null;
 		type = null;
-		marked = 0;
 		gid = -1;
+		marked = 0;
+		outsideMesh = false;
 	}
 
 	/**
@@ -65,9 +67,9 @@ public class MyEdge {
 		}
 		left=_ed.left;
 		right=_ed.right;
-		if (_ed.type != null)
-			type = new String(_ed.type);
+		type = _ed.type;
 		marked = _ed.marked;
+		outsideMesh = _ed.outsideMesh;
 	}
 
 	/**
@@ -230,7 +232,7 @@ public class MyEdge {
 	public void setGid(int gid) {
 		this.gid = gid;
 	}
-
+	
 	/**
 	 * check if two edges intersects
 	 * 
@@ -307,6 +309,20 @@ public class MyEdge {
 				result = 2;
 		}
 		return result;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	/**
