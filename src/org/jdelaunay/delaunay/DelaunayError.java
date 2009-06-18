@@ -27,6 +27,11 @@ public class DelaunayError extends Throwable {
 	public final static int DelaunayError_incorrectTopology = 201;
 	public final static int DelaunayError_outsideTriangle = 202;
 	
+	public final static int DelaunayError_invalidSewerPoint = 301;
+	public final static int DelaunayError_invalidSewerStart = 302;
+	public final static int DelaunayError_invalidSewerEnd = 303;
+	public final static int DelaunayError_invalidSewerDirection = 304;
+
 	public final static int DelaunayError_internalError = 999;
 
 	public DelaunayError(int ErrorCode) {
@@ -64,6 +69,15 @@ public class DelaunayError extends Throwable {
 			return "internal error, please call support";
 		case DelaunayError_outsideTriangle:
 			return "point is outside the triangle";
+		case DelaunayError_invalidSewerPoint :
+			return "invalid sewer point";
+		case DelaunayError_invalidSewerStart :
+			return "invalid sewer start point";
+		case DelaunayError_invalidSewerEnd :
+			return "invalid sewer exit point";
+		case DelaunayError_invalidSewerDirection :
+			return "invalid sewer direction";
+			
 		default:
 			return "";
 		}
