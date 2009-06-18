@@ -608,13 +608,13 @@ public class MyTriangle {
 			if (isFlatSlope())
 				g.setColor(Color.green);
 			else
-				g.setColor(Color.cyan);
+				g.setColor(Color.yellow);
 			break;
 		case 1:
 			g.setColor(Color.red);
 			break;
 		case 2:
-			g.setColor(Color.green);
+			g.setColor(Color.yellow);
 			break;
 		}
 	}
