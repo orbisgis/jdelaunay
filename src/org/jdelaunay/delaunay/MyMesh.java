@@ -38,7 +38,7 @@ public class MyMesh {
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
-	 * 
+	 *
 	 */
 	public MyMesh() {
 		// Generate vectors
@@ -62,7 +62,7 @@ public class MyMesh {
 
 	/**
 	 * Set bounding box for the generation
-	 * 
+	 *
 	 * @param maxx
 	 * @param maxy
 	 */
@@ -73,7 +73,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random points
-	 * 
+	 *
 	 * @param _NbPoints
 	 */
 	public void setRandomPoints(int _NbPoints) {
@@ -89,7 +89,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random edges Can be applied only if points are created
-	 * 
+	 *
 	 * @param _NbEdges
 	 */
 	public void setRandomEdges(int _NbEdges) {
@@ -110,7 +110,7 @@ public class MyMesh {
 
 	/**
 	 * Get JPanel in which Mesh is displayed
-	 * 
+	 *
 	 * @return
 	 */
 	public MyDrawing getAffiche() {
@@ -119,7 +119,7 @@ public class MyMesh {
 
 	/**
 	 * Set JPanel in which Mesh is displayed
-	 * 
+	 *
 	 * @param affiche
 	 */
 	public void setAffiche(MyDrawing affiche) {
@@ -128,7 +128,7 @@ public class MyMesh {
 
 	/**
 	 * Get Duration
-	 * 
+	 *
 	 * @return
 	 */
 	public long getDuration() {
@@ -151,7 +151,7 @@ public class MyMesh {
 
 	/**
 	 * Display circles around triangles when displayed in the JPanel
-	 * 
+	 *
 	 * @param displayCircles
 	 */
 	public void setDisplayCircles(boolean displayCircles) {
@@ -237,7 +237,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of points in the Mesh
-	 * 
+	 *
 	 * @return NbPoints
 	 */
 	public int getNbPoints() {
@@ -246,7 +246,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of edges in the Mesh
-	 * 
+	 *
 	 * @return NbEdges
 	 */
 	public int getNbEdges() {
@@ -276,7 +276,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of triangles in the Mesh
-	 * 
+	 *
 	 * @return NbTriangles
 	 */
 	public int getNbTriangles() {
@@ -285,7 +285,7 @@ public class MyMesh {
 
 	/**
 	 * Get the points structure
-	 * 
+	 *
 	 * @return points
 	 */
 	public ArrayList<MyPoint> getPoints() {
@@ -294,7 +294,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
-	 * 
+	 *
 	 * @param _point
 	 */
 	public void setPoints(ArrayList<MyPoint> _point) {
@@ -305,7 +305,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the array
-	 * 
+	 *
 	 * @param _point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> _point) {
@@ -314,7 +314,7 @@ public class MyMesh {
 
 	/**
 	 * Get the edges structure
-	 * 
+	 *
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getEdges() {
@@ -323,7 +323,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
-	 * 
+	 *
 	 * @param _edges
 	 */
 	public void setEdges(ArrayList<MyEdge> _edges) {
@@ -334,7 +334,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the LinkedList
-	 * 
+	 *
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
@@ -345,7 +345,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
-	 * 
+	 *
 	 * @param _edges
 	 */
 	public void setEdgesRef(ArrayList<MyEdge> _edges) {
@@ -355,7 +355,7 @@ public class MyMesh {
 	/**
 	 * Get the complementary edges structure This structure emorize the edges
 	 * that have to be added to the triangularization
-	 * 
+	 *
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getCompEdges() {
@@ -364,7 +364,7 @@ public class MyMesh {
 
 	/**
 	 * Get the triangle structure
-	 * 
+	 *
 	 * @return triangle
 	 */
 	public LinkedList<MyTriangle> getTriangles() {
@@ -373,7 +373,7 @@ public class MyMesh {
 
 	/**
 	 * get a point from its GID
-	 * 
+	 *
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -390,7 +390,7 @@ public class MyMesh {
 
 	/**
 	 * get an edge from its GID
-	 * 
+	 *
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -429,7 +429,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer entry
-	 * 
+	 *
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -448,7 +448,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer exit
-	 * 
+	 *
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -474,7 +474,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer point (neither start or exit
-	 * 
+	 *
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -500,7 +500,7 @@ public class MyMesh {
 
 	/**
 	 * use a sewer point to start a new branch
-	 * 
+	 *
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -517,7 +517,7 @@ public class MyMesh {
 
 	/**
 	 * Add a wall point start
-	 * 
+	 *
 	 * @param wallPoint
 	 * @throws DelaunayError
 	 */
@@ -536,7 +536,7 @@ public class MyMesh {
 
 	/**
 	 * Add a wall point end
-	 * 
+	 *
 	 * @param wallPoint
 	 * @throws DelaunayError
 	 */
@@ -564,7 +564,7 @@ public class MyMesh {
 	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
-	 * 
+	 *
 	 * @param g
 	 */
 	public void displayObject(Graphics g) {
@@ -721,7 +721,7 @@ public class MyMesh {
 
 	/**
 	 * Save the Mesh in a file
-	 * 
+	 *
 	 * @param path
 	 */
 	public void saveMesh(String path) {
@@ -832,7 +832,7 @@ public class MyMesh {
 
 	/**
 	 * Save Mesh
-	 * 
+	 *
 	 * @param path
 	 */
 	public void saveMeshUTF(String path) {
@@ -877,7 +877,7 @@ public class MyMesh {
 
 	/**
 	 * Export to VRML file
-	 * 
+	 *
 	 * @param path
 	 */
 	public void VRMLexport(String path) {
@@ -1029,7 +1029,7 @@ public class MyMesh {
 					MyPoint aPoint1 = anEdge.getStart();
 					MyPoint aPoint2 = anEdge.getEnd();
 					double length = Math.sqrt(aPoint1.squareDistance(aPoint2));
-					
+
 					writer.write("# sewer\n");
 					writer.write("Transform {\n");
 					writer.write("translation " + (aPoint1.x - dx) + " " + (aPoint1.y - dy) + " " + (aPoint1.z - dz) + " " + "\n");
@@ -1078,7 +1078,7 @@ public class MyMesh {
 
 		// sort points
 		MyTools.quickSortGID_Points(points, 0, points.size()-1);
-		
+
 		// Then process every point
 		while (iterPoints1.hasNext()) {
 			MyPoint aPoint = iterPoints1.next();
@@ -1094,18 +1094,10 @@ public class MyMesh {
 						curIndex++;
 					}
 				}
-				
-				aPoint.setGid(curIndex);
 			}
 		}
-		
-		// At least, sort points
-		MyTools.quickSortGID_Points(points, 0, points.size()-1);
 	}
 
-	/**
-	 * Set missing GIDs for edges
-	 */
 	protected void SetAllGIDs_Edges() {
 		int nextIndex = 0;
 		int curIndex = 0;
@@ -1114,7 +1106,7 @@ public class MyMesh {
 
 		// sort edges
 		MyTools.quickSortGID_Edges(edges, 0, edges.size()-1);
-		
+
 		// Then process every edge
 		while (iterEdges1.hasNext()) {
 			MyEdge anEdge = iterEdges1.next();
@@ -1130,11 +1122,11 @@ public class MyMesh {
 						curIndex++;
 					}
 				}
-				
+
 				anEdge.setGid(curIndex);
 			}
 		}
-		
+
 		// At least, sort edges
 		MyTools.quickSortGID_Edges(edges, 0, edges.size()-1);
 	}

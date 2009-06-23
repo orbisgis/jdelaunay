@@ -2,7 +2,7 @@ package org.jdelaunay.delaunay;
 
 /**
  * Delaunay Package.
- * 
+ *
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.1
@@ -10,9 +10,16 @@ package org.jdelaunay.delaunay;
 
 import java.util.*;
 
+import org.jdelaunay.utilities.HydroLineUtil;
+import org.jdelaunay.utilities.HydroPolygonUtil;
+import org.jdelaunay.utilities.MathUtil;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+
 /**
  * @author kwyhr
- * 
+ *
  */
 public class Delaunay {
 	// the Mesh
@@ -80,7 +87,7 @@ public class Delaunay {
 
 	/**
 	 * Return associated Mesh.
-	 * 
+	 *
 	 * @return
 	 */
 	public MyMesh getMesh() {
@@ -89,7 +96,7 @@ public class Delaunay {
 
 	/**
 	 * Set current Mesh
-	 * 
+	 *
 	 * @param _theMesh
 	 */
 	public void setMesh(MyMesh _theMesh) {
@@ -98,7 +105,7 @@ public class Delaunay {
 
 	/**
 	 * Set precision for proximity.
-	 * 
+	 *
 	 * @param _precision
 	 */
 	public void setPrecision(double _precision) {
@@ -107,7 +114,7 @@ public class Delaunay {
 
 	/**
 	 * Get precision for proximity.
-	 * 
+	 *
 	 * @return
 	 */
 	public double getPrecision() {
@@ -116,7 +123,7 @@ public class Delaunay {
 
 	/**
 	 * Get maximum area for refinement.
-	 * 
+	 *
 	 * @return maxArea
 	 */
 	public double getMaxArea() {
@@ -125,7 +132,7 @@ public class Delaunay {
 
 	/**
 	 * Set maximum area for refinement.
-	 * 
+	 *
 	 * @param maxArea
 	 */
 	public void setMaxArea(double maxArea) {
@@ -134,7 +141,7 @@ public class Delaunay {
 
 	/**
 	 * Get minimum area for refinement.
-	 * 
+	 *
 	 * @return minArea
 	 */
 	public double getMinArea() {
@@ -143,7 +150,7 @@ public class Delaunay {
 
 	/**
 	 * Set minimum area for refinement.
-	 * 
+	 *
 	 * @param minArea
 	 */
 	public void setMinArea(double minArea) {
@@ -152,7 +159,7 @@ public class Delaunay {
 
 	/**
 	 * Get minimum angle for triangles.
-	 * 
+	 *
 	 * @return minAngle
 	 */
 	public double getMinAngle() {
@@ -161,7 +168,7 @@ public class Delaunay {
 
 	/**
 	 * Set minimum angle for triangles.
-	 * 
+	 *
 	 * @param minAngle
 	 */
 	public void setMinAngle(double minAngle) {
@@ -173,7 +180,7 @@ public class Delaunay {
 	 * refinement_minArea = remove triangles with a too small area
 	 * refinement_maxArea = split too large triangles refinement_minAngle =
 	 * remove triangle with a too small angle
-	 * 
+	 *
 	 * @param refinement
 	 */
 	public void setRefinment(int refinement) {
@@ -192,7 +199,7 @@ public class Delaunay {
 	 * Generate the Delaunay triangularization with a flip-flop algorithm. Mesh
 	 * must have been set. Triangularization can only be done once. Otherwise
 	 * call reprocessDelaunay
-	 * 
+	 *
 	 * @throws DelaunayError
 	 */
 	public void processDelaunay() throws DelaunayError {
@@ -225,7 +232,7 @@ public class Delaunay {
 			p1 = iterPoint.next();
 			while (p1.marked)
 				p1 = iterPoint.next();
-				
+
 			p2 = iterPoint.next();
 			while (p2.marked)
 				p2 = iterPoint.next();
@@ -260,7 +267,7 @@ public class Delaunay {
 			// flip-flop on a list of points
 			while (iterPoint.hasNext()) {
 				MyPoint aPoint = iterPoint.next();
-				if (! aPoint.marked)
+				if (!aPoint.marked)
 					InsertPoint(aPoint);
 			}
 
@@ -280,10 +287,10 @@ public class Delaunay {
 			/*
 			 * point_GID = 0; for (MyPoint aPoint : points) { point_GID++;
 			 * aPoint.setGid(point_GID); }
-			 * 
+			 *
 			 * edge_GID = 0; for (MyEdge anEdge : edges) { edge_GID++;
 			 * anEdge.setGid(edge_GID); }
-			 * 
+			 *
 			 * triangle_GID = 0; for (MyTriangle aTriangle1 : triangles) {
 			 * triangle_GID++; aTriangle1.setGid(triangle_GID); }
 			 */
@@ -298,7 +305,7 @@ public class Delaunay {
 	 * Re-Generate the Delaunay triangularization with a flip-flop algorithm.
 	 * Mesh must have been set. Every triangle and edge is removed to restart
 	 * the process.
-	 * 
+	 *
 	 * @throws DelaunayError
 	 */
 	public void reprocessDelaunay() throws DelaunayError {
@@ -316,7 +323,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point in the mesh and rebuild triangularization
-	 * 
+	 *
 	 * @param aPoint
 	 * @throws DelaunayError
 	 */
@@ -355,7 +362,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point inside a triangle
-	 * 
+	 *
 	 * @param aTriangle
 	 * @param aPoint
 	 * @throws DelaunayError
@@ -451,7 +458,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point on an edge
-	 * 
+	 *
 	 * @param anEdge
 	 * @param aPoint
 	 * @return impactedTriangles
@@ -658,8 +665,7 @@ public class Delaunay {
 				if (new_triangleList[k] != null)
 					triangles.add(new_triangleList[k]);
 			}
-			
-			
+
 			for (int k = 0; k < 2; k++) {
 				if (triangleList[k] != null)
 					impactedTriangles.add(triangleList[k]);
@@ -672,7 +678,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point inside a triangle and rebuild triangularization
-	 * 
+	 *
 	 * @param aTriangle
 	 * @param aPoint
 	 * @throws DelaunayError
@@ -695,7 +701,7 @@ public class Delaunay {
 
 	/**
 	 * Add a point on an edge and rebuild triangularization
-	 * 
+	 *
 	 * @param anEdge
 	 * @param aPoint
 	 * @throws DelaunayError
@@ -717,7 +723,7 @@ public class Delaunay {
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
 	 * triangularization has not been done, it generates an error.
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @throws DelaunayError
@@ -725,7 +731,7 @@ public class Delaunay {
 	public void addEdge(MyPoint p1, MyPoint p2) throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (! theMesh.isMeshComputed())
+		else if (!theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else if (p1.squareDistance(p2) < tolarence)
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
@@ -745,14 +751,14 @@ public class Delaunay {
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
 	 * triangularization has not been done, it generates an error.
-	 * 
+	 *
 	 * @param anEdge
 	 * @throws DelaunayError
 	 */
 	public void addEdge(MyEdge anEdge) throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (! theMesh.isMeshComputed())
+		else if (!theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else if (anEdge.getStart().squareDistance(anEdge.getEnd()) < tolarence)
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
@@ -772,7 +778,7 @@ public class Delaunay {
 	 * Process a triangle with a too small area : - merge the three point as a
 	 * new point and remove the three points - remove the three edges - process
 	 * the neighbors
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	private void processSmallAreaTriangle(MyTriangle aTriangle,
@@ -862,7 +868,7 @@ public class Delaunay {
 	 * middle - generate three triangles in place of the current one That mean
 	 * we generate two more triangles and we replace the current one Then we
 	 * rebuild the delaunay triangularization
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	private void processLargeAreaTriangle(MyTriangle aTriangle)
@@ -884,7 +890,7 @@ public class Delaunay {
 
 	/**
 	 * Process a triangle with a too small angle :
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	private void processSmallAngleTriangle(MyTriangle aTriangle,
@@ -908,7 +914,7 @@ public class Delaunay {
 	public void refineMesh() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (! theMesh.isMeshComputed())
+		else if (!theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 			// check all triangle to save all the ones with a bad area criteria
@@ -996,7 +1002,7 @@ public class Delaunay {
 
 	/**
 	 * Add edges defined at the beginning of the process
-	 * 
+	 *
 	 * @param compEdges
 	 */
 	private void processEdges(ArrayList<MyEdge> compEdges) {
@@ -1036,7 +1042,7 @@ public class Delaunay {
 
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
-	 * 
+	 *
 	 * @param compEdges
 	 * @return list of remaining edges
 	 */
@@ -1048,8 +1054,7 @@ public class Delaunay {
 			if (anEdge.outsideMesh) {
 				anEdge.marked = 1;
 				edges.add(anEdge);
-			}
-			else {
+			} else {
 				// To be connected
 				remainEdges.add(anEdge);
 			}
@@ -1060,7 +1065,7 @@ public class Delaunay {
 
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
-	 * 
+	 *
 	 * @param compEdges
 	 * @return list of remaining edges
 	 */
@@ -1230,7 +1235,7 @@ public class Delaunay {
 
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
-	 * 
+	 *
 	 * @param compEdges
 	 * @return list of remaining edges
 	 */
@@ -1332,7 +1337,7 @@ public class Delaunay {
 
 	/**
 	 * Mark existing edges (compEdges and edges are supposed to be sorted)
-	 * 
+	 *
 	 * @param compEdges
 	 * @return list of remaining edges
 	 */
@@ -1500,33 +1505,34 @@ public class Delaunay {
 		for (MyEdge anEdge : edges) {
 			if (anEdge.getType() == MyMesh.MeshType_Wall) {
 				// Process wall : duplicate edge and changes connections
-				if ((anEdge.left != null) && (anEdge.right!=null)) {
-					// Something to do if and only if there are two triangles connected
-					MyEdge newEdge = new MyEdge(anEdge);			
-				
+				if ((anEdge.left != null) && (anEdge.right != null)) {
+					// Something to do if and only if there are two triangles
+					// connected
+					MyEdge newEdge = new MyEdge(anEdge);
+
 					// Changes left triangle connection
 					MyTriangle aTriangle = anEdge.left;
-					for (int i=0; i<3; i++) {
+					for (int i = 0; i < 3; i++) {
 						if (aTriangle.edges[i] == anEdge)
 							aTriangle.edges[i] = newEdge;
 					}
-					
+
 					// Changes edges connections
 					newEdge.right = null;
 					anEdge.left = null;
-					
+
 					// add the new edge
 					addedEdges.add(newEdge);
 				}
 			}
 		}
-		
+
 		// add edges to the structure
 		for (MyEdge anEdge : addedEdges) {
 			edges.add(anEdge);
 		}
 	}
-	
+
 	/**
 	 * sort points, remove same points and reset points and edges
 	 */
@@ -1600,7 +1606,7 @@ public class Delaunay {
 	/**
 	 * Quick sort on points Ordered according to minimum X, Y of both
 	 * extremities
-	 * 
+	 *
 	 * @param min_index
 	 * @param max_index
 	 */
@@ -1779,7 +1785,7 @@ public class Delaunay {
 
 	/**
 	 * Insert o point to the current triangularization
-	 * 
+	 *
 	 * @param aPoint
 	 */
 	private void InsertPoint(MyPoint aPoint) {
@@ -1999,10 +2005,11 @@ public class Delaunay {
 
 	/**
 	 * process a flat triangle
-	 * 
+	 *
 	 * @param aTriangle
 	 */
-	private void changeFlatTriangle(MyTriangle aTriangle, LinkedList<MyPoint> addedPoints, LinkedList<MyPoint> impactPoints) {
+	private void changeFlatTriangle(MyTriangle aTriangle,
+			LinkedList<MyPoint> addedPoints, LinkedList<MyPoint> impactPoints) {
 		// Save all possible (edges and triangles)
 		MyEdge edgeToProcess[] = new MyEdge[3];
 		MyTriangle trianglesToProcess[] = new MyTriangle[3];
@@ -2024,47 +2031,49 @@ public class Delaunay {
 					}
 				}
 		}
-		
+
 		// Then we split all possible edges
 		for (int i = 0; i < nbElements; i++) {
 			MyEdge anEdge = edgeToProcess[i];
-			
+
 			MyTriangle alterTriangle = trianglesToProcess[i];
 			MyPoint alterPoint = alterTriangle.getAlterPoint(anEdge);
 			double basicZ = anEdge.point[0].z;
 			double altZ = alterPoint.z;
-			
+
 			// Split the edge in the middle
 			MyPoint middle = anEdge.getBarycenter();
-			LinkedList<MyTriangle> impactedTriangles = processAddPoint(anEdge, middle);
+			LinkedList<MyTriangle> impactedTriangles = processAddPoint(anEdge,
+					middle);
 
 			// Move middle
-			middle.z = (basicZ + altZ)/2;
-			
+			middle.z = (basicZ + altZ) / 2;
+
 			// Recompute all centers because it one point moved
 			for (MyTriangle aTriangle1 : impactedTriangles) {
 				aTriangle1.recomputeCenter();
 			}
-			
+
 			addedPoints.add(middle);
 			impactPoints.add(alterPoint);
-			
+
 			int iter = 5;
-			while ((Math.abs(middle.z - basicZ) < MyTriangle.epsilon) && (iter > 0)) {
+			while ((Math.abs(middle.z - basicZ) < MyTriangle.epsilon)
+					&& (iter > 0)) {
 				// too flat, change altitudes
 				LinkedList<MyPoint> todo = new LinkedList<MyPoint>();
 				todo.add(middle);
-				while (! todo.isEmpty()) {
+				while (!todo.isEmpty()) {
 					MyPoint thePoint = todo.getFirst();
 					todo.removeFirst();
-					
-					ListIterator<MyPoint>iter0 = addedPoints.listIterator();
-					ListIterator<MyPoint>iter1 = impactPoints.listIterator();
+
+					ListIterator<MyPoint> iter0 = addedPoints.listIterator();
+					ListIterator<MyPoint> iter1 = impactPoints.listIterator();
 					while (iter0.hasNext()) {
 						MyPoint nextPoint = iter0.next();
 						MyPoint nextAlter = iter1.next();
 						if (nextPoint == thePoint) {
-							thePoint.z = (thePoint.z + nextAlter.z)/2;
+							thePoint.z = (thePoint.z + nextAlter.z) / 2;
 							todo.add(nextAlter);
 						}
 					}
@@ -2072,22 +2081,91 @@ public class Delaunay {
 				iter--;
 			}
 		}
-				
-		// We remove all edges in badEdgesQueueList because we MUST NOT change them
+
+		// We remove all edges in badEdgesQueueList because we MUST NOT change
+		// them
 		while (!badEdgesQueueList.isEmpty())
 			badEdgesQueueList.removeFirst();
-		
+
+	}
+
+	/**
+	 * Delaunay talweg linker
+	 *
+	 * @throws DelaunayError
+	 */
+	public void talwegBuilder() throws DelaunayError {
+
+		if (theMesh == null)
+			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
+		else if (!theMesh.isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+		else {
+
+			for (MyEdge edge : edges) {
+
+				MyTriangle leftTriangle = edge.getLeft();
+				MyTriangle rightTriangle = edge.getRight();
+
+				HydroLineUtil hydroLineUtil = new HydroLineUtil(edge);
+				boolean pointeAdroite = false;
+				boolean pointeAGauche = false;
+
+				// On test si le triangle à droite existe
+				if (rightTriangle.getGid() != -1) {
+					HydroPolygonUtil rightHydroPolygonUtil = new HydroPolygonUtil(
+							rightTriangle);
+					// Ajout sur dTCell des edges qui le compose
+
+					pointeAdroite = rightHydroPolygonUtil
+							.getPenteVersEdge(edge);
+					edge.setTransfluent(true);
+
+				}
+
+				// On test si le triangle à gauche existe
+				if (leftTriangle.getGid() != -1) {
+					HydroPolygonUtil leftHydroPolygonUtil = new HydroPolygonUtil(
+							leftTriangle);
+
+					pointeAGauche = leftHydroPolygonUtil.getPenteVersEdge(edge);
+
+				}
+
+				// Verifie si l'edge n'est pas plat
+				boolean flatEdge = false;
+				if (edge.getStart().z == edge.getEnd().z) {
+
+					flatEdge = true;
+					edge.setFlat(true);
+
+				}
+
+				if (!flatEdge) {
+					if ((rightTriangle.getGid() != -1)
+							&& (leftTriangle.getGid() != -1)) {
+
+						if (pointeAGauche && pointeAdroite) {
+							edge.setTalweg(true);
+						}
+					}
+				}
+
+			}
+
+		}
+
 	}
 
 	/**
 	 * Remove all flat triangles
-	 * 
+	 *
 	 * @throws DelaunayError
 	 */
 	public void removeFlatTriangles() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (! theMesh.isMeshComputed())
+		else if (!theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 			// Check triangles to be removed
@@ -2115,8 +2193,7 @@ public class Delaunay {
 					}
 					if (canRemove) {
 						badTrianglesList.add(aTriangle);
-					}
-					else {
+					} else {
 						veryBadTrianglesList.add(aTriangle);
 					}
 				}
@@ -2209,7 +2286,7 @@ public class Delaunay {
 				while (!todoList.isEmpty()) {
 					MyTriangle aTriangle = todoList.getFirst();
 					todoList.removeFirst();
-					
+
 					changeFlatTriangle(aTriangle, addedPoints, impactPoints);
 					nbDone++;
 
@@ -2222,8 +2299,9 @@ public class Delaunay {
 				if (!badTrianglesList.isEmpty())
 					System.out.println("Remain : " + badTrianglesList.size()
 							+ " flat triangles");
-			theMesh.setAllGids();
+
 		}
+		theMesh.setAllGids();
 	}
 
 	private void removeTriangle(MyTriangle aTriangle) {
@@ -2304,7 +2382,7 @@ public class Delaunay {
 
 	/**
 	 * Intersect the edge that started at p1 and ended at p2 with the whole mesh
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 */
@@ -2580,14 +2658,14 @@ public class Delaunay {
 
 	/**
 	 * Check if the current mesh triangularization is correct or not
-	 * 
+	 *
 	 * @return NbError
 	 * @throws DelaunayError
 	 */
 	public void checkTriangularization() throws DelaunayError {
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (! theMesh.isMeshComputed())
+		else if (!theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 			// First - check if every point belongs to at least one edge
@@ -2624,7 +2702,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists returns null if it doesn't
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param EdgeList
@@ -2647,7 +2725,7 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists returns null if it doesn't
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param EdgeList
@@ -2670,12 +2748,12 @@ public class Delaunay {
 
 	/**
 	 * Check if the edge already exists. Returns null if it doesn't
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param EdgeQueueList
 	 * @param size
-	 * 
+	 *
 	 * @return
 	 */
 	private MyEdge checkTwoPointsEdge(MyPoint p1, MyPoint p2,
@@ -2694,4 +2772,5 @@ public class Delaunay {
 		}
 		return theEdge;
 	}
+
 }
