@@ -1,7 +1,8 @@
 package org.jdelaunay.delaunay;
+
 /**
  * Delaunay Package.
- * 
+ *
  * @author Jean-Yves MARTIN
  * @date 2009-01-12
  * @version 1.0
@@ -11,7 +12,7 @@ import java.awt.*;
 
 public class MyEdge {
 	/**
-	 * 
+	 *
 	 */
 	protected MyPoint[] point;
 	protected MyTriangle left, right;
@@ -19,6 +20,9 @@ public class MyEdge {
 	protected int gid;
 	protected int marked;
 	protected boolean outsideMesh;
+	private boolean talweg = false;
+	private boolean flat = false;
+	private boolean transfluent = false;
 
 	private static final double epsilon = 0.00001;
 
@@ -27,8 +31,8 @@ public class MyEdge {
 	 */
 	private void init() {
 		point = new MyPoint[2];
-		left=null;
-		right=null;
+		left = null;
+		right = null;
 		type = null;
 		gid = -1;
 		marked = 0;
@@ -45,7 +49,7 @@ public class MyEdge {
 
 	/**
 	 * Generate an edge from two points
-	 * 
+	 *
 	 * @param s
 	 * @param e
 	 */
@@ -57,7 +61,7 @@ public class MyEdge {
 
 	/**
 	 * Generate an edge from another edge
-	 * 
+	 *
 	 * @param _ed
 	 */
 	public MyEdge(MyEdge _ed) {
@@ -65,8 +69,8 @@ public class MyEdge {
 		for (int i = 0; i < 2; i++) {
 			point[i] = _ed.point[i];
 		}
-		left=_ed.left;
-		right=_ed.right;
+		left = _ed.left;
+		right = _ed.right;
 		type = _ed.type;
 		marked = _ed.marked;
 		outsideMesh = _ed.outsideMesh;
@@ -74,7 +78,7 @@ public class MyEdge {
 
 	/**
 	 * Generate a typed edge from two points
-	 * 
+	 *
 	 * @param s
 	 * @param e
 	 * @param _type
@@ -88,7 +92,7 @@ public class MyEdge {
 
 	/**
 	 * Generate a typed edge from two points
-	 * 
+	 *
 	 * @param s
 	 * @param e
 	 * @param _type
@@ -104,7 +108,7 @@ public class MyEdge {
 
 	/**
 	 * Generate a typed edge from two points
-	 * 
+	 *
 	 * @param s
 	 * @param e
 	 * @param _gid
@@ -129,7 +133,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge left triangle
-	 * 
+	 *
 	 * @return leftTriangle
 	 */
 	public MyTriangle getLeft() {
@@ -138,7 +142,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge right triangle
-	 * 
+	 *
 	 * @return rightTriangle
 	 */
 	public MyTriangle getRight() {
@@ -147,7 +151,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge start point
-	 * 
+	 *
 	 * @return end
 	 */
 	public MyPoint getStart() {
@@ -156,7 +160,7 @@ public class MyEdge {
 
 	/**
 	 * Returned edge end point
-	 * 
+	 *
 	 * @return end
 	 */
 	public MyPoint getEnd() {
@@ -165,7 +169,7 @@ public class MyEdge {
 
 	/**
 	 * Set edge start point
-	 * 
+	 *
 	 * @param p
 	 */
 	public void setStart(MyPoint p) {
@@ -174,7 +178,7 @@ public class MyEdge {
 
 	/**
 	 * Set edge end point
-	 * 
+	 *
 	 * @param p
 	 */
 	public void setEnd(MyPoint p) {
@@ -183,7 +187,7 @@ public class MyEdge {
 
 	/**
 	 * Get edge type
-	 * 
+	 *
 	 * @return
 	 */
 	public String getEdgeType() {
@@ -192,7 +196,7 @@ public class MyEdge {
 
 	/**
 	 * Set edge type
-	 * 
+	 *
 	 * @param type
 	 */
 	public void setEdgeType(String type) {
@@ -201,6 +205,7 @@ public class MyEdge {
 
 	/**
 	 * get the mark of the edge
+	 *
 	 * @return marked
 	 */
 	public int getMarked() {
@@ -209,6 +214,7 @@ public class MyEdge {
 
 	/**
 	 * set the mark of the edge
+	 *
 	 * @param marked
 	 */
 	public void setMarked(int marked) {
@@ -217,7 +223,7 @@ public class MyEdge {
 
 	/**
 	 * get GID
-	 * 
+	 *
 	 * @return
 	 */
 	public int getGid() {
@@ -226,23 +232,20 @@ public class MyEdge {
 
 	/**
 	 * set GID
-	 * 
+	 *
 	 * @param gid
 	 */
 	public void setGid(int gid) {
 		this.gid = gid;
 	}
-	
+
 	/**
 	 * check if two edges intersects
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
-	 * @return intersection
-	 * 0 = no intersection
-	 * 1 = intersects
-	 * 2 = co-linear
-	 * 3 = intersects at the extremity
+	 * @return intersection 0 = no intersection 1 = intersects 2 = co-linear 3 =
+	 *         intersects at the extremity
 	 */
 	public int intersects(MyPoint p1, MyPoint p2) {
 		int result = 0;
@@ -270,12 +273,12 @@ public class MyEdge {
 
 			if ((-epsilon <= t1) && (t1 <= 1 + epsilon) && (-epsilon <= t2)
 					&& (t2 <= 1 + epsilon))
-				if (((-epsilon <= t1) && (t1 <= epsilon)) || ((1-epsilon <= t1)
-						&& (t1 <= 1 + epsilon)))
+				if (((-epsilon <= t1) && (t1 <= epsilon))
+						|| ((1 - epsilon <= t1) && (t1 <= 1 + epsilon)))
 					result = 3;
-				else 
+				else
 					result = 1;
-			
+
 		} else {
 			// Check if p3 is between p1 and p2
 			if (Math.abs(p2.x - p1.x) > epsilon)
@@ -327,7 +330,7 @@ public class MyEdge {
 
 	/**
 	 * intersects two edges returns null if there is no intersection
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @return intersection
@@ -395,7 +398,7 @@ public class MyEdge {
 
 	/**
 	 * intersects two edges returns null if there is no intersection
-	 * 
+	 *
 	 * @param anEdge
 	 * @return intersection
 	 */
@@ -404,14 +407,15 @@ public class MyEdge {
 	}
 
 	/**
-	 * check if the point is between the extremities of the edge (on the xy-plane)
-	 * 
+	 * check if the point is between the extremities of the edge (on the
+	 * xy-plane)
+	 *
 	 * @param p
 	 * @return isInside
 	 */
 	public boolean isInside(MyPoint p) {
 		boolean isInside = false;
-		
+
 		MyPoint p1 = point[0];
 		MyPoint p2 = point[1];
 
@@ -422,51 +426,50 @@ public class MyEdge {
 		// (x2 - x1) t1 = (x - x1)
 		// (y2 - y1) t1 = (y - y1)
 
-		// t1 = (x - x1) / (x2 - x1) 
+		// t1 = (x - x1) / (x2 - x1)
 		// t1 = (y - y1) / (y2 - y1)
 		double t1, t2;
-		
+
 		double a1 = p2.x - p1.x;
 		double c1 = p.x - p1.x;
 		double a2 = p2.y - p1.y;
 		double c2 = p.y - p1.y;
 
 		if (Math.abs(a1) > epsilon) {
-			t1 = c1/a1;
+			t1 = c1 / a1;
 			if ((-epsilon < t1) && (t1 < 1 + epsilon)) {
 				// p.x is between p1.x and p2.x
 				if (Math.abs(a2) > epsilon) {
-					t2 = c2/a2;
-					if ((-epsilon < t2) && (t2 < 1 + epsilon) && (Math.abs(t1-t2) < epsilon))
+					t2 = c2 / a2;
+					if ((-epsilon < t2) && (t2 < 1 + epsilon)
+							&& (Math.abs(t1 - t2) < epsilon))
 						// same t value => ok
 						isInside = true;
-				}
-				else if (Math.abs(c2) < epsilon) {
+				} else if (Math.abs(c2) < epsilon) {
 					// p1.y, p2.y and p.y are the same
-					isInside = true;					
+					isInside = true;
 				}
 			}
-		}
-		else if (Math.abs(c1) < epsilon) {
+		} else if (Math.abs(c1) < epsilon) {
 			// p1.x, p2.x and p.x are the same
 			if (Math.abs(a2) > epsilon) {
-				t2 = c2/a2;
+				t2 = c2 / a2;
 				if ((-epsilon < t2) && (t2 < 1 + epsilon))
 					isInside = true;
-			}
-			else if (Math.abs(c2) < epsilon) {
+			} else if (Math.abs(c2) < epsilon) {
 				// p1.y, p2.y and p.y are also the same
-				isInside = true;					
+				isInside = true;
 			}
-			
+
 		}
 
 		return isInside;
 	}
 
 	/**
-	 * check if the point is one of the extremities of the edge (on the xy-plane)
-	 * 
+	 * check if the point is one of the extremities of the edge (on the
+	 * xy-plane)
+	 *
 	 * @param p
 	 * @return isInside
 	 */
@@ -479,10 +482,10 @@ public class MyEdge {
 			isExtremity = true;
 		return isExtremity;
 	}
-	
+
 	/**
 	 * Check if the point p is on the left
-	 * 
+	 *
 	 * @param p
 	 * @return
 	 */
@@ -499,7 +502,7 @@ public class MyEdge {
 
 	/**
 	 * Check if the point p is on the right
-	 * 
+	 *
 	 * @param p
 	 * @return
 	 */
@@ -516,7 +519,7 @@ public class MyEdge {
 
 	/**
 	 * Check if the edge is flat or not
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public boolean isFlatSlope() {
@@ -528,12 +531,12 @@ public class MyEdge {
 
 	/**
 	 * Get the barycenter of the triangle
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public MyPoint getBarycenter() {
-		double x=0, y=0, z=0;
-		for (int i=0; i<2; i++) {
+		double x = 0, y = 0, z = 0;
+		for (int i = 0; i < 2; i++) {
 			x += point[i].x;
 			y += point[i].y;
 			z += point[i].z;
@@ -541,12 +544,12 @@ public class MyEdge {
 		x /= 2;
 		y /= 2;
 		z /= 2;
-		return new MyPoint(x,y,z);
+		return new MyPoint(x, y, z);
 	}
 
 	/**
 	 * Check if the point p is on the right
-	 * 
+	 *
 	 * @param p
 	 * @return
 	 */
@@ -561,13 +564,13 @@ public class MyEdge {
 			hashValue = v1;
 		else
 			hashValue = v2;
-		
+
 		return hashValue;
 	}
 
 	/**
 	 * Set the edge color for the JFrame panel
-	 * 
+	 *
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
@@ -585,19 +588,47 @@ public class MyEdge {
 
 	/**
 	 * Display the edge in a JPanel
-	 * 
+	 *
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
 	 */
-	public void displayObject(Graphics g, int decalageX, int decalageY, double minX, double minY, double scaleX, double scaleY) {
-		g.drawLine((int) ((point[0].x-minX)*scaleX + decalageX),
-					decalageY + (int) ((point[0].y - minY)*scaleY),
-					(int) ((point[1].x-minX)*scaleX + decalageX),
-					decalageY + (int) ((point[1].y - minY)*scaleY));
+	public void displayObject(Graphics g, int decalageX, int decalageY,
+			double minX, double minY, double scaleX, double scaleY) {
+		g.drawLine((int) ((point[0].x - minX) * scaleX + decalageX), decalageY
+				+ (int) ((point[0].y - minY) * scaleY),
+				(int) ((point[1].x - minX) * scaleX + decalageX), decalageY
+						+ (int) ((point[1].y - minY) * scaleY));
 		if (marked > 0) {
-			point[0].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
-			point[1].displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
+			point[0].displayObject(g, decalageX, decalageY, minX, minY, scaleX,
+					scaleY);
+			point[1].displayObject(g, decalageX, decalageY, minX, minY, scaleX,
+					scaleY);
 		}
+	}
+
+	public void setTalweg(boolean talweg) {
+		this.talweg = talweg;
+	}
+
+	public void setFlat(boolean flat) {
+		this.flat = flat;
+	}
+
+	public void setTransfluent(boolean transfluent) {
+		this.transfluent  = transfluent;
+
+	}
+
+	public boolean isTalweg() {
+		return talweg;
+	}
+
+	public boolean isFlat() {
+		return flat;
+	}
+
+	public boolean isTransfluent() {
+		return transfluent;
 	}
 }
