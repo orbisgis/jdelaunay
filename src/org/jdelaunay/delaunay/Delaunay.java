@@ -2222,9 +2222,8 @@ public class Delaunay {
 				if (!badTrianglesList.isEmpty())
 					System.out.println("Remain : " + badTrianglesList.size()
 							+ " flat triangles");
-
+			theMesh.setAllGids();
 		}
-		theMesh.setAllGids();
 	}
 
 	private void removeTriangle(MyTriangle aTriangle) {
