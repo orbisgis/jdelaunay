@@ -1071,107 +1071,82 @@ public class MyMesh {
 	 * Set missing GIDs for points
 	 */
 	protected void SetAllGIDs_Point() {
-		int theSize = points.size();
+		int nextIndex = 0;
+		int curIndex = 0;
+		ListIterator<MyPoint>iterPoints1 = points.listIterator();
+		ListIterator<MyPoint>iterPoints2 = points.listIterator();
 
-		int i = 0;
-		while (i < theSize) {
-			MyPoint aPoint = points.get(i);
-			if (aPoint != null) {
-				int gid = aPoint.gid;
-				if (gid == i + 1) {
-					// the point is at it's right place
-					i++;
-				} else if ((gid > 0) && (gid <= theSize)) {
-					// switch with the other point
-					MyPoint altPoint = points.get(gid - 1);
-					points.set(gid - 1, aPoint);
-					points.set(i, altPoint);
-				} else
-					i++;
-			}
-		}
+		// sort points
+		MyTools.quickSortGID_Points(points, 0, points.size()-1);
+		
+		// Then process every point
+		while (iterPoints1.hasNext()) {
+			MyPoint aPoint = iterPoints1.next();
+			if (aPoint.getGid() <= 0) {
+				// need to set it
+				curIndex++;
 
-		// then set remain values
-		for (i = 0; i < theSize; i++) {
-			MyPoint aPoint = points.get(i);
-			if (aPoint != null) {
-				int gid = aPoint.gid;
-				if (gid <= 0) {
-					aPoint.setGid(i + 1);
+				// reach next possible value
+				while ((iterPoints2.hasNext()) && (curIndex >= nextIndex)) {
+					MyPoint testPoint = iterPoints2.next();
+					nextIndex = testPoint.getGid();
+					if (curIndex <= nextIndex) {
+						curIndex++;
+					}
 				}
+				
+				aPoint.setGid(curIndex);
 			}
 		}
+		
+		// At least, sort points
+		MyTools.quickSortGID_Points(points, 0, points.size()-1);
 	}
 
 	/**
 	 * Set missing GIDs for edges
 	 */
 	protected void SetAllGIDs_Edges() {
-		int theSize = edges.size();
+		int nextIndex = 0;
+		int curIndex = 0;
+		ListIterator<MyEdge>iterEdges1 = edges.listIterator();
+		ListIterator<MyEdge>iterEdges2 = edges.listIterator();
 
-		int i = 0;
-		while (i < theSize) {
-			MyEdge anEdge = edges.get(i);
-			if (anEdge != null) {
-				int gid = anEdge.gid;
-				if (gid == i + 1) {
-					// the point is at it's right place
-					i++;
-				} else if ((gid > 0) && (gid <= theSize)) {
-					// switch with the other point
-					MyEdge altEdge = edges.get(gid - 1);
-					edges.set(gid - 1, anEdge);
-					edges.set(i, altEdge);
-				} else
-					i++;
-			}
-		}
+		// sort edges
+		MyTools.quickSortGID_Edges(edges, 0, edges.size()-1);
+		
+		// Then process every edge
+		while (iterEdges1.hasNext()) {
+			MyEdge anEdge = iterEdges1.next();
+			if (anEdge.getGid() <= 0) {
+				// need to set it
+				curIndex++;
 
-		// then set remain values
-		for (i = 0; i < theSize; i++) {
-			MyEdge anEdge = edges.get(i);
-			if (anEdge != null) {
-				int gid = anEdge.gid;
-				if (gid <= 0) {
-					anEdge.setGid(i + 1);
+				// reach next possible value
+				while ((iterEdges2.hasNext()) && (curIndex >= nextIndex)) {
+					MyEdge testEdge = iterEdges2.next();
+					nextIndex = testEdge.getGid();
+					if (curIndex <= nextIndex) {
+						curIndex++;
+					}
 				}
+				
+				anEdge.setGid(curIndex);
 			}
 		}
+		
+		// At least, sort edges
+		MyTools.quickSortGID_Edges(edges, 0, edges.size()-1);
 	}
 
 	/**
-	 * Set missing GIDs for triangles
+	 * Set GIDs for triangles
 	 */
 	protected void SetAllGIDs_Triangle() {
-		int theSize = triangles.size();
-
-		int i = 0;
-		while (i < theSize) {
-			MyTriangle aTriangle = triangles.get(i);
-			if (aTriangle != null) {
-				int gid = aTriangle.gid;
-				if (gid == i + 1) {
-					// the point is at it's right place
-					i++;
-				} else if ((gid > 0) && (gid <= theSize)) {
-					// switch with the other point
-					MyTriangle altTriangle = triangles.get(gid - 1);
-					triangles.set(gid - 1, aTriangle);
-					triangles.set(i, altTriangle);
-				} else
-					i++;
-			}
-		}
-
-		// then set remain values
-		for (i = 0; i < theSize; i++) {
-			MyTriangle aTriangle = triangles.get(i);
-			if (aTriangle != null) {
-				int gid = aTriangle.gid;
-				if (gid <= 0) {
-					aTriangle.setGid(i + 1);
-				}
-			}
+		int curIndex = 0;
+		for (MyTriangle aTriangle : triangles) {
+			curIndex++;
+			aTriangle.setGid(curIndex);
 		}
 	}
 
