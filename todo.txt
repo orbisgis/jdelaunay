@@ -1,0 +1,3 @@
+- Pb d'invertion de pente sur certaines configurations de courbes
+- Pb des gid avec la suppresion des triangles plats
+- Insertion des routes avec lissage du tapis.
