@@ -16,6 +16,8 @@ public class MyPoint {
 	public String type;
 	public int gid;
 	protected boolean marked;
+	private boolean talweg;
+	private String topoType;
 
 	private void init() {
 		x = 0;
@@ -169,7 +171,7 @@ public class MyPoint {
 
 	/**
 	 * get GID
-	 * 
+	 *
 	 * @return
 	 */
 	public int getGid() {
@@ -178,7 +180,7 @@ public class MyPoint {
 
 	/**
 	 * set GID
-	 * 
+	 *
 	 * @param gid
 	 */
 	public void setGid(int gid) {
@@ -228,7 +230,7 @@ public class MyPoint {
 
 	/**
 	 * Set the point color for the JFrame panel
-	 * 
+	 *
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
@@ -246,12 +248,21 @@ public class MyPoint {
 	public void displayObject(Graphics g, int decalageX, int decalageY, double minX, double minY, double scaleX, double scaleY) {
 		g.drawOval((int) ((x-minX)*scaleX + decalageX) - 1,
 				(int) ((y-minY)*scaleY + decalageY) - 1, 3, 3);
-		
+
 		if (false)
 		if (gid > 0) {
 			g.drawString(""+gid, (int) ((x-minX)*scaleX + decalageX),
 					(int) ((y-minY)*scaleY + decalageY) - 1);
 		}
+	}
+
+	public void setTopoType(String topoType) {
+		this.topoType = topoType;
+
+	}
+	public String getTopoType() {
+		return  topoType;
+
 	}
 
 

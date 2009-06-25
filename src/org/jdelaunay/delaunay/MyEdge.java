@@ -10,6 +10,10 @@ package org.jdelaunay.delaunay;
 
 import java.awt.*;
 
+import javax.print.DocFlavor.STRING;
+
+import com.vividsolutions.jts.geom.Coordinate;
+
 public class MyEdge {
 	/**
 	 *
@@ -21,10 +25,15 @@ public class MyEdge {
 	protected int marked;
 	protected boolean outsideMesh;
 	private boolean talweg = false;
-	private boolean flat = false;
-	private boolean transfluent = false;
+	private boolean ridge = false;
+	private double slopeInDegree;
+	private Coordinate get3DVector;
+	private String topoType;
 
 	private static final double epsilon = 0.00001;
+	static final int UPSLOPE = -1;
+	final static int DOWNSLOPE = 1;
+	final static int FLATSLOPE = 0;
 
 	/**
 	 * Initialize data
@@ -574,11 +583,18 @@ public class MyEdge {
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
-		if (marked == 1)
+		((Graphics2D) g).setStroke(new BasicStroke(1));
+		if (marked == 1) {
 			g.setColor(Color.blue);
-		else if (marked == 2)
+			((Graphics2D) g).setStroke(new BasicStroke(2));
+		} else if (marked == 2)
 			g.setColor(Color.pink);
-		else if ((left == null) && (right == null))
+		else if (talweg) {
+			g.setColor(Color.GRAY);
+			((Graphics2D) g).setStroke(new BasicStroke(3));
+		} else if (ridge) {
+			g.setColor(Color.CYAN);
+		} else if ((left == null) && (right == null))
 			g.setColor(Color.red);
 		else if ((left == null) || (right == null))
 			g.setColor(Color.orange);
@@ -607,28 +623,45 @@ public class MyEdge {
 		}
 	}
 
-	public void setTalweg(boolean talweg) {
-		this.talweg = talweg;
-	}
-
-	public void setFlat(boolean flat) {
-		this.flat = flat;
-	}
-
-	public void setTransfluent(boolean transfluent) {
-		this.transfluent  = transfluent;
+	public void setSlopeInDegree(double slopeInDegree) {
+		this.slopeInDegree = slopeInDegree;
 
 	}
 
-	public boolean isTalweg() {
-		return talweg;
+	public double getSlopeInDegree() {
+		return slopeInDegree;
 	}
 
-	public boolean isFlat() {
-		return flat;
+	public void setSlope(Coordinate get3DVector) {
+		this.get3DVector = get3DVector;
+
 	}
 
-	public boolean isTransfluent() {
-		return transfluent;
+	public Coordinate getSlope() {
+		return get3DVector;
+
 	}
+
+	public void setTopoType(String topoType) {
+		this.topoType = topoType;
+
+	}
+
+	public String getTopoType() {
+		return topoType;
+
+	}
+
+	public int getGradient() {
+		int gradient;
+		if (getStart().z > getEnd().z) {
+			gradient = MyEdge.DOWNSLOPE;
+		} else if (getStart().z < getEnd().z) {
+			gradient = MyEdge.UPSLOPE;
+		} else {
+			gradient = MyEdge.FLATSLOPE;
+		}
+		return gradient;
+	}
+
 }

@@ -11,6 +11,8 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 import java.util.*;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 /**
  * @author kwyhr
  *
@@ -22,9 +24,11 @@ public class MyTriangle {
 	protected MyEdge[] edges;
 	protected int gid;
 	protected int color;
-	
+
 	private MyPoint center;
 	private double radius;
+	private double slopeInDegree;
+	private Coordinate get3DVector;
 
 	protected static final double epsilon = 0.00001;
 	private static final double epsilon2 = epsilon * epsilon;
@@ -166,7 +170,7 @@ public class MyTriangle {
 
 	/**
 	 * Get points
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPoint[] getPoints() {
@@ -175,16 +179,16 @@ public class MyTriangle {
 
 	/**
 	 * Get Edges
-	 * 
+	 *
 	 * @return
 	 */
 	public MyEdge[] getEdges() {
 		return edges;
 	}
-	
+
 	/**
 	 * get GID
-	 * 
+	 *
 	 * @return
 	 */
 	public int getGid() {
@@ -193,7 +197,7 @@ public class MyTriangle {
 
 	/**
 	 * set GID
-	 * 
+	 *
 	 * @param gid
 	 */
 	public void setGid(int gid) {
@@ -253,15 +257,15 @@ public class MyTriangle {
 			if (edges[j] == null)
 				System.out.println("ERREUR");
 			else {
-			MyPoint start = edges[j].point[0];
-			MyPoint end = edges[j].point[1];
-			for (int k = 0; k < 3; k++) {
-				if ((start != points[k]) && (end != points[k]))
-					if (edges[j].isLeft(points[k]))
-						edges[j].left = this;
-					else
-						edges[j].right = this;
-			}
+				MyPoint start = edges[j].point[0];
+				MyPoint end = edges[j].point[1];
+				for (int k = 0; k < 3; k++) {
+					if ((start != points[k]) && (end != points[k]))
+						if (edges[j].isLeft(points[k]))
+							edges[j].left = this;
+						else
+							edges[j].right = this;
+				}
 			}
 		}
 	}
@@ -492,7 +496,7 @@ public class MyTriangle {
 
 		return correct;
 	}
-	
+
 	public boolean isFlatTriangle() {
 		if (radius > 1e6)
 			return true;
@@ -502,7 +506,7 @@ public class MyTriangle {
 
 	/**
 	 * Check if the triangle is flat or not
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public boolean isFlatSlope() {
@@ -519,7 +523,7 @@ public class MyTriangle {
 
 	/**
 	 * Get the point of the triangle that does not belong to the edge
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public MyPoint getAlterPoint(MyEdge anEdge) {
@@ -530,7 +534,7 @@ public class MyTriangle {
 
 	/**
 	 * Get the point of the triangle that does not belong to the 2 points
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public MyPoint getAlterPoint(MyPoint start, MyPoint end) {
@@ -549,7 +553,7 @@ public class MyTriangle {
 
 	/**
 	 * Get the edge of the triangle that includes the two point
-	 * 
+	 *
 	 * @return alterEdge
 	 */
 	public MyEdge getEdgeFromPoints(MyPoint p1, MyPoint p2) {
@@ -569,7 +573,7 @@ public class MyTriangle {
 
 	/**
 	 * Get the barycenter of the triangle
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public MyPoint getBarycenter() {
@@ -665,5 +669,24 @@ public class MyTriangle {
 				1, 1);
 		g.drawOval((int) (center.x - r) + decalageX, decalageY
 				- (int) (center.y + r), (int) r * 2, (int) r * 2);
+	}
+
+	public void setSlopeInDegree(double slopeInDegree) {
+		this.slopeInDegree = slopeInDegree;
+
+	}
+
+	public double getSlopeInDegree() {
+		return slopeInDegree;
+	}
+
+	public void setSlope(Coordinate get3DVector) {
+		this.get3DVector = get3DVector;
+
+	}
+
+	public Coordinate getSlope() {
+		return get3DVector;
+
 	}
 }

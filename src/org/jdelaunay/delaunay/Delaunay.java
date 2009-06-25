@@ -14,9 +14,6 @@ import org.jdelaunay.utilities.HydroLineUtil;
 import org.jdelaunay.utilities.HydroPolygonUtil;
 import org.jdelaunay.utilities.MathUtil;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
-
 /**
  * @author kwyhr
  *
@@ -2102,59 +2099,314 @@ public class Delaunay {
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 
+			/**
+			 * Edges : topographic qualifications
+			 */
+
 			for (MyEdge edge : edges) {
 
-				MyTriangle leftTriangle = edge.getLeft();
-				MyTriangle rightTriangle = edge.getRight();
-
 				HydroLineUtil hydroLineUtil = new HydroLineUtil(edge);
-				boolean pointeAdroite = false;
-				boolean pointeAGauche = false;
 
-				// On test si le triangle à droite existe
-				if (rightTriangle.getGid() != -1) {
-					HydroPolygonUtil rightHydroPolygonUtil = new HydroPolygonUtil(
-							rightTriangle);
-					// Ajout sur dTCell des edges qui le compose
+				edge.setSlopeInDegree(hydroLineUtil.getSlopeInDegree());
+				edge.setSlope(hydroLineUtil.get3DVector());
+				HydroPolygonUtil hydroPolygonUtil = null;
 
-					pointeAdroite = rightHydroPolygonUtil
+				MyTriangle aTriangleLeft = edge.getLeft();
+
+				MyTriangle aTriangleRight = edge.getRight();
+
+				boolean rightTtoEdge = false;
+				boolean rightTColinear = false;
+				boolean righTFlat = false;
+				boolean leftTtoEdge = false;
+				boolean leftTColinear = false;
+				boolean leftTFlat = false;
+				boolean rightBorder = false;
+				boolean leftBorder = false;
+
+				// Qualification des triangles
+				if (aTriangleRight != null) {
+
+					hydroPolygonUtil = new HydroPolygonUtil(aTriangleRight);
+					boolean pointeVersEdge = hydroPolygonUtil
 							.getPenteVersEdge(edge);
-					edge.setTransfluent(true);
+					aTriangleRight.setSlopeInDegree(hydroPolygonUtil
+							.getSlopeInDegree());
+					aTriangleRight.setSlope(hydroPolygonUtil.get3DVector());
 
+					if (pointeVersEdge) {
+						rightTtoEdge = true;
+
+					} else if (hydroPolygonUtil.getSlope() > 0) {
+						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
+								hydroPolygonUtil.get3DVector())) {
+
+							rightTColinear = true;
+						}
+					} else if (hydroPolygonUtil.getSlope() == 0) {
+
+						righTFlat = true;
+					}
 				}
 
-				// On test si le triangle à gauche existe
-				if (leftTriangle.getGid() != -1) {
-					HydroPolygonUtil leftHydroPolygonUtil = new HydroPolygonUtil(
-							leftTriangle);
-
-					pointeAGauche = leftHydroPolygonUtil.getPenteVersEdge(edge);
-
+				else {
+					rightBorder = true;
 				}
 
-				// Verifie si l'edge n'est pas plat
-				boolean flatEdge = false;
-				if (edge.getStart().z == edge.getEnd().z) {
+				if (aTriangleLeft != null) {
 
-					flatEdge = true;
-					edge.setFlat(true);
+					hydroPolygonUtil = new HydroPolygonUtil(aTriangleLeft);
+					boolean pointeVersEdge = hydroPolygonUtil
+							.getPenteVersEdge(edge);
+					aTriangleLeft.setSlopeInDegree(hydroPolygonUtil
+							.getSlopeInDegree());
+					aTriangleLeft.setSlope(hydroPolygonUtil.get3DVector());
 
+					if (pointeVersEdge) {
+
+						leftTtoEdge = true;
+					} else if (hydroPolygonUtil.getSlope() > 0) {
+						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
+								hydroPolygonUtil.get3DVector())) {
+
+							leftTColinear = true;
+						}
+					} else if (hydroPolygonUtil.getSlope() == 0) {
+
+						leftTFlat = true;
+					}
+
+				} else {
+					leftBorder = true;
 				}
 
-				if (!flatEdge) {
-					if ((rightTriangle.getGid() != -1)
-							&& (leftTriangle.getGid() != -1)) {
+				// Qualification de la pente de l'edge parcouru
+				int edgeGradient = edge.getGradient();
 
-						if (pointeAGauche && pointeAdroite) {
-							edge.setTalweg(true);
+				if (!leftBorder && !rightBorder) {
+
+					// Traitement des ridges
+					if ((!rightTtoEdge && !leftTtoEdge)
+							&& (!righTFlat && !leftTFlat)) {
+
+						switch (edgeGradient) {
+						case MyEdge.UPSLOPE:
+
+							edge.setTopoType(TopoType.UPRIDGE);
+
+							break;
+						case MyEdge.DOWNSLOPE:
+
+							edge.setTopoType(TopoType.DOWNRIDGE);
+							break;
+						case MyEdge.FLATSLOPE:
+							edge.setTopoType(TopoType.FLATRIDGE);
+
+							break;
+						default:
+							break;
 						}
 					}
+
+					// Cas des talwegs
+					else if (rightTtoEdge && leftTtoEdge) {
+
+						switch (edgeGradient) {
+						case MyEdge.UPSLOPE:
+
+							edge.setTopoType(TopoType.UPTALWEG);
+							break;
+						case MyEdge.DOWNSLOPE:
+
+							edge.setTopoType(TopoType.DOWNTALWEG);
+							break;
+						case MyEdge.FLATSLOPE:
+
+							edge.setTopoType(TopoType.FLATTALWEG);
+
+							break;
+						default:
+							break;
+						}
+					}
+
+					// Le triangle de gauche pointe sur l'edge mais pas le
+					// triangle de droite
+					else if ((leftTtoEdge && !rightTtoEdge) && !righTFlat) {
+
+						switch (edgeGradient) {
+						case MyEdge.UPSLOPE:
+							edge.setTopoType(TopoType.UPRIGHTSLOPE);
+							break;
+						case MyEdge.DOWNSLOPE:
+
+							edge.setTopoType(TopoType.DOWNRIGHTSLOPE);
+							break;
+						case MyEdge.FLATSLOPE:
+
+							edge.setTopoType(TopoType.FLATRIGHTSLOPE);
+
+							break;
+						default:
+							break;
+						}
+
+					}
+
+					// Le triangle de droite pointe sur l'edge mais pas le
+					// triangle de gauche
+					else if ((rightTtoEdge && !leftTtoEdge) && (!leftTFlat)) {
+
+						switch (edgeGradient) {
+						case MyEdge.UPSLOPE:
+							edge.setTopoType(TopoType.UPLEFTTSLOPE);
+							break;
+						case MyEdge.DOWNSLOPE:
+
+							edge.setTopoType(TopoType.DOWNLEFTSLOPE);
+							break;
+						case MyEdge.FLATSLOPE:
+
+							edge.setTopoType(TopoType.FLATLEFTSLOPE);
+
+							break;
+						default:
+							break;
+						}
+
+					}
+
+					// Traitement du rebord droit
+					else if ((!rightTtoEdge && !leftTtoEdge)
+							&& (!leftTFlat && righTFlat)) {
+						edge.setTopoType(TopoType.RIGHTSIDE);
+					}
+
+					// Traitement du rebord gauche
+
+					else if ((!leftTtoEdge && !rightTtoEdge)
+							&& (!righTFlat && leftTFlat)) {
+						edge.setTopoType(TopoType.LEFTSIDE);
+					}
+
+					// Traitement du fond gauche
+					else if ((rightTtoEdge && !leftTtoEdge)
+							&& (leftTFlat && !righTFlat)) {
+						edge.setTopoType(TopoType.RIGHTWELL);
+					}
+
+					// Traitement du fond droit
+					else if ((!rightTtoEdge && leftTtoEdge)
+							&& (!leftTFlat && righTFlat)) {
+						edge.setTopoType(TopoType.LEFTWELL);
+					}
+
+					// Cas particulier des talwegs colineaires
+
+					// Talweg colineaire gauche
+
+					else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
+
+						switch (edgeGradient) {
+						case MyEdge.UPSLOPE:
+							edge.setTopoType(TopoType.UPLEFTTCOLINEAR);
+							break;
+						case MyEdge.DOWNSLOPE:
+
+							edge.setTopoType(TopoType.DOWNLEFTCOLINEAR);
+							break;
+						case MyEdge.FLATSLOPE:
+
+							edge.setTopoType(TopoType.FLATLEFTCOLINEAR);
+
+							break;
+						default:
+							break;
+						}
+					}
+
+					// Talweg colineaire droit
+
+					else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
+
+						switch (edgeGradient) {
+						case MyEdge.UPSLOPE:
+							edge.setTopoType(TopoType.UPRIGHTCOLINEAR);
+							break;
+						case MyEdge.DOWNSLOPE:
+
+							edge.setTopoType(TopoType.DOWNRIGHTCOLINEAR);
+							break;
+						case MyEdge.FLATSLOPE:
+
+							edge.setTopoType(TopoType.FLATRIGHTCOLINEAR);
+
+							break;
+						default:
+							break;
+						}
+					}
+
+					// Les deux triangles sont colineaires
+
+					else if ((!leftTtoEdge && !rightTtoEdge)
+							&& (rightTColinear && leftTColinear)) {
+
+						switch (edgeGradient) {
+						case MyEdge.UPSLOPE:
+							edge.setTopoType(TopoType.UPDOUBLECOLINEAR);
+							break;
+						case MyEdge.DOWNSLOPE:
+
+							edge.setTopoType(TopoType.DOWNDOUBLECOLINEAR);
+							break;
+						case MyEdge.FLATSLOPE:
+
+							edge.setTopoType(TopoType.FLATDOUBLECOLINEAR);
+
+							break;
+						default:
+							break;
+						}
+
+					}
+
+					// Le reste est plat
+					else {
+
+						edge.setTopoType(TopoType.FLAT);
+
+					}
+
+				}
+
+				// Traitement des bords plats
+				else {
+					edge.setTopoType(TopoType.BORDER);
 				}
 
 			}
 
 		}
 
+		/**
+		 * The code below is used to insert new talweg in the TIN
+		 */
+
+		/*
+		 * ArrayList<MyPoint> listPointAtraiter = new ArrayList<MyPoint>();
+		 * ArrayList<MyTriangle> listTriangles = new ArrayList<MyTriangle>();
+		 *
+		 * for (MyEdge edge : edges) {
+		 *
+		 * if (edge.getTopoType() != TopoType.talweg) { MyPoint pHaut =
+		 * getPointHaut(); if (pHaut.getTopoType() == TopoType.talweg) { if
+		 * (!listPointAtraiter.contains(pHaut)) { listPointAtraiter.add(pHaut); //
+		 * On recherche le triangle ou on va se jeter } else if
+		 * (listPointAtraiter.contains(pHaut)) { } } } }
+		 */
+
+		// theMesh.setAllGids();
 	}
 
 	/**
