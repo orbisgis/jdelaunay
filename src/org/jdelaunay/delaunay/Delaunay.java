@@ -2219,26 +2219,28 @@ public class Delaunay {
 					// Traitement du rebord droit
 					else if ((!rightTtoEdge && !leftTtoEdge)
 							&& (!leftTFlat && righTFlat)) {
-						edge.setTopoType(TopoType.RIGHTSIDE);
+						edge.setTopoType(TopoType.LEFTSIDE);
 					}
 
 					// Traitement du rebord gauche
 
 					else if ((!leftTtoEdge && !rightTtoEdge)
 							&& (!righTFlat && leftTFlat)) {
-						edge.setTopoType(TopoType.LEFTSIDE);
+						edge.setTopoType(TopoType.RIGHTSIDE);
 					}
 
 					// Traitement du fond gauche
 					else if ((rightTtoEdge && !leftTtoEdge)
 							&& (leftTFlat && !righTFlat)) {
-						edge.setTopoType(TopoType.RIGHTWELL);
+
+						edge.setTopoType(TopoType.LEFTWELL);
 					}
 
 					// Traitement du fond droit
 					else if ((!rightTtoEdge && leftTtoEdge)
 							&& (!leftTFlat && righTFlat)) {
-						edge.setTopoType(TopoType.LEFTWELL);
+
+						edge.setTopoType(TopoType.RIGHTWELL);
 					}
 
 					// Cas particulier des talwegs colineaires
