@@ -2189,67 +2189,22 @@ public class Delaunay {
 					if ((!rightTtoEdge && !leftTtoEdge)
 							&& (!righTFlat && !leftTFlat)) {
 
-						switch (edgeGradient) {
-						case MyEdge.UPSLOPE:
+						edge.setTopoType(TopoType.RIDGE);
 
-							edge.setTopoType(TopoType.UPRIDGE);
-
-							break;
-						case MyEdge.DOWNSLOPE:
-
-							edge.setTopoType(TopoType.DOWNRIDGE);
-							break;
-						case MyEdge.FLATSLOPE:
-							edge.setTopoType(TopoType.FLATRIDGE);
-
-							break;
-						default:
-							break;
-						}
 					}
 
 					// Cas des talwegs
 					else if (rightTtoEdge && leftTtoEdge) {
 
-						switch (edgeGradient) {
-						case MyEdge.UPSLOPE:
+						edge.setTopoType(TopoType.TALWEG);
 
-							edge.setTopoType(TopoType.UPTALWEG);
-							break;
-						case MyEdge.DOWNSLOPE:
-
-							edge.setTopoType(TopoType.DOWNTALWEG);
-							break;
-						case MyEdge.FLATSLOPE:
-
-							edge.setTopoType(TopoType.FLATTALWEG);
-
-							break;
-						default:
-							break;
-						}
 					}
 
 					// Le triangle de gauche pointe sur l'edge mais pas le
 					// triangle de droite
 					else if ((leftTtoEdge && !rightTtoEdge) && !righTFlat) {
 
-						switch (edgeGradient) {
-						case MyEdge.UPSLOPE:
-							edge.setTopoType(TopoType.UPRIGHTSLOPE);
-							break;
-						case MyEdge.DOWNSLOPE:
-
-							edge.setTopoType(TopoType.DOWNRIGHTSLOPE);
-							break;
-						case MyEdge.FLATSLOPE:
-
-							edge.setTopoType(TopoType.FLATRIGHTSLOPE);
-
-							break;
-						default:
-							break;
-						}
+						edge.setTopoType(TopoType.RIGHTSLOPE);
 
 					}
 
@@ -2257,22 +2212,7 @@ public class Delaunay {
 					// triangle de gauche
 					else if ((rightTtoEdge && !leftTtoEdge) && (!leftTFlat)) {
 
-						switch (edgeGradient) {
-						case MyEdge.UPSLOPE:
-							edge.setTopoType(TopoType.UPLEFTTSLOPE);
-							break;
-						case MyEdge.DOWNSLOPE:
-
-							edge.setTopoType(TopoType.DOWNLEFTSLOPE);
-							break;
-						case MyEdge.FLATSLOPE:
-
-							edge.setTopoType(TopoType.FLATLEFTSLOPE);
-
-							break;
-						default:
-							break;
-						}
+						edge.setTopoType(TopoType.LEFTTSLOPE);
 
 					}
 
@@ -2307,44 +2247,16 @@ public class Delaunay {
 
 					else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
 
-						switch (edgeGradient) {
-						case MyEdge.UPSLOPE:
-							edge.setTopoType(TopoType.UPLEFTTCOLINEAR);
-							break;
-						case MyEdge.DOWNSLOPE:
+						edge.setTopoType(TopoType.LEFTCOLINEAR);
 
-							edge.setTopoType(TopoType.DOWNLEFTCOLINEAR);
-							break;
-						case MyEdge.FLATSLOPE:
-
-							edge.setTopoType(TopoType.FLATLEFTCOLINEAR);
-
-							break;
-						default:
-							break;
-						}
 					}
 
 					// Talweg colineaire droit
 
 					else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
 
-						switch (edgeGradient) {
-						case MyEdge.UPSLOPE:
-							edge.setTopoType(TopoType.UPRIGHTCOLINEAR);
-							break;
-						case MyEdge.DOWNSLOPE:
+						edge.setTopoType(TopoType.RIGHTCOLINEAR);
 
-							edge.setTopoType(TopoType.DOWNRIGHTCOLINEAR);
-							break;
-						case MyEdge.FLATSLOPE:
-
-							edge.setTopoType(TopoType.FLATRIGHTCOLINEAR);
-
-							break;
-						default:
-							break;
-						}
 					}
 
 					// Les deux triangles sont colineaires
@@ -2352,22 +2264,7 @@ public class Delaunay {
 					else if ((!leftTtoEdge && !rightTtoEdge)
 							&& (rightTColinear && leftTColinear)) {
 
-						switch (edgeGradient) {
-						case MyEdge.UPSLOPE:
-							edge.setTopoType(TopoType.UPDOUBLECOLINEAR);
-							break;
-						case MyEdge.DOWNSLOPE:
-
-							edge.setTopoType(TopoType.DOWNDOUBLECOLINEAR);
-							break;
-						case MyEdge.FLATSLOPE:
-
-							edge.setTopoType(TopoType.FLATDOUBLECOLINEAR);
-
-							break;
-						default:
-							break;
-						}
+						edge.setTopoType(TopoType.DOUBLECOLINEAR);
 
 					}
 
