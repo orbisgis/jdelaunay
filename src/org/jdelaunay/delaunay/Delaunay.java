@@ -2087,11 +2087,11 @@ public class Delaunay {
 	}
 
 	/**
-	 * Delaunay talweg linker
+	 * Morphological qualification
 	 *
 	 * @throws DelaunayError
 	 */
-	public void talwegBuilder() throws DelaunayError {
+	public void morphologicalQualification() throws DelaunayError {
 
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
@@ -2180,6 +2180,8 @@ public class Delaunay {
 					leftBorder = true;
 				}
 
+				// Recupération des noeuds associés à l'edge
+
 				// Qualification de la pente de l'edge parcouru
 				int edgeGradient = edge.getGradient();
 
@@ -2197,6 +2199,8 @@ public class Delaunay {
 					else if (rightTtoEdge && leftTtoEdge) {
 
 						edge.setTopoType(TopoType.TALWEG);
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
 
 					}
 
@@ -2250,6 +2254,8 @@ public class Delaunay {
 					else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
 
 						edge.setTopoType(TopoType.LEFTCOLINEAR);
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
 
 					}
 
@@ -2258,6 +2264,8 @@ public class Delaunay {
 					else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
 
 						edge.setTopoType(TopoType.RIGHTCOLINEAR);
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
 
 					}
 
@@ -2267,6 +2275,9 @@ public class Delaunay {
 							&& (rightTColinear && leftTColinear)) {
 
 						edge.setTopoType(TopoType.DOUBLECOLINEAR);
+
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
 
 					}
 
@@ -2287,25 +2298,51 @@ public class Delaunay {
 			}
 
 		}
+	}
+
+	public void talwegBuilder() {
 
 		/**
 		 * The code below is used to insert new talweg in the TIN
 		 */
 
-		/*
-		 * ArrayList<MyPoint> listPointAtraiter = new ArrayList<MyPoint>();
-		 * ArrayList<MyTriangle> listTriangles = new ArrayList<MyTriangle>();
-		 *
-		 * for (MyEdge edge : edges) {
-		 *
-		 * if (edge.getTopoType() != TopoType.talweg) { MyPoint pHaut =
-		 * getPointHaut(); if (pHaut.getTopoType() == TopoType.talweg) { if
-		 * (!listPointAtraiter.contains(pHaut)) { listPointAtraiter.add(pHaut); //
-		 * On recherche le triangle ou on va se jeter } else if
-		 * (listPointAtraiter.contains(pHaut)) { } } } }
-		 */
+		ArrayList<MyPoint> listPointAtraiter = new ArrayList<MyPoint>();
+		ArrayList<MyTriangle> listTriangles = new ArrayList<MyTriangle>();
 
-		// theMesh.setAllGids();
+		for (MyEdge edge : edges) {
+
+			// Edge talweg
+			if ((edge.getTopoType() != TopoType.TALWEG)
+					|| (edge.getTopoType() != TopoType.LEFTCOLINEAR)
+					|| (edge.getTopoType() != TopoType.RIGHTCOLINEAR)
+					|| (edge.getTopoType() != TopoType.DOUBLECOLINEAR)) {
+
+				MyPoint uperPoint = findUperPoint(edge);
+
+				if (uperPoint.getTopoType() == TopoType.TALWEG) {
+					if (!listPointAtraiter.contains(uperPoint)){
+						listPointAtraiter.add(uperPoint);
+
+					}
+				}
+			}
+		}
+
+		theMesh.setAllGids();
+	}
+
+	public MyPoint findUperPoint(MyEdge edge) {
+
+		MyPoint p1 = edge.getStart();
+		MyPoint p2 = edge.getEnd();
+		if (p1.z > p2.z) {
+			return p1;
+		} else if (p1.z > p2.z) {
+			return p2;
+		} else {
+			return p1;
+		}
+
 	}
 
 	/**
