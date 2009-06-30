@@ -435,6 +435,22 @@ public class MyMesh {
 				- startComputation;
 	}
 
+	// ----------------------------------------------------------------
+	/**
+	 * add a sewer entry
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addSewerEntry(double x, double y) throws DelaunayError {
+		// Search for the point
+		MyPoint sewerPoint = searchPoint(x,y);
+		if (sewerPoint != null)
+			addSewerEntry(sewerPoint);
+	}
+
 	/**
 	 * add a sewer entry
 	 *
@@ -474,6 +490,20 @@ public class MyMesh {
 	 *
 	 * @param x
 	 * @param y
+	 * @throws DelaunayError
+	 */
+	public void addSewerExit(double x, double y) throws DelaunayError {
+		// Search for the point
+		MyPoint sewerPoint = searchPoint(x,y);
+		if (sewerPoint != null)
+			addSewerExit(sewerPoint);
+	}
+
+	/**
+	 * add a sewer exit
+	 *
+	 * @param x
+	 * @param y
 	 * @param z
 	 * @throws DelaunayError
 	 */
@@ -496,9 +526,9 @@ public class MyMesh {
 					DelaunayError.DelaunayError_invalidSewerPoint);
 		else if (lastSewerPoint == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerEnd);
-		else if (lastSewerPoint.z <= sewerPoint.z)
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidSewerDirection);
+//		else if (lastSewerPoint.z <= sewerPoint.z)
+//			throw new DelaunayError(
+//					DelaunayError.DelaunayError_invalidSewerDirection);
 		else {
 			sewerPoint.setPointType(TopoType.SEWER);
 			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint,
@@ -582,6 +612,7 @@ public class MyMesh {
 		}
 	}
 
+	// ----------------------------------------------------------------
 	/**
 	 * Add a wall point start
 	 *
@@ -593,6 +624,21 @@ public class MyMesh {
 	public void addWallStart(double x, double y, double z) throws DelaunayError {
 		// Search for the point
 		MyPoint wallPoint = searchPoint(x,y,z);
+		if (wallPoint != null)
+			addWallStart(wallPoint);
+	}
+
+	/**
+	 * Add a wall point start
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addWallStart(double x, double y) throws DelaunayError {
+		// Search for the point
+		MyPoint wallPoint = searchPoint(x,y);
 		if (wallPoint != null)
 			addWallStart(wallPoint);
 	}
@@ -614,6 +660,21 @@ public class MyMesh {
 			lastWallPoint = wallPoint;
 			wallPoint.setPointType(TopoType.WALL);
 		}
+	}
+
+	/**
+	 * Add a wall point end
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addWallEnd(double x, double y) throws DelaunayError {
+		// Search for the point
+		MyPoint wallPoint = searchPoint(x,y);
+		if (wallPoint != null)
+			addWallEnd(wallPoint);
 	}
 
 	/**
@@ -658,6 +719,12 @@ public class MyMesh {
 		}
 	}
 
+	// ----------------------------------------------------------------
+	public void setRoad() throws DelaunayError {
+	
+	}
+	
+	// ----------------------------------------------------------------
 	/**
 	 * search for a point
 	 *
@@ -665,13 +732,35 @@ public class MyMesh {
 	 * @param y
 	 * @param z
 	 */
-	public MyPoint searchPoint(double x, double y, double z) {
+	protected MyPoint searchPoint(double x, double y, double z) {
 		boolean found = false;
 		MyPoint aPoint = null;
 		ListIterator<MyPoint> iterPoint = points.listIterator();
 		while ((iterPoint.hasNext()) && (! found)) {
 			aPoint = iterPoint.next();
-			if (aPoint.squareDistance(x,y,z) < epsilon)
+			if (aPoint.squareDistance(x,y, z) < epsilon)
+				found=true;
+		}
+		
+		if (! found)
+			aPoint = null;
+		
+		return aPoint;
+	}
+
+	/**
+	 * search for a point
+	 *
+	 * @param x
+	 * @param y
+	 */
+	protected MyPoint searchPoint(double x, double y) {
+		boolean found = false;
+		MyPoint aPoint = null;
+		ListIterator<MyPoint> iterPoint = points.listIterator();
+		while ((iterPoint.hasNext()) && (! found)) {
+			aPoint = iterPoint.next();
+			if (aPoint.squareDistance(x,y) < epsilon)
 				found=true;
 		}
 		
@@ -697,6 +786,23 @@ public class MyMesh {
 		return aPoint;
 	}
 
+	/**
+	 * get point, creates it if necessary
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	public MyPoint getPoint(double x, double y) {
+		MyPoint aPoint = searchPoint(x,y);
+		
+		if (aPoint == null)
+			aPoint = new MyPoint(x,y);
+		
+		return aPoint;
+	}
+
+	// ----------------------------------------------------------------
 	/**
 	 * Get point max GID
 	 * @return
@@ -751,6 +857,7 @@ public class MyMesh {
 		return maxGID;
 	}
 
+	// ----------------------------------------------------------------
 	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
@@ -836,6 +943,7 @@ public class MyMesh {
 			affiche.refresh();
 	}
 
+	// ----------------------------------------------------------------
 	/**
 	 * Save the Mesh elements in a XML file
 	 */
@@ -1058,6 +1166,7 @@ public class MyMesh {
 		}
 	}
 
+	// ----------------------------------------------------------------
 	/**
 	 * Export to VRML file Mesh.wrl
 	 */
@@ -1257,6 +1366,7 @@ public class MyMesh {
 
 	}
 
+	// ----------------------------------------------------------------
 	/**
 	 * Set missing GIDs for points
 	 */
