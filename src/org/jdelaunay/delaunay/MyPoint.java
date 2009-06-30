@@ -215,8 +215,20 @@ public class MyPoint {
 	 * @return distance
 	 */
 	public double squareDistance(MyPoint aPoint) {
-		return (x - aPoint.x) * (x - aPoint.x) + (y - aPoint.y)
-				* (y - aPoint.y) + (z - aPoint.z) * (z - aPoint.z);
+		return squareDistance(aPoint.x, aPoint.y, aPoint.z);
+	}
+
+	/**
+	 * square distance to another point
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return distance
+	 */
+	public double squareDistance(double x, double y, double z) {
+		return (x - this.x) * (x - this.x) + (y - this.y)
+				* (y - this.y) + (z - this.z) * (z - this.z);
 	}
 
 	/*
