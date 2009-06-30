@@ -3,9 +3,6 @@ package org.jdelaunay.delaunay;
 public class TopoType {
 
 	//Topographic types
-
-
-
 	public static final String RIDGE = "ridge";
 	public static final String TALWEG = "talweg";
 	public static final String RIGHTSLOPE = "rightSlope";
@@ -19,6 +16,9 @@ public class TopoType {
 	public static final String DOUBLECOLINEAR = "doubleColinear";
 	public static final String FLAT = "flat";
 	public static final String BORDER = "border";
-
-
+	
+	// const strings
+	static final public String WALL = "Wall";
+	static final public String SEWER = "Sewer";
+	static final public String ROAD = "Road";
 }
