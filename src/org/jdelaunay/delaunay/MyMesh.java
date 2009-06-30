@@ -32,9 +32,12 @@ public class MyMesh {
 	private MyPoint lastWallPoint;
 	private boolean meshComputed;
 
-	// const strings
-	static final public String MeshType_Wall = new String("Wall");
-	static final public String MeshType_Sewer = new String("Sewer");
+	// GIDs
+	protected int point_GID;
+	protected int edge_GID;
+	protected int triangle_GID;
+
+	protected static final double epsilon = 0.00001;
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
@@ -56,6 +59,11 @@ public class MyMesh {
 		affiche = null;
 		displayCircles = false;
 		meshComputed = false;
+
+		point_GID = 0;
+		edge_GID = 0;
+		triangle_GID = 0;
+
 		lastSewerPoint = null;
 		lastWallPoint = null;
 	}
@@ -430,6 +438,21 @@ public class MyMesh {
 	/**
 	 * add a sewer entry
 	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addSewerEntry(double x, double y, double z) throws DelaunayError {
+		// Search for the point
+		MyPoint sewerPoint = searchPoint(x,y,z);
+		if (sewerPoint != null)
+			addSewerEntry(sewerPoint);
+	}
+
+	/**
+	 * add a sewer entry
+	 *
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -441,9 +464,24 @@ public class MyMesh {
 			throw new DelaunayError(
 					DelaunayError.DelaunayError_invalidSewerStart);
 		else {
-			sewerPoint.setPointType(MeshType_Sewer);
+			sewerPoint.setPointType(TopoType.SEWER);
 			lastSewerPoint = sewerPoint;
 		}
+	}
+
+	/**
+	 * add a sewer exit
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addSewerExit(double x, double y, double z) throws DelaunayError {
+		// Search for the point
+		MyPoint sewerPoint = searchPoint(x,y,z);
+		if (sewerPoint != null)
+			addSewerExit(sewerPoint);
 	}
 
 	/**
@@ -462,14 +500,28 @@ public class MyMesh {
 			throw new DelaunayError(
 					DelaunayError.DelaunayError_invalidSewerDirection);
 		else {
-			sewerPoint.setPointType(MeshType_Sewer);
+			sewerPoint.setPointType(TopoType.SEWER);
 			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint,
-					MeshType_Sewer);
+					TopoType.SEWER);
 			anEdge.marked = 1;
 			anEdge.outsideMesh = true;
 			compEdges.add(anEdge);
 			lastSewerPoint = null;
 		}
+	}
+
+	/**
+	 * add a sewer point (neither start or exit
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addSewerPoint(double x, double y, double z) throws DelaunayError {
+		// Search for the point
+		MyPoint aPoint = getPoint(x,y,z);
+		addSewerPoint(aPoint);
 	}
 
 	/**
@@ -486,16 +538,31 @@ public class MyMesh {
 			throw new DelaunayError(
 					DelaunayError.DelaunayError_invalidSewerDirection);
 		else {
-			sewerPoint.setPointType(MeshType_Sewer);
+			sewerPoint.setPointType(TopoType.SEWER);
 			points.add(sewerPoint);
 			sewerPoint.marked = true;
 			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint,
-					MeshType_Sewer);
+					TopoType.SEWER);
 			anEdge.marked = 1;
 			anEdge.outsideMesh = true;
 			compEdges.add(anEdge);
 			lastSewerPoint = sewerPoint;
 		}
+	}
+
+	/**
+	 * use a sewer point to start a new branch
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void setSewerPoint(double x, double y, double z) throws DelaunayError {
+		// Search for the point
+		MyPoint sewerPoint = searchPoint(x,y,z);
+		if (sewerPoint != null)
+			setSewerPoint(sewerPoint);
 	}
 
 	/**
@@ -518,6 +585,21 @@ public class MyMesh {
 	/**
 	 * Add a wall point start
 	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addWallStart(double x, double y, double z) throws DelaunayError {
+		// Search for the point
+		MyPoint wallPoint = searchPoint(x,y,z);
+		if (wallPoint != null)
+			addWallStart(wallPoint);
+	}
+
+	/**
+	 * Add a wall point start
+	 *
 	 * @param wallPoint
 	 * @throws DelaunayError
 	 */
@@ -530,8 +612,23 @@ public class MyMesh {
 		else {
 			// Wall point start
 			lastWallPoint = wallPoint;
-			wallPoint.setPointType(MeshType_Wall);
+			wallPoint.setPointType(TopoType.WALL);
 		}
+	}
+
+	/**
+	 * Add a wall point end
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @throws DelaunayError
+	 */
+	public void addWallEnd(double x, double y, double z) throws DelaunayError {
+		// Search for the point
+		MyPoint wallPoint = searchPoint(x,y,z);
+		if (wallPoint != null)
+			addWallEnd(wallPoint);
 	}
 
 	/**
@@ -551,14 +648,107 @@ public class MyMesh {
 					DelaunayError.DelaunayError_invalidWallStart);
 		else {
 			// Wall point end
-			wallPoint.setPointType(MeshType_Wall);
+			wallPoint.setPointType(TopoType.WALL);
 
-			MyEdge anEdge = new MyEdge(lastWallPoint, wallPoint, MeshType_Wall);
+			MyEdge anEdge = new MyEdge(lastWallPoint, wallPoint, TopoType.WALL);
 			anEdge.marked = 1;
 			compEdges.add(anEdge);
 
-			lastSewerPoint = null;
+			lastWallPoint = null;
 		}
+	}
+
+	/**
+	 * search for a point
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	public MyPoint searchPoint(double x, double y, double z) {
+		boolean found = false;
+		MyPoint aPoint = null;
+		ListIterator<MyPoint> iterPoint = points.listIterator();
+		while ((iterPoint.hasNext()) && (! found)) {
+			aPoint = iterPoint.next();
+			if (aPoint.squareDistance(x,y,z) < epsilon)
+				found=true;
+		}
+		
+		if (! found)
+			aPoint = null;
+		
+		return aPoint;
+	}
+
+	/**
+	 * get point, creates it if necessary
+	 *
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	public MyPoint getPoint(double x, double y, double z) {
+		MyPoint aPoint = searchPoint(x,y,z);
+		
+		if (aPoint == null)
+			aPoint = new MyPoint(x,y,z);
+		
+		return aPoint;
+	}
+
+	/**
+	 * Get point max GID
+	 * @return
+	 */
+	public int getMaxGID_Points() {
+		SetAllGIDs_Point();
+		
+		int maxGID = 0;
+		for (MyPoint aPoint : points) {
+			int theGID = aPoint.getGid();
+			if (theGID > maxGID)
+				maxGID = theGID;
+		}
+		
+		point_GID = maxGID;
+		return maxGID;
+	}
+	
+	/**
+	 * Get edges max GID
+	 * @return
+	 */
+	public int getMaxGID_Edges() {
+		SetAllGIDs_Edges();
+		
+		int maxGID = 0;
+		for (MyEdge anEdge : edges) {
+			int theGID = anEdge.getGid();
+			if (theGID > maxGID)
+				maxGID = theGID;
+		}
+
+		edge_GID = maxGID;
+		return maxGID;
+	}
+
+	/**
+	 * Get triangles max GID
+	 * @return
+	 */
+	public int getMaxGID_Triangles() {
+		SetAllGIDs_Edges();
+		
+		int maxGID = 0;
+		for (MyTriangle aTriangle : triangles) {
+			int theGID = aTriangle.getGid();
+			if (theGID > maxGID)
+				maxGID = theGID;
+		}
+
+		triangle_GID = maxGID;
+		return maxGID;
 	}
 
 	/**
@@ -711,9 +901,6 @@ public class MyMesh {
 		} catch (IOException e) {
 		}
 	}
-
-
-
 
 	/**
 	 * Save the Mesh in a file
@@ -954,7 +1141,7 @@ public class MyMesh {
 				}
 				// add points for walls
 				for (MyEdge anEdge : compEdges) {
-					if (anEdge.getType() == MeshType_Wall) {
+					if (anEdge.getType() == TopoType.WALL) {
 						writer.write("#wall points\n");
 						for (int i = 0; i < 2; i++) {
 							MyPoint aPoint = anEdge.point[i];
@@ -981,7 +1168,7 @@ public class MyMesh {
 				// add walls
 				int index = points.size();
 				for (MyEdge anEdge : compEdges) {
-					if (anEdge.getType() == MeshType_Wall) {
+					if (anEdge.getType() == TopoType.WALL) {
 						writer.write("#wall " + (anEdge.gid - 1) + "\n");
 						writer.write((anEdge.point[0].gid - 1) + "\t");
 						writer.write((anEdge.point[1].gid - 1) + "\t");
@@ -1011,7 +1198,7 @@ public class MyMesh {
 					writer.write("0 #triangle " + (aTriangle.gid - 1) + "\n");
 				}
 				for (MyEdge anEdge : compEdges) {
-					if (anEdge.getType() == MeshType_Wall) {
+					if (anEdge.getType() == TopoType.WALL) {
 						writer.write("1 #wall edge " + (anEdge.gid - 1) + "\n");
 					}
 				}
@@ -1027,7 +1214,7 @@ public class MyMesh {
 			// Add sewer
 			if (false)
 			for (MyEdge anEdge : compEdges) {
-				if (anEdge.getType() == MeshType_Sewer) {
+				if (anEdge.getType() == TopoType.WALL) {
 					// Add sewer element NOT FINISHED SO LET IT UNREACHABLE
 					MyPoint aPoint1 = anEdge.getStart();
 					MyPoint aPoint2 = anEdge.getEnd();
@@ -1074,75 +1261,44 @@ public class MyMesh {
 	 * Set missing GIDs for points
 	 */
 	protected void SetAllGIDs_Point() {
-		int nextIndex = 0;
-		int curIndex = 0;
-		ListIterator<MyPoint>iterPoints1 = points.listIterator();
-		ListIterator<MyPoint>iterPoints2 = points.listIterator();
-
 		// sort points
 		MyTools.quickSortGID_Points(points, 0, points.size()-1);
 
-		// Then process every point
-		while (iterPoints1.hasNext()) {
-			MyPoint aPoint = iterPoints1.next();
-			if (aPoint.getGid() <= 0) {
-				// need to set it
-				curIndex++;
-
-				// reach next possible value
-				while ((iterPoints2.hasNext()) && (curIndex >= nextIndex)) {
-					MyPoint testPoint = iterPoints2.next();
-					nextIndex = testPoint.getGid();
-					if (curIndex <= nextIndex) {
-						curIndex++;
-					}
-				}
-			}
+		// Values are orderer
+		int maxGID = points.size();
+		for (int i=0; i< maxGID; i++) {
+			points.get(i).setGid(i+1);
 		}
+		
+		point_GID = maxGID;
 	}
 
+	/**
+	 * Set missing GIDs for edges
+	 */
 	protected void SetAllGIDs_Edges() {
-		int nextIndex = 0;
-		int curIndex = 0;
-		ListIterator<MyEdge>iterEdges1 = edges.listIterator();
-		ListIterator<MyEdge>iterEdges2 = edges.listIterator();
-
 		// sort edges
 		MyTools.quickSortGID_Edges(edges, 0, edges.size()-1);
 
-		// Then process every edge
-		while (iterEdges1.hasNext()) {
-			MyEdge anEdge = iterEdges1.next();
-			if (anEdge.getGid() <= 0) {
-				// need to set it
-				curIndex++;
-
-				// reach next possible value
-				while ((iterEdges2.hasNext()) && (curIndex >= nextIndex)) {
-					MyEdge testEdge = iterEdges2.next();
-					nextIndex = testEdge.getGid();
-					if (curIndex <= nextIndex) {
-						curIndex++;
-					}
-				}
-
-				anEdge.setGid(curIndex);
-			}
+		// Values are orderer
+		int maxGID = edges.size();
+		for (int i=0; i< maxGID; i++) {
+			edges.get(i).setGid(i+1);
 		}
-
-		// At least, sort edges
-		MyTools.quickSortGID_Edges(edges, 0, edges.size()-1);
+		
+		edge_GID = maxGID;
 	}
 
 	/**
 	 * Set GIDs for triangles
 	 */
 	protected void SetAllGIDs_Triangle() {
-		int curIndex = 0;
-		for (MyTriangle aTriangle : triangles) {
-			curIndex++;
-			aTriangle.setGid(curIndex);
+		int maxGID = triangles.size();
+		for (int i=0; i< maxGID; i++) {
+			triangles.get(i).setGid(i+1);
 		}
+
+		triangle_GID = maxGID;
 	}
 
 	/**
