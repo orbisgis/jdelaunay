@@ -10,10 +10,6 @@ package org.jdelaunay.delaunay;
 
 import java.util.*;
 
-import org.jdelaunay.utilities.HydroLineUtil;
-import org.jdelaunay.utilities.HydroPolygonUtil;
-import org.jdelaunay.utilities.MathUtil;
-
 /**
  * @author kwyhr
  *
@@ -1963,11 +1959,20 @@ public class Delaunay {
 	 * Process the flip-flop algorithm on the list of triangles
 	 */
 	private void processBadEdges() {
+		LinkedList<MyEdge> AlreadySeen = new LinkedList<MyEdge>();
 		while (!badEdgesQueueList.isEmpty()) {
 			MyEdge anEdge = badEdgesQueueList.getFirst();
 			badEdgesQueueList.removeFirst();
+			
+			boolean doIt = true;
 
-			if (anEdge.marked != 1) {
+			if (anEdge.marked == 1) 
+				doIt = false;
+			else if (AlreadySeen.contains(anEdge))
+				doIt = false;
+				
+			if (doIt) {
+				AlreadySeen.add(anEdge);
 				// We cannot process marked edges
 				// We check if the two triangles around the edge are ok
 				MyTriangle aTriangle1 = anEdge.getLeft();
@@ -2044,7 +2049,7 @@ public class Delaunay {
 					middle);
 
 			// Move middle
-			middle.z = (basicZ + altZ) / 2;
+			middle.z = (3*basicZ + altZ) / 4;
 
 			// Recompute all centers because it one point moved
 			for (MyTriangle aTriangle1 : impactedTriangles) {
@@ -2070,7 +2075,7 @@ public class Delaunay {
 						MyPoint nextPoint = iter0.next();
 						MyPoint nextAlter = iter1.next();
 						if (nextPoint == thePoint) {
-							thePoint.z = (thePoint.z + nextAlter.z) / 2;
+							thePoint.z = (3*thePoint.z + nextAlter.z) / 4;
 							todo.add(nextAlter);
 						}
 					}
@@ -2083,265 +2088,6 @@ public class Delaunay {
 		// them
 		while (!badEdgesQueueList.isEmpty())
 			badEdgesQueueList.removeFirst();
-
-	}
-
-	/**
-	 * Morphological qualification
-	 *
-	 * @throws DelaunayError
-	 */
-	public void morphologicalQualification() throws DelaunayError {
-
-		if (theMesh == null)
-			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!theMesh.isMeshComputed())
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else {
-
-			/**
-			 * Edges : topographic qualifications
-			 */
-
-			for (MyEdge edge : edges) {
-
-				HydroLineUtil hydroLineUtil = new HydroLineUtil(edge);
-
-				edge.setSlopeInDegree(hydroLineUtil.getSlopeInDegree());
-				edge.setSlope(hydroLineUtil.get3DVector());
-				HydroPolygonUtil hydroPolygonUtil = null;
-
-				MyTriangle aTriangleLeft = edge.getLeft();
-
-				MyTriangle aTriangleRight = edge.getRight();
-
-				boolean rightTtoEdge = false;
-				boolean rightTColinear = false;
-				boolean righTFlat = false;
-				boolean leftTtoEdge = false;
-				boolean leftTColinear = false;
-				boolean leftTFlat = false;
-				boolean rightBorder = false;
-				boolean leftBorder = false;
-
-				// Qualification des triangles
-				if (aTriangleRight != null) {
-
-					hydroPolygonUtil = new HydroPolygonUtil(aTriangleRight);
-					boolean pointeVersEdge = hydroPolygonUtil
-							.getPenteVersEdge(edge);
-					aTriangleRight.setSlopeInDegree(hydroPolygonUtil
-							.getSlopeInDegree());
-					aTriangleRight.setSlope(hydroPolygonUtil.get3DVector());
-
-					if (pointeVersEdge) {
-						rightTtoEdge = true;
-
-					} else if (hydroPolygonUtil.getSlope() > 0) {
-						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
-								hydroPolygonUtil.get3DVector())) {
-
-							rightTColinear = true;
-						}
-					} else if (hydroPolygonUtil.getSlope() == 0) {
-
-						righTFlat = true;
-					}
-				}
-
-				else {
-					rightBorder = true;
-				}
-
-				if (aTriangleLeft != null) {
-
-					hydroPolygonUtil = new HydroPolygonUtil(aTriangleLeft);
-					boolean pointeVersEdge = hydroPolygonUtil
-							.getPenteVersEdge(edge);
-					aTriangleLeft.setSlopeInDegree(hydroPolygonUtil
-							.getSlopeInDegree());
-					aTriangleLeft.setSlope(hydroPolygonUtil.get3DVector());
-
-					if (pointeVersEdge) {
-
-						leftTtoEdge = true;
-					} else if (hydroPolygonUtil.getSlope() > 0) {
-						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
-								hydroPolygonUtil.get3DVector())) {
-
-							leftTColinear = true;
-						}
-					} else if (hydroPolygonUtil.getSlope() == 0) {
-
-						leftTFlat = true;
-					}
-
-				} else {
-					leftBorder = true;
-				}
-
-				// Recupération des noeuds associés à l'edge
-
-				// Qualification de la pente de l'edge parcouru
-				int edgeGradient = edge.getGradient();
-
-				if (!leftBorder && !rightBorder) {
-
-					// Traitement des ridges
-					if ((!rightTtoEdge && !leftTtoEdge)
-							&& (!righTFlat && !leftTFlat)) {
-
-						edge.setTopoType(TopoType.RIDGE);
-
-					}
-
-					// Cas des talwegs
-					else if (rightTtoEdge && leftTtoEdge) {
-
-						edge.setTopoType(TopoType.TALWEG);
-						edge.getStart().setTopoType(TopoType.TALWEG);
-						edge.getEnd().setTopoType(TopoType.TALWEG);
-
-					}
-
-					// Le triangle de gauche pointe sur l'edge mais pas le
-					// triangle de droite
-					else if ((leftTtoEdge && !rightTtoEdge) && !righTFlat) {
-
-						edge.setTopoType(TopoType.RIGHTSLOPE);
-
-					}
-
-					// Le triangle de droite pointe sur l'edge mais pas le
-					// triangle de gauche
-					else if ((rightTtoEdge && !leftTtoEdge) && (!leftTFlat)) {
-
-						edge.setTopoType(TopoType.LEFTTSLOPE);
-
-					}
-
-					// Traitement du rebord droit
-					else if ((!rightTtoEdge && !leftTtoEdge)
-							&& (!leftTFlat && righTFlat)) {
-						edge.setTopoType(TopoType.LEFTSIDE);
-					}
-
-					// Traitement du rebord gauche
-
-					else if ((!leftTtoEdge && !rightTtoEdge)
-							&& (!righTFlat && leftTFlat)) {
-						edge.setTopoType(TopoType.RIGHTSIDE);
-					}
-
-					// Traitement du fond gauche
-					else if ((rightTtoEdge && !leftTtoEdge)
-							&& (leftTFlat && !righTFlat)) {
-
-						edge.setTopoType(TopoType.LEFTWELL);
-					}
-
-					// Traitement du fond droit
-					else if ((!rightTtoEdge && leftTtoEdge)
-							&& (!leftTFlat && righTFlat)) {
-
-						edge.setTopoType(TopoType.RIGHTWELL);
-					}
-
-					// Cas particulier des talwegs colineaires
-
-					// Talweg colineaire gauche
-
-					else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
-
-						edge.setTopoType(TopoType.LEFTCOLINEAR);
-						edge.getStart().setTopoType(TopoType.TALWEG);
-						edge.getEnd().setTopoType(TopoType.TALWEG);
-
-					}
-
-					// Talweg colineaire droit
-
-					else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
-
-						edge.setTopoType(TopoType.RIGHTCOLINEAR);
-						edge.getStart().setTopoType(TopoType.TALWEG);
-						edge.getEnd().setTopoType(TopoType.TALWEG);
-
-					}
-
-					// Les deux triangles sont colineaires
-
-					else if ((!leftTtoEdge && !rightTtoEdge)
-							&& (rightTColinear && leftTColinear)) {
-
-						edge.setTopoType(TopoType.DOUBLECOLINEAR);
-
-						edge.getStart().setTopoType(TopoType.TALWEG);
-						edge.getEnd().setTopoType(TopoType.TALWEG);
-
-					}
-
-					// Le reste est plat
-					else {
-
-						edge.setTopoType(TopoType.FLAT);
-
-					}
-
-				}
-
-				// Traitement des bords plats
-				else {
-					edge.setTopoType(TopoType.BORDER);
-				}
-
-			}
-
-		}
-	}
-
-	public void talwegBuilder() {
-
-		/**
-		 * The code below is used to insert new talweg in the TIN
-		 */
-
-		ArrayList<MyPoint> listPointAtraiter = new ArrayList<MyPoint>();
-		ArrayList<MyTriangle> listTriangles = new ArrayList<MyTriangle>();
-
-		for (MyEdge edge : edges) {
-
-			// Edge talweg
-			if ((edge.getTopoType() != TopoType.TALWEG)
-					|| (edge.getTopoType() != TopoType.LEFTCOLINEAR)
-					|| (edge.getTopoType() != TopoType.RIGHTCOLINEAR)
-					|| (edge.getTopoType() != TopoType.DOUBLECOLINEAR)) {
-
-				MyPoint uperPoint = findUperPoint(edge);
-
-				if (uperPoint.getTopoType() == TopoType.TALWEG) {
-					if (!listPointAtraiter.contains(uperPoint)){
-						listPointAtraiter.add(uperPoint);
-
-					}
-				}
-			}
-		}
-
-		theMesh.setAllGids();
-	}
-
-	public MyPoint findUperPoint(MyEdge edge) {
-
-		MyPoint p1 = edge.getStart();
-		MyPoint p2 = edge.getEnd();
-		if (p1.z > p2.z) {
-			return p1;
-		} else if (p1.z > p2.z) {
-			return p2;
-		} else {
-			return p1;
-		}
 
 	}
 
@@ -2481,7 +2227,7 @@ public class Delaunay {
 					badTrianglesList.remove(aTriangle);
 				}
 				if (verbose)
-					System.out.println("Remove " + nbDone + " flat triangles");
+					System.out.println("Remove " + nbDone + " flat triangles / " + badTrianglesList.size());
 			}
 			if (verbose)
 				if (!badTrianglesList.isEmpty())
