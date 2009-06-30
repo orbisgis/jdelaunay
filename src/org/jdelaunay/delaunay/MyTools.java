@@ -104,6 +104,7 @@ public class MyTools {
 		int cle_ref;
 		boolean found;
 		MyPoint aPoint;
+		int valGid=-1;
 
 		i = min_index;
 		j = max_index;
@@ -118,7 +119,8 @@ public class MyTools {
 					found = true;
 				else {
 					aPoint = points.get(i);
-					if (aPoint.getGid() >= cle_ref)
+					valGid = aPoint.getGid();
+					if ((valGid >= cle_ref) || (valGid == -1))
 						found = true;
 					else
 						i++;
@@ -131,7 +133,8 @@ public class MyTools {
 					found = true;
 				else {
 					aPoint = points.get(j);
-					if (aPoint.getGid() <= cle_ref)
+					valGid = aPoint.getGid();
+					if ((valGid <= cle_ref) || (cle_ref == -1))
 						found = true;
 					else
 						j--;
@@ -174,6 +177,7 @@ public class MyTools {
 		int cle_ref;
 		boolean found;
 		MyEdge anEdge;
+		int valGid;
 
 		i = min_index;
 		j = max_index;
@@ -188,7 +192,8 @@ public class MyTools {
 					found = true;
 				else {
 					anEdge = edges.get(i);
-					if (anEdge.getGid() >= cle_ref)
+					valGid = anEdge.getGid();
+					if ((valGid >= cle_ref) || (valGid == -1))
 						found = true;
 					else
 						i++;
@@ -201,7 +206,8 @@ public class MyTools {
 					found = true;
 				else {
 					anEdge = edges.get(j);
-					if (anEdge.getGid() <= cle_ref)
+					valGid = anEdge.getGid();
+					if ((valGid <= cle_ref) || (cle_ref == -1))
 						found = true;
 					else
 						j--;
