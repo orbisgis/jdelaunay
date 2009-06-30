@@ -204,8 +204,18 @@ public class MyPoint {
 	 * @return distance
 	 */
 	public double squareDistance_2D(MyPoint aPoint) {
-		return (x - aPoint.x) * (x - aPoint.x) + (y - aPoint.y)
-				* (y - aPoint.y);
+		return squareDistance(aPoint.x, aPoint.y);
+	}
+
+	/**
+	 * plane square distance to another point
+	 *
+	 * @param x
+	 * @param y
+	 * @return distance
+	 */
+	public double squareDistance_2D(double x, double y) {
+		return squareDistance(x, y);
 	}
 
 	/**
@@ -216,6 +226,18 @@ public class MyPoint {
 	 */
 	public double squareDistance(MyPoint aPoint) {
 		return squareDistance(aPoint.x, aPoint.y, aPoint.z);
+	}
+
+	/**
+	 * plane square distance to another point
+	 *
+	 * @param x
+	 * @param y
+	 * @return distance
+	 */
+	public double squareDistance(double x, double y) {
+		return (x - this.x) * (x - this.x) + (y - this.y)
+				* (y - this.y);
 	}
 
 	/**
