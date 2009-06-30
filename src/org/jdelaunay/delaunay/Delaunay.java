@@ -1500,7 +1500,7 @@ public class Delaunay {
 	private void postProcessEdges() {
 		LinkedList<MyEdge> addedEdges = new LinkedList<MyEdge>();
 		for (MyEdge anEdge : edges) {
-			if (anEdge.getType() == MyMesh.MeshType_Wall) {
+			if (anEdge.getType() == TopoType.WALL) {
 				// Process wall : duplicate edge and changes connections
 				if ((anEdge.left != null) && (anEdge.right != null)) {
 					// Something to do if and only if there are two triangles
