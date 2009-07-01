@@ -321,6 +321,38 @@ public class MyTriangle {
 	}
 
 	/**
+	 * Get Z value of a specific point in the triangle
+	 *
+	 * @param aPoint
+	 * @return isInside
+	 */
+	public double getSurfacePoint(MyPoint aPoint) {
+		double ZValue = 0;
+		
+		MyPoint p1 = points[0];
+		MyPoint p2 = points[1];
+		MyPoint p3 = points[2];
+
+		double ux = p2.x - p1.x;
+		double uy = p2.y - p1.y;
+		double uz = p2.z - p1.z;
+		double vx = p3.x - p1.x;
+		double vy = p3.y - p1.y;
+		double vz = p3.z - p1.z;
+
+		double a = uy * vz - uz * vy;
+		double b = uz * vx - ux * vz;
+		double c = ux * vy - uy * vx;
+		double d = -a * p1.x - b * p1.y -c * p1.z;
+		
+		if (Math.abs(c) > epsilon) {
+			ZValue = (-a * aPoint.x - b * aPoint.y -d) / c;
+		}
+
+		return ZValue;
+	}
+
+	/**
 	 * compute triangle area
 	 *
 	 * @return area
