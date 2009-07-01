@@ -568,11 +568,16 @@ public class MyMesh {
 				// Already in the points list => do noting
 			} else {
 				aPoint.marked = true;
-				referenceTriangle = DelaunayReference.addPoint(aPoint);
+				referenceTriangle = DelaunayReference.getTriangle(aPoint);
+				if (referenceTriangle != null) {
+					// Connect it to the surface
+					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+					aPoint.z = ZValue;
 
-				// Connect it to the surface
-				double ZValue = referenceTriangle.getSurfacePoint(aPoint);
-				aPoint.z = ZValue;
+					if (! points.contains(aPoint))
+						points.add(aPoint);
+					DelaunayReference.addPoint(referenceTriangle, aPoint);
+				}
 			}
 		}
 
@@ -581,12 +586,13 @@ public class MyMesh {
 			if (points.contains(aPoint)) {
 				// Already in the points list => do noting
 			} else {
-				aPoint.marked = true;
-				referenceTriangle = DelaunayReference.addPoint(aPoint);
-
 				// Connect it to the surface
 				double ZValue = referenceTriangle.getSurfacePoint(aPoint);
 				aPoint.z = ZValue;
+
+				if (! points.contains(aPoint))
+					points.add(aPoint);
+				DelaunayReference.addPoint(referenceTriangle, aPoint);
 			}
 		}
 
@@ -608,6 +614,8 @@ public class MyMesh {
 			}
 		}
 
+		this.setAllGids();
+		
 		// Reset informations
 		listEntry = new LinkedList<MyPoint>();
 		listExit = new LinkedList<MyPoint>();
