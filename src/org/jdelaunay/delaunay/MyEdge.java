@@ -510,6 +510,21 @@ public class MyEdge {
 	}
 
 	/**
+	 * swap the 2 points of the edge
+	 */
+	public void swap() {
+		// swap points
+		MyPoint aPoint = point[1];
+		point[1] = point[0];
+		point[0] = aPoint;
+		
+		// swap triangles
+		MyTriangle aTriangle = left;
+		left = right;
+		right = aTriangle;
+	}
+
+	/**
 	 * Check if the point p is on the right
 	 *
 	 * @param p
