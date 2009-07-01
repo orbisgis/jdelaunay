@@ -599,28 +599,35 @@ public class MyEdge {
 	 */
 	public void setColor(Graphics g) {
 		((Graphics2D) g).setStroke(new BasicStroke(1));
-		if (type == TopoType.SEWER)
+		if (type == TopoType.SEWER) {
 			g.setColor(Color.orange);
-		else if (type == TopoType.RIVER)
-			g.setColor(Color.blue);
-		else if (type == TopoType.DITCH)
-			g.setColor(Color.green);
-		else if (type != null)
-			g.setColor(Color.yellow);
-		else if (marked == 1) {
-			g.setColor(Color.red);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
-		} else if (marked == 2)
-			g.setColor(Color.pink);
+		}
+		else if (type == TopoType.RIVER) {
+			g.setColor(Color.blue);
+			((Graphics2D) g).setStroke(new BasicStroke(2));
+		}
+		else if (type == TopoType.DITCH) {
+			g.setColor(Color.green);
+			((Graphics2D) g).setStroke(new BasicStroke(2));
+		}
+		else if (type != null) {
+			g.setColor(Color.yellow);
+			((Graphics2D) g).setStroke(new BasicStroke(2));
+		}
 		else if (talweg) {
 			g.setColor(Color.GRAY);
-			((Graphics2D) g).setStroke(new BasicStroke(3));
-		} else if (ridge) {
+			((Graphics2D) g).setStroke(new BasicStroke(2));
+		}
+		else if (ridge) {
 			g.setColor(Color.CYAN);
-		} else if ((left == null) && (right == null))
+		}
+		else if (marked == 1) {
 			g.setColor(Color.red);
-		else if ((left == null) || (right == null))
-			g.setColor(Color.orange);
+		}
+		else if (marked == 2) {
+			g.setColor(Color.pink);
+		}
 		else
 			g.setColor(Color.black);
 	}
