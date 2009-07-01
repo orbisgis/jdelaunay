@@ -10,6 +10,10 @@ package org.jdelaunay.delaunay;
 
 import java.util.*;
 
+import org.jdelaunay.utilities.HydroLineUtil;
+import org.jdelaunay.utilities.HydroPolygonUtil;
+import org.jdelaunay.utilities.MathUtil;
+
 /**
  * @author kwyhr
  *
@@ -76,6 +80,7 @@ public class Delaunay {
 	public Delaunay(MyMesh aMesh) {
 		init();
 		theMesh = aMesh;
+		aMesh.DelaunayReference = this;
 	}
 
 	/**
@@ -94,6 +99,7 @@ public class Delaunay {
 	 */
 	public void setMesh(MyMesh _theMesh) {
 		this.theMesh = _theMesh;
+		_theMesh.DelaunayReference = this;
 	}
 
 	/**
@@ -261,7 +267,7 @@ public class Delaunay {
 			while (iterPoint.hasNext()) {
 				MyPoint aPoint = iterPoint.next();
 				if (!aPoint.marked)
-					InsertPoint(aPoint);
+					myInsertPoint(aPoint);
 			}
 
 			// remove flat triangles
@@ -320,7 +326,8 @@ public class Delaunay {
 	 * @param aPoint
 	 * @throws DelaunayError
 	 */
-	public void addPoint(MyPoint aPoint) throws DelaunayError {
+	public MyTriangle addPoint(MyPoint aPoint) throws DelaunayError {
+		MyTriangle foundTriangle = null;
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
 		else {
@@ -329,7 +336,6 @@ public class Delaunay {
 
 			if (!pointAlreadyExists) {
 				// First we find the point's location.
-				MyTriangle foundTriangle = null;
 				ListIterator<MyTriangle> iterTriangle = triangles
 						.listIterator();
 				while ((iterTriangle.hasNext()) && (foundTriangle == null)) {
@@ -347,10 +353,12 @@ public class Delaunay {
 					// the point is outside the mesh
 					// The boundary edge list is ok
 					// We insert the point in the mesh
-					InsertPoint(aPoint);
+					myInsertPoint(aPoint);
 				}
 			}
 		}
+		
+		return foundTriangle;
 	}
 
 	/**
@@ -1158,8 +1166,11 @@ public class Delaunay {
 					// probable equality
 					if ((p1 == p3) && (p2 == p4))
 						found = true;
-					else if ((p1 == p4) && (p2 == p3))
+					else if ((p1 == p4) && (p2 == p3)) {
 						found = true;
+						// but in reverse order - swap it
+						currentEdge2.swap();
+					}
 					else
 						i++;
 				}
@@ -1306,6 +1317,10 @@ public class Delaunay {
 						if (swapEdge != null) {
 							EdgesToSwap.add(swapEdge);
 							found = true;
+							
+							// look for swapping edge
+							if (p1 == swapEdge.getEnd())
+								swapEdge.swap();
 						}
 					}
 
@@ -1340,6 +1355,10 @@ public class Delaunay {
 
 		int iter = 0;
 		int maxIter = compEdges.size();
+
+		if (verbose)
+			System.out.println("Processing mesh intersection for " + maxIter + " edges");
+		
 		// While there is still an edge to process
 		ListIterator<MyEdge> iterEdge = compEdges.listIterator();
 		while (iterEdge.hasNext()) {
@@ -1480,6 +1499,10 @@ public class Delaunay {
 				MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
 				if (anEdge != null) {
 					anEdge.marked = 1;
+					
+					// look for swapping edge
+					if (anEdge.getEnd() == p)
+						anEdge.swap();
 				}
 
 				LastPoint = p;
@@ -1781,7 +1804,7 @@ public class Delaunay {
 	 *
 	 * @param aPoint
 	 */
-	private void InsertPoint(MyPoint aPoint) {
+	private void myInsertPoint(MyPoint aPoint) {
 		// We build triangles with all boundary edges for which the point is on
 		// the left
 		MyPoint p1, p2;
@@ -2705,6 +2728,266 @@ public class Delaunay {
 				i++;
 		}
 		return theEdge;
+	}
+
+	
+	/**
+	 * Morphological qualification
+	 *
+	 * @throws DelaunayError
+	 */
+	public void morphologicalQualification() throws DelaunayError {
+
+		if (theMesh == null)
+			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
+		else if (!theMesh.isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+		else {
+
+			/**
+			 * Edges : topographic qualifications
+			 */
+
+			for (MyEdge edge : theMesh.edges) {
+
+				HydroLineUtil hydroLineUtil = new HydroLineUtil(edge);
+
+				edge.setSlopeInDegree(hydroLineUtil.getSlopeInDegree());
+				edge.setSlope(hydroLineUtil.get3DVector());
+				HydroPolygonUtil hydroPolygonUtil = null;
+
+				MyTriangle aTriangleLeft = edge.getLeft();
+
+				MyTriangle aTriangleRight = edge.getRight();
+
+				boolean rightTtoEdge = false;
+				boolean rightTColinear = false;
+				boolean righTFlat = false;
+				boolean leftTtoEdge = false;
+				boolean leftTColinear = false;
+				boolean leftTFlat = false;
+				boolean rightBorder = false;
+				boolean leftBorder = false;
+
+				// Qualification des triangles
+				if (aTriangleRight != null) {
+
+					hydroPolygonUtil = new HydroPolygonUtil(aTriangleRight);
+					boolean pointeVersEdge = hydroPolygonUtil
+							.getPenteVersEdge(edge);
+					aTriangleRight.setSlopeInDegree(hydroPolygonUtil
+							.getSlopeInDegree());
+					aTriangleRight.setSlope(hydroPolygonUtil.get3DVector());
+
+					if (pointeVersEdge) {
+						rightTtoEdge = true;
+
+					} else if (hydroPolygonUtil.getSlope() > 0) {
+						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
+								hydroPolygonUtil.get3DVector())) {
+
+							rightTColinear = true;
+						}
+					} else if (hydroPolygonUtil.getSlope() == 0) {
+
+						righTFlat = true;
+					}
+				}
+
+				else {
+					rightBorder = true;
+				}
+
+				if (aTriangleLeft != null) {
+
+					hydroPolygonUtil = new HydroPolygonUtil(aTriangleLeft);
+					boolean pointeVersEdge = hydroPolygonUtil
+							.getPenteVersEdge(edge);
+					aTriangleLeft.setSlopeInDegree(hydroPolygonUtil
+							.getSlopeInDegree());
+					aTriangleLeft.setSlope(hydroPolygonUtil.get3DVector());
+
+					if (pointeVersEdge) {
+
+						leftTtoEdge = true;
+					} else if (hydroPolygonUtil.getSlope() > 0) {
+						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
+								hydroPolygonUtil.get3DVector())) {
+
+							leftTColinear = true;
+						}
+					} else if (hydroPolygonUtil.getSlope() == 0) {
+
+						leftTFlat = true;
+					}
+
+				} else {
+					leftBorder = true;
+				}
+
+				// Recupération des noeuds associés à l'edge
+
+				// Qualification de la pente de l'edge parcouru
+				int edgeGradient = edge.getGradient();
+
+				if (!leftBorder && !rightBorder) {
+
+					// Traitement des ridges
+					if ((!rightTtoEdge && !leftTtoEdge)
+							&& (!righTFlat && !leftTFlat)) {
+
+						edge.setTopoType(TopoType.RIDGE);
+
+					}
+
+					// Cas des talwegs
+					else if (rightTtoEdge && leftTtoEdge) {
+
+						edge.setTopoType(TopoType.TALWEG);
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
+
+					}
+
+					// Le triangle de gauche pointe sur l'edge mais pas le
+					// triangle de droite
+					else if ((leftTtoEdge && !rightTtoEdge) && !righTFlat) {
+
+						edge.setTopoType(TopoType.RIGHTSLOPE);
+
+					}
+
+					// Le triangle de droite pointe sur l'edge mais pas le
+					// triangle de gauche
+					else if ((rightTtoEdge && !leftTtoEdge) && (!leftTFlat)) {
+
+						edge.setTopoType(TopoType.LEFTTSLOPE);
+
+					}
+
+					// Traitement du rebord droit
+					else if ((!rightTtoEdge && !leftTtoEdge)
+							&& (!leftTFlat && righTFlat)) {
+						edge.setTopoType(TopoType.LEFTSIDE);
+					}
+
+					// Traitement du rebord gauche
+
+					else if ((!leftTtoEdge && !rightTtoEdge)
+							&& (!righTFlat && leftTFlat)) {
+						edge.setTopoType(TopoType.RIGHTSIDE);
+					}
+
+					// Traitement du fond gauche
+					else if ((rightTtoEdge && !leftTtoEdge)
+							&& (leftTFlat && !righTFlat)) {
+
+						edge.setTopoType(TopoType.LEFTWELL);
+					}
+
+					// Traitement du fond droit
+					else if ((!rightTtoEdge && leftTtoEdge)
+							&& (!leftTFlat && righTFlat)) {
+
+						edge.setTopoType(TopoType.RIGHTWELL);
+					}
+
+					// Cas particulier des talwegs colineaires
+
+					// Talweg colineaire gauche
+
+					else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
+
+						edge.setTopoType(TopoType.LEFTCOLINEAR);
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
+
+					}
+
+					// Talweg colineaire droit
+
+					else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
+
+						edge.setTopoType(TopoType.RIGHTCOLINEAR);
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
+
+					}
+
+					// Les deux triangles sont colineaires
+
+					else if ((!leftTtoEdge && !rightTtoEdge)
+							&& (rightTColinear && leftTColinear)) {
+
+						edge.setTopoType(TopoType.DOUBLECOLINEAR);
+
+						edge.getStart().setTopoType(TopoType.TALWEG);
+						edge.getEnd().setTopoType(TopoType.TALWEG);
+
+					}
+
+					// Le reste est plat
+					else {
+
+						edge.setTopoType(TopoType.FLAT);
+
+					}
+
+				}
+
+				// Traitement des bords plats
+				else {
+					edge.setTopoType(TopoType.BORDER);
+				}
+
+			}
+
+		}
+	}
+
+	public void talwegBuilder() {
+
+		/**
+		 * The code below is used to insert new talweg in the TIN
+		 */
+
+		ArrayList<MyPoint> listPointAtraiter = new ArrayList<MyPoint>();
+		ArrayList<MyTriangle> listTriangles = new ArrayList<MyTriangle>();
+
+		for (MyEdge edge : theMesh.edges) {
+
+			// Edge talweg
+			if ((edge.getTopoType() != TopoType.TALWEG)
+					|| (edge.getTopoType() != TopoType.LEFTCOLINEAR)
+					|| (edge.getTopoType() != TopoType.RIGHTCOLINEAR)
+					|| (edge.getTopoType() != TopoType.DOUBLECOLINEAR)) {
+
+				MyPoint uperPoint = findUperPoint(edge);
+
+				if (uperPoint.getTopoType() == TopoType.TALWEG) {
+					if (!listPointAtraiter.contains(uperPoint)){
+						listPointAtraiter.add(uperPoint);
+
+					}
+				}
+			}
+		}
+
+		theMesh.setAllGids();
+	}
+
+	public MyPoint findUperPoint(MyEdge edge) {
+
+		MyPoint p1 = edge.getStart();
+		MyPoint p2 = edge.getEnd();
+		if (p1.z > p2.z) {
+			return p1;
+		} else if (p1.z > p2.z) {
+			return p2;
+		} else {
+			return p1;
+		}
+
 	}
 
 }
