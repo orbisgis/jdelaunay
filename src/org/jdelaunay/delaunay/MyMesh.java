@@ -34,6 +34,7 @@ public class MyMesh {
 	private LinkedList<MyPoint> listEntry;
 	private LinkedList<MyPoint> listExit;
 	private LinkedList<MyPoint> listIntermediate;
+	private LinkedList<MyEdge> listEdges;
 	private LinkedList<MyPoint> listPrepare;
 	private String listDefinition;
 	private boolean connectToSurface;
@@ -75,6 +76,7 @@ public class MyMesh {
 		listEntry = new LinkedList<MyPoint>();
 		listExit = new LinkedList<MyPoint>();
 		listIntermediate = new LinkedList<MyPoint>();
+		listEdges = new LinkedList<MyEdge>();
 		listPrepare = new LinkedList<MyPoint>();
 		listDefinition = null;
 		connectToSurface = true;
@@ -460,6 +462,7 @@ public class MyMesh {
 		this.listEntry = new LinkedList<MyPoint>();
 		this.listExit = new LinkedList<MyPoint>();
 		this.listIntermediate = new LinkedList<MyPoint>();
+		this.listEdges = new LinkedList<MyEdge>();
 		this.listDefinition = branchType;
 		this.connectToSurface = connectToSurface;
 	}
@@ -541,9 +544,7 @@ public class MyMesh {
 					// Link lastPoint to new point
 					MyEdge anEdge = new MyEdge(lastPoint, aPoint,
 							listDefinition);
-					anEdge.outsideMesh = true;
-					anEdge.marked = 1;
-					edges.add(anEdge);
+					listEdges.add(anEdge);
 				}
 				// other informations
 				aPoint.setPointType(listDefinition);
@@ -574,25 +575,8 @@ public class MyMesh {
 					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
 					aPoint.z = ZValue;
 
-					if (! points.contains(aPoint))
-						points.add(aPoint);
 					DelaunayReference.addPoint(referenceTriangle, aPoint);
 				}
-			}
-		}
-
-		// add every sewer exit point to the mesh
-		for (MyPoint aPoint : listExit) {
-			if (points.contains(aPoint)) {
-				// Already in the points list => do noting
-			} else {
-				// Connect it to the surface
-				double ZValue = referenceTriangle.getSurfacePoint(aPoint);
-				aPoint.z = ZValue;
-
-				if (! points.contains(aPoint))
-					points.add(aPoint);
-				DelaunayReference.addPoint(referenceTriangle, aPoint);
 			}
 		}
 
@@ -605,21 +589,55 @@ public class MyMesh {
 				points.add(aPoint);
 				aPoint.marked = true;
 				if (connectToSurface) {
-					referenceTriangle = DelaunayReference.addPoint(aPoint);
+					aPoint.marked = true;
+					referenceTriangle = DelaunayReference.getTriangle(aPoint);
+					if (referenceTriangle != null) {
+						// Connect it to the surface
+						double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+						aPoint.z = ZValue;
 
-					// Connect it to the surface
-					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
-					aPoint.z = ZValue;
+						DelaunayReference.addPoint(referenceTriangle, aPoint);
+					}
 				}
 			}
 		}
 
+		// add every sewer exit point to the mesh
+		for (MyPoint aPoint : listExit) {
+			if (points.contains(aPoint)) {
+				// Already in the points list => do noting
+			} else {
+				aPoint.marked = true;
+				referenceTriangle = DelaunayReference.getTriangle(aPoint);
+				if (referenceTriangle != null) {
+					// Connect it to the surface
+					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+					aPoint.z = ZValue;
+
+					DelaunayReference.addPoint(referenceTriangle, aPoint);
+				}
+			}
+		}
+
+		// add edges
+		for (MyEdge anEdge : listEdges) {
+			anEdge.marked = 1;
+			if (connectToSurface)
+				DelaunayReference.addEdge(anEdge);
+			else{
+				anEdge.outsideMesh = true;
+				edges.add(anEdge);
+			}
+		}
+		
+		
 		this.setAllGids();
 		
 		// Reset informations
 		listEntry = new LinkedList<MyPoint>();
 		listExit = new LinkedList<MyPoint>();
 		listIntermediate = new LinkedList<MyPoint>();
+		listEdges = new LinkedList<MyEdge>();
 		listDefinition = null;
 		connectToSurface = true;
 	}
