@@ -320,6 +320,51 @@ public class Delaunay {
 		}
 	}
 
+
+	/**
+	 * Add a point inside a triangle and rebuild triangularization
+	 *
+	 * @param aTriangle
+	 * @param aPoint
+	 * @throws DelaunayError
+	 */
+	public void addPoint(MyTriangle aTriangle, MyPoint aPoint)
+			throws DelaunayError {
+		if (theMesh == null)
+			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
+		else if (!aTriangle.isInside(aPoint))
+			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
+		else {
+			// add point in the triangle
+			processAddPoint(aTriangle, aPoint);
+
+			// Process badTriangleQueueList
+			processBadEdges();
+		}
+
+	}
+
+	/**
+	 * Add a point on an edge and rebuild triangularization
+	 *
+	 * @param anEdge
+	 * @param aPoint
+	 * @throws DelaunayError
+	 */
+	public void addPoint(MyEdge anEdge, MyPoint aPoint) throws DelaunayError {
+		if (theMesh == null)
+			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
+		else if (!anEdge.isInside(aPoint))
+			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
+		else {
+			// Add point
+			processAddPoint(anEdge, aPoint);
+
+			// Then apply the flip-flop algorithm
+			processBadEdges();
+		}
+	}
+
 	/**
 	 * Add a point in the mesh and rebuild triangularization
 	 *
@@ -334,26 +379,25 @@ public class Delaunay {
 			// First we check if the point is in the points list
 			boolean pointAlreadyExists = points.contains(aPoint);
 
-			if (!pointAlreadyExists) {
-				// First we find the point's location.
-				ListIterator<MyTriangle> iterTriangle = triangles
+			// First we find the point's location.
+			ListIterator<MyTriangle> iterTriangle = triangles
 						.listIterator();
-				while ((iterTriangle.hasNext()) && (foundTriangle == null)) {
-					MyTriangle aTriangle = iterTriangle.next();
-					if (aTriangle.isInside(aPoint)) {
-						foundTriangle = aTriangle;
-					}
+			while ((iterTriangle.hasNext()) && (foundTriangle == null)) {
+				MyTriangle aTriangle = iterTriangle.next();
+				if (aTriangle.isInside(aPoint)) {
+					foundTriangle = aTriangle;
 				}
+			}
 
+			if (!pointAlreadyExists) {
 				if (foundTriangle != null) {
 					// the point is inside the foundTriangle triangle
 					addPoint(foundTriangle, aPoint);
-
 				} else {
 					// the point is outside the mesh
 					// The boundary edge list is ok
 					// We insert the point in the mesh
-					myInsertPoint(aPoint);
+					foundTriangle = myInsertPoint(aPoint);
 				}
 			}
 		}
@@ -675,50 +719,6 @@ public class Delaunay {
 			}
 		}
 		return impactedTriangles;
-	}
-
-	/**
-	 * Add a point inside a triangle and rebuild triangularization
-	 *
-	 * @param aTriangle
-	 * @param aPoint
-	 * @throws DelaunayError
-	 */
-	public void addPoint(MyTriangle aTriangle, MyPoint aPoint)
-			throws DelaunayError {
-		if (theMesh == null)
-			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!aTriangle.isInside(aPoint))
-			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
-		else {
-			// add point in the triangle
-			processAddPoint(aTriangle, aPoint);
-
-			// Process badTriangleQueueList
-			processBadEdges();
-		}
-
-	}
-
-	/**
-	 * Add a point on an edge and rebuild triangularization
-	 *
-	 * @param anEdge
-	 * @param aPoint
-	 * @throws DelaunayError
-	 */
-	public void addPoint(MyEdge anEdge, MyPoint aPoint) throws DelaunayError {
-		if (theMesh == null)
-			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (!anEdge.isInside(aPoint))
-			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
-		else {
-			// Add point
-			processAddPoint(anEdge, aPoint);
-
-			// Then apply the flip-flop algorithm
-			processBadEdges();
-		}
 	}
 
 	/**
@@ -1804,7 +1804,8 @@ public class Delaunay {
 	 *
 	 * @param aPoint
 	 */
-	private void myInsertPoint(MyPoint aPoint) {
+	private MyTriangle myInsertPoint(MyPoint aPoint) {
+		MyTriangle foundTriangle = null;
 		// We build triangles with all boundary edges for which the point is on
 		// the left
 		MyPoint p1, p2;
@@ -1847,6 +1848,8 @@ public class Delaunay {
 				MyTriangle aTriangle = new MyTriangle(p1, p2, aPoint, anEdge,
 						anEdge1, anEdge2);
 				triangles.add(aTriangle);
+				if (foundTriangle == null)
+					foundTriangle = aTriangle;
 
 				// Mark the edge to be removed
 				oldEdges.add(anEdge);
@@ -1872,6 +1875,8 @@ public class Delaunay {
 
 		// Process badTriangleQueueList
 		processBadEdges();
+		
+		return foundTriangle;
 	}
 
 	private boolean swapTriangle(MyTriangle aTriangle1, MyTriangle aTriangle2,
