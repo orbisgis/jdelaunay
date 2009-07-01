@@ -262,9 +262,11 @@ public class Delaunay {
 			boundaryEdges.add(e1);
 			boundaryEdges.add(e2);
 			boundaryEdges.add(e3);
-
+			
 			// flip-flop on a list of points
+			int count = 0;
 			while (iterPoint.hasNext()) {
+				count++;
 				MyPoint aPoint = iterPoint.next();
 				if (!aPoint.marked)
 					myInsertPoint(aPoint);
@@ -350,7 +352,8 @@ public class Delaunay {
 			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
 		else {
 			// add point in the triangle
-			points.add(aPoint);
+			if (! points.contains(aPoint))
+				points.add(aPoint);
 			processAddPoint(aTriangle, aPoint);
 
 			// Process badTriangleQueueList
@@ -478,10 +481,30 @@ public class Delaunay {
 			if (anEdge[i] != null)
 				if (aTriangle1.points[0] == anEdge[i].getStart()) {
 					aTriangle1.edges[k] = anEdge[i];
+					
+					if (anEdge[i].left != null)
+						anEdge[i].right = aTriangle1;
+					else if (anEdge[i].right != null)
+						anEdge[i].left = aTriangle1;
+					else if (anEdge[i].isLeft(aTriangle1.points[1]))
+						anEdge[i].left = aTriangle1;
+					else
+						anEdge[i].right = aTriangle1;
+						
 					anEdge[i] = null;
 					k++;
 				} else if (aTriangle1.points[1] == anEdge[i].getStart()) {
 					aTriangle1.edges[k] = anEdge[i];
+
+					if (anEdge[i].left != null)
+						anEdge[i].right = aTriangle1;
+					else if (anEdge[i].right != null)
+						anEdge[i].left = aTriangle1;
+					else if (anEdge[i].isLeft(aTriangle1.points[0]))
+						anEdge[i].left = aTriangle1;
+					else
+						anEdge[i].right = aTriangle1;
+
 					anEdge[i] = null;
 					k++;
 				}
@@ -504,10 +527,30 @@ public class Delaunay {
 			if (anEdge[i] != null)
 				if (aTriangle2.points[0] == anEdge[i].getStart()) {
 					aTriangle2.edges[k] = anEdge[i];
+					
+					if (anEdge[i].left != null)
+						anEdge[i].right = aTriangle2;
+					else if (anEdge[i].right != null)
+						anEdge[i].left = aTriangle2;
+					else if (anEdge[i].isLeft(aTriangle2.points[1]))
+						anEdge[i].left = aTriangle2;
+					else
+						anEdge[i].right = aTriangle2;
+
 					anEdge[i] = null;
 					k++;
 				} else if (aTriangle2.points[1] == anEdge[i].getStart()) {
 					aTriangle2.edges[k] = anEdge[i];
+
+					if (anEdge[i].left != null)
+						anEdge[i].right = aTriangle2;
+					else if (anEdge[i].right != null)
+						anEdge[i].left = aTriangle2;
+					else if (anEdge[i].isLeft(aTriangle2.points[0]))
+						anEdge[i].left = aTriangle2;
+					else
+						anEdge[i].right = aTriangle2;
+
 					anEdge[i] = null;
 					k++;
 				}
@@ -515,26 +558,29 @@ public class Delaunay {
 		triangles.add(aTriangle2);
 
 		// change current triangle
+		// Add the points
+		aTriangle.points[0] = aTriangle.edges[2].getStart();
+		aTriangle.points[1] = aTriangle.edges[2].getEnd();
+		aTriangle.points[2] = aPoint;
+
 		// Replace the two first edges by the two remaining edges
 		// and keep the last edge
 		k = 0;
 		for (int i = 0; i < 6; i++) {
 			if (anEdge[i] != null) {
 				aTriangle.edges[k] = anEdge[i];
+
+				if (anEdge[i].left == null)
+					anEdge[i].left = aTriangle;
+				else
+					anEdge[i].right = aTriangle;
+
 				anEdge[i] = null;
 				k++;
 			}
 		}
-		// Add the points
-		aTriangle.points[0] = aTriangle.edges[2].getStart();
-		aTriangle.points[1] = aTriangle.edges[2].getEnd();
-		aTriangle.points[2] = aPoint;
 
 		// Rebuild all topologies
-		aTriangle.reconnectEdges();
-		aTriangle1.reconnectEdges();
-		aTriangle2.reconnectEdges();
-
 		aTriangle.recomputeCenter();
 		aTriangle1.recomputeCenter();
 		aTriangle2.recomputeCenter();
@@ -549,7 +595,6 @@ public class Delaunay {
 				if (!badEdgesQueueList.contains(aTriangle2.edges[i]))
 					badEdgesQueueList.add(aTriangle2.edges[i]);
 			}
-		checkTopology();
 	}
 
 	/**
@@ -772,6 +817,7 @@ public class Delaunay {
 					impactedTriangles.add(new_triangleList[k]);
 			}
 		}
+		
 		return impactedTriangles;
 	}
 
@@ -1460,6 +1506,7 @@ public class Delaunay {
 					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
 					possibleEdges.add(anEdge);
 					saveEdge = null;
+					break;
 				case 1:
 					// There is an intersection point
 					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
@@ -1961,10 +2008,13 @@ public class Delaunay {
 	private boolean swapTriangle(MyTriangle aTriangle1, MyTriangle aTriangle2,
 			MyEdge anEdge, boolean forced) {
 		boolean exchange = false;
+		MyEdge anEdge10, anEdge11, anEdge12;
+		MyEdge anEdge20, anEdge21, anEdge22;
+		MyPoint p1, p2, p3, p4;
+
 		if ((aTriangle1 != null) && (aTriangle2 != null)) {
-			MyPoint p1 = anEdge.getStart();
-			MyPoint p2 = anEdge.getEnd();
-			MyPoint p3, p4;
+			p1 = anEdge.getStart();
+			p2 = anEdge.getEnd();
 
 			p3 = p4 = null;
 
@@ -1996,9 +2046,6 @@ public class Delaunay {
 					// We need to exchange points of the triangles
 
 					// rebuild the two triangles
-					MyEdge anEdge10, anEdge11, anEdge12;
-					MyEdge anEdge20, anEdge21, anEdge22;
-
 					// Triangle 1 is p1, p2, p3 or p2, p1, p3
 					// Triangle 2 is p2, p1, p4 or p1, p2, p4
 					anEdge10 = anEdge;
@@ -2010,7 +2057,7 @@ public class Delaunay {
 					anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
 					if ((anEdge11 == null) || (anEdge12 == null)
 							|| (anEdge21 == null) || (anEdge22 == null)) {
-						// System.out.println("ERREUR");
+						System.out.println("ERREUR");
 					} else {
 						// Set points
 						anEdge.point[0] = p3;
@@ -2060,6 +2107,7 @@ public class Delaunay {
 					}
 				}
 		}
+
 		return exchange;
 	}
 

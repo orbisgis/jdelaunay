@@ -516,6 +516,7 @@ public class MyMesh {
 						// New entry
 						listEntry.add(aPoint);
 					}
+					// else it is in Entry
 				} else {
 					// Intermediate point
 					if (listIntermediate.contains(aPoint)) {
@@ -538,7 +539,7 @@ public class MyMesh {
 						listIntermediate.add(aPoint);
 					} else {
 						// new point and Last point => Exit
-						listEntry.add(aPoint);
+						listExit.add(aPoint);
 					}
 
 					// Link lastPoint to new point
@@ -576,10 +577,22 @@ public class MyMesh {
 
 					DelaunayReference.addPoint(referenceTriangle, aPoint);
 				}
+				else {
+					referenceTriangle = DelaunayReference.addPoint(aPoint);
+					
+					if (referenceTriangle != null) {
+						double ZValue = 0;
+						for (int i=0; i<3; i++) {
+							if (referenceTriangle.points[i] != aPoint)
+								ZValue += referenceTriangle.points[i].z;
+						}
+						aPoint.z = ZValue/2;
+					}
+				}
 			}
 		}
 
-		// add every sewer intermediate point to the point list
+		// add every intermediate point to the point list
 		// do not include them in the mesh
 		for (MyPoint aPoint : listIntermediate) {
 			if (points.contains(aPoint)) {
@@ -600,10 +613,22 @@ public class MyMesh {
 							aPoint.z = ZValue - 1.0;
 					}
 				}
+				else if (connectToSurface) {
+					referenceTriangle = DelaunayReference.addPoint(aPoint);
+					
+					if (referenceTriangle != null) {
+						double ZValue = 0;
+						for (int i=0; i<3; i++) {
+							if (referenceTriangle.points[i] != aPoint)
+								ZValue += referenceTriangle.points[i].z;
+						}
+						aPoint.z = ZValue/2;
+					}
+				}
 			}
 		}
 
-		// add every sewer exit point to the mesh
+		// add every exit point to the mesh
 		for (MyPoint aPoint : listExit) {
 			if (points.contains(aPoint)) {
 				// Already in the points list => do noting
@@ -616,6 +641,18 @@ public class MyMesh {
 					aPoint.z = ZValue;
 
 					DelaunayReference.addPoint(referenceTriangle, aPoint);
+				}
+				else {
+					referenceTriangle = DelaunayReference.addPoint(aPoint);
+					
+					if (referenceTriangle != null) {
+						double ZValue = 0;
+						for (int i=0; i<3; i++) {
+							if (referenceTriangle.points[i] != aPoint)
+								ZValue += referenceTriangle.points[i].z;
+						}
+						aPoint.z = ZValue/2;
+					}
 				}
 			}
 		}

@@ -383,9 +383,11 @@ public class MyEdge {
 					// x = x2 t1 + (1 - t1) x1
 					// y = y2 t1 + (1 - t1) y1
 					// z = z2 t1 + (1 - t1) z1
+					// z = z4 t2 + (1 - t2) z3
 					double x = p2.x * t1 + (1 - t1) * p1.x;
 					double y = p2.y * t1 + (1 - t1) * p1.y;
-					double z = p2.z * t1 + (1 - t1) * p1.z;
+//					double z = p2.z * t1 + (1 - t1) * p1.z;
+					double z = p4.z * t2 + (1 - t2) * p3.z;
 
 					intersection = new MyPoint(x, y, z);
 

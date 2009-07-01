@@ -80,7 +80,7 @@ public class MyTriangle {
 		else
 			points[2] = e2.getStart();
 
-		reconnectEdges();
+		connectEdges();
 		recomputeCenter();
 		radius = center.squareDistance_2D(points[0]);
 	}
@@ -107,7 +107,7 @@ public class MyTriangle {
 		edges[1] = e2;
 		edges[2] = e3;
 
-		reconnectEdges();
+		connectEdges();
 		recomputeCenter();
 		radius = center.squareDistance_2D(p1);
 	}
@@ -252,6 +252,35 @@ public class MyTriangle {
 	/**
 	 * Reconnect triangle edges to rebuild topology
 	 */
+	public void connectEdges() {
+		for (int j = 0; j < 3; j++) {
+			if (edges[j] == null)
+				System.out.println("ERREUR");
+			else {
+				MyPoint start = edges[j].point[0];
+				MyPoint end = edges[j].point[1];
+				for (int k = 0; k < 3; k++) {
+					if ((start != points[k]) && (end != points[k]))
+						if (edges[j].isLeft(points[k])){
+							if (edges[j].left == null)
+								edges[j].left = this;
+							else
+								edges[j].right = this;
+						}
+						else {
+							if (edges[j].right == null)
+								edges[j].right = this;
+							else
+								edges[j].left = this;
+						}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Reconnect triangle edges to rebuild topology
+	 */
 	public void reconnectEdges() {
 		for (int j = 0; j < 3; j++) {
 			if (edges[j] == null)
@@ -261,10 +290,12 @@ public class MyTriangle {
 				MyPoint end = edges[j].point[1];
 				for (int k = 0; k < 3; k++) {
 					if ((start != points[k]) && (end != points[k]))
-						if (edges[j].isLeft(points[k]))
+						if (edges[j].isLeft(points[k])){
 							edges[j].left = this;
-						else
+						}
+						else {
 							edges[j].right = this;
+						}
 				}
 			}
 		}
