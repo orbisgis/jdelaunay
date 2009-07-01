@@ -1233,6 +1233,7 @@ public class Delaunay {
 			if (found) {
 				// Edge exists => mark it
 				currentEdge2.marked = 1;
+				currentEdge2.setType(currentEdge.getType());
 			} else {
 				// Not found
 				remainEdges.add(currentEdge);
@@ -1370,6 +1371,7 @@ public class Delaunay {
 						MyEdge swapEdge = lookForSwap(currentEdge2, start, end);
 						if (swapEdge != null) {
 							EdgesToSwap.add(swapEdge);
+							swapEdge.setType(currentEdge.getType());
 							found = true;
 
 							// look for swapping edge
