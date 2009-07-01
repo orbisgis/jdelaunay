@@ -533,6 +533,7 @@ public class Delaunay {
 			if (!badEdgesQueueList.contains(aTriangle2.edges[i]))
 				badEdgesQueueList.add(aTriangle2.edges[i]);
 		}
+		checkTopology();
 	}
 
 	/**
@@ -1437,6 +1438,7 @@ public class Delaunay {
 				case 3:
 					// There is an intersection point
 					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
+					possibleEdges.add(anEdge);
 					saveEdge = null;
 				case 1:
 					// There is an intersection point
@@ -1475,7 +1477,7 @@ public class Delaunay {
 			while (intersect1.hasNext()) {
 				MyEdge anEdge = intersect1.next();
 				MyPoint IntersectionPoint = intersect2.next();
-
+				
 				if (anEdge != null) {
 					MyPoint start = anEdge.getStart();
 					MyPoint end = anEdge.getEnd();
@@ -1515,32 +1517,51 @@ public class Delaunay {
 							else
 								aTriangle1 = anEdge.right;
 
-							if (aTriangle1 != null) {
-								MyEdge possible = aTriangle1.getEdgeFromPoints(
-										IntersectionPoint, alterPoints[k]);
-								if (possible != null)
-									possibleEdges.add(possible);
+							for (int l=0; l<2; l++) {
+								if (aTriangle1 != null) {
+									MyEdge possible = aTriangle1.getEdgeFromPoints(
+											IntersectionPoint, alterPoints[l]);
+									if (possible != null)
+										possibleEdges.add(possible);
+								}
 							}
 						}
+					}
+					else {
+						possibleEdges.add(anEdge);
 					}
 				}
 			}
 
+			// We keep only points between p1 and p2
+			ListIterator<MyPoint> iterPoint = addedPoints.listIterator();
+			while (iterPoint.hasNext()) {
+				MyPoint aPoint = iterPoint.next();
+				if (! CurrentEdge.isInside(aPoint)) {
+					// Not between p1 and p2 => removed
+					iterPoint.remove();
+				}
+				else
+					aPoint.marked=true;
+			}
+			
 			// Then we mark all edges from p1 to p2
 			int size = addedPoints.size();
 			if (size > 2)
 				MyTools.quickSort_Points(addedPoints);
-			MyPoint LastPoint = null;
+			MyPoint LastPoint = p1;
 			for (MyPoint p : addedPoints) {
 				MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
 				if (anEdge != null) {
 					anEdge.marked = 1;
+					LastPoint.marked = true;
+					p.marked = true;
+					anEdge.setType(CurrentEdge.getType());
 
 					// look for swapping edge
 					if (anEdge.getEnd() == p)
 						anEdge.swap();
 				}
-
 				LastPoint = p;
 			}
 		}
