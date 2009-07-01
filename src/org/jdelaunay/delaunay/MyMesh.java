@@ -11,6 +11,7 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyMesh {
 	// Vectors with points and edges
@@ -28,9 +29,14 @@ public class MyMesh {
 	private long duration;
 	private long startComputation;
 	private boolean displayCircles;
-	private MyPoint lastSewerPoint;
-	private MyPoint lastWallPoint;
 	private boolean meshComputed;
+	protected Delaunay DelaunayReference;
+	private LinkedList<MyPoint> listEntry;
+	private LinkedList<MyPoint> listExit;
+	private LinkedList<MyPoint> listIntermediate;
+	private LinkedList<MyPoint> listPrepare;
+	private String listDefinition;
+	private boolean connectToSurface;
 
 	// GIDs
 	protected int point_GID;
@@ -44,6 +50,8 @@ public class MyMesh {
 	 *
 	 */
 	public MyMesh() {
+		DelaunayReference = null;
+		
 		// Generate vectors
 		points = new ArrayList<MyPoint>();
 		edges = new ArrayList<MyEdge>();
@@ -64,8 +72,12 @@ public class MyMesh {
 		edge_GID = 0;
 		triangle_GID = 0;
 
-		lastSewerPoint = null;
-		lastWallPoint = null;
+		listEntry = new LinkedList<MyPoint>();
+		listExit = new LinkedList<MyPoint>();
+		listIntermediate = new LinkedList<MyPoint>();
+		listPrepare = new LinkedList<MyPoint>();
+		listDefinition = null;
+		connectToSurface = true;
 	}
 
 	/**
@@ -437,6 +449,185 @@ public class MyMesh {
 
 	// ----------------------------------------------------------------
 	/**
+	 * Defines a new branch type
+	 * 
+	 * @param branchType
+	 * @param connectToSurface
+	 * @throws DelaunayError
+	 */
+	private void branchStart(String branchType, boolean connectToSurface) throws DelaunayError {
+		this.listEntry = new LinkedList<MyPoint>();
+		this.listExit = new LinkedList<MyPoint>();
+		this.listIntermediate = new LinkedList<MyPoint>();
+		this.listDefinition = branchType;
+		this.connectToSurface = connectToSurface;
+	}
+	
+	/**
+	 * Defines a new branch type on the surface
+	 * 
+	 * @param branchType
+	 * @throws DelaunayError
+	 */
+	private void branchStart(String branchType) throws DelaunayError {
+		branchStart(branchType, true);
+	}
+	
+	/**
+	 * defines a new branch
+	 *
+	 * @param theList
+	 * @throws DelaunayError
+	 */
+	private void setNewBranch(LinkedList theList) throws DelaunayError {
+		MyPoint lastPoint = null;
+		int count = theList.size();
+		MyPoint aPoint = null;
+		Coordinate aCoordinate = null;
+		ListIterator iterList = theList.listIterator();
+		while (iterList.hasNext()) {
+			Object item = iterList.next();
+			if (item instanceof MyPoint) {
+				aPoint = (MyPoint)item;
+			}
+			else if (item instanceof Coordinate) {
+				aCoordinate = (Coordinate)item;
+				aPoint = new MyPoint(aCoordinate.x, aCoordinate.y, aCoordinate.z);
+			}
+			else
+				aPoint = null;
+
+			count--;
+			if (aPoint != null) {
+			if (lastPoint == null) {
+				// First point of the list
+				if (listIntermediate.contains(aPoint)) {
+					// Already an intermediate point => do nothing
+				}
+				else if (listExit.contains(aPoint)) {
+					// It is an exit
+					// It is also an entry
+					// => becomes an intermediate
+					listExit.remove(aPoint);
+					listIntermediate.add(aPoint);
+				}
+				else if (! listEntry.contains(aPoint)) {
+					// New entry
+					listEntry.add(aPoint);
+				}
+			}
+			else {
+				// Intermediate point
+				if (listIntermediate.contains(aPoint)) {
+					// Already an intermediate point => do nothing
+				}
+				else if (listExit.contains(aPoint)) {
+					// It is an exit
+					if (count > 0) {
+						// and not the last point
+						// => becomes an intermediate
+						listExit.remove(aPoint);
+						listIntermediate.add(aPoint);
+					}
+				}
+				else if (listEntry.contains(aPoint)) {
+					// It is an entry
+					// => becomes an intermediate
+					listEntry.remove(aPoint);
+					listIntermediate.add(aPoint);
+				}
+				else if (count > 0) {
+					// new point => add it to Intermediate
+					listIntermediate.add(aPoint);
+				}
+				else {
+					// new point and Last point => Exit
+					listEntry.add(aPoint);
+				}
+				
+				// Link lastPoint to new point
+				MyEdge anEdge = new MyEdge(lastPoint, aPoint, listDefinition);
+				anEdge.outsideMesh = true;
+				anEdge.marked = 1;
+				edges.add(anEdge);
+			}
+			// other informations
+			aPoint.setPointType(listDefinition);
+			aPoint.marked = true;
+			
+			lastPoint = aPoint;
+			}
+		}
+	}
+
+	/**
+	 * Validate branch and end that branch type
+	 * @throws DelaunayError
+	 */
+	private void branchValidate() throws DelaunayError {
+		MyTriangle referenceTriangle = null;
+		
+		// add every entry point to the mesh
+		for (MyPoint aPoint : listEntry) {
+			if (points.contains(aPoint)) {
+				// Already in the points list => do noting
+			}
+			else {
+				points.add(aPoint);
+				aPoint.marked = true;
+				referenceTriangle = DelaunayReference.addPoint(aPoint);
+			
+				// Connect it to the surface
+				double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+				aPoint.z = ZValue;
+			}
+		}
+		
+		// add every sewer exit point to the mesh
+		for (MyPoint aPoint : listExit) {
+			if (points.contains(aPoint)) {
+				// Already in the points list => do noting
+			}
+			else {
+				points.add(aPoint);
+				aPoint.marked = true;
+				referenceTriangle = DelaunayReference.addPoint(aPoint);
+
+				// Connect it to the surface
+				double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+				aPoint.z = ZValue;
+			}
+		}
+		
+		// add every sewer intermediate point to the point list
+		// do not include them in the mesh
+		for (MyPoint aPoint : listIntermediate) {
+			if (points.contains(aPoint)) {
+				// Already in the points list => do noting
+			}
+			else {
+				points.add(aPoint);
+				aPoint.marked = true;
+				if (connectToSurface) {
+					referenceTriangle = DelaunayReference.addPoint(aPoint);
+
+					// Connect it to the surface
+					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+					aPoint.z = ZValue;
+				}
+			}
+		}
+		
+		// Reset informations
+		listEntry = new LinkedList<MyPoint>();
+		listExit = new LinkedList<MyPoint>();
+		listIntermediate = new LinkedList<MyPoint>();
+		listDefinition = null;
+		connectToSurface = true;
+	}
+	
+	// ----------------------------------------------------------------
+	/**
 	 * add a sewer entry
 	 *
 	 * @param x
@@ -446,9 +637,8 @@ public class MyMesh {
 	 */
 	public void addSewerEntry(double x, double y) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = searchPoint(x,y);
-		if (sewerPoint != null)
-			addSewerEntry(sewerPoint);
+		MyPoint sewerPoint = getPoint(x,y);
+		addSewerEntry(sewerPoint);
 	}
 
 	/**
@@ -461,9 +651,8 @@ public class MyMesh {
 	 */
 	public void addSewerEntry(double x, double y, double z) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = searchPoint(x,y,z);
-		if (sewerPoint != null)
-			addSewerEntry(sewerPoint);
+		MyPoint sewerPoint = getPoint(x,y);
+		addSewerEntry(sewerPoint);
 	}
 
 	/**
@@ -473,16 +662,8 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addSewerEntry(MyPoint sewerPoint) throws DelaunayError {
-		if (!points.contains(sewerPoint))
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidSewerPoint);
-		else if (lastSewerPoint != null)
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidSewerStart);
-		else {
-			sewerPoint.setPointType(TopoType.SEWER);
-			lastSewerPoint = sewerPoint;
-		}
+		listPrepare = new LinkedList<MyPoint>();
+		listPrepare.add(sewerPoint);
 	}
 
 	/**
@@ -494,9 +675,8 @@ public class MyMesh {
 	 */
 	public void addSewerExit(double x, double y) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = searchPoint(x,y);
-		if (sewerPoint != null)
-			addSewerExit(sewerPoint);
+		MyPoint sewerPoint = getPoint(x,y);
+		addSewerExit(sewerPoint);
 	}
 
 	/**
@@ -509,9 +689,8 @@ public class MyMesh {
 	 */
 	public void addSewerExit(double x, double y, double z) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = searchPoint(x,y,z);
-		if (sewerPoint != null)
-			addSewerExit(sewerPoint);
+		MyPoint sewerPoint = getPoint(x,y,z);
+		addSewerExit(sewerPoint);
 	}
 
 	/**
@@ -521,23 +700,9 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addSewerExit(MyPoint sewerPoint) throws DelaunayError {
-		if (!points.contains(sewerPoint))
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidSewerPoint);
-		else if (lastSewerPoint == null)
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerEnd);
-//		else if (lastSewerPoint.z <= sewerPoint.z)
-//			throw new DelaunayError(
-//					DelaunayError.DelaunayError_invalidSewerDirection);
-		else {
-			sewerPoint.setPointType(TopoType.SEWER);
-			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint,
-					TopoType.SEWER);
-			anEdge.marked = 1;
-			anEdge.outsideMesh = true;
-			compEdges.add(anEdge);
-			lastSewerPoint = null;
-		}
+		listPrepare.add(sewerPoint);
+		sewerSet(listPrepare);
+		listPrepare = new LinkedList<MyPoint>();
 	}
 
 	/**
@@ -561,23 +726,7 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addSewerPoint(MyPoint sewerPoint) throws DelaunayError {
-		if (lastSewerPoint == null)
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidSewerPoint);
-		else if (lastSewerPoint.z <= sewerPoint.z)
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidSewerDirection);
-		else {
-			sewerPoint.setPointType(TopoType.SEWER);
-			points.add(sewerPoint);
-			sewerPoint.marked = true;
-			MyEdge anEdge = new MyEdge(lastSewerPoint, sewerPoint,
-					TopoType.SEWER);
-			anEdge.marked = 1;
-			anEdge.outsideMesh = true;
-			compEdges.add(anEdge);
-			lastSewerPoint = sewerPoint;
-		}
+		listPrepare.add(sewerPoint);
 	}
 
 	/**
@@ -590,9 +739,7 @@ public class MyMesh {
 	 */
 	public void setSewerPoint(double x, double y, double z) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = searchPoint(x,y,z);
-		if (sewerPoint != null)
-			setSewerPoint(sewerPoint);
+		addSewerEntry(x,y,z);
 	}
 
 	/**
@@ -602,128 +749,156 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void setSewerPoint(MyPoint sewerPoint) throws DelaunayError {
-		if (lastSewerPoint != null)
-			throw new DelaunayError(DelaunayError.DelaunayError_invalidSewerEnd);
-		else if (!sewerPoint.getPointType().equals("Sewer"))
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidSewerStart);
-		else {
-			lastSewerPoint = sewerPoint;
-		}
+		addSewerEntry(sewerPoint);
 	}
 
 	// ----------------------------------------------------------------
 	/**
-	 * Add a wall point start
-	 *
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Start sewers definition
 	 * @throws DelaunayError
 	 */
-	public void addWallStart(double x, double y, double z) throws DelaunayError {
-		// Search for the point
-		MyPoint wallPoint = searchPoint(x,y,z);
-		if (wallPoint != null)
-			addWallStart(wallPoint);
+	public void sewerStart() throws DelaunayError {
+		branchStart(TopoType.SEWER, false);
 	}
-
+	
 	/**
-	 * Add a wall point start
+	 * define a new sewer branch
 	 *
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
-	public void addWallStart(double x, double y) throws DelaunayError {
-		// Search for the point
-		MyPoint wallPoint = searchPoint(x,y);
-		if (wallPoint != null)
-			addWallStart(wallPoint);
-	}
-
-	/**
-	 * Add a wall point start
-	 *
-	 * @param wallPoint
-	 * @throws DelaunayError
-	 */
-	public void addWallStart(MyPoint wallPoint) throws DelaunayError {
-		if (!isMeshComputed())
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else if (!points.contains(wallPoint))
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidWallPoint);
-		else {
-			// Wall point start
-			lastWallPoint = wallPoint;
-			wallPoint.setPointType(TopoType.WALL);
+	public void sewerSet(LinkedList<MyPoint> sewerList) throws DelaunayError {
+		if (listDefinition == null)
+			branchStart(TopoType.SEWER, false);
+		else if (listDefinition != TopoType.SEWER) {
+			branchValidate();
+			branchStart(TopoType.SEWER, false);
 		}
+		setNewBranch(sewerList);
 	}
 
 	/**
-	 * Add a wall point end
-	 *
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Validate and end sewer definition
+	 * 
 	 * @throws DelaunayError
 	 */
-	public void addWallEnd(double x, double y) throws DelaunayError {
-		// Search for the point
-		MyPoint wallPoint = searchPoint(x,y);
-		if (wallPoint != null)
-			addWallEnd(wallPoint);
+	public void sewerValidate() throws DelaunayError {
+		if (listDefinition != null)
+				branchValidate();
+		listDefinition = null;
 	}
-
+	
+	// ----------------------------------------------------------------
 	/**
-	 * Add a wall point end
-	 *
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Start ditches definition
 	 * @throws DelaunayError
 	 */
-	public void addWallEnd(double x, double y, double z) throws DelaunayError {
-		// Search for the point
-		MyPoint wallPoint = searchPoint(x,y,z);
-		if (wallPoint != null)
-			addWallEnd(wallPoint);
+	public void ditchStart() throws DelaunayError {
+		branchStart(TopoType.DITCH);
 	}
-
+	
 	/**
-	 * Add a wall point end
+	 * define a new ditch branch
 	 *
-	 * @param wallPoint
+	 * @param ditchList
 	 * @throws DelaunayError
 	 */
-	public void addWallEnd(MyPoint wallPoint) throws DelaunayError {
-		if (!isMeshComputed())
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else if (!points.contains(wallPoint))
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidWallPoint);
-		else if (lastWallPoint == null)
-			throw new DelaunayError(
-					DelaunayError.DelaunayError_invalidWallStart);
-		else {
-			// Wall point end
-			wallPoint.setPointType(TopoType.WALL);
-
-			MyEdge anEdge = new MyEdge(lastWallPoint, wallPoint, TopoType.WALL);
-			anEdge.marked = 1;
-			compEdges.add(anEdge);
-
-			lastWallPoint = null;
+	public void ditchSet(LinkedList<MyPoint> ditchList) throws DelaunayError {
+		if (listDefinition == null)
+			branchStart(TopoType.DITCH);
+		else if (listDefinition != TopoType.DITCH) {
+			branchValidate();
+			branchStart(TopoType.DITCH);
 		}
+		setNewBranch(ditchList);
 	}
+
+	/**
+	 * Validate and end ditches definition
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void ditchValidate() throws DelaunayError {
+		if (listDefinition != null)
+			branchValidate();
+		listDefinition = null;
+	}
+	
+	// ----------------------------------------------------------------
+	/**
+	 * Start rivers definition
+	 * @throws DelaunayError
+	 */
+	public void riverStart() throws DelaunayError {
+		branchStart(TopoType.RIVER);
+	}
+	
+	/**
+	 * define a new river branch
+	 *
+	 * @param riverList
+	 * @throws DelaunayError
+	 */
+	public void riverSet(LinkedList<MyPoint> riverList) throws DelaunayError {
+		if (listDefinition == null)
+			branchStart(TopoType.RIVER);
+		else if (listDefinition != TopoType.RIVER) {
+			branchValidate();
+			branchStart(TopoType.RIVER);
+		}
+		setNewBranch(riverList);
+	}
+
+	/**
+	 * Validate and end rivers definition
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void riverValidate() throws DelaunayError {
+		if (listDefinition != null)
+			branchValidate();
+		listDefinition = null;
+	}
+	
+	// ----------------------------------------------------------------
+	/**
+	 * Start walls definition
+	 * @throws DelaunayError
+	 */
+	public void wallStart() throws DelaunayError {
+		branchStart(TopoType.WALL);
+	}
+	
+	/**
+	 * define a new wall branch
+	 *
+	 * @param wallList
+	 * @throws DelaunayError
+	 */
+	public void wallSet(LinkedList<MyPoint> wallList) throws DelaunayError {
+		if (listDefinition == null)
+			branchStart(TopoType.WALL);
+		else if (listDefinition != TopoType.WALL) {
+			branchValidate();
+			branchStart(TopoType.WALL);
+		}
+		setNewBranch(wallList);
+	}
+
+	/**
+	 * Validate and end walls definition
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void wallValidate() throws DelaunayError {
+		if (listDefinition != null)
+			branchValidate();
+		listDefinition = null;
+	}
+	
 
 	// ----------------------------------------------------------------
-	public void setRoad() throws DelaunayError {
-	
-	}
-	
+
 	// ----------------------------------------------------------------
 	/**
 	 * search for a point
