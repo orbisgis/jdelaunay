@@ -2075,7 +2075,9 @@ public class Delaunay {
 
 				if (anEdge.marked == 1)
 					doIt = false;
-
+				else if (AlreadySeen.contains(anEdge))
+					doIt = false;
+				
 				if (doIt) {
 					AlreadySeen.add(anEdge);
 					// We cannot process marked edges
@@ -2105,7 +2107,6 @@ public class Delaunay {
 		} else
 			while (!badEdgesQueueList.isEmpty())
 				badEdgesQueueList.removeFirst();
-
 	}
 
 	/**
