@@ -284,9 +284,9 @@ public class MyPoint {
 				(int) ((y-minY)*scaleY + decalageY) - 1, 3, 3);
 
 		if (false)
-		if (gid > 0) {
-			g.drawString(""+gid, (int) ((x-minX)*scaleX + decalageX),
-					(int) ((y-minY)*scaleY + decalageY) - 1);
+			if (gid > 0) {
+				g.drawString(""+gid, (int) ((x-minX)*scaleX + decalageX),
+						(int) ((y-minY)*scaleY + decalageY) - 1);
 		}
 	}
 
