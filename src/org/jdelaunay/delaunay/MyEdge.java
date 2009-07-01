@@ -517,7 +517,7 @@ public class MyEdge {
 		MyPoint aPoint = point[1];
 		point[1] = point[0];
 		point[0] = aPoint;
-		
+
 		// swap triangles
 		MyTriangle aTriangle = left;
 		left = right;
@@ -599,15 +599,15 @@ public class MyEdge {
 	 */
 	public void setColor(Graphics g) {
 		((Graphics2D) g).setStroke(new BasicStroke(1));
-		if (type == TopoType.SEWER) {
+		if (type == ConstaintType.SEWER) {
 			g.setColor(Color.orange);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 		}
-		else if (type == TopoType.RIVER) {
+		else if (type == ConstaintType.RIVER) {
 			g.setColor(Color.blue);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 		}
-		else if (type == TopoType.DITCH) {
+		else if (type == ConstaintType.DITCH) {
 			g.setColor(Color.green);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 		}

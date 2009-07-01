@@ -16,11 +16,6 @@ public class TopoType {
 	public static final String DOUBLECOLINEAR = "doubleColinear";
 	public static final String FLAT = "flat";
 	public static final String BORDER = "border";
-	
-	// Other strings
-	static final public String WALL = "Wall";
-	static final public String SEWER = "Sewer";
-	static final public String ROAD = "Road";
-	static final public String DITCH = "Ditch";
-	static final public String RIVER = "River";
+
+
 }
