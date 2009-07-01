@@ -270,6 +270,15 @@ public class Delaunay {
 					myInsertPoint(aPoint);
 			}
 
+			if (verbose) {
+				System.out.println("Triangularization phase : ");
+				System.out.println("  Points : " + points.size());
+				System.out.println("  Edges : " + edges.size());
+				System.out.println("  Triangles : " + triangles.size());
+			}
+
+			theMesh.setMeshComputed(true);
+
 			// remove flat triangles
 			// removeFlatTriangles();
 
@@ -296,7 +305,13 @@ public class Delaunay {
 			// It's fine, we computed the mesh
 			if (verbose)
 				System.out.println("end processing");
-			theMesh.setMeshComputed(true);
+
+			if (verbose) {
+				System.out.println("Triangularization end phase : ");
+				System.out.println("  Points : " + points.size());
+				System.out.println("  Edges : " + edges.size());
+				System.out.println("  Triangles : " + triangles.size());
+			}
 		}
 	}
 
@@ -525,14 +540,15 @@ public class Delaunay {
 		aTriangle2.recomputeCenter();
 
 		// Add edges to the bad edges list
-		for (int i = 0; i < 3; i++) {
-			if (!badEdgesQueueList.contains(aTriangle.edges[i]))
-				badEdgesQueueList.add(aTriangle.edges[i]);
-			if (!badEdgesQueueList.contains(aTriangle1.edges[i]))
-				badEdgesQueueList.add(aTriangle1.edges[i]);
-			if (!badEdgesQueueList.contains(aTriangle2.edges[i]))
-				badEdgesQueueList.add(aTriangle2.edges[i]);
-		}
+		if (!theMesh.isMeshComputed())
+			for (int i = 0; i < 3; i++) {
+				if (!badEdgesQueueList.contains(aTriangle.edges[i]))
+					badEdgesQueueList.add(aTriangle.edges[i]);
+				if (!badEdgesQueueList.contains(aTriangle1.edges[i]))
+					badEdgesQueueList.add(aTriangle1.edges[i]);
+				if (!badEdgesQueueList.contains(aTriangle2.edges[i]))
+					badEdgesQueueList.add(aTriangle2.edges[i]);
+			}
 		checkTopology();
 	}
 
@@ -736,8 +752,9 @@ public class Delaunay {
 			for (int k = 0; k < 3; k++) {
 				if (newEdges[k] != null) {
 					edges.add(newEdges[k]);
-					if (!badEdgesQueueList.contains(newEdges[k]))
-						badEdgesQueueList.add(newEdges[k]);
+					if (!theMesh.isMeshComputed())
+						if (!badEdgesQueueList.contains(newEdges[k]))
+							badEdgesQueueList.add(newEdges[k]);
 				}
 
 			}
@@ -1055,7 +1072,8 @@ public class Delaunay {
 		// Process unconnected edges
 		ArrayList<MyEdge> remain0 = processEdges_Step0(compEdges);
 		if (verbose)
-			System.out.println("Edges left after phase 1 : " + remain0.size());
+			System.out.println("Edges left after initial phase : "
+					+ remain0.size());
 
 		// Process exact existing edges
 		ArrayList<MyEdge> remain1 = processEdges_Step1(remain0);
@@ -1477,7 +1495,7 @@ public class Delaunay {
 			while (intersect1.hasNext()) {
 				MyEdge anEdge = intersect1.next();
 				MyPoint IntersectionPoint = intersect2.next();
-				
+
 				if (anEdge != null) {
 					MyPoint start = anEdge.getStart();
 					MyPoint end = anEdge.getEnd();
@@ -1517,17 +1535,18 @@ public class Delaunay {
 							else
 								aTriangle1 = anEdge.right;
 
-							for (int l=0; l<2; l++) {
+							for (int l = 0; l < 2; l++) {
 								if (aTriangle1 != null) {
-									MyEdge possible = aTriangle1.getEdgeFromPoints(
-											IntersectionPoint, alterPoints[l]);
+									MyEdge possible = aTriangle1
+											.getEdgeFromPoints(
+													IntersectionPoint,
+													alterPoints[l]);
 									if (possible != null)
 										possibleEdges.add(possible);
 								}
 							}
 						}
-					}
-					else {
+					} else {
 						possibleEdges.add(anEdge);
 					}
 				}
@@ -1537,14 +1556,13 @@ public class Delaunay {
 			ListIterator<MyPoint> iterPoint = addedPoints.listIterator();
 			while (iterPoint.hasNext()) {
 				MyPoint aPoint = iterPoint.next();
-				if (! CurrentEdge.isInside(aPoint)) {
+				if (!CurrentEdge.isInside(aPoint)) {
 					// Not between p1 and p2 => removed
 					iterPoint.remove();
-				}
-				else
-					aPoint.marked=true;
+				} else
+					aPoint.marked = true;
 			}
-			
+
 			// Then we mark all edges from p1 to p2
 			int size = addedPoints.size();
 			if (size > 2)
@@ -1912,12 +1930,14 @@ public class Delaunay {
 				oldEdges.add(anEdge);
 
 				// add the edges to the bad edges list
-				if (!badEdgesQueueList.contains(anEdge))
-					badEdgesQueueList.add(anEdge);
-				if (!badEdgesQueueList.contains(anEdge1))
-					badEdgesQueueList.add(anEdge1);
-				if (!badEdgesQueueList.contains(anEdge2))
-					badEdgesQueueList.add(anEdge2);
+				if (!theMesh.isMeshComputed()) {
+					if (!badEdgesQueueList.contains(anEdge))
+						badEdgesQueueList.add(anEdge);
+					if (!badEdgesQueueList.contains(anEdge1))
+						badEdgesQueueList.add(anEdge1);
+					if (!badEdgesQueueList.contains(anEdge2))
+						badEdgesQueueList.add(anEdge2);
+				}
 			}
 		}
 
@@ -2082,9 +2102,9 @@ public class Delaunay {
 					}
 				}
 			}
-		}
-		while (!badEdgesQueueList.isEmpty())
-			badEdgesQueueList.removeFirst();
+		} else
+			while (!badEdgesQueueList.isEmpty())
+				badEdgesQueueList.removeFirst();
 
 	}
 
@@ -2175,10 +2195,8 @@ public class Delaunay {
 			}
 		}
 
-		// We remove all edges in badEdgesQueueList because we MUST NOT change
-		// them
-		while (!badEdgesQueueList.isEmpty())
-			badEdgesQueueList.removeFirst();
+		// processBadEdges() will remove edges
+		processBadEdges();
 
 	}
 
