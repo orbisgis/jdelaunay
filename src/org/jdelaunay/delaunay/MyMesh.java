@@ -47,11 +47,11 @@ public class MyMesh {
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
-	 *
+	 * 
 	 */
 	public MyMesh() {
 		DelaunayReference = null;
-		
+
 		// Generate vectors
 		points = new ArrayList<MyPoint>();
 		edges = new ArrayList<MyEdge>();
@@ -82,7 +82,7 @@ public class MyMesh {
 
 	/**
 	 * Set bounding box for the generation
-	 *
+	 * 
 	 * @param maxx
 	 * @param maxy
 	 */
@@ -93,7 +93,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random points
-	 *
+	 * 
 	 * @param _NbPoints
 	 */
 	public void setRandomPoints(int _NbPoints) {
@@ -109,7 +109,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random edges Can be applied only if points are created
-	 *
+	 * 
 	 * @param _NbEdges
 	 */
 	public void setRandomEdges(int _NbEdges) {
@@ -130,7 +130,7 @@ public class MyMesh {
 
 	/**
 	 * Get JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @return
 	 */
 	public MyDrawing getAffiche() {
@@ -139,7 +139,7 @@ public class MyMesh {
 
 	/**
 	 * Set JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @param affiche
 	 */
 	public void setAffiche(MyDrawing affiche) {
@@ -148,7 +148,7 @@ public class MyMesh {
 
 	/**
 	 * Get Duration
-	 *
+	 * 
 	 * @return
 	 */
 	public long getDuration() {
@@ -171,7 +171,7 @@ public class MyMesh {
 
 	/**
 	 * Display circles around triangles when displayed in the JPanel
-	 *
+	 * 
 	 * @param displayCircles
 	 */
 	public void setDisplayCircles(boolean displayCircles) {
@@ -257,7 +257,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of points in the Mesh
-	 *
+	 * 
 	 * @return NbPoints
 	 */
 	public int getNbPoints() {
@@ -266,7 +266,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of edges in the Mesh
-	 *
+	 * 
 	 * @return NbEdges
 	 */
 	public int getNbEdges() {
@@ -296,7 +296,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of triangles in the Mesh
-	 *
+	 * 
 	 * @return NbTriangles
 	 */
 	public int getNbTriangles() {
@@ -305,7 +305,7 @@ public class MyMesh {
 
 	/**
 	 * Get the points structure
-	 *
+	 * 
 	 * @return points
 	 */
 	public ArrayList<MyPoint> getPoints() {
@@ -314,7 +314,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
-	 *
+	 * 
 	 * @param _point
 	 */
 	public void setPoints(ArrayList<MyPoint> _point) {
@@ -325,7 +325,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the array
-	 *
+	 * 
 	 * @param _point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> _point) {
@@ -334,7 +334,7 @@ public class MyMesh {
 
 	/**
 	 * Get the edges structure
-	 *
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getEdges() {
@@ -343,7 +343,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(ArrayList<MyEdge> _edges) {
@@ -354,7 +354,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the LinkedList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
@@ -365,7 +365,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdgesRef(ArrayList<MyEdge> _edges) {
@@ -375,7 +375,7 @@ public class MyMesh {
 	/**
 	 * Get the complementary edges structure This structure emorize the edges
 	 * that have to be added to the triangularization
-	 *
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getCompEdges() {
@@ -384,7 +384,7 @@ public class MyMesh {
 
 	/**
 	 * Get the triangle structure
-	 *
+	 * 
 	 * @return triangle
 	 */
 	public LinkedList<MyTriangle> getTriangles() {
@@ -393,7 +393,7 @@ public class MyMesh {
 
 	/**
 	 * get a point from its GID
-	 *
+	 * 
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -410,7 +410,7 @@ public class MyMesh {
 
 	/**
 	 * get an edge from its GID
-	 *
+	 * 
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -455,14 +455,15 @@ public class MyMesh {
 	 * @param connectToSurface
 	 * @throws DelaunayError
 	 */
-	private void branchStart(String branchType, boolean connectToSurface) throws DelaunayError {
+	private void branchStart(String branchType, boolean connectToSurface)
+			throws DelaunayError {
 		this.listEntry = new LinkedList<MyPoint>();
 		this.listExit = new LinkedList<MyPoint>();
 		this.listIntermediate = new LinkedList<MyPoint>();
 		this.listDefinition = branchType;
 		this.connectToSurface = connectToSurface;
 	}
-	
+
 	/**
 	 * Defines a new branch type on the surface
 	 * 
@@ -472,10 +473,10 @@ public class MyMesh {
 	private void branchStart(String branchType) throws DelaunayError {
 		branchStart(branchType, true);
 	}
-	
+
 	/**
 	 * defines a new branch
-	 *
+	 * 
 	 * @param theList
 	 * @throws DelaunayError
 	 */
@@ -488,107 +489,84 @@ public class MyMesh {
 		while (iterList.hasNext()) {
 			Object item = iterList.next();
 			if (item instanceof MyPoint) {
-				aPoint = (MyPoint)item;
-			}
-			else if (item instanceof Coordinate) {
-				aCoordinate = (Coordinate)item;
-				aPoint = new MyPoint(aCoordinate.x, aCoordinate.y, aCoordinate.z);
-			}
-			else
+				aPoint = (MyPoint) item;
+			} else if (item instanceof Coordinate) {
+				aCoordinate = (Coordinate) item;
+				aPoint = new MyPoint(aCoordinate.x, aCoordinate.y,
+						aCoordinate.z);
+			} else
 				aPoint = null;
 
 			count--;
 			if (aPoint != null) {
-			if (lastPoint == null) {
-				// First point of the list
-				if (listIntermediate.contains(aPoint)) {
-					// Already an intermediate point => do nothing
-				}
-				else if (listExit.contains(aPoint)) {
-					// It is an exit
-					// It is also an entry
-					// => becomes an intermediate
-					listExit.remove(aPoint);
-					listIntermediate.add(aPoint);
-				}
-				else if (! listEntry.contains(aPoint)) {
-					// New entry
-					listEntry.add(aPoint);
-				}
-			}
-			else {
-				// Intermediate point
-				if (listIntermediate.contains(aPoint)) {
-					// Already an intermediate point => do nothing
-				}
-				else if (listExit.contains(aPoint)) {
-					// It is an exit
-					if (count > 0) {
-						// and not the last point
+				if (lastPoint == null) {
+					// First point of the list
+					if (listIntermediate.contains(aPoint)) {
+						// Already an intermediate point => do nothing
+					} else if (listExit.contains(aPoint)) {
+						// It is an exit
+						// It is also an entry
 						// => becomes an intermediate
 						listExit.remove(aPoint);
 						listIntermediate.add(aPoint);
+					} else if (!listEntry.contains(aPoint)) {
+						// New entry
+						listEntry.add(aPoint);
 					}
+				} else {
+					// Intermediate point
+					if (listIntermediate.contains(aPoint)) {
+						// Already an intermediate point => do nothing
+					} else if (listExit.contains(aPoint)) {
+						// It is an exit
+						if (count > 0) {
+							// and not the last point
+							// => becomes an intermediate
+							listExit.remove(aPoint);
+							listIntermediate.add(aPoint);
+						}
+					} else if (listEntry.contains(aPoint)) {
+						// It is an entry
+						// => becomes an intermediate
+						listEntry.remove(aPoint);
+						listIntermediate.add(aPoint);
+					} else if (count > 0) {
+						// new point => add it to Intermediate
+						listIntermediate.add(aPoint);
+					} else {
+						// new point and Last point => Exit
+						listEntry.add(aPoint);
+					}
+
+					// Link lastPoint to new point
+					MyEdge anEdge = new MyEdge(lastPoint, aPoint,
+							listDefinition);
+					anEdge.outsideMesh = true;
+					anEdge.marked = 1;
+					edges.add(anEdge);
 				}
-				else if (listEntry.contains(aPoint)) {
-					// It is an entry
-					// => becomes an intermediate
-					listEntry.remove(aPoint);
-					listIntermediate.add(aPoint);
-				}
-				else if (count > 0) {
-					// new point => add it to Intermediate
-					listIntermediate.add(aPoint);
-				}
-				else {
-					// new point and Last point => Exit
-					listEntry.add(aPoint);
-				}
-				
-				// Link lastPoint to new point
-				MyEdge anEdge = new MyEdge(lastPoint, aPoint, listDefinition);
-				anEdge.outsideMesh = true;
-				anEdge.marked = 1;
-				edges.add(anEdge);
-			}
-			// other informations
-			aPoint.setPointType(listDefinition);
-			aPoint.marked = true;
-			
-			lastPoint = aPoint;
+				// other informations
+				aPoint.setPointType(listDefinition);
+				aPoint.marked = true;
+
+				lastPoint = aPoint;
 			}
 		}
 	}
 
 	/**
 	 * Validate branch and end that branch type
+	 * 
 	 * @throws DelaunayError
 	 */
 	private void branchValidate() throws DelaunayError {
 		MyTriangle referenceTriangle = null;
-		
+
 		// add every entry point to the mesh
 		for (MyPoint aPoint : listEntry) {
 			if (points.contains(aPoint)) {
 				// Already in the points list => do noting
-			}
-			else {
-				points.add(aPoint);
-				aPoint.marked = true;
-				referenceTriangle = DelaunayReference.addPoint(aPoint);
-			
-				// Connect it to the surface
-				double ZValue = referenceTriangle.getSurfacePoint(aPoint);
-				aPoint.z = ZValue;
-			}
-		}
-		
-		// add every sewer exit point to the mesh
-		for (MyPoint aPoint : listExit) {
-			if (points.contains(aPoint)) {
-				// Already in the points list => do noting
-			}
-			else {
+			} else {
 				points.add(aPoint);
 				aPoint.marked = true;
 				referenceTriangle = DelaunayReference.addPoint(aPoint);
@@ -598,14 +576,28 @@ public class MyMesh {
 				aPoint.z = ZValue;
 			}
 		}
-		
+
+		// add every sewer exit point to the mesh
+		for (MyPoint aPoint : listExit) {
+			if (points.contains(aPoint)) {
+				// Already in the points list => do noting
+			} else {
+				points.add(aPoint);
+				aPoint.marked = true;
+				referenceTriangle = DelaunayReference.addPoint(aPoint);
+
+				// Connect it to the surface
+				double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+				aPoint.z = ZValue;
+			}
+		}
+
 		// add every sewer intermediate point to the point list
 		// do not include them in the mesh
 		for (MyPoint aPoint : listIntermediate) {
 			if (points.contains(aPoint)) {
 				// Already in the points list => do noting
-			}
-			else {
+			} else {
 				points.add(aPoint);
 				aPoint.marked = true;
 				if (connectToSurface) {
@@ -617,7 +609,7 @@ public class MyMesh {
 				}
 			}
 		}
-		
+
 		// Reset informations
 		listEntry = new LinkedList<MyPoint>();
 		listExit = new LinkedList<MyPoint>();
@@ -625,11 +617,11 @@ public class MyMesh {
 		listDefinition = null;
 		connectToSurface = true;
 	}
-	
+
 	// ----------------------------------------------------------------
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -637,27 +629,28 @@ public class MyMesh {
 	 */
 	public void addSewerEntry(double x, double y) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = getPoint(x,y);
+		MyPoint sewerPoint = getPoint(x, y);
 		addSewerEntry(sewerPoint);
 	}
 
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @throws DelaunayError
 	 */
-	public void addSewerEntry(double x, double y, double z) throws DelaunayError {
+	public void addSewerEntry(double x, double y, double z)
+			throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = getPoint(x,y);
+		MyPoint sewerPoint = getPoint(x, y);
 		addSewerEntry(sewerPoint);
 	}
 
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -668,20 +661,20 @@ public class MyMesh {
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @throws DelaunayError
 	 */
 	public void addSewerExit(double x, double y) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = getPoint(x,y);
+		MyPoint sewerPoint = getPoint(x, y);
 		addSewerExit(sewerPoint);
 	}
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -689,13 +682,13 @@ public class MyMesh {
 	 */
 	public void addSewerExit(double x, double y, double z) throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = getPoint(x,y,z);
+		MyPoint sewerPoint = getPoint(x, y, z);
 		addSewerExit(sewerPoint);
 	}
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -707,21 +700,22 @@ public class MyMesh {
 
 	/**
 	 * add a sewer point (neither start or exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @throws DelaunayError
 	 */
-	public void addSewerPoint(double x, double y, double z) throws DelaunayError {
+	public void addSewerPoint(double x, double y, double z)
+			throws DelaunayError {
 		// Search for the point
-		MyPoint aPoint = getPoint(x,y,z);
+		MyPoint aPoint = getPoint(x, y, z);
 		addSewerPoint(aPoint);
 	}
 
 	/**
 	 * add a sewer point (neither start or exit
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -731,20 +725,21 @@ public class MyMesh {
 
 	/**
 	 * use a sewer point to start a new branch
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @throws DelaunayError
 	 */
-	public void setSewerPoint(double x, double y, double z) throws DelaunayError {
+	public void setSewerPoint(double x, double y, double z)
+			throws DelaunayError {
 		// Search for the point
-		addSewerEntry(x,y,z);
+		addSewerEntry(x, y, z);
 	}
 
 	/**
 	 * use a sewer point to start a new branch
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -755,15 +750,16 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Start sewers definition
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void sewerStart() throws DelaunayError {
 		branchStart(TopoType.SEWER, false);
 	}
-	
+
 	/**
 	 * define a new sewer branch
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -784,22 +780,23 @@ public class MyMesh {
 	 */
 	public void sewerValidate() throws DelaunayError {
 		if (listDefinition != null)
-				branchValidate();
+			branchValidate();
 		listDefinition = null;
 	}
-	
+
 	// ----------------------------------------------------------------
 	/**
 	 * Start ditches definition
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void ditchStart() throws DelaunayError {
 		branchStart(TopoType.DITCH);
 	}
-	
+
 	/**
 	 * define a new ditch branch
-	 *
+	 * 
 	 * @param ditchList
 	 * @throws DelaunayError
 	 */
@@ -823,19 +820,20 @@ public class MyMesh {
 			branchValidate();
 		listDefinition = null;
 	}
-	
+
 	// ----------------------------------------------------------------
 	/**
 	 * Start rivers definition
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void riverStart() throws DelaunayError {
 		branchStart(TopoType.RIVER);
 	}
-	
+
 	/**
 	 * define a new river branch
-	 *
+	 * 
 	 * @param riverList
 	 * @throws DelaunayError
 	 */
@@ -859,19 +857,20 @@ public class MyMesh {
 			branchValidate();
 		listDefinition = null;
 	}
-	
+
 	// ----------------------------------------------------------------
 	/**
 	 * Start walls definition
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void wallStart() throws DelaunayError {
 		branchStart(TopoType.WALL);
 	}
-	
+
 	/**
 	 * define a new wall branch
-	 *
+	 * 
 	 * @param wallList
 	 * @throws DelaunayError
 	 */
@@ -895,14 +894,13 @@ public class MyMesh {
 			branchValidate();
 		listDefinition = null;
 	}
-	
 
 	// ----------------------------------------------------------------
 
 	// ----------------------------------------------------------------
 	/**
 	 * search for a point
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -911,21 +909,21 @@ public class MyMesh {
 		boolean found = false;
 		MyPoint aPoint = null;
 		ListIterator<MyPoint> iterPoint = points.listIterator();
-		while ((iterPoint.hasNext()) && (! found)) {
+		while ((iterPoint.hasNext()) && (!found)) {
 			aPoint = iterPoint.next();
-			if (aPoint.squareDistance(x,y, z) < epsilon)
-				found=true;
+			if (aPoint.squareDistance(x, y, z) < epsilon)
+				found = true;
 		}
-		
-		if (! found)
+
+		if (!found)
 			aPoint = null;
-		
+
 		return aPoint;
 	}
 
 	/**
 	 * search for a point
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -933,76 +931,78 @@ public class MyMesh {
 		boolean found = false;
 		MyPoint aPoint = null;
 		ListIterator<MyPoint> iterPoint = points.listIterator();
-		while ((iterPoint.hasNext()) && (! found)) {
+		while ((iterPoint.hasNext()) && (!found)) {
 			aPoint = iterPoint.next();
-			if (aPoint.squareDistance(x,y) < epsilon)
-				found=true;
+			if (aPoint.squareDistance(x, y) < epsilon)
+				found = true;
 		}
-		
-		if (! found)
+
+		if (!found)
 			aPoint = null;
-		
+
 		return aPoint;
 	}
 
 	/**
 	 * get point, creates it if necessary
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
 	 */
 	public MyPoint getPoint(double x, double y, double z) {
-		MyPoint aPoint = searchPoint(x,y,z);
-		
+		MyPoint aPoint = searchPoint(x, y, z);
+
 		if (aPoint == null)
-			aPoint = new MyPoint(x,y,z);
-		
+			aPoint = new MyPoint(x, y, z);
+
 		return aPoint;
 	}
 
 	/**
 	 * get point, creates it if necessary
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
 	 */
 	public MyPoint getPoint(double x, double y) {
-		MyPoint aPoint = searchPoint(x,y);
-		
+		MyPoint aPoint = searchPoint(x, y);
+
 		if (aPoint == null)
-			aPoint = new MyPoint(x,y);
-		
+			aPoint = new MyPoint(x, y);
+
 		return aPoint;
 	}
 
 	// ----------------------------------------------------------------
 	/**
 	 * Get point max GID
+	 * 
 	 * @return
 	 */
 	public int getMaxGID_Points() {
 		SetAllGIDs_Point();
-		
+
 		int maxGID = 0;
 		for (MyPoint aPoint : points) {
 			int theGID = aPoint.getGid();
 			if (theGID > maxGID)
 				maxGID = theGID;
 		}
-		
+
 		point_GID = maxGID;
 		return maxGID;
 	}
-	
+
 	/**
 	 * Get edges max GID
+	 * 
 	 * @return
 	 */
 	public int getMaxGID_Edges() {
 		SetAllGIDs_Edges();
-		
+
 		int maxGID = 0;
 		for (MyEdge anEdge : edges) {
 			int theGID = anEdge.getGid();
@@ -1016,11 +1016,12 @@ public class MyMesh {
 
 	/**
 	 * Get triangles max GID
+	 * 
 	 * @return
 	 */
 	public int getMaxGID_Triangles() {
 		SetAllGIDs_Edges();
-		
+
 		int maxGID = 0;
 		for (MyTriangle aTriangle : triangles) {
 			int theGID = aTriangle.getGid();
@@ -1036,7 +1037,7 @@ public class MyMesh {
 	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
-	 *
+	 * 
 	 * @param g
 	 */
 	public void displayObject(Graphics g) {
@@ -1194,7 +1195,7 @@ public class MyMesh {
 
 	/**
 	 * Save the Mesh in a file
-	 *
+	 * 
 	 * @param path
 	 */
 	public void saveMesh(String path) {
@@ -1305,7 +1306,7 @@ public class MyMesh {
 
 	/**
 	 * Save Mesh
-	 *
+	 * 
 	 * @param path
 	 */
 	public void saveMeshUTF(String path) {
@@ -1351,7 +1352,7 @@ public class MyMesh {
 
 	/**
 	 * Export to VRML file
-	 *
+	 * 
 	 * @param path
 	 */
 	public void VRMLexport(String path) {
@@ -1378,7 +1379,7 @@ public class MyMesh {
 			writer.write("\n");
 			int size = points.size();
 			double zcamera = 0;
-			double dx=0, dy=0, dz=0;
+			double dx = 0, dy = 0, dz = 0;
 			if (size > 3) {
 				double xmin = 0, xmax = 0;
 				double ymin = 0, ymax = 0;
@@ -1497,36 +1498,39 @@ public class MyMesh {
 
 			// Add sewer
 			if (false)
-			for (MyEdge anEdge : compEdges) {
-				if (anEdge.getType() == TopoType.WALL) {
-					// Add sewer element NOT FINISHED SO LET IT UNREACHABLE
-					MyPoint aPoint1 = anEdge.getStart();
-					MyPoint aPoint2 = anEdge.getEnd();
-					double length = Math.sqrt(aPoint1.squareDistance(aPoint2));
+				for (MyEdge anEdge : compEdges) {
+					if (anEdge.getType() == TopoType.WALL) {
+						// Add sewer element NOT FINISHED SO LET IT UNREACHABLE
+						MyPoint aPoint1 = anEdge.getStart();
+						MyPoint aPoint2 = anEdge.getEnd();
+						double length = Math.sqrt(aPoint1
+								.squareDistance(aPoint2));
 
-					writer.write("# sewer\n");
-					writer.write("Transform {\n");
-					writer.write("translation " + (aPoint1.x - dx) + " " + (aPoint1.y - dy) + " " + (aPoint1.z - dz) + " " + "\n");
-					writer.write("rotation 1 0 0 0\n");
-					writer.write("children [\n");
-					writer.write(" Shape {\n");
-					writer.write("geometry Cylinder {\n");
-					writer.write("height "+length+"\n");
-					writer.write("radius .2\n");
-					writer.write("top TRUE\n");
-					writer.write("side TRUE\n");
-					writer.write("bottom FALSE\n");
-					writer.write("} # end geometry\n");
-					writer.write("appearance Appearance {\n");
-					writer.write(" material Material {\n");
-					writer.write("diffuseColor .8 1 .8\n");
-					writer.write("} # end material\n");
-					writer.write("} # end appearance\n");
-					writer.write("} # end shape\n");
-					writer.write("] # end chilren\n");
-					writer.write("} # end Transform\n");
+						writer.write("# sewer\n");
+						writer.write("Transform {\n");
+						writer.write("translation " + (aPoint1.x - dx) + " "
+								+ (aPoint1.y - dy) + " " + (aPoint1.z - dz)
+								+ " " + "\n");
+						writer.write("rotation 1 0 0 0\n");
+						writer.write("children [\n");
+						writer.write(" Shape {\n");
+						writer.write("geometry Cylinder {\n");
+						writer.write("height " + length + "\n");
+						writer.write("radius .2\n");
+						writer.write("top TRUE\n");
+						writer.write("side TRUE\n");
+						writer.write("bottom FALSE\n");
+						writer.write("} # end geometry\n");
+						writer.write("appearance Appearance {\n");
+						writer.write(" material Material {\n");
+						writer.write("diffuseColor .8 1 .8\n");
+						writer.write("} # end material\n");
+						writer.write("} # end appearance\n");
+						writer.write("} # end shape\n");
+						writer.write("] # end chilren\n");
+						writer.write("} # end Transform\n");
+					}
 				}
-			}
 
 			writer.write("\n");
 			writer.write("Viewpoint {\n");
@@ -1547,14 +1551,14 @@ public class MyMesh {
 	 */
 	protected void SetAllGIDs_Point() {
 		// sort points
-		MyTools.quickSortGID_Points(points, 0, points.size()-1);
+		MyTools.quickSortGID_Points(points, 0, points.size() - 1);
 
 		// Values are orderer
 		int maxGID = points.size();
-		for (int i=0; i< maxGID; i++) {
-			points.get(i).setGid(i+1);
+		for (int i = 0; i < maxGID; i++) {
+			points.get(i).setGid(i + 1);
 		}
-		
+
 		point_GID = maxGID;
 	}
 
@@ -1563,14 +1567,14 @@ public class MyMesh {
 	 */
 	protected void SetAllGIDs_Edges() {
 		// sort edges
-		MyTools.quickSortGID_Edges(edges, 0, edges.size()-1);
+		MyTools.quickSortGID_Edges(edges, 0, edges.size() - 1);
 
 		// Values are orderer
 		int maxGID = edges.size();
-		for (int i=0; i< maxGID; i++) {
-			edges.get(i).setGid(i+1);
+		for (int i = 0; i < maxGID; i++) {
+			edges.get(i).setGid(i + 1);
 		}
-		
+
 		edge_GID = maxGID;
 	}
 
@@ -1579,8 +1583,8 @@ public class MyMesh {
 	 */
 	protected void SetAllGIDs_Triangle() {
 		int maxGID = triangles.size();
-		for (int i=0; i< maxGID; i++) {
-			triangles.get(i).setGid(i+1);
+		for (int i = 0; i < maxGID; i++) {
+			triangles.get(i).setGid(i + 1);
 		}
 
 		triangle_GID = maxGID;
