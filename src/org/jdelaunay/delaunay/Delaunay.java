@@ -594,7 +594,9 @@ public class Delaunay {
 					alterEdgeList_end[k] = aTriangle1.getEdgeFromPoints(end,
 							alterPointList[k]);
 
-					if (alterEdgeList_end[k].left == aTriangle1)
+					if (alterEdgeList_end[k] == null)
+						System.out.println("ERREUR");
+					else if (alterEdgeList_end[k].left == aTriangle1)
 						alterTriangleList_end[k] = alterEdgeList_end[k].right;
 					else
 						alterTriangleList_end[k] = alterEdgeList_end[k].left;
