@@ -48,7 +48,7 @@ public class MyMesh {
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
-	 *
+	 * 
 	 */
 	public MyMesh() {
 		DelaunayReference = null;
@@ -84,7 +84,7 @@ public class MyMesh {
 
 	/**
 	 * Set bounding box for the generation
-	 *
+	 * 
 	 * @param maxx
 	 * @param maxy
 	 */
@@ -95,7 +95,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random points
-	 *
+	 * 
 	 * @param _NbPoints
 	 */
 	public void setRandomPoints(int _NbPoints) {
@@ -111,7 +111,7 @@ public class MyMesh {
 
 	/**
 	 * Generate random edges Can be applied only if points are created
-	 *
+	 * 
 	 * @param _NbEdges
 	 */
 	public void setRandomEdges(int _NbEdges) {
@@ -132,7 +132,7 @@ public class MyMesh {
 
 	/**
 	 * Get JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @return
 	 */
 	public MyDrawing getAffiche() {
@@ -141,7 +141,7 @@ public class MyMesh {
 
 	/**
 	 * Set JPanel in which Mesh is displayed
-	 *
+	 * 
 	 * @param affiche
 	 */
 	public void setAffiche(MyDrawing affiche) {
@@ -150,7 +150,7 @@ public class MyMesh {
 
 	/**
 	 * Get Duration
-	 *
+	 * 
 	 * @return
 	 */
 	public long getDuration() {
@@ -173,7 +173,7 @@ public class MyMesh {
 
 	/**
 	 * Display circles around triangles when displayed in the JPanel
-	 *
+	 * 
 	 * @param displayCircles
 	 */
 	public void setDisplayCircles(boolean displayCircles) {
@@ -259,7 +259,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of points in the Mesh
-	 *
+	 * 
 	 * @return NbPoints
 	 */
 	public int getNbPoints() {
@@ -268,7 +268,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of edges in the Mesh
-	 *
+	 * 
 	 * @return NbEdges
 	 */
 	public int getNbEdges() {
@@ -298,7 +298,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of triangles in the Mesh
-	 *
+	 * 
 	 * @return NbTriangles
 	 */
 	public int getNbTriangles() {
@@ -307,7 +307,7 @@ public class MyMesh {
 
 	/**
 	 * Get the points structure
-	 *
+	 * 
 	 * @return points
 	 */
 	public ArrayList<MyPoint> getPoints() {
@@ -316,7 +316,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
-	 *
+	 * 
 	 * @param _point
 	 */
 	public void setPoints(ArrayList<MyPoint> _point) {
@@ -327,7 +327,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the array
-	 *
+	 * 
 	 * @param _point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> _point) {
@@ -336,7 +336,7 @@ public class MyMesh {
 
 	/**
 	 * Get the edges structure
-	 *
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getEdges() {
@@ -345,7 +345,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(ArrayList<MyEdge> _edges) {
@@ -356,7 +356,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the LinkedList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdges(LinkedList<MyEdge> _edges) {
@@ -367,7 +367,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
-	 *
+	 * 
 	 * @param _edges
 	 */
 	public void setEdgesRef(ArrayList<MyEdge> _edges) {
@@ -377,7 +377,7 @@ public class MyMesh {
 	/**
 	 * Get the complementary edges structure This structure emorize the edges
 	 * that have to be added to the triangularization
-	 *
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getCompEdges() {
@@ -386,7 +386,7 @@ public class MyMesh {
 
 	/**
 	 * Get the triangle structure
-	 *
+	 * 
 	 * @return triangle
 	 */
 	public LinkedList<MyTriangle> getTriangles() {
@@ -395,7 +395,7 @@ public class MyMesh {
 
 	/**
 	 * get a point from its GID
-	 *
+	 * 
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -412,7 +412,7 @@ public class MyMesh {
 
 	/**
 	 * get an edge from its GID
-	 *
+	 * 
 	 * @param gid
 	 * @return aPoint
 	 */
@@ -452,7 +452,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Defines a new branch type
-	 *
+	 * 
 	 * @param branchType
 	 * @param connectToSurface
 	 * @throws DelaunayError
@@ -469,7 +469,7 @@ public class MyMesh {
 
 	/**
 	 * Defines a new branch type on the surface
-	 *
+	 * 
 	 * @param branchType
 	 * @throws DelaunayError
 	 */
@@ -479,7 +479,7 @@ public class MyMesh {
 
 	/**
 	 * defines a new branch
-	 *
+	 * 
 	 * @param theList
 	 * @throws DelaunayError
 	 */
@@ -548,7 +548,6 @@ public class MyMesh {
 				}
 				// other informations
 				aPoint.setPointType(listDefinition);
-				aPoint.marked = true;
 
 				lastPoint = aPoint;
 			}
@@ -557,7 +556,7 @@ public class MyMesh {
 
 	/**
 	 * Validate branch and end that branch type
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	private void branchValidate() throws DelaunayError {
@@ -596,8 +595,7 @@ public class MyMesh {
 						aPoint.z = ZValue;
 
 						DelaunayReference.addPoint(referenceTriangle, aPoint);
-					}
-					else {
+					} else {
 						if (aPoint.z > ZValue)
 							aPoint.z = ZValue - 1.0;
 					}
@@ -627,15 +625,14 @@ public class MyMesh {
 			anEdge.marked = 1;
 			if (connectToSurface)
 				DelaunayReference.addEdge(anEdge);
-			else{
+			else {
 				anEdge.outsideMesh = true;
 				edges.add(anEdge);
 			}
 		}
-		
-		
+
 		this.setAllGids();
-		
+
 		// Reset informations
 		listEntry = new LinkedList<MyPoint>();
 		listExit = new LinkedList<MyPoint>();
@@ -648,7 +645,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -662,7 +659,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -677,7 +674,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -688,7 +685,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @throws DelaunayError
@@ -701,7 +698,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -715,7 +712,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -727,7 +724,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer point (neither start or exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -742,7 +739,7 @@ public class MyMesh {
 
 	/**
 	 * add a sewer point (neither start or exit
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -752,7 +749,7 @@ public class MyMesh {
 
 	/**
 	 * use a sewer point to start a new branch
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -766,7 +763,7 @@ public class MyMesh {
 
 	/**
 	 * use a sewer point to start a new branch
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -777,7 +774,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Start sewers definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void sewerStart() throws DelaunayError {
@@ -786,7 +783,7 @@ public class MyMesh {
 
 	/**
 	 * define a new sewer branch
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -802,7 +799,7 @@ public class MyMesh {
 
 	/**
 	 * Validate and end sewer definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void sewerValidate() throws DelaunayError {
@@ -814,7 +811,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Start ditches definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void ditchStart() throws DelaunayError {
@@ -823,7 +820,7 @@ public class MyMesh {
 
 	/**
 	 * define a new ditch branch
-	 *
+	 * 
 	 * @param ditchList
 	 * @throws DelaunayError
 	 */
@@ -839,7 +836,7 @@ public class MyMesh {
 
 	/**
 	 * Validate and end ditches definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void ditchValidate() throws DelaunayError {
@@ -851,7 +848,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Start rivers definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void riverStart() throws DelaunayError {
@@ -860,7 +857,7 @@ public class MyMesh {
 
 	/**
 	 * define a new river branch
-	 *
+	 * 
 	 * @param riverList
 	 * @throws DelaunayError
 	 */
@@ -876,7 +873,7 @@ public class MyMesh {
 
 	/**
 	 * Validate and end rivers definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void riverValidate() throws DelaunayError {
@@ -888,7 +885,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Start walls definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void wallStart() throws DelaunayError {
@@ -897,7 +894,7 @@ public class MyMesh {
 
 	/**
 	 * define a new wall branch
-	 *
+	 * 
 	 * @param wallList
 	 * @throws DelaunayError
 	 */
@@ -913,7 +910,7 @@ public class MyMesh {
 
 	/**
 	 * Validate and end walls definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void wallValidate() throws DelaunayError {
@@ -927,7 +924,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * search for a point
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -950,7 +947,7 @@ public class MyMesh {
 
 	/**
 	 * search for a point
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -972,7 +969,7 @@ public class MyMesh {
 
 	/**
 	 * get point, creates it if necessary
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -988,7 +985,7 @@ public class MyMesh {
 
 	/**
 	 * get point, creates it if necessary
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -1005,7 +1002,7 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Get point max GID
-	 *
+	 * 
 	 * @return
 	 */
 	public int getMaxGID_Points() {
@@ -1024,7 +1021,7 @@ public class MyMesh {
 
 	/**
 	 * Get edges max GID
-	 *
+	 * 
 	 * @return
 	 */
 	public int getMaxGID_Edges() {
@@ -1043,7 +1040,7 @@ public class MyMesh {
 
 	/**
 	 * Get triangles max GID
-	 *
+	 * 
 	 * @return
 	 */
 	public int getMaxGID_Triangles() {
@@ -1064,7 +1061,7 @@ public class MyMesh {
 	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
-	 *
+	 * 
 	 * @param g
 	 */
 	public void displayObject(Graphics g) {
@@ -1109,25 +1106,26 @@ public class MyMesh {
 					aTriangle.displayObjectCircles(g, decalageX, decalageY);
 				}
 		}
+		
 		// Draw lines
 		if (false)
-			if (!compEdges.isEmpty())
-				for (MyEdge aVertex : compEdges) {
-					aVertex.setColor(g);
-					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
-							scaleX, scaleY);
-				}
+		if (!compEdges.isEmpty())
+			for (MyEdge aVertex : compEdges) {
+				aVertex.setColor(g);
+				aVertex.displayObject(g, decalageX, decalageY, minX, minY,
+						scaleX, scaleY);
+			}
 
-		if (false)
-			if (!edges.isEmpty())
-				for (MyEdge aVertex : edges) {
+		if (!edges.isEmpty())
+			for (MyEdge aVertex : edges) {
+				if (aVertex.marked > 0) {
 					aVertex.setColor(g);
 					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
 							scaleX, scaleY);
 				}
+			}
 
 		int psize = points.size();
-		if (false)
 			if ((psize > 0) && (psize < 100)) {
 				for (MyPoint aPoint : points) {
 					aPoint.setColor(g);
@@ -1222,7 +1220,7 @@ public class MyMesh {
 
 	/**
 	 * Save the Mesh in a file
-	 *
+	 * 
 	 * @param path
 	 */
 	public void saveMesh(String path) {
@@ -1333,7 +1331,7 @@ public class MyMesh {
 
 	/**
 	 * Save Mesh
-	 *
+	 * 
 	 * @param path
 	 */
 	public void saveMeshUTF(String path) {
@@ -1379,7 +1377,7 @@ public class MyMesh {
 
 	/**
 	 * Export to VRML file
-	 *
+	 * 
 	 * @param path
 	 */
 	public void VRMLexport(String path) {
