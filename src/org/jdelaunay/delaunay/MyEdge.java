@@ -96,7 +96,7 @@ public class MyEdge {
 		init();
 		point[0] = s;
 		point[1] = e;
-		type = new String(_type);
+		type = _type;
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class MyEdge {
 		init();
 		point[0] = s;
 		point[1] = e;
-		type = new String(_type);
+		type = _type;
 		gid = _gid;
 	}
 
@@ -599,8 +599,16 @@ public class MyEdge {
 	 */
 	public void setColor(Graphics g) {
 		((Graphics2D) g).setStroke(new BasicStroke(1));
-		if (marked == 1) {
+		if (type == TopoType.SEWER)
+			g.setColor(Color.orange);
+		else if (type == TopoType.RIVER)
 			g.setColor(Color.blue);
+		else if (type == TopoType.DITCH)
+			g.setColor(Color.green);
+		else if (type != null)
+			g.setColor(Color.yellow);
+		else if (marked == 1) {
+			g.setColor(Color.red);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 		} else if (marked == 2)
 			g.setColor(Color.pink);
