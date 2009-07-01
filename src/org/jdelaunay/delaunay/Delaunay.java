@@ -471,7 +471,7 @@ public class Delaunay {
 					k++;
 				}
 		}
-		
+
 		triangles.add(aTriangle1);
 
 		// Second triangle
@@ -1967,9 +1967,8 @@ public class Delaunay {
 					anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
 					if ((anEdge11 == null) || (anEdge12 == null)
 							|| (anEdge21 == null) || (anEdge22 == null)) {
-//						System.out.println("ERREUR");
-					}
-					else {
+						// System.out.println("ERREUR");
+					} else {
 						// Set points
 						anEdge.point[0] = p3;
 						anEdge.point[1] = p4;
@@ -2025,42 +2024,47 @@ public class Delaunay {
 	 * Process the flip-flop algorithm on the list of triangles
 	 */
 	private void processBadEdges() {
-		LinkedList<MyEdge> AlreadySeen = new LinkedList<MyEdge>();
-		while (!badEdgesQueueList.isEmpty()) {
-			MyEdge anEdge = badEdgesQueueList.getFirst();
-			badEdgesQueueList.removeFirst();
+		if (!theMesh.isMeshComputed()) {
+			LinkedList<MyEdge> AlreadySeen = new LinkedList<MyEdge>();
+			while (!badEdgesQueueList.isEmpty()) {
+				MyEdge anEdge = badEdgesQueueList.getFirst();
+				badEdgesQueueList.removeFirst();
 
-			boolean doIt = true;
+				boolean doIt = true;
 
-			if (anEdge.marked == 1)
-				doIt = false;
-			else if (AlreadySeen.contains(anEdge))
-				doIt = false;
+				if (anEdge.marked == 1)
+					doIt = false;
 
-			if (doIt) {
-				AlreadySeen.add(anEdge);
-				// We cannot process marked edges
-				// We check if the two triangles around the edge are ok
-				MyTriangle aTriangle1 = anEdge.getLeft();
-				MyTriangle aTriangle2 = anEdge.getRight();
-				if ((aTriangle1 != null) && (aTriangle2 != null)) {
+				if (doIt) {
+					AlreadySeen.add(anEdge);
+					// We cannot process marked edges
+					// We check if the two triangles around the edge are ok
+					MyTriangle aTriangle1 = anEdge.getLeft();
+					MyTriangle aTriangle2 = anEdge.getRight();
+					if ((aTriangle1 != null) && (aTriangle2 != null)) {
 
-					if (swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
-						// Add the edges to the bad edges list
-						for (int j = 0; j < 3; j++) {
-							if (aTriangle1.edges[j] != anEdge)
-								if (!badEdgesQueueList
-										.contains(aTriangle1.edges[j]))
-									badEdgesQueueList.add(aTriangle1.edges[j]);
-							if (aTriangle2.edges[j] != anEdge)
-								if (!badEdgesQueueList
-										.contains(aTriangle2.edges[j]))
-									badEdgesQueueList.add(aTriangle2.edges[j]);
+						if (swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
+							// Add the edges to the bad edges list
+							for (int j = 0; j < 3; j++) {
+								if (aTriangle1.edges[j] != anEdge)
+									if (!badEdgesQueueList
+											.contains(aTriangle1.edges[j]))
+										badEdgesQueueList
+												.add(aTriangle1.edges[j]);
+								if (aTriangle2.edges[j] != anEdge)
+									if (!badEdgesQueueList
+											.contains(aTriangle2.edges[j]))
+										badEdgesQueueList
+												.add(aTriangle2.edges[j]);
+							}
 						}
 					}
 				}
 			}
 		}
+		while (!badEdgesQueueList.isEmpty())
+			badEdgesQueueList.removeFirst();
+
 	}
 
 	/**
