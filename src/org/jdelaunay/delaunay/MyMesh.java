@@ -588,15 +588,18 @@ public class MyMesh {
 			} else {
 				points.add(aPoint);
 				aPoint.marked = true;
-				if (connectToSurface) {
-					aPoint.marked = true;
-					referenceTriangle = DelaunayReference.getTriangle(aPoint);
-					if (referenceTriangle != null) {
+				referenceTriangle = DelaunayReference.getTriangle(aPoint);
+				if (referenceTriangle != null) {
+					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+					if (connectToSurface) {
 						// Connect it to the surface
-						double ZValue = referenceTriangle.getSurfacePoint(aPoint);
 						aPoint.z = ZValue;
 
 						DelaunayReference.addPoint(referenceTriangle, aPoint);
+					}
+					else {
+						if (aPoint.z > ZValue)
+							aPoint.z = ZValue - 1.0;
 					}
 				}
 			}
