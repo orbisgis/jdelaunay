@@ -17,27 +17,28 @@ public class Test {
 		testDelaunay.setVerbose(true);
 
 		aMesh.setMax(1300, 700);
-		aMesh.readMesh("test.txt");
-		// aMesh.setRandomPoints(5);
-		// aMesh.setRandomEdges(2);
+		// aMesh.readMesh("test.txt");
+		aMesh.setRandomPoints(50000);
+
+		aMesh.setRandomEdges(2);
 		// aMesh.setDisplayCircles(true);
 
-		/*ArrayList<MyEdge> edges = new ArrayList<MyEdge>();
-		MyEdge edge = new MyEdge(new MyPoint(50, 100, 10), new MyPoint(30, 20,
-				10));
-
-		edges.add(edge);*/
+		/*
+		 * ArrayList<MyEdge> edges = new ArrayList<MyEdge>(); MyEdge edge =
+		 * new MyEdge(new MyPoint(50, 100, 10), new MyPoint(30, 20, 10));
+		 *
+		 * edges.add(edge);
+		 */
 		// edges.add(edge2);
 		// aMesh.setEdges(edges);
-
 		aMesh.setStart();
 		try {
 			// process triangularization
 			testDelaunay.processDelaunay();
 
-			testDelaunay.removeFlatTriangles();
+			// testDelaunay.removeFlatTriangles();
 
-			testDelaunay.morphologicalQualification();
+			// testDelaunay.morphologicalQualification();
 
 			// Refine Mesh
 			// testDelaunay.setRefinment(Delaunay.refinement_minArea);
@@ -54,6 +55,6 @@ public class Test {
 		aMesh.setAffiche(aff2);
 
 		aMesh.saveMeshXML();
-		//aMesh.VRMLexport();
+		// aMesh.VRMLexport();
 	}
 }

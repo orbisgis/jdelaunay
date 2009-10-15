@@ -1,20 +1,157 @@
 package org.jdelaunay.test;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.jdelaunay.delaunay.Delaunay;
 import org.jdelaunay.delaunay.DelaunayError;
-import org.jdelaunay.delaunay.MyDrawing;
 import org.jdelaunay.delaunay.MyEdge;
 import org.jdelaunay.delaunay.MyMesh;
 import org.jdelaunay.delaunay.MyPoint;
+import org.jdelaunay.delaunay.MyTriangle;
 
-import junit.framework.TestCase;
+public class DelaunayTest extends BaseTest {
 
-public class DelaunayTest extends TestCase {
+	public void testDelaunayRandomPoints() throws DelaunayError {
 
-	public void testDelaunayDupplicateEDges() {
+		MyMesh aMesh = new MyMesh();
+		Delaunay testDelaunay = new Delaunay(aMesh);
+		testDelaunay.setPrecision(1.0e-3);
+		testDelaunay.setVerbose(true);
+		aMesh.setRandomPoints(5000);
+		aMesh.setStart();
+		aMesh.setMax(1300, 700);
+		testDelaunay.processDelaunay();
+		aMesh.setEnd();
+		show(aMesh);
+		System.out.println();
+
+	}
+
+	public void testDelaunayPoints() throws DelaunayError {
+
+		MyMesh aMesh = new MyMesh();
+		Delaunay testDelaunay = new Delaunay(aMesh);
+		testDelaunay.setPrecision(1.0e-3);
+		testDelaunay.setVerbose(true);
+		aMesh.setPoints(getPoints());
+		aMesh.setStart();
+		aMesh.setMax(1300, 700);
+		testDelaunay.processDelaunay();
+		aMesh.setEnd();
+		show(aMesh);
+		System.out.println();
+
+	}
+
+	public void testDelaunayPointsRefinementMaxArea() throws DelaunayError {
+
+		MyMesh aMesh = new MyMesh();
+		Delaunay testDelaunay = new Delaunay(aMesh);
+		testDelaunay.setPrecision(1.0e-3);
+		testDelaunay.setVerbose(true);
+		aMesh.setPoints(getPoints());
+		aMesh.setStart();
+		testDelaunay.processDelaunay();
+		testDelaunay.setMinArea(1000);
+		assertTrue(testDelaunay.getMinArea() == 1000);
+		testDelaunay.setRefinment(Delaunay.refinement_maxArea);
+		testDelaunay.refineMesh();
+		aMesh.setEnd();
+
+		LinkedList<MyTriangle> triangles = aMesh.getTriangles();
+
+		for (MyTriangle myTriangle : triangles) {
+
+			if (myTriangle.computeArea() > 1000) {
+				assertTrue(false);
+			}
+
+		}
+
+	}
+
+	public void testDelaunayPointsRefinementMinArea() throws DelaunayError {
+
+		MyMesh aMesh = new MyMesh();
+		Delaunay testDelaunay = new Delaunay(aMesh);
+		testDelaunay.setPrecision(1.0e-3);
+		testDelaunay.setVerbose(true);
+		aMesh.setPoints(getPoints());
+		aMesh.setStart();
+		testDelaunay.processDelaunay();
+		testDelaunay.setMinArea(1000);
+		assertTrue(testDelaunay.getMinArea() == 1000);
+		testDelaunay.setRefinment(Delaunay.refinement_minArea);
+		testDelaunay.refineMesh();
+		aMesh.setEnd();
+
+		LinkedList<MyTriangle> triangles = aMesh.getTriangles();
+
+		for (MyTriangle myTriangle : triangles) {
+
+			if (myTriangle.computeArea() < 1000) {
+				assertTrue(false);
+			}
+
+		}
+
+	}
+
+	public void testDelaunayDuplicateXYZPoint() throws DelaunayError {
+
+		MyMesh aMesh = new MyMesh();
+		Delaunay testDelaunay = new Delaunay(aMesh);
+		testDelaunay.setPrecision(1.0e-3);
+		testDelaunay.setVerbose(true);
+		ArrayList<MyPoint> pts = getPoints();
+		pts.add(new MyPoint(52, 100, 1));
+		aMesh.setPoints(pts);
+		aMesh.setStart();
+		aMesh.setMax(1300, 700);
+		testDelaunay.processDelaunay();
+		aMesh.setEnd();
+		assertTrue(aMesh.getNbPoints() == pts.size() - 1);
+
+	}
+
+	public void testDelaunayDuplicateXYPoint() throws DelaunayError {
+
+		MyMesh aMesh = new MyMesh();
+		Delaunay testDelaunay = new Delaunay(aMesh);
+		testDelaunay.setPrecision(1.0e-3);
+		testDelaunay.setVerbose(true);
+		ArrayList<MyPoint> pts = getPoints();
+		pts.add(new MyPoint(52, 100, 10));
+		aMesh.setPoints(pts);
+		aMesh.setStart();
+		aMesh.setMax(1300, 700);
+		testDelaunay.processDelaunay();
+		aMesh.setEnd();
+		show(aMesh);
+		assertTrue(aMesh.getNbPoints() == pts.size() - 1);
+
+	}
+
+	/**
+	 * GID must be unique and greater than 0
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testGIDS() throws DelaunayError {
+		MyMesh aMesh = new MyMesh();
+		Delaunay testDelaunay = new Delaunay(aMesh);
+		testDelaunay.setPrecision(1.0e-3);
+		testDelaunay.setVerbose(true);
+		aMesh.setPoints(getPoints());
+		aMesh.setStart();
+		aMesh.setMax(1300, 700);
+		testDelaunay.processDelaunay();
+		aMesh.setEnd();
+		testGID(aMesh);
+	}
+
+	public void testDelaunayDupplicateEdges() throws DelaunayError {
 
 		MyMesh aMesh = new MyMesh();
 		Delaunay testDelaunay = new Delaunay(aMesh);
@@ -40,20 +177,11 @@ public class DelaunayTest extends TestCase {
 
 		aMesh.setEdges(edges);
 		aMesh.setPoints(points);
-		aMesh.setMax(1300, 700);
 		aMesh.setStart();
 
-		try {
-			// process triangularization
-			testDelaunay.processDelaunay();
+		// process triangularization
+		testDelaunay.processDelaunay();
 
-			testDelaunay.removeFlatTriangles();
-
-			testDelaunay.morphologicalQualification();
-
-		} catch (DelaunayError e) {
-			e.printStackTrace();
-		}
 		aMesh.setEnd();
 
 		for (MyPoint pt : points) {
@@ -73,7 +201,6 @@ public class DelaunayTest extends TestCase {
 			}
 		}
 
-
-
 	}
+
 }
