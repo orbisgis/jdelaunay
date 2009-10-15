@@ -14,10 +14,6 @@ import org.jdelaunay.utilities.HydroLineUtil;
 import org.jdelaunay.utilities.HydroPolygonUtil;
 import org.jdelaunay.utilities.MathUtil;
 
-/**
- * @author kwyhr
- *
- */
 public class Delaunay {
 	// the Mesh
 	protected MyMesh theMesh;
@@ -262,7 +258,7 @@ public class Delaunay {
 			boundaryEdges.add(e1);
 			boundaryEdges.add(e2);
 			boundaryEdges.add(e3);
-			
+
 			// flip-flop on a list of points
 			int count = 0;
 			while (iterPoint.hasNext()) {
@@ -272,43 +268,17 @@ public class Delaunay {
 					myInsertPoint(aPoint);
 			}
 
-			if (verbose) {
-				System.out.println("Triangularization phase : ");
-				System.out.println("  Points : " + points.size());
-				System.out.println("  Edges : " + edges.size());
-				System.out.println("  Triangles : " + triangles.size());
-			}
-
 			theMesh.setMeshComputed(true);
 
-			// remove flat triangles
-			// removeFlatTriangles();
-
-			// Add the edges in the edges array
-			if (verbose)
-				System.out.println("Adding edges");
-			processEdges(theMesh.compEdges);
-			// removeFlatTriangles();
-
-			// adding GIDs
-			if (verbose)
-				System.out.println("set GIDs");
-			theMesh.setAllGids();
-			/*
-			 * point_GID = 0; for (MyPoint aPoint : points) { point_GID++;
-			 * aPoint.setGid(point_GID); }
-			 *
-			 * edge_GID = 0; for (MyEdge anEdge : edges) { edge_GID++;
-			 * anEdge.setGid(edge_GID); }
-			 *
-			 * triangle_GID = 0; for (MyTriangle aTriangle1 : triangles) {
-			 * triangle_GID++; aTriangle1.setGid(triangle_GID); }
-			 */
-			// It's fine, we computed the mesh
-			if (verbose)
-				System.out.println("end processing");
-
 			if (verbose) {
+				// Add the edges in the edges array
+				System.out.println("Adding edges");
+				processEdges(theMesh.compEdges);
+				// adding GIDs
+				System.out.println("set GIDs");
+				theMesh.setAllGids();
+				// It's fine, we computed the mesh
+				System.out.println("end processing");
 				System.out.println("Triangularization end phase : ");
 				System.out.println("  Points : " + points.size());
 				System.out.println("  Edges : " + edges.size());
@@ -352,7 +322,7 @@ public class Delaunay {
 			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
 		else {
 			// add point in the triangle
-			if (! points.contains(aPoint))
+			if (!points.contains(aPoint))
 				points.add(aPoint);
 			processAddPoint(aTriangle, aPoint);
 
@@ -481,7 +451,7 @@ public class Delaunay {
 			if (anEdge[i] != null)
 				if (aTriangle1.points[0] == anEdge[i].getStart()) {
 					aTriangle1.edges[k] = anEdge[i];
-					
+
 					if (anEdge[i].left != null)
 						anEdge[i].right = aTriangle1;
 					else if (anEdge[i].right != null)
@@ -490,7 +460,7 @@ public class Delaunay {
 						anEdge[i].left = aTriangle1;
 					else
 						anEdge[i].right = aTriangle1;
-						
+
 					anEdge[i] = null;
 					k++;
 				} else if (aTriangle1.points[1] == anEdge[i].getStart()) {
@@ -527,7 +497,7 @@ public class Delaunay {
 			if (anEdge[i] != null)
 				if (aTriangle2.points[0] == anEdge[i].getStart()) {
 					aTriangle2.edges[k] = anEdge[i];
-					
+
 					if (anEdge[i].left != null)
 						anEdge[i].right = aTriangle2;
 					else if (anEdge[i].right != null)
@@ -817,7 +787,7 @@ public class Delaunay {
 					impactedTriangles.add(new_triangleList[k]);
 			}
 		}
-		
+
 		return impactedTriangles;
 	}
 
@@ -1643,7 +1613,7 @@ public class Delaunay {
 	private void postProcessEdges() {
 		LinkedList<MyEdge> addedEdges = new LinkedList<MyEdge>();
 		for (MyEdge anEdge : edges) {
-			if (anEdge.getType() == ConstaintType.WALL) {
+			if (anEdge.getType() == ConstraintType.WALL) {
 				// Process wall : duplicate edge and changes connections
 				if ((anEdge.left != null) && (anEdge.right != null)) {
 					// Something to do if and only if there are two triangles
@@ -2174,7 +2144,8 @@ public class Delaunay {
 	 * @param aTriangle
 	 */
 	private void changeFlatTriangle(MyTriangle aTriangle,
-			LinkedList<MyPoint> addedPoints, LinkedList<MyPoint> impactPoints) {
+			LinkedList<MyPoint> addedPoints, LinkedList<MyPoint> impactPoints,
+			LinkedList<Double> Factor) {
 		// Save all possible (edges and triangles)
 		MyEdge edgeToProcess[] = new MyEdge[3];
 		MyTriangle trianglesToProcess[] = new MyTriangle[3];
@@ -2198,21 +2169,64 @@ public class Delaunay {
 		}
 
 		// Then we split all possible edges
+		double aFactor = 1;
+		double minLength = 0, maxLength = 0;
 		for (int i = 0; i < nbElements; i++) {
 			MyEdge anEdge = edgeToProcess[i];
 
 			MyTriangle alterTriangle = trianglesToProcess[i];
 			MyPoint alterPoint = alterTriangle.getAlterPoint(anEdge);
+			MyPoint alterPoint0 = aTriangle.getAlterPoint(anEdge);
+
+			// Split the edge in the middle
+			MyPoint middle = anEdge.getBarycenter();
+
+			// Get distances to each points
+			double dist = middle.squareDistance_2D(alterPoint);
+			if (aFactor == 1) {
+				minLength = dist;
+				maxLength = dist;
+			}
+			if (minLength > dist)
+				minLength = dist;
+			if (maxLength < dist)
+				maxLength = dist;
+
+			dist = middle.squareDistance_2D(anEdge.point[0]);
+			if (minLength > dist)
+				minLength = dist;
+			if (maxLength < dist)
+				maxLength = dist;
+
+			dist = middle.squareDistance_2D(alterPoint0);
+			if (minLength > dist)
+				minLength = dist;
+			if (maxLength < dist)
+				maxLength = dist;
+
+			if (maxLength > 0)
+				aFactor = Math.sqrt(minLength / maxLength);
+			aFactor /= 2;
+		}
+
+		for (int i = 0; i < nbElements; i++) {
+			MyEdge anEdge = edgeToProcess[i];
+
+			MyTriangle alterTriangle = trianglesToProcess[i];
+			MyPoint alterPoint = alterTriangle.getAlterPoint(anEdge);
+
 			double basicZ = anEdge.point[0].z;
 			double altZ = alterPoint.z;
 
 			// Split the edge in the middle
 			MyPoint middle = anEdge.getBarycenter();
+
+			// split triangle
 			LinkedList<MyTriangle> impactedTriangles = processAddPoint(anEdge,
 					middle);
 
 			// Move middle
-			middle.z = (3 * basicZ + altZ) / 4;
+			middle.z = basicZ + (altZ - basicZ) * aFactor;
 
 			// Recompute all centers because it one point moved
 			for (MyTriangle aTriangle1 : impactedTriangles) {
@@ -2221,8 +2235,9 @@ public class Delaunay {
 
 			addedPoints.add(middle);
 			impactPoints.add(alterPoint);
+			Factor.add(aFactor);
 
-			int iter = 5;
+			int iter = 20;
 			while ((Math.abs(middle.z - basicZ) < MyTriangle.epsilon)
 					&& (iter > 0)) {
 				// too flat, change altitudes
@@ -2234,13 +2249,29 @@ public class Delaunay {
 
 					ListIterator<MyPoint> iter0 = addedPoints.listIterator();
 					ListIterator<MyPoint> iter1 = impactPoints.listIterator();
+					ListIterator<Double> iter2 = Factor.listIterator();
+
+					double minEcart = -1;
+					boolean first = true;
 					while (iter0.hasNext()) {
 						MyPoint nextPoint = iter0.next();
 						MyPoint nextAlter = iter1.next();
+						aFactor = iter2.next().doubleValue();
 						if (nextPoint == thePoint) {
-							thePoint.z = (3 * thePoint.z + nextAlter.z) / 4;
-							todo.add(nextAlter);
+							double ecart = (nextAlter.z - thePoint.z) * aFactor;
+							if (first)
+								minEcart = ecart;
+							else if (ecart * minEcart <= 0)
+								minEcart = 0;
+							else if (Math.abs(ecart) < Math.abs(minEcart))
+								minEcart = ecart;
+							first = false;
+							if (!todo.contains(nextAlter))
+								todo.add(nextAlter);
 						}
+					}
+					if (!first) {
+						thePoint.z += minEcart;
 					}
 				}
 				iter--;
@@ -2249,6 +2280,27 @@ public class Delaunay {
 
 		// processBadEdges() will remove edges
 		processBadEdges();
+
+	}
+
+	/**
+	 * Linear Z interpolation
+	 *
+	 * @param p1
+	 * @param p2
+	 * @param aPoint
+	 * @return
+	 */
+	private double interpolateZ(MyPoint p1, MyPoint p2, MyPoint aPoint) {
+		final double D = p1.squareDistance(p2);
+
+		final double Z = p2.z - p1.z;
+
+		double d = aPoint.squareDistance(p1);
+
+		double factor = d / D;
+
+		return p1.z + (factor * Z);
 
 	}
 
@@ -2297,6 +2349,7 @@ public class Delaunay {
 			// change flatness
 			LinkedList<MyPoint> addedPoints = new LinkedList<MyPoint>();
 			LinkedList<MyPoint> impactPoints = new LinkedList<MyPoint>();
+			LinkedList<Double> Factor = new LinkedList<Double>();
 			int nbDone = 1;
 			while ((!badTrianglesList.isEmpty()) && (nbDone > 0)) {
 				LinkedList<MyTriangle> todoList = new LinkedList<MyTriangle>();
@@ -2381,8 +2434,8 @@ public class Delaunay {
 				while (!todoList.isEmpty()) {
 					MyTriangle aTriangle = todoList.getFirst();
 					todoList.removeFirst();
-
-					changeFlatTriangle(aTriangle, addedPoints, impactPoints);
+					changeFlatTriangle(aTriangle, addedPoints, impactPoints,
+							Factor);
 					nbDone++;
 
 					badTrianglesList.remove(aTriangle);

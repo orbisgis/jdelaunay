@@ -10,8 +10,6 @@ package org.jdelaunay.delaunay;
 
 import java.awt.*;
 
-import javax.print.DocFlavor.STRING;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyEdge {
@@ -28,7 +26,7 @@ public class MyEdge {
 	private boolean ridge = false;
 	private double slopeInDegree;
 	private Coordinate get3DVector;
-	private String topoType;
+	private int topoType;
 
 	private static final double epsilon = 0.00001;
 	static final int UPSLOPE = -1;
@@ -386,7 +384,7 @@ public class MyEdge {
 					// z = z4 t2 + (1 - t2) z3
 					double x = p2.x * t1 + (1 - t1) * p1.x;
 					double y = p2.y * t1 + (1 - t1) * p1.y;
-//					double z = p2.z * t1 + (1 - t1) * p1.z;
+					// double z = p2.z * t1 + (1 - t1) * p1.z;
 					double z = p4.z * t2 + (1 - t2) * p3.z;
 
 					intersection = new MyPoint(x, y, z);
@@ -601,36 +599,27 @@ public class MyEdge {
 	 */
 	public void setColor(Graphics g) {
 		((Graphics2D) g).setStroke(new BasicStroke(1));
-		if (type == ConstaintType.SEWER) {
-			g.setColor(Color.orange);
+		if (type == ConstraintType.SEWER) {
+			g.setColor(Color.red);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
-		}
-		else if (type == ConstaintType.RIVER) {
+		} else if (type == ConstraintType.RIVER) {
 			g.setColor(Color.blue);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
-		}
-		else if (type == ConstaintType.DITCH) {
-			g.setColor(Color.green);
+		} else if (type == ConstraintType.DITCH) {
+			g.setColor(Color.orange);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
-		}
-		else if (type != null) {
-			g.setColor(Color.yellow);
-			((Graphics2D) g).setStroke(new BasicStroke(2));
-		}
-		else if (talweg) {
+		} else if (type != null) {
+			g.setColor(Color.gray);
+		} else if (talweg) {
 			g.setColor(Color.GRAY);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
-		}
-		else if (ridge) {
+		} else if (ridge) {
+			g.setColor(Color.magenta);
+		} else if (marked == 1) {
 			g.setColor(Color.CYAN);
-		}
-		else if (marked == 1) {
-			g.setColor(Color.red);
-		}
-		else if (marked == 2) {
+		} else if (marked == 2) {
 			g.setColor(Color.pink);
-		}
-		else
+		} else
 			g.setColor(Color.black);
 	}
 
@@ -674,12 +663,12 @@ public class MyEdge {
 
 	}
 
-	public void setTopoType(String topoType) {
+	public void setTopoType(int topoType) {
 		this.topoType = topoType;
 
 	}
 
-	public String getTopoType() {
+	public int getTopoType() {
 		return topoType;
 
 	}

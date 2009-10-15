@@ -576,17 +576,16 @@ public class MyMesh {
 					aPoint.z = ZValue;
 
 					DelaunayReference.addPoint(referenceTriangle, aPoint);
-				}
-				else {
+				} else {
 					referenceTriangle = DelaunayReference.addPoint(aPoint);
-					
+
 					if (referenceTriangle != null) {
 						double ZValue = 0;
-						for (int i=0; i<3; i++) {
+						for (int i = 0; i < 3; i++) {
 							if (referenceTriangle.points[i] != aPoint)
 								ZValue += referenceTriangle.points[i].z;
 						}
-						aPoint.z = ZValue/2;
+						aPoint.z = ZValue / 2;
 					}
 				}
 			}
@@ -612,17 +611,16 @@ public class MyMesh {
 						if (aPoint.z > ZValue)
 							aPoint.z = ZValue - 1.0;
 					}
-				}
-				else if (connectToSurface) {
+				} else if (connectToSurface) {
 					referenceTriangle = DelaunayReference.addPoint(aPoint);
-					
+
 					if (referenceTriangle != null) {
 						double ZValue = 0;
-						for (int i=0; i<3; i++) {
+						for (int i = 0; i < 3; i++) {
 							if (referenceTriangle.points[i] != aPoint)
 								ZValue += referenceTriangle.points[i].z;
 						}
-						aPoint.z = ZValue/2;
+						aPoint.z = ZValue / 2;
 					}
 				}
 			}
@@ -641,17 +639,16 @@ public class MyMesh {
 					aPoint.z = ZValue;
 
 					DelaunayReference.addPoint(referenceTriangle, aPoint);
-				}
-				else {
+				} else {
 					referenceTriangle = DelaunayReference.addPoint(aPoint);
-					
+
 					if (referenceTriangle != null) {
 						double ZValue = 0;
-						for (int i=0; i<3; i++) {
+						for (int i = 0; i < 3; i++) {
 							if (referenceTriangle.points[i] != aPoint)
 								ZValue += referenceTriangle.points[i].z;
 						}
-						aPoint.z = ZValue/2;
+						aPoint.z = ZValue / 2;
 					}
 				}
 			}
@@ -815,7 +812,7 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void sewerStart() throws DelaunayError {
-		branchStart(ConstaintType.SEWER, false);
+		branchStart(ConstraintType.SEWER, false);
 	}
 
 	/**
@@ -826,10 +823,10 @@ public class MyMesh {
 	 */
 	public void sewerSet(LinkedList<MyPoint> sewerList) throws DelaunayError {
 		if (listDefinition == null)
-			branchStart(ConstaintType.SEWER, false);
-		else if (listDefinition != ConstaintType.SEWER) {
+			branchStart(ConstraintType.SEWER, false);
+		else if (listDefinition != ConstraintType.SEWER) {
 			branchValidate();
-			branchStart(ConstaintType.SEWER, false);
+			branchStart(ConstraintType.SEWER, false);
 		}
 		setNewBranch(sewerList);
 	}
@@ -852,7 +849,7 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void ditchStart() throws DelaunayError {
-		branchStart(ConstaintType.DITCH);
+		branchStart(ConstraintType.DITCH);
 	}
 
 	/**
@@ -863,10 +860,10 @@ public class MyMesh {
 	 */
 	public void ditchSet(LinkedList<MyPoint> ditchList) throws DelaunayError {
 		if (listDefinition == null)
-			branchStart(ConstaintType.DITCH);
-		else if (listDefinition != ConstaintType.DITCH) {
+			branchStart(ConstraintType.DITCH);
+		else if (listDefinition != ConstraintType.DITCH) {
 			branchValidate();
-			branchStart(ConstaintType.DITCH);
+			branchStart(ConstraintType.DITCH);
 		}
 		setNewBranch(ditchList);
 	}
@@ -889,7 +886,7 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void riverStart() throws DelaunayError {
-		branchStart(ConstaintType.RIVER);
+		branchStart(ConstraintType.RIVER);
 	}
 
 	/**
@@ -900,10 +897,10 @@ public class MyMesh {
 	 */
 	public void riverSet(LinkedList<MyPoint> riverList) throws DelaunayError {
 		if (listDefinition == null)
-			branchStart(ConstaintType.RIVER);
-		else if (listDefinition != ConstaintType.RIVER) {
+			branchStart(ConstraintType.RIVER);
+		else if (listDefinition != ConstraintType.RIVER) {
 			branchValidate();
-			branchStart(ConstaintType.RIVER);
+			branchStart(ConstraintType.RIVER);
 		}
 		setNewBranch(riverList);
 	}
@@ -926,7 +923,7 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void wallStart() throws DelaunayError {
-		branchStart(ConstaintType.WALL);
+		branchStart(ConstraintType.WALL);
 	}
 
 	/**
@@ -937,10 +934,10 @@ public class MyMesh {
 	 */
 	public void wallSet(LinkedList<MyPoint> wallList) throws DelaunayError {
 		if (listDefinition == null)
-			branchStart(ConstaintType.WALL);
-		else if (listDefinition != ConstaintType.WALL) {
+			branchStart(ConstraintType.WALL);
+		else if (listDefinition != ConstraintType.WALL) {
 			branchValidate();
-			branchStart(ConstaintType.WALL);
+			branchStart(ConstraintType.WALL);
 		}
 		setNewBranch(wallList);
 	}
@@ -1146,12 +1143,12 @@ public class MyMesh {
 
 		// Draw lines
 		if (false)
-		if (!compEdges.isEmpty())
-			for (MyEdge aVertex : compEdges) {
-				aVertex.setColor(g);
-				aVertex.displayObject(g, decalageX, decalageY, minX, minY,
-						scaleX, scaleY);
-			}
+			if (!compEdges.isEmpty())
+				for (MyEdge aVertex : compEdges) {
+					aVertex.setColor(g);
+					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
+							scaleX, scaleY);
+				}
 
 		if (!edges.isEmpty())
 			for (MyEdge aVertex : edges) {
@@ -1163,13 +1160,13 @@ public class MyMesh {
 			}
 
 		int psize = points.size();
-			if ((psize > 0) && (psize < 100)) {
-				for (MyPoint aPoint : points) {
-					aPoint.setColor(g);
-					aPoint.displayObject(g, decalageX, decalageY, minX, minY,
-							scaleX, scaleY);
-				}
+		if ((psize > 0) && (psize < 100)) {
+			for (MyPoint aPoint : points) {
+				aPoint.setColor(g);
+				aPoint.displayObject(g, decalageX, decalageY, minX, minY,
+						scaleX, scaleY);
 			}
+		}
 	}
 
 	/**
@@ -1418,6 +1415,7 @@ public class MyMesh {
 	 * @param path
 	 */
 	public void VRMLexport(String path) {
+		this.setAllGids();
 		try {
 			Writer writer = new FileWriter(path);
 
@@ -1488,7 +1486,7 @@ public class MyMesh {
 				}
 				// add points for walls
 				for (MyEdge anEdge : compEdges) {
-					if (anEdge.getType() == ConstaintType.WALL) {
+					if (anEdge.getType() == ConstraintType.WALL) {
 						writer.write("#wall points\n");
 						for (int i = 0; i < 2; i++) {
 							MyPoint aPoint = anEdge.point[i];
@@ -1515,7 +1513,7 @@ public class MyMesh {
 				// add walls
 				int index = points.size();
 				for (MyEdge anEdge : compEdges) {
-					if (anEdge.getType() == ConstaintType.WALL) {
+					if (anEdge.getType() == ConstraintType.WALL) {
 						writer.write("#wall " + (anEdge.gid - 1) + "\n");
 						writer.write((anEdge.point[0].gid - 1) + "\t");
 						writer.write((anEdge.point[1].gid - 1) + "\t");
@@ -1545,7 +1543,7 @@ public class MyMesh {
 					writer.write("0 #triangle " + (aTriangle.gid - 1) + "\n");
 				}
 				for (MyEdge anEdge : compEdges) {
-					if (anEdge.getType() == ConstaintType.WALL) {
+					if (anEdge.getType() == ConstraintType.WALL) {
 						writer.write("1 #wall edge " + (anEdge.gid - 1) + "\n");
 					}
 				}
@@ -1559,40 +1557,22 @@ public class MyMesh {
 			writer.write("\n");
 
 			// Add sewer
-			if (false)
-				for (MyEdge anEdge : compEdges) {
-					if (anEdge.getType() == ConstaintType.WALL) {
-						// Add sewer element NOT FINISHED SO LET IT UNREACHABLE
-						MyPoint aPoint1 = anEdge.getStart();
-						MyPoint aPoint2 = anEdge.getEnd();
-						double length = Math.sqrt(aPoint1
-								.squareDistance(aPoint2));
-
-						writer.write("# sewer\n");
-						writer.write("Transform {\n");
-						writer.write("translation " + (aPoint1.x - dx) + " "
-								+ (aPoint1.y - dy) + " " + (aPoint1.z - dz)
-								+ " " + "\n");
-						writer.write("rotation 1 0 0 0\n");
-						writer.write("children [\n");
-						writer.write(" Shape {\n");
-						writer.write("geometry Cylinder {\n");
-						writer.write("height " + length + "\n");
-						writer.write("radius .2\n");
-						writer.write("top TRUE\n");
-						writer.write("side TRUE\n");
-						writer.write("bottom FALSE\n");
-						writer.write("} # end geometry\n");
-						writer.write("appearance Appearance {\n");
-						writer.write(" material Material {\n");
-						writer.write("diffuseColor .8 1 .8\n");
-						writer.write("} # end material\n");
-						writer.write("} # end appearance\n");
-						writer.write("} # end shape\n");
-						writer.write("] # end chilren\n");
-						writer.write("} # end Transform\n");
+			for (MyEdge anEdge : edges) {
+				String type = anEdge.getType();
+				if (type != null) {
+					double cx = 1, cy = 1, cz = 1;
+					if (type == ConstraintType.SEWER) {
+						cy = 0;
+					} else if (type == ConstraintType.RIVER) {
+						cx = 0;
+						cy = 0;
+					} else if (type == ConstraintType.DITCH) {
+						cz = 0;
 					}
+					VRMLexport_line(writer, anEdge.getStart(), anEdge.getEnd(),
+							dx, dy, dz, cx, cy, cz);
 				}
+			}
 
 			writer.write("\n");
 			writer.write("Viewpoint {\n");
@@ -1602,6 +1582,67 @@ public class MyMesh {
 			writer.write("\n");
 
 			writer.close();
+		} catch (IOException e) {
+		}
+
+	}
+
+	private void VRMLexport_line(Writer writer, MyPoint start, MyPoint end,
+			double dx, double dy, double dz, double cx, double cy, double cz) {
+		try {
+
+			double x, y, z;
+			x = (start.x + end.x) / 2;
+			y = (start.y + end.y) / 2;
+			z = (start.z + end.z) / 2;
+
+			double length = Math.sqrt(start.squareDistance(end));
+
+			double ux = (end.x - start.x) / length;
+			double uy = (end.y - start.y) / length;
+			double uz = (end.z - start.z) / length;
+			double vx = 0;
+			double vy = 1;
+			double vz = 0;
+
+			double a = uy * vz - uz * vy;
+			double b = uz * vx - ux * vz;
+			double c = ux * vy - uy * vx;
+
+			double vLen = Math.sqrt(a * a + b * b + c * c);
+			if (vLen > 0) {
+				a /= vLen;
+				b /= vLen;
+				c /= vLen;
+			}
+			double Angle = Math.asin(vLen);
+			if (Math.abs(uy - Math.cos(Angle)) < 0.1)
+				Angle = -Angle;
+
+			writer.write("Transform {\n");
+			writer.write("translation " + (x - dx) + " " + (y - dy) + " "
+					+ (z - dz) + " " + "\n");
+			writer.write("rotation " + a + " " + b + " " + c + " " + Angle
+					+ "\n");
+
+			writer.write("children [\n");
+			writer.write("Shape {\n");
+			writer.write("geometry Cylinder {\n");
+			writer.write("height " + length + "\n");
+			writer.write("radius .2\n");
+			writer.write("top TRUE\n");
+			writer.write("side TRUE\n");
+			writer.write("bottom FALSE\n");
+			writer.write("} # end geometry\n");
+			writer.write("appearance Appearance {\n");
+			writer.write(" material Material {\n");
+
+			writer.write("diffuseColor " + cz + " " + cy + " " + cz + "\n");
+			writer.write("} # end material\n");
+			writer.write("} # end appearance\n");
+			writer.write("} # end shape\n");
+			writer.write("] # end chilren\n");
+			writer.write("} # end Transform\n");
 		} catch (IOException e) {
 		}
 

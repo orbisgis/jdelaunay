@@ -1,6 +1,6 @@
 package org.jdelaunay.delaunay;
 
-public class ConstaintType {
+public class ConstraintType {
 
 	// Other strings
 	static final public String WALL = "wall";

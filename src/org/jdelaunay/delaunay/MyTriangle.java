@@ -11,7 +11,15 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 import java.util.*;
 
+import org.jdelaunay.utilities.JTSUtilities;
+
+import com.vividsolutions.jts.algorithm.HCoordinate;
+import com.vividsolutions.jts.algorithm.NotRepresentableException;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.Triangle;
 
 /**
  * @author kwyhr
@@ -32,6 +40,8 @@ public class MyTriangle {
 
 	protected static final double epsilon = 0.00001;
 	private static final double epsilon2 = epsilon * epsilon;
+
+	private GeometryFactory gf = new GeometryFactory();
 
 	/**
 	 * Initialize data structure This method is called by every constructor
@@ -261,13 +271,12 @@ public class MyTriangle {
 				MyPoint end = edges[j].point[1];
 				for (int k = 0; k < 3; k++) {
 					if ((start != points[k]) && (end != points[k]))
-						if (edges[j].isLeft(points[k])){
+						if (edges[j].isLeft(points[k])) {
 							if (edges[j].left == null)
 								edges[j].left = this;
 							else
 								edges[j].right = this;
-						}
-						else {
+						} else {
 							if (edges[j].right == null)
 								edges[j].right = this;
 							else
@@ -290,10 +299,9 @@ public class MyTriangle {
 				MyPoint end = edges[j].point[1];
 				for (int k = 0; k < 3; k++) {
 					if ((start != points[k]) && (end != points[k]))
-						if (edges[j].isLeft(points[k])){
+						if (edges[j].isLeft(points[k])) {
 							edges[j].left = this;
-						}
-						else {
+						} else {
 							edges[j].right = this;
 						}
 				}
@@ -359,7 +367,7 @@ public class MyTriangle {
 	 */
 	public double getSurfacePoint(MyPoint aPoint) {
 		double ZValue = 0;
-		
+
 		MyPoint p1 = points[0];
 		MyPoint p2 = points[1];
 		MyPoint p3 = points[2];
@@ -374,10 +382,10 @@ public class MyTriangle {
 		double a = uy * vz - uz * vy;
 		double b = uz * vx - ux * vz;
 		double c = ux * vy - uy * vx;
-		double d = -a * p1.x - b * p1.y -c * p1.z;
-		
+		double d = -a * p1.x - b * p1.y - c * p1.z;
+
 		if (Math.abs(c) > epsilon) {
-			ZValue = (-a * aPoint.x - b * aPoint.y -d) / c;
+			ZValue = (-a * aPoint.x - b * aPoint.y - d) / c;
 		}
 
 		return ZValue;
@@ -650,6 +658,25 @@ public class MyTriangle {
 		y /= 3;
 		z /= 3;
 		return new MyPoint(x, y, z);
+	}
+
+
+	/**
+	 * Get the barycenter of the triangle
+	 *
+	 * @return isFlat
+	 */
+	public MyPoint getCircuncenter() {
+
+		Coordinate p1 = new Coordinate(points[0].x, points[0].y, points[0].z);
+		Coordinate p2 = new Coordinate(points[1].x, points[1].y, points[1].z);
+		Coordinate p3 = new Coordinate(points[2].x, points[2].y, points[2].z);
+
+		Triangle triangle = new Triangle(p1, p2, p3);
+
+		Coordinate coord = triangle.inCentre();
+
+		return new MyPoint(coord);
 	}
 
 	/*

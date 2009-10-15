@@ -11,13 +11,14 @@ package org.jdelaunay.delaunay;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 public class MyPoint {
 	public double x, y, z;
 	public String type;
 	public int gid;
 	protected boolean marked;
-	private boolean talweg;
-	private String topoType;
+	private int topoType;
 
 	private void init() {
 		x = 0;
@@ -37,7 +38,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, 0.0 with no type
-	 *
+	 * 
 	 * @param _x
 	 * @param _y
 	 */
@@ -49,7 +50,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, _z with no type
-	 *
+	 * 
 	 * @param _x
 	 * @param _y
 	 * @param _z
@@ -63,7 +64,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, _z with a type
-	 *
+	 * 
 	 * @param _x
 	 * @param _y
 	 * @param _z
@@ -79,7 +80,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, _z with a type and a gid
-	 *
+	 * 
 	 * @param _x
 	 * @param _y
 	 * @param _z
@@ -97,7 +98,7 @@ public class MyPoint {
 
 	/**
 	 * Build a point at coordinates _x, _y, _z with a gid
-	 *
+	 * 
 	 * @param _x
 	 * @param _y
 	 * @param _z
@@ -123,9 +124,18 @@ public class MyPoint {
 		type = _pt.type;
 	}
 
+	public MyPoint(Coordinate coord) {
+
+		init();
+		x = coord.x;
+		y = coord.y;
+		z = coord.z;
+
+	}
+
 	/**
 	 * Get X coordinate
-	 *
+	 * 
 	 * @return x
 	 */
 	public double getX() {
@@ -134,7 +144,7 @@ public class MyPoint {
 
 	/**
 	 * Get Y coordinate
-	 *
+	 * 
 	 * @return y
 	 */
 	public double getY() {
@@ -143,7 +153,7 @@ public class MyPoint {
 
 	/**
 	 * Get Z coordinate
-	 *
+	 * 
 	 * @return z
 	 */
 	public double getZ() {
@@ -152,8 +162,8 @@ public class MyPoint {
 
 	/**
 	 * Set Type
-	 *
-	 *@param _type
+	 * 
+	 * @param _type
 	 * @return Type
 	 */
 	public void setPointType(String _type) {
@@ -162,7 +172,7 @@ public class MyPoint {
 
 	/**
 	 * Get Type
-	 *
+	 * 
 	 * @return Type
 	 */
 	public String getPointType() {
@@ -171,7 +181,7 @@ public class MyPoint {
 
 	/**
 	 * get GID
-	 *
+	 * 
 	 * @return
 	 */
 	public int getGid() {
@@ -180,7 +190,7 @@ public class MyPoint {
 
 	/**
 	 * set GID
-	 *
+	 * 
 	 * @param gid
 	 */
 	public void setGid(int gid) {
@@ -189,7 +199,7 @@ public class MyPoint {
 
 	/**
 	 * linear square distance to another point
-	 *
+	 * 
 	 * @param aPoint
 	 * @return distance
 	 */
@@ -199,7 +209,7 @@ public class MyPoint {
 
 	/**
 	 * plane square distance to another point
-	 *
+	 * 
 	 * @param aPoint
 	 * @return distance
 	 */
@@ -209,7 +219,7 @@ public class MyPoint {
 
 	/**
 	 * plane square distance to another point
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @return distance
@@ -220,7 +230,7 @@ public class MyPoint {
 
 	/**
 	 * square distance to another point
-	 *
+	 * 
 	 * @param aPoint
 	 * @return distance
 	 */
@@ -230,32 +240,31 @@ public class MyPoint {
 
 	/**
 	 * plane square distance to another point
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @return distance
 	 */
 	public double squareDistance(double x, double y) {
-		return (x - this.x) * (x - this.x) + (y - this.y)
-				* (y - this.y);
+		return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y);
 	}
 
 	/**
 	 * square distance to another point
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @return distance
 	 */
 	public double squareDistance(double x, double y, double z) {
-		return (x - this.x) * (x - this.x) + (y - this.y)
-				* (y - this.y) + (z - this.z) * (z - this.z);
+		return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)
+				+ (z - this.z) * (z - this.z);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -264,7 +273,7 @@ public class MyPoint {
 
 	/**
 	 * Set the point color for the JFrame panel
-	 *
+	 * 
 	 * @param g
 	 */
 	public void setColor(Graphics g) {
@@ -274,31 +283,32 @@ public class MyPoint {
 	/**
 	 * Display the point in a JPanel Must be used only when using package
 	 * drawing
-	 *
+	 * 
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
 	 */
-	public void displayObject(Graphics g, int decalageX, int decalageY, double minX, double minY, double scaleX, double scaleY) {
-		g.drawOval((int) ((x-minX)*scaleX + decalageX) - 1,
-				(int) ((y-minY)*scaleY + decalageY) - 1, 3, 3);
+	public void displayObject(Graphics g, int decalageX, int decalageY,
+			double minX, double minY, double scaleX, double scaleY) {
+		if (false)
+			g.drawOval((int) ((x - minX) * scaleX + decalageX) - 1,
+					(int) ((y - minY) * scaleY + decalageY) - 1, 3, 3);
 
 		if (false)
 			if (gid > 0) {
-				g.drawString(""+gid, (int) ((x-minX)*scaleX + decalageX),
-						(int) ((y-minY)*scaleY + decalageY) - 1);
-		}
+				g.drawString("" + gid, (int) ((x - minX) * scaleX + decalageX),
+						(int) ((y - minY) * scaleY + decalageY) - 1);
+			}
 	}
 
-	public void setTopoType(String topoType) {
+	public void setTopoType(int topoType) {
 		this.topoType = topoType;
 
 	}
-	public String getTopoType() {
-		return  topoType;
+
+	public int getTopoType() {
+		return topoType;
 
 	}
-
-
 
 }
