@@ -38,6 +38,11 @@ public class DelaunayError extends Throwable {
 
 	public final static int DelaunayError_internalError = 999;
 
+	public DelaunayError() {
+		super();
+		code = DelaunayError_internalError;
+	}
+
 	public DelaunayError(int ErrorCode) {
 		super();
 		code = ErrorCode;
