@@ -1,0 +1,4 @@
+- Pb d'invertion de pente sur certaines configurations de courbes
+- Pb des gid avec la suppresion des triangles plats
+- Insertion de polygons avec z.
+- Calcul de pente à la verticale.
