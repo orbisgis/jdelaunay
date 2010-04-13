@@ -44,7 +44,7 @@ public class Test {
 		aff2.add(aMesh);
 		aMesh.setAffiche(aff2);
 
-		aMesh.saveMeshXML();
+		aMesh.saveMeshAsXML();
 		// aMesh.VRMLexport();
 	}
 }

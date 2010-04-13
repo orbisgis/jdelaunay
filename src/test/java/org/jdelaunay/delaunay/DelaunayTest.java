@@ -132,14 +132,21 @@ public class DelaunayTest extends BaseTest {
 		Delaunay testDelaunay = new Delaunay(aMesh);
 		testDelaunay.setPrecision(1.0e-3);
 		testDelaunay.setVerbose(true);
-		ArrayList<MyPoint> pts = getPoints();
-		pts.add(new MyPoint(52, 100, 1));
+		ArrayList<MyPoint> pts = new ArrayList<MyPoint>();
+		pts.add(new MyPoint(0, 0, 0));
+		pts.add(new MyPoint(10, 0, 0));
+		pts.add(new MyPoint(5, 5, 0));
+		pts.add(new MyPoint(10, 5, 0));
+		pts.add(new MyPoint(0.001, 0.001, 10));
+		pts.add(new MyPoint(5.001, 5.001, 10));
+		
 		aMesh.setPoints(pts);
 		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		testDelaunay.processDelaunay();
 		aMesh.setEnd();
-		assertTrue(aMesh.getNbPoints() == pts.size() - 1);
+		aMesh.saveMeshAsVRML("/tmp/mesh.vrml");
+		 assertTrue(aMesh.getNbPoints() == pts.size() - 1);
 
 	}
 
