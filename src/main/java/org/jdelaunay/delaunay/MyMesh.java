@@ -631,14 +631,17 @@ public class MyMesh {
 			affiche.refresh();
 	}
 
+	public void saveMeshAsXML() {
+		saveMeshAsXML("Mesh.xml");
+	}
 	// ----------------------------------------------------------------
 	/**
 	 * Save the Mesh elements in a XML file
 	 */
-	public void saveMeshXML() {
+	public void saveMeshAsXML(String path) {
 		Writer writer;
 		try {
-			writer = new FileWriter("Mesh.xml");
+			writer = new FileWriter(path);
 			writer.write("<Mesh>\n");
 
 			// Write points
@@ -705,8 +708,8 @@ public class MyMesh {
 	/**
 	 * Save the Mesh in a file
 	 */
-	public void saveMesh() {
-		saveMesh("Mesh.txt");
+	public void saveMeshAsTxt() {
+		saveMeshAsTxt("Mesh.txt");
 	}
 
 	/**
@@ -714,7 +717,7 @@ public class MyMesh {
 	 * 
 	 * @param path
 	 */
-	public void saveMesh(String path) {
+	public void saveMeshAsTxt(String path) {
 		Writer writer;
 		try {
 			writer = new FileWriter(path);
@@ -741,14 +744,14 @@ public class MyMesh {
 	/**
 	 * Read Mesh points from the file
 	 */
-	public void readMesh() {
-		readMesh("Mesh.txt");
+	public void readMeshAsTxt() {
+		readMeshAsTxt("Mesh.txt");
 	}
 
 	/**
 	 * Read Mesh points from the file
 	 */
-	public void readMesh(String path) {
+	public void readMeshAsTxt(String path) {
 		Reader reader;
 		try {
 			String delimiteurs = "\t";
@@ -862,8 +865,8 @@ public class MyMesh {
 	/**
 	 * Export to VRML file Mesh.wrl
 	 */
-	public void VRMLexport() {
-		VRMLexport("Mesh.wrl");
+	public void saveMeshAsVRML() {
+		saveMeshAsVRML("Mesh.wrl");
 	}
 
 	/**
@@ -871,7 +874,7 @@ public class MyMesh {
 	 * 
 	 * @param path
 	 */
-	public void VRMLexport(String path) {
+	public void saveMeshAsVRML(String path) {
 		this.setAllGids();
 		try {
 			Writer writer = new FileWriter(path);
