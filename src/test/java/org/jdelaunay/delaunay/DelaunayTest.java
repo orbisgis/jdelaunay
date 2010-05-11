@@ -139,7 +139,7 @@ public class DelaunayTest extends BaseTest {
 		pts.add(new MyPoint(5, 5, 0));
 		pts.add(new MyPoint(10, 5, 0));
 		pts.add(new MyPoint(0.001, 0.001, 10));
-		pts.add(new MyPoint(5.001, 5.001, 10));
+		pts.add(new MyPoint(5.0001, 5.0001, 10));
 		
 		aMesh.setPoints(pts);
 		aMesh.setStart();
