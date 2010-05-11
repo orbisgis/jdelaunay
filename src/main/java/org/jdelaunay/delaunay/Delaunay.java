@@ -857,7 +857,7 @@ public class Delaunay {
 		x /= 3;
 		y /= 3;
 		z /= 3;
-
+		
 		MyPoint newPoint = new MyPoint(x, y, z);
 		points.add(newPoint);
 
@@ -924,7 +924,7 @@ public class Delaunay {
 			}
 		}
 		// Then we remove the edges of the Triangle
-
+		toBeRemoved.add(aTriangle);
 	}
 
 	/**
@@ -969,6 +969,8 @@ public class Delaunay {
 				badVertice = i;
 			}
 		}
+
+		toBeRemoved.add(aTriangle);
 	}
 
 	/**

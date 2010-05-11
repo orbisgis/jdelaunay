@@ -1,5 +1,6 @@
 package org.jdelaunay.delaunay;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -146,8 +147,10 @@ public class DelaunayTest extends BaseTest {
 		testDelaunay.processDelaunay();
 		aMesh.setEnd();
 		aMesh.saveMeshAsVRML("/tmp/mesh.vrml");
-		 assertTrue(aMesh.getNbPoints() == pts.size() - 1);
-
+	
+		show(aMesh);
+		
+		assertEquals("aMesh.getNbPoints()== pts.size()-1?",aMesh.getNbPoints(), pts.size() - 1);
 	}
 
 	public void testDelaunayDuplicateXYPoint() throws DelaunayError {
@@ -165,6 +168,7 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setEnd();
 		show(aMesh);
 		assertTrue(aMesh.getNbPoints() == pts.size() - 1);
+
 
 	}
 
@@ -213,29 +217,28 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setEdges(edges);
 		aMesh.setPoints(points);
 		aMesh.setStart();
-
+		
 		// process triangularization
 		testDelaunay.processDelaunay();
 
 		aMesh.setEnd();
 
-		for (MyPoint pt : points) {
+		show(aMesh);
 
-			int ptGID = pt.getGid();
-
-			for (MyEdge myEdge : edges) {
-
-				if (ptGID == myEdge.getStart().getGid()) {
-					assertTrue(true);
-				} else if (ptGID == myEdge.getEnd().getGid()) {
-					assertTrue(true);
-				} else {
-					assertTrue(false);
-				}
+		int j=0;
+		for (int i=0;i<aMesh.getEdges().size()-1;i++) {
+			for (j=i+1;j<aMesh.getEdges().size();j++) {
+//				System.out.println(aMesh.getEdges().get(i).getStart().getGid()+"->"+aMesh.getEdges().get(i).getEnd().getGid()+" "+aMesh.getEdges().get(j).getStart().getGid()+"->"+aMesh.getEdges().get(j).getEnd().getGid());
+				
+				assertFalse((aMesh.getEdges().get(i).getStart().getGid()==aMesh.getEdges().get(j).getStart().getGid()
+				&& aMesh.getEdges().get(i).getEnd().getGid()==aMesh.getEdges().get(j).getEnd().getGid())
+				|| (aMesh.getEdges().get(j).getStart().getGid()==aMesh.getEdges().get(i).getStart().getGid()
+				&& aMesh.getEdges().get(j).getEnd().getGid()==aMesh.getEdges().get(i).getEnd().getGid()));
 
 			}
-		}
 
+		}
+		
 	}
 
 }
