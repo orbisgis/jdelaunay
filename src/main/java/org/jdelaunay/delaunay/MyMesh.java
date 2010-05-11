@@ -647,7 +647,7 @@ public class MyMesh {
 			// Write points
 			writer.write("\t<Points>\n");
 			for (MyPoint aPoint : points) {
-				writer.write("\t\t<Point id=\"" + aPoint.getGid() + "\">\n");
+				writer.write("\t\t<Point id=\"" + aPoint.getGID() + "\">\n");
 				writer.write("\t\t\t<X>" + aPoint.x + "</X>\n");
 				writer.write("\t\t\t<Y>" + aPoint.y + "</Y>\n");
 				writer.write("\t\t\t<Z>" + aPoint.z + "</Z>\n");
@@ -663,10 +663,10 @@ public class MyMesh {
 			// Write edges
 			writer.write("\t<Edges>\n");
 			for (MyEdge anEdge : edges) {
-				writer.write("\t\t<Segment id=\"" + anEdge.getGid() + "\">\n");
-				writer.write("\t\t\t<Start>" + anEdge.point[0].getGid()
+				writer.write("\t\t<Segment id=\"" + anEdge.getGID() + "\">\n");
+				writer.write("\t\t\t<Start>" + anEdge.point[0].getGID()
 						+ "</Start>\n");
-				writer.write("\t\t\t<End>" + anEdge.point[1].getGid()
+				writer.write("\t\t\t<End>" + anEdge.point[1].getGID()
 						+ "</End>\n");
 				if (anEdge.getType() == 0)
 					writer.write("\t\t\t<Type />\n");
@@ -675,12 +675,12 @@ public class MyMesh {
 				if (anEdge.left == null)
 					writer.write("\t\t\t<Left>-1</Left>\n");
 				else
-					writer.write("\t\t\t<Left>" + anEdge.left.getGid()
+					writer.write("\t\t\t<Left>" + anEdge.left.getGID()
 							+ "</Left>\n");
 				if (anEdge.right == null)
 					writer.write("\t\t\t<Right>-1</Right>\n");
 				else
-					writer.write("\t\t\t<Right>" + anEdge.right.getGid()
+					writer.write("\t\t\t<Right>" + anEdge.right.getGID()
 							+ "</Right>\n");
 				writer.write("\t\t</Segment>\n");
 			}
@@ -690,10 +690,10 @@ public class MyMesh {
 			// Write triangles
 			writer.write("\t<Triangles>\n");
 			for (MyTriangle aTriangle : triangles) {
-				writer.write("\t\t<Triangle id=\"" + aTriangle.getGid()
+				writer.write("\t\t<Triangle id=\"" + aTriangle.getGID()
 						+ "\">\n");
 				for (int i = 0; i < 3; i++)
-					writer.write("\t\t\t<Edge>" + aTriangle.edges[i].getGid()
+					writer.write("\t\t\t<Edge>" + aTriangle.edges[i].getGID()
 							+ "</Edge>\n");
 				writer.write("\t\t</Triangle>\n");
 			}
@@ -1113,15 +1113,15 @@ public class MyMesh {
 		// set a GID to every point
 		int maxGID = 0;
 		for (Object anObject : elements) {
-			int value = ((MyElement) anObject).getGid();
+			int value = ((MyElement) anObject).getGID();
 			if (value > maxGID)
 				maxGID = value;
 		}
 
 		for (Object anObject : elements) {
-			if (((MyElement) anObject).getGid() == -1) {
+			if (((MyElement) anObject).getGID() == -1) {
 				maxGID++;
-				((MyElement) anObject).setGid(maxGID);
+				((MyElement) anObject).setGID(maxGID);
 			}
 		}
 
@@ -1132,7 +1132,7 @@ public class MyMesh {
 		maxGID = 0;
 		for (Object anObject : elements) {
 			maxGID++;
-			((MyElement) anObject).setGid(maxGID);
+			((MyElement) anObject).setGID(maxGID);
 		}
 	}
 
@@ -1143,7 +1143,7 @@ public class MyMesh {
 		int maxGID = 0;
 		for (MyTriangle aTriangle:triangles) {
 			maxGID++;
-			aTriangle.setGid(maxGID);
+			aTriangle.setGID(maxGID);
 		}
 	}
 

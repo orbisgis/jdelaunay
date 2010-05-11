@@ -2094,8 +2094,8 @@ public class Delaunay {
 			LinkedList<MyTriangle> badTrianglesList = new LinkedList<MyTriangle>();
 			LinkedList<MyTriangle> veryBadTrianglesList = new LinkedList<MyTriangle>();
 			for (MyTriangle aTriangle : triangles) {
-				if (aTriangle.getGid() > maxGID)
-					maxGID = aTriangle.getGid();
+				if (aTriangle.getGID() > maxGID)
+					maxGID = aTriangle.getGID();
 				if (aTriangle.isFlatSlope()) {
 					// Check if we can remove flatness (there might be at least
 					// one non-marked edge

@@ -52,7 +52,7 @@ public class BaseTest extends TestCase {
 		LinkedList<MyTriangle> triangles = aMesh.getTriangles();
 		ArrayList<Integer> gids = new ArrayList<Integer>();
 		for (MyTriangle myTriangle : triangles) {
-			int gid = myTriangle.getGid();
+			int gid = myTriangle.getGID();
 
 			if (gids.contains(gid) && gid > 0) {
 				assertTrue(false);
@@ -65,7 +65,7 @@ public class BaseTest extends TestCase {
 		gids = new ArrayList<Integer>();
 
 		for (MyPoint myPoint : points) {
-			int gid = myPoint.getGid();
+			int gid = myPoint.getGID();
 
 			if (gids.contains(gid) && gid > 0) {
 				assertTrue(false);
@@ -78,7 +78,7 @@ public class BaseTest extends TestCase {
 		gids = new ArrayList<Integer>();
 
 		for (MyEdge myEdge : edgs) {
-			int gid = myEdge.getGid();
+			int gid = myEdge.getGID();
 
 			if (gids.contains(gid) && gid > 0) {
 				assertTrue(false);
