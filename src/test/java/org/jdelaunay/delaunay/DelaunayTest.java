@@ -1,15 +1,7 @@
 package org.jdelaunay.delaunay;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import org.jdelaunay.delaunay.Delaunay;
-import org.jdelaunay.delaunay.DelaunayError;
-import org.jdelaunay.delaunay.MyEdge;
-import org.jdelaunay.delaunay.MyMesh;
-import org.jdelaunay.delaunay.MyPoint;
-import org.jdelaunay.delaunay.MyTriangle;
 
 public class DelaunayTest extends BaseTest {
 
