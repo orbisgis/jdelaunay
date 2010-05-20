@@ -2839,10 +2839,11 @@ public class MyMesh {
 		else
 			scaleY = scaleX;
 		minX = theBox.minx;
-		minY = theBox.maxy;
+//		minY = theBox.maxy;// coordinate 0 in Y is at top of screen (don't forget make change in sub method)
+		minY = theBox.miny;// coordinate 0 in Y is at bottom of screen
 		int decalageX = 10;
 		int decalageY = 630;
-
+		
 		g.setColor(Color.white);
 		g.fillRect(decalageX - 5, 640, decalageX - 5 + 1200, 100);
 

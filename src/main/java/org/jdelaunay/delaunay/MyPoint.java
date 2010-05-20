@@ -242,8 +242,10 @@ public class MyPoint extends MyElement  {
 	protected void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
+//		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
+//				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1); // coordinate 0 in Y is at top of screen
 		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
-				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);
+				(int) (decalageY-(this.coord.y - minY) * scaleY) - 1, 1, 1); // coordinate 0 in Y is at bottom of screen
 
 		/*
 		 * if (gid > 0) { g.drawString("" + gid, (int) ((x - minX) * scaleX +

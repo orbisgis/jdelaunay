@@ -556,10 +556,14 @@ public class MyEdge extends MyElement {
 	protected void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
+//		g.drawLine((int) ((this.startPoint.getX() - minX) * scaleX + decalageX), decalageY
+//				+ (int) ((this.startPoint.getY() - minY) * scaleY),
+//				(int) ((this.endPoint.getX() - minX) * scaleX + decalageX), decalageY
+//						+ (int) ((this.endPoint.getY() - minY) * scaleY)); // coordinate 0 in Y is at top of screen
 		g.drawLine((int) ((this.startPoint.getX() - minX) * scaleX + decalageX), decalageY
-				+ (int) ((this.startPoint.getY() - minY) * scaleY),
+				- (int) ((this.startPoint.getY() - minY) * scaleY),
 				(int) ((this.endPoint.getX() - minX) * scaleX + decalageX), decalageY
-						+ (int) ((this.endPoint.getY() - minY) * scaleY));
+						- (int) ((this.endPoint.getY() - minY) * scaleY)); // coordinate 0 in Y is at bottom of screen
 		if (marked > 0) {
 			this.startPoint.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
 					scaleY);

@@ -645,9 +645,12 @@ public class MyTriangle extends MyElement {
 		xPoints[1] = (int) ((p2.getX() - minX) * scaleX + decalageX);
 		xPoints[2] = (int) ((p3.getX() - minX) * scaleX + decalageX);
 
-		yPoints[0] = (int) ((p1.getY() - minY) * scaleY + decalageY);
-		yPoints[1] = (int) ((p2.getY() - minY) * scaleY + decalageY);
-		yPoints[2] = (int) ((p3.getY() - minY) * scaleY + decalageY);
+//		yPoints[0] = (int) ((p1.getY() - minY) * scaleY + decalageY); // coordinate 0 in Y is at top of screen
+//		yPoints[1] = (int) ((p2.getY() - minY) * scaleY + decalageY);
+//		yPoints[2] = (int) ((p3.getY() - minY) * scaleY + decalageY);
+		yPoints[0] = (int) (decalageY - (p1.getY() - minY) * scaleY); // coordinate 0 in Y is at bottom of screen
+		yPoints[1] = (int) (decalageY - (p2.getY() - minY) * scaleY);
+		yPoints[2] = (int) (decalageY - (p3.getY() - minY) * scaleY);
 
 		setColor(g);
 		g.fillPolygon(xPoints, yPoints, 3);
@@ -670,8 +673,8 @@ public class MyTriangle extends MyElement {
 		double r = Math.sqrt(radius);
 		g.setColor(Color.red);
 		g.drawOval((int) (x_center) + decalageX, decalageY - (int) (y_center),
-				1, 1);
+				1, 1);	// FIXME check Y coordinate
 		g.drawOval((int) (x_center - r) + decalageX, decalageY
-				- (int) (y_center + r), (int) r * 2, (int) r * 2);
+				- (int) (y_center + r), (int) r * 2, (int) r * 2);	// FIXME check Y coordinate
 	}
 }
