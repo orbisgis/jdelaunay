@@ -141,8 +141,8 @@ public class HydroPolygonUtil {
 	public boolean getPenteVersEdge(MyEdge myEdge) {
 		boolean res = false;
 
-		MyPoint pt1 = myEdge.getStart();
-		MyPoint pt2 = myEdge.getEnd();
+		MyPoint pt1 = myEdge.getStartPoint();
+		MyPoint pt2 = myEdge.getEndPoint();
 
 		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
 		// sur e

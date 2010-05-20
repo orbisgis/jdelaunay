@@ -22,8 +22,8 @@ public class HydroLineUtil {
 
 	public HydroLineUtil(MyEdge myEdge) {
 
-		MyPoint pt1 = myEdge.getStart();
-		MyPoint pt2 = myEdge.getEnd();
+		MyPoint pt1 = myEdge.getStartPoint();
+		MyPoint pt2 = myEdge.getEndPoint();
 		Coordinate p1 = pt1.getCoordinate();
 		Coordinate p2 = pt2.getCoordinate();
 		geom = gf.createLineString(new Coordinate[] { p1, p2 });

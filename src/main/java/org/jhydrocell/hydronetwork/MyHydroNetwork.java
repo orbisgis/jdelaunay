@@ -142,8 +142,8 @@ public class MyHydroNetwork {
 					else if (rightTtoEdge && leftTtoEdge) {
 
 						edge.addProperty(HydroProperties.TALWEG);
-						edge.getStart().addProperty(HydroProperties.TALWEG);
-						edge.getEnd().addProperty(HydroProperties.TALWEG);
+						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
+						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
 
 					}
 
@@ -197,8 +197,8 @@ public class MyHydroNetwork {
 					else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
 
 						edge.addProperty(HydroProperties.LEFTCOLINEAR);
-						edge.getStart().addProperty(HydroProperties.TALWEG);
-						edge.getEnd().addProperty(HydroProperties.TALWEG);
+						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
+						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
 
 					}
 
@@ -207,8 +207,8 @@ public class MyHydroNetwork {
 					else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
 
 						edge.addProperty(HydroProperties.RIGHTCOLINEAR);
-						edge.getStart().addProperty(HydroProperties.TALWEG);
-						edge.getEnd().addProperty(HydroProperties.TALWEG);
+						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
+						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
 
 					}
 
@@ -219,8 +219,8 @@ public class MyHydroNetwork {
 
 						edge.addProperty(HydroProperties.DOUBLECOLINEAR);
 
-						edge.getStart().addProperty(HydroProperties.TALWEG);
-						edge.getEnd().addProperty(HydroProperties.TALWEG);
+						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
+						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
 
 					}
 

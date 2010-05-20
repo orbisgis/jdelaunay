@@ -12,7 +12,7 @@ public class TestPolygon  extends BaseTest  {
 	
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 4);
+		MyPolygon aPolygon = new MyPolygon(polygon, 500);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);

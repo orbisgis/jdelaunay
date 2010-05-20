@@ -151,10 +151,10 @@ public class DelaunayTest extends BaseTest {
 		int j=0;
 		for (int i=0;i<aMesh.getEdges().size()-1;i++) {
 			for (j=i+1;j<aMesh.getEdges().size();j++) {			
-				assertFalse((aMesh.getEdges().get(i).getStart().getGID()==aMesh.getEdges().get(j).getStart().getGID()
-								&& aMesh.getEdges().get(i).getEnd().getGID()==aMesh.getEdges().get(j).getEnd().getGID())
-								|| (aMesh.getEdges().get(j).getStart().getGID()==aMesh.getEdges().get(i).getStart().getGID()
-								&& aMesh.getEdges().get(j).getEnd().getGID()==aMesh.getEdges().get(i).getEnd().getGID()));
+				assertFalse((aMesh.getEdges().get(i).getStartPoint().getGID()==aMesh.getEdges().get(j).getStartPoint().getGID()
+								&& aMesh.getEdges().get(i).getEndPoint().getGID()==aMesh.getEdges().get(j).getEndPoint().getGID())
+								|| (aMesh.getEdges().get(j).getStartPoint().getGID()==aMesh.getEdges().get(i).getStartPoint().getGID()
+								&& aMesh.getEdges().get(j).getEndPoint().getGID()==aMesh.getEdges().get(i).getEndPoint().getGID()));
 
 			}
 
