@@ -5,49 +5,44 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
  * @date 2009-01-12
- * @version 1.1
+ * @revision 2010-05-16
+ * @version 2.0
  */
 
 public abstract class MyElement {
-
 	protected int gid;
-	protected int property_type;
-	protected int property_topo;
-	
+	protected int property;
+
 	/**
 	 * default constructor
 	 */
 	public MyElement() {
 		this.gid = -1;
-		this.property_type = 0;
-		this.property_topo = 0;
+		this.property = 0;
 	}
 	
 	/**
 	 * Constructor
 	 */
-	public MyElement(int property_type) {
-		this.gid = -1;
-		this.property_type = property_type;
-		this.property_topo = 0;
-	}
-
-	/**
-	 * Constructor
-	 */
-	public MyElement(int property_type, int gid) {
-		this.gid = gid;
-		this.property_type = property_type;
-		this.property_topo = 0;
-	}
-
-	/**
-	 * Constructor
-	 */
 	public MyElement(MyElement element) {
-		this.gid = element.gid;
-		this.property_type = element.property_type;
-		this.property_topo = element.property_topo;
+		this.gid = -1;
+		this.property = element.property;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public MyElement(int property) {
+		this.gid = -1;
+		this.property = property;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public MyElement(int property, int gid) {
+		this.gid = gid;
+		this.property = property;
 	}
 
 	/**
@@ -55,6 +50,14 @@ public abstract class MyElement {
 	 * @param gid
 	 */
 	public void setGID(int gid) {
+		this.gid = gid;
+	}
+	
+	/**
+	 * set GID value
+	 * @param gid
+	 */
+	public void setGid(int gid) {
 		this.gid = gid;
 	}
 
@@ -67,58 +70,51 @@ public abstract class MyElement {
 	}
 
 	/**
-	 * set type value
-	 * @param type
+	 * get GID value
+	 * @param gid
 	 */
-	public void setType(int type) {
-		this.property_type = type;
+	public int getGid() {
+		return this.gid;
 	}
 
 	/**
-	 * add type value
-	 * @param type
+	 * set property value
+	 * @param property
 	 */
-	public void addType(int type) {
-		this.property_type |= type;
+	public void setProperty(int property) {
+		this.property = property;
+	}
+
+	/**
+	 * add property value
+	 * @param property
+	 */
+	public void addProperty(int property) {
+		this.property |= property;
 	}
 	
 	/**
 	 * check for a specific type value
 	 * @param type
 	 */
-	public boolean isType(int type) {
-		return ((this.property_type & type) != 0);
+	public boolean hasProperty(int property) {
+		return ((this.property & property) != 0);
 	}
 
 	/**
-	 * get type value
-	 * @param type
+	 * get property value
+	 * @return property
 	 */
-	public int getType() {
-		return this.property_type;
+	public int getProperty() {
+		return this.property;
 	}
 
 	/**
-	 * set type value
+	 * Remove all properties of the element
 	 * @param type
 	 */
-	public void setTopo(int topo) {
-		this.property_topo = topo;
-	}
-	
-	/**
-	 * check for a specific type value
-	 * @param type
-	 */
-	public boolean isTopo(int topo) {
-		return ((this.property_topo & topo) != 0);
+	public void removeProperties() {
+		this.property = 0;
 	}
 
-	/**
-	 * get type value
-	 * @param type
-	 */
-	public int getTopo() {
-		return this.property_topo;
-	}
 }

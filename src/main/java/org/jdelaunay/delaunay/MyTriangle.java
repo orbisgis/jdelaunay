@@ -5,16 +5,16 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
  * @date 2009-01-12
- * @version 1.0
+ * @revision 2010-05-16
+ * @version 2.0
  */
 
 import java.awt.*;
 import java.util.*;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyTriangle extends MyElement {
-
-	protected MyPoint[] points;
 	protected MyEdge[] edges;
 
 	private double x_center, y_center;
@@ -24,16 +24,15 @@ public class MyTriangle extends MyElement {
 	 * Initialize data structure This method is called by every constructor
 	 */
 	private void init() {
-		points = new MyPoint[3];
-		edges = new MyEdge[3];
-		x_center = 0;
-		y_center = 0;
-		radius = -1;
+		this.edges = new MyEdge[3];
+		this.x_center = 0;
+		this.y_center = 0;
+		this.radius = -1;
 	}
 
 	/**
 	 * Create a new triangle with points and edges
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param p3
@@ -48,7 +47,7 @@ public class MyTriangle extends MyElement {
 
 	/**
 	 * Create a new triangle with edges Add the points from the edges
-	 * 
+	 *
 	 * @param e1
 	 * @param e2
 	 * @param e3
@@ -60,59 +59,23 @@ public class MyTriangle extends MyElement {
 		edges[0] = e1;
 		edges[1] = e2;
 		edges[2] = e3;
-
-		points[0] = e1.getStart();
-		points[1] = e1.getEnd();
-		if (e2.getStart() == points[1])
-			points[2] = e2.getEnd();
-		else
-			points[2] = e2.getStart();
-
+		
 		connectEdges();
 		recomputeCenter();
-		radius = points[0].squareDistance_2D(x_center, y_center);
-	}
-
-	/**
-	 * Create a new triangle with points and edges
-	 * 
-	 * @param p1
-	 * @param p2
-	 * @param p3
-	 * @param e1
-	 * @param e2
-	 * @param e3
-	 */
-	public MyTriangle(MyPoint p1, MyPoint p2, MyPoint p3, MyEdge e1, MyEdge e2,
-			MyEdge e3) {
-		super();
-		init();
-
-		points[0] = p1;
-		points[1] = p2;
-		points[2] = p3;
-
-		edges[0] = e1;
-		edges[1] = e2;
-		edges[2] = e3;
-
-		connectEdges();
-		recomputeCenter();
-		radius = p1.squareDistance_2D(x_center, y_center);
+		radius = e1.getStart().squareDistance_2D(x_center, y_center);
 	}
 
 	/**
 	 * Create a Triangle from another triangle NB : it doesn't update edges
 	 * connection
-	 * 
+	 *
 	 * @param aTriangle
 	 */
 	public MyTriangle(MyTriangle aTriangle) {
-		super((MyElement) aTriangle);
+		super((MyElement)aTriangle);
 		init();
 
 		for (int i = 0; i < 3; i++) {
-			points[i] = aTriangle.points[i];
 			edges[i] = aTriangle.edges[i];
 		}
 
@@ -121,98 +84,107 @@ public class MyTriangle extends MyElement {
 		radius = aTriangle.radius;
 	}
 
+
 	/**
-	 * Get the ith points
-	 * 
+	 * Get the ith point
+	 * i must be equal to 0, 1 or 2.
+	 *
 	 * @param i
-	 * @return
+	 * @return aPoint
 	 */
-	public MyPoint point(int i) {
-		return points[i];
+	public MyPoint getPoint(int i) {
+		MyPoint p;
+		if (i==0)
+			p = edges[0].getStart();
+		else if (i==1)
+			p = edges[0].getEnd();
+		else {
+			p = edges[1].getStart();
+			if ((p==edges[0].getStart()) || (p==edges[0].getEnd()))
+				p = edges[1].getEnd();
+		}
+		return p;
 	}
 
 	/**
 	 * Get the ith edge
-	 * 
+	 * i must be equal to 0, 1 or 2.
+	 *
 	 * @param i
-	 * @return
+	 * @return anEdge
 	 */
-	public MyEdge edge(int i) {
-		return edges[i];
+	public MyEdge getEdge(int i) {
+		if ((0<=i) && (i<=2))
+			return edges[i];
+		else
+			return null;
 	}
 
 	/**
-	 * Get the ith edge
-	 * 
+	 * Set the ith edge
+	 *
 	 * @param i
-	 * @return
+	 * @param anEdge
 	 */
 	public void setEdge(int i, MyEdge anEdge) {
-		edges[i] = anEdge;
+		if ((0<=i) && (i<=2))
+			edges[i] = anEdge;
 	}
 
 	/**
-	 * Get points
-	 * 
-	 * @return
+	 * Get the radius of the CircumCircle
+	 *
+	 * @return radius
 	 */
-	public MyPoint[] getPoints() {
-		return points;
-	}
-
-	/**
-	 * Get Edges
-	 * 
-	 * @return
-	 */
-	public MyEdge[] getEdges() {
-		return edges;
-	}
-
-	/**
-	 * Get the radius of the circle
-	 * 
-	 * @return
-	 */
-	public double radius() {
+	public double getRadius() {
 		return Math.sqrt(radius);
 	}
 
 	/**
-	 * Recompute the center of the circle that joins the points : the
-	 * CircumCenter
+	 * Get the center of the CircumCircle
+	 *
+	 * @return
+	 */
+	public Coordinate getCircumCenter() {
+		return new Coordinate(this.x_center, this.y_center, 0.0);
+	}
+
+	/**
+	 * Recompute the center of the circle that joins the 3 points : the CircumCenter
 	 */
 	protected void recomputeCenter() {
-		MyPoint p1 = points[0];
-		MyPoint p2 = points[1];
-		MyPoint p3 = points[2];
+		MyPoint p1,p2,p3;
+		p1 = edges[0].getStart();
+		p2 = edges[0].getEnd();
+		p3 = edges[1].getStart();
+		if ((p3==p1)||(p3==p2))
+			p3 = edges[1].getEnd();
 
-		double p1Sq = p1.x * p1.x + p1.y * p1.y;
-		double p2Sq = p2.x * p2.x + p2.y * p2.y;
-		double p3Sq = p3.x * p3.x + p3.y * p3.y;
+		double p1Sq = p1.getX() * p1.getX() + p1.getY() * p1.getY();
+		double p2Sq = p2.getX() * p2.getX() + p2.getY() * p2.getY();
+		double p3Sq = p3.getX() * p3.getX() + p3.getY() * p3.getY();
 
-		double ux = p2.x - p1.x;
-		double uy = p2.y - p1.y;
-		double vx = p3.x - p1.x;
-		double vy = p3.y - p1.y;
+		double ux = p2.getX() - p1.getX();
+		double uy = p2.getY() - p1.getY();
+		double vx = p3.getX() - p1.getX();
+		double vy = p3.getY() - p1.getY();
 
 		double cp = ux * vy - uy * vx;
-		double cx, cy, cz;
-		cx = cy = cz = 0.0;
+		double cx, cy;
+		cx = cy = 0.0;
 
 		if (cp != 0) {
-			cx = (p1Sq * (p2.y - p3.y) + p2Sq * (p3.y - p1.y) + p3Sq
-					* (p1.y - p2.y))
-					/ (2 * cp);
-			cy = (p1Sq * (p3.x - p2.x) + p2Sq * (p1.x - p3.x) + p3Sq
-					* (p2.x - p1.x))
-					/ (2 * cp);
-			cz = 0.0;
+			cx = (p1Sq * (p2.getY() - p3.getY()) + p2Sq * (p3.getY() - p1.getY()) + p3Sq
+					* (p1.getY() - p2.getY()))
+					/ (2.0 * cp);
+			cy = (p1Sq * (p3.getX() - p2.getX()) + p2Sq * (p1.getX() - p3.getX()) + p3Sq
+					* (p2.getX() - p1.getX()))
+					/ (2.0 * cp);
 
 			x_center = cx;
 			y_center = cy;
 
-			radius = points[0].squareDistance_2D(x_center, y_center);
+			radius = p1.squareDistance_2D(x_center, y_center);
 		} else {
 			x_center = 0.0;
 			y_center = 0.0;
@@ -222,50 +194,25 @@ public class MyTriangle extends MyElement {
 	}
 
 	/**
-	 * Reconnect triangle edges to rebuild topology
+	 * Connect triangle edges to build topology
 	 */
-	protected void connectEdges() {
-		for (int j = 0; j < 3; j++) {
-			if (edges[j] == null)
-				System.out.println("ERREUR");
-			else {
-				MyPoint start = edges[j].point[0];
-				MyPoint end = edges[j].point[1];
-				for (int k = 0; k < 3; k++) {
-					if ((start != points[k]) && (end != points[k]))
-						if (edges[j].isLeft(points[k])) {
-							if (edges[j].left == null)
-								edges[j].left = this;
-							else
-								edges[j].right = this;
-						} else {
-							if (edges[j].right == null)
-								edges[j].right = this;
-							else
-								edges[j].left = this;
-						}
+	private void connectEdges() {
+		// we connect edges to the triangle
+		for (int i=0; i<3; i++) {
+			// Start point should be start
+			MyPoint aPoint = this.getAlterPoint(edges[i]);
+			if (edges[i].isLeft(aPoint)) {
+				if (edges[i].left == null)
+					edges[i].left = this;
+				else {
+					edges[i].right = this;
 				}
 			}
-		}
-	}
-
-	/**
-	 * Reconnect triangle edges to rebuild topology
-	 */
-	protected void reconnectEdges() {
-		for (int j = 0; j < 3; j++) {
-			if (edges[j] == null)
-				System.out.println("ERREUR");
 			else {
-				MyPoint start = edges[j].point[0];
-				MyPoint end = edges[j].point[1];
-				for (int k = 0; k < 3; k++) {
-					if ((start != points[k]) && (end != points[k]))
-						if (edges[j].isLeft(points[k])) {
-							edges[j].left = this;
-						} else {
-							edges[j].right = this;
-						}
+				if (edges[i].right == null)
+					edges[i].right = this;
+				else {
+					edges[i].left = this;
 				}
 			}
 		}
@@ -274,7 +221,7 @@ public class MyTriangle extends MyElement {
 	/**
 	 * Check if the point is in or on the Circle 0 = outside 1 = inside 2 = on
 	 * the circle
-	 * 
+	 *
 	 * @param aPoint
 	 * @return position 0 = outside 1 = inside 2 = on the circle
 	 */
@@ -283,8 +230,8 @@ public class MyTriangle extends MyElement {
 		int returnedValue = 0;
 
 		// double distance = squareDistance(Center, aPoint);
-		double ux = aPoint.x - x_center;
-		double uy = aPoint.y - y_center;
+		double ux = aPoint.getX() - x_center;
+		double uy = aPoint.getY() - y_center;
 		double distance = ux * ux + uy * uy;
 		if (distance < radius - MyTools.epsilon2)
 			// in the circle
@@ -297,8 +244,8 @@ public class MyTriangle extends MyElement {
 	}
 
 	/**
-	 * Check if the point is inside the triangle / not
-	 * 
+	 * Check if the point is inside the triangle
+	 *
 	 * @param aPoint
 	 * @return isInside
 	 */
@@ -323,31 +270,34 @@ public class MyTriangle extends MyElement {
 
 	/**
 	 * Get Z value of a specific point in the triangle
-	 * 
+	 *
 	 * @param aPoint
 	 * @return isInside
 	 */
 	public double getSurfacePoint(MyPoint aPoint) {
 		double ZValue = 0;
 
-		MyPoint p1 = points[0];
-		MyPoint p2 = points[1];
-		MyPoint p3 = points[2];
+		MyPoint p1,p2,p3;
+		p1 = edges[0].getStart();
+		p2 = edges[0].getEnd();
+		p3 = edges[1].getStart();
+		if ((p3==p1)||(p3==p2))
+			p3 = edges[1].getEnd();
 
-		double ux = p2.x - p1.x;
-		double uy = p2.y - p1.y;
-		double uz = p2.z - p1.z;
-		double vx = p3.x - p1.x;
-		double vy = p3.y - p1.y;
-		double vz = p3.z - p1.z;
+		double ux = p2.getX() - p1.getX();
+		double uy = p2.getY() - p1.getY();
+		double uz = p2.getZ() - p1.getZ();
+		double vx = p3.getX() - p1.getX();
+		double vy = p3.getY() - p1.getY();
+		double vz = p3.getZ() - p1.getZ();
 
 		double a = uy * vz - uz * vy;
 		double b = uz * vx - ux * vz;
 		double c = ux * vy - uy * vx;
-		double d = -a * p1.x - b * p1.y - c * p1.z;
+		double d = -a * p1.getX() - b * p1.getY() - c * p1.getZ();
 
 		if (Math.abs(c) > MyTools.epsilon) {
-			ZValue = (-a * aPoint.x - b * aPoint.y - d) / c;
+			ZValue = (-a * aPoint.getX() - b * aPoint.getY() - d) / c;
 		}
 
 		return ZValue;
@@ -355,20 +305,23 @@ public class MyTriangle extends MyElement {
 
 	/**
 	 * compute triangle area
-	 * 
+	 *
 	 * @return area
 	 */
 	public double computeArea() {
-		MyPoint p1 = points[0];
-		MyPoint p2 = points[1];
-		MyPoint p3 = points[2];
+		MyPoint p1,p2,p3;
+		p1 = edges[0].getStart();
+		p2 = edges[0].getEnd();
+		p3 = edges[1].getStart();
+		if ((p3==p1)||(p3==p2))
+			p3 = edges[1].getEnd();
 
-		double ux = p2.x - p1.x;
-		double uy = p2.y - p1.y;
-		double vx = p3.x - p1.x;
-		double vy = p3.y - p1.y;
-		double wx = p3.x - p2.x;
-		double wy = p3.y - p3.y;
+		double ux = p2.getX() - p1.getX();
+		double uy = p2.getY() - p1.getY();
+		double vx = p3.getX() - p1.getX();
+		double vy = p3.getY() - p1.getY();
+		double wx = p3.getX() - p2.getX();
+		double wy = p3.getY() - p3.getY();
 
 		double a = Math.sqrt(ux * ux + uy * uy);
 		double b = Math.sqrt(vx * vx + vy * vy);
@@ -382,24 +335,24 @@ public class MyTriangle extends MyElement {
 
 	/**
 	 * check if one of the triangle's angle is less than minimum
-	 * 
+	 *
 	 * @return minAngle
 	 */
-	public int badAngle(double tolarance) {
+	protected int badAngle(double tolarance) {
 		double minAngle = 400;
 		int returndeValue = -1;
 		for (int k = 0; k < 3; k++) {
 			int k1 = (k + 1) % 3;
 			int k2 = (k1 + 1) % 3;
 
-			MyPoint p1 = points[k];
-			MyPoint p2 = points[k1];
-			MyPoint p3 = points[k2];
+			MyPoint p1 = this.getPoint(k);
+			MyPoint p2 = this.getPoint(k1);
+			MyPoint p3 = this.getPoint(k2);
 
-			double ux = p2.x - p1.x;
-			double uy = p2.y - p1.y;
-			double vx = p3.x - p1.x;
-			double vy = p3.y - p1.y;
+			double ux = p2.getX() - p1.getX();
+			double uy = p2.getY() - p1.getY();
+			double vx = p3.getX() - p1.getX();
+			double vy = p3.getY() - p1.getY();
 
 			double dp = ux * vx + uy * vy;
 
@@ -417,101 +370,70 @@ public class MyTriangle extends MyElement {
 
 	/**
 	 * Check if triangle topology is correct / not
-	 * 
+	 *
 	 * @return correct
 	 */
 	public boolean checkTopology() {
 		boolean correct = true;
-
-		// check if we do not have a point twice
-		int j = 0;
-		while ((j < 3) && (correct)) {
-			int foundPoint = 0;
-			for (int k = 0; k < 3; k++) {
-				if (points[j] == points[k])
-					foundPoint++;
-			}
-			if (foundPoint != 1)
-				correct = false;
-			j++;
-		}
+		int i, j, k;
 
 		// check if we do not have an edge twice
-		j = 0;
-		while ((j < 3) && (correct)) {
+		i = 0;
+		while ((i < 3) && (correct)) {
 			int foundEdge = 0;
-			for (int k = 0; k < 3; k++) {
-				if (edges[j] == edges[k])
+			for (j = 0; j < 3; j++) {
+				if (edges[i] == edges[j])
 					foundEdge++;
 			}
 			if (foundEdge != 1)
 				correct = false;
-			j++;
+			i++;
 		}
 
 		// check if each edge is connected to the triangle
-		j = 0;
-		while ((j < 3) && (correct)) {
+		i = 0;
+		while ((i < 3) && (correct)) {
 			int foundEdge = 0;
-			if (edges[j].left == this)
+			if (edges[i].left == this)
 				foundEdge++;
-			if (edges[j].right == this)
+			if (edges[i].right == this)
 				foundEdge++;
+
 			if (foundEdge != 1)
 				correct = false;
-			j++;
+			i++;
 		}
 
-		// Check if each edge is connected to a point of the triangle
-		j = 0;
-		while ((j < 3) && (correct)) {
-			MyEdge aEdge = edges[j];
-			int foundPoint = 0;
-			for (int k = 0; k < 3; k++) {
-				if (aEdge.getStart() == points[k])
-					foundPoint++;
-				else if (aEdge.getEnd() == points[k])
-					foundPoint++;
-			}
-			if (foundPoint != 2)
-				correct = false;
-			j++;
-		}
-
-		// check if each edge is connected on the right side of the triangle
-		j = 0;
-		if (false)
-			while ((j < 3) && (correct)) {
-				MyPoint start = edges[j].getStart();
-				MyPoint end = edges[j].getEnd();
-				boolean found = false;
-				int k = 0;
-				while ((k < 3) && (correct) && (!found)) {
-					if ((start != points[k]) && (end != points[k])) {
-						if (edges[j].isLeft(points[k])) {
-							if (edges[j].left != this)
-								correct = false;
-							if (edges[j].right == this)
-								correct = false;
-						} else {
-							if (edges[j].right != this)
-								correct = false;
-							if (edges[j].left == this)
-								correct = false;
-						}
-						found = true;
-					}
-					k++;
+		// Check if each point in the edges is referenced 2 times
+		MyPoint aPoint;
+		i = 0;
+		while ((i < 3) && (correct)) {
+			MyEdge anEdge = edges[i];
+			for (j = 0; j < 2; j++) {
+				if (j == 0)
+					aPoint = anEdge.getStart();
+				else
+					aPoint = anEdge.getEnd();
+				int foundPoint = 0;
+				for (k = 0; k < 3; k++) {
+					if (edges[k].getStart() == aPoint)
+						foundPoint++;
+					if (edges[k].getEnd() == aPoint)
+						foundPoint++;
 				}
-				j++;
+				if (foundPoint != 2)
+					correct = false;
 			}
+			i++;
+		}
+
 		return correct;
 	}
 
 	/**
-	 * Check if the triangles respects Delaunay constraints. the parameter
+	 * Check if the triangles respects Delaunay's constraints. the parameter
 	 * thePoints is the list of points of the mesh
-	 * 
+	 *
 	 * @param thePoints
 	 * @return
 	 */
@@ -520,9 +442,11 @@ public class MyTriangle extends MyElement {
 		ListIterator<MyPoint> iterPoint = thePoints.listIterator();
 		while ((iterPoint.hasNext()) && (correct)) {
 			MyPoint aPoint = iterPoint.next();
-			if ((aPoint != points[0]) && (aPoint != points[1])
-					&& (aPoint != points[2])) {
-				if (inCircle(aPoint) == 1)
+			if (inCircle(aPoint) == 1) {
+				// Check if it is one of the points of the triangle
+				if ((aPoint != getPoint(0))
+						&& (aPoint != getPoint(1))
+						&& (aPoint != getPoint(2)))
 					correct = false;
 			}
 		}
@@ -539,7 +463,7 @@ public class MyTriangle extends MyElement {
 
 	/**
 	 * Check if the triangle is flat or not
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public boolean isFlatSlope() {
@@ -556,7 +480,7 @@ public class MyTriangle extends MyElement {
 
 	/**
 	 * Get the point of the triangle that does not belong to the edge
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	protected MyPoint getAlterPoint(MyEdge anEdge) {
@@ -566,86 +490,123 @@ public class MyTriangle extends MyElement {
 	}
 
 	/**
-	 * Get the point of the triangle that does not belong to the 2 points
-	 * 
-	 * @return isFlat
+	 * Get the point of the triangle that is not one of the 2 points
+	 *
+	 * @return alterPoint
 	 */
-	protected MyPoint getAlterPoint(MyPoint start, MyPoint end) {
+	protected MyPoint getAlterPoint(MyPoint p1, MyPoint p2) {
 		MyPoint alterPoint = null;
 
-		int i = 0;
-		while ((i < 3) && (alterPoint == null)) {
-			if ((points[i] != start) && (points[i] != end))
-				alterPoint = points[i];
-			else
-				i++;
+		if (p1 == edges[0].getStart()) {
+			if (p2 == edges[0].getEnd()) {
+				alterPoint = edges[1].getStart();
+				if ((alterPoint== p1) || (alterPoint==p2))
+					alterPoint = edges[1].getEnd();
+			}
+			else {
+				alterPoint = edges[0].getEnd();
+			}
 		}
+		else if (p2 == edges[0].getStart()) {
+			if (p1 == edges[0].getEnd()) {
+				alterPoint = edges[1].getStart();
+				if ((alterPoint== p1) || (alterPoint==p2))
+					alterPoint = edges[1].getEnd();
+			}
+			else {
+				alterPoint = edges[0].getEnd();
+			}
+		}
+		else
+			alterPoint = edges[0].getStart();
 
 		return alterPoint;
 	}
 
 	/**
 	 * Get the edge of the triangle that includes the two point
-	 * 
+	 *
 	 * @return alterEdge
 	 */
 	protected MyEdge getEdgeFromPoints(MyPoint p1, MyPoint p2) {
 		MyEdge alterEdge = null;
+		MyPoint test1, test2;
 		int i = 0;
 		while ((i < 3) && (alterEdge == null)) {
 			MyEdge testEdge = edges[i];
-			if ((testEdge.getStart() == p1) && (testEdge.getEnd() == p2))
+			test1 = testEdge.getStart();
+			test2 = testEdge.getEnd();
+			if ((test1 == p1) && (test2 == p2))
 				alterEdge = testEdge;
-			else if ((testEdge.getStart() == p2) && (testEdge.getEnd() == p1))
+			else if ((test1 == p2) && (test2 == p1))
 				alterEdge = testEdge;
-			i++;
+			else
+				i++;
 		}
 
 		return alterEdge;
 	}
 
 	/**
+	 * Check if the point belongs to the triangle
+	 *
+	 * @return belongs
+	 */
+	public boolean belongsTo(MyPoint aPoint) {
+		boolean found = false;
+		MyEdge anEdge = this.getEdge(0);
+		if (anEdge.getStart() == aPoint)
+			found = true;
+		else if (anEdge.getEnd() == aPoint)
+			found = true;
+		else {
+			anEdge = this.getEdge(1);
+			if (anEdge.getStart() == aPoint)
+				found = true;
+			else if (anEdge.getEnd() == aPoint)
+				found = true;
+		}
+
+		return found;
+	}
+
+	/**
 	 * Get the barycenter of the triangle
-	 * 
+	 *
 	 * @return isFlat
 	 */
 	public MyPoint getBarycenter() {
 		double x = 0, y = 0, z = 0;
+		MyPoint aPoint;
 		for (int i = 0; i < 3; i++) {
-			x += points[i].x;
-			y += points[i].y;
-			z += points[i].z;
-		}
-		x /= 3;
-		y /= 3;
-		z /= 3;
-		return new MyPoint(x, y, z);
-	}
+			aPoint = getPoint(i);
 
-	/**
-	 * Get the Circuncenter of the triangle
-	 * 
-	 * @return coord
-	 */
-	public Coordinate getCircuncenter() {
-		return new Coordinate(x_center, y_center, 0.0);
+			x += aPoint.getX();
+			y += aPoint.getY();
+			z += aPoint.getZ();
+		}
+		x /= 3.0;
+		y /= 3.0;
+		z /= 3.0;
+		
+		return new MyPoint(x, y, z);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
 		String myString = new String("Triangle : \n");
-		for (int i = 1; i < 3; i++)
-			myString += points[i] + "\n";
+		for (int i = 0; i < 3; i++)
+			myString += getPoint(i).toString() + "\n";
 		return myString;
 	}
 
 	/**
 	 * Set the edge color Must be used only when using package drawing
-	 * 
+	 *
 	 * @param g
 	 */
 	protected void setColor(Graphics g) {
@@ -653,6 +614,10 @@ public class MyTriangle extends MyElement {
 			g.setColor(Color.green);
 		else
 			g.setColor(Color.yellow);
+		
+		if(property==4)//FIXME
+			g.setColor(Color.blue);
+
 	}
 
 	/**
@@ -672,19 +637,23 @@ public class MyTriangle extends MyElement {
 		int[] xPoints, yPoints;
 		xPoints = new int[3];
 		yPoints = new int[3];
+		MyPoint p1, p2, p3;
+		p1 = getPoint(0);
+		p2 = getPoint(1);
+		p3 = getPoint(2);
 
-		xPoints[0] = (int) ((points[0].x - minX) * scaleX + decalageX);
-		xPoints[1] = (int) ((points[1].x - minX) * scaleX + decalageX);
-		xPoints[2] = (int) ((points[2].x - minX) * scaleX + decalageX);
+		xPoints[0] = (int) ((p1.getX() - minX) * scaleX + decalageX);
+		xPoints[1] = (int) ((p2.getX() - minX) * scaleX + decalageX);
+		xPoints[2] = (int) ((p3.getX() - minX) * scaleX + decalageX);
 
-		yPoints[0] = (int) ((points[0].y - minY) * scaleY + decalageY);
-		yPoints[1] = (int) ((points[1].y - minY) * scaleY + decalageY);
-		yPoints[2] = (int) ((points[2].y - minY) * scaleY + decalageY);
+		yPoints[0] = (int) ((p1.getY() - minY) * scaleY + decalageY);
+		yPoints[1] = (int) ((p2.getY() - minY) * scaleY + decalageY);
+		yPoints[2] = (int) ((p3.getY() - minY) * scaleY + decalageY);
 
+		setColor(g);
 		g.fillPolygon(xPoints, yPoints, 3);
 
 		for (int i = 0; i < 3; i++) {
-			edges[i].setColor(g);
 			edges[i].displayObject(g, decalageX, decalageY, minX, minY, scaleX,
 					scaleY);
 		}
@@ -693,7 +662,7 @@ public class MyTriangle extends MyElement {
 	/**
 	 * Display the triangle in a JPanel Must be used only when using package
 	 * drawing
-	 * 
+	 *
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY

@@ -3,12 +3,6 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import org.jdelaunay.delaunay.MyDrawing;
-import org.jdelaunay.delaunay.MyEdge;
-import org.jdelaunay.delaunay.MyMesh;
-import org.jdelaunay.delaunay.MyPoint;
-import org.jdelaunay.delaunay.MyTriangle;
-
 import junit.framework.TestCase;
 
 public class BaseTest extends TestCase {
@@ -52,7 +46,7 @@ public class BaseTest extends TestCase {
 		LinkedList<MyTriangle> triangles = aMesh.getTriangles();
 		ArrayList<Integer> gids = new ArrayList<Integer>();
 		for (MyTriangle myTriangle : triangles) {
-			int gid = myTriangle.getGID();
+			int gid = myTriangle.getGid();
 
 			if (gids.contains(gid) && gid > 0) {
 				assertTrue(false);
@@ -65,7 +59,7 @@ public class BaseTest extends TestCase {
 		gids = new ArrayList<Integer>();
 
 		for (MyPoint myPoint : points) {
-			int gid = myPoint.getGID();
+			int gid = myPoint.getGid();
 
 			if (gids.contains(gid) && gid > 0) {
 				assertTrue(false);
@@ -78,7 +72,7 @@ public class BaseTest extends TestCase {
 		gids = new ArrayList<Integer>();
 
 		for (MyEdge myEdge : edgs) {
-			int gid = myEdge.getGID();
+			int gid = myEdge.getGid();
 
 			if (gids.contains(gid) && gid > 0) {
 				assertTrue(false);

@@ -5,36 +5,33 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
  * @date 2009-01-12
- * @version 1.0
+ * @revision 2010-05-14
+ * @version 1.1
  */
 
 import java.awt.*;
 
 public class MyEdge extends MyElement {
-
-	protected MyPoint[] point;
+	protected MyPoint start, end;
 	protected MyTriangle left, right;
+
 	protected byte marked;
 	protected byte outsideMesh;
 
-	/*
-	private double slopeInDegree;
-	private Coordinate get3DVector;
-*/
 	static final int UPSLOPE = -1;
 	static final int DOWNSLOPE = 1;
 	static final int FLATSLOPE = 0;
 
-	
 	/**
 	 * Initialize data
 	 */
 	private void init() {
-		point = new MyPoint[2];
-		left = null;
-		right = null;
-		marked = 0;
-		outsideMesh = 0;
+		this.start = null;
+		this.end = null;
+		this.left = null;
+		this.right = null;
+		this.marked = 0;
+		this.outsideMesh = 0;
 	}
 
 	/**
@@ -48,60 +45,30 @@ public class MyEdge extends MyElement {
 	/**
 	 * Generate an edge from two points
 	 *
-	 * @param s
-	 * @param e
+	 * @param start
+	 * @param end
 	 */
-	public MyEdge(MyPoint s, MyPoint e) {
+	public MyEdge(MyPoint start, MyPoint end) {
 		super();
 		init();
-		point[0] = s;
-		point[1] = e;
+		this.start = start;
+		this.end = end;
 	}
 
 	/**
 	 * Generate an edge from another edge
 	 *
-	 * @param _ed
+	 * @param ed
 	 */
-	public MyEdge(MyEdge _ed) {
-		super((MyElement)_ed);
+	public MyEdge(MyEdge ed) {
+		super((MyElement)ed);
 		init();
-		for (int i = 0; i < 2; i++) {
-			point[i] = _ed.point[i];
-		}
-		left = _ed.left;
-		right = _ed.right;
-		marked = _ed.marked;
-		outsideMesh = _ed.outsideMesh;
-	}
-
-	/**
-	 * Generate a typed edge from two points
-	 *
-	 * @param s
-	 * @param e
-	 * @param _type
-	 */
-	public MyEdge(MyPoint s, MyPoint e, int _type) {
-		super(_type);
-		init();
-		point[0] = s;
-		point[1] = e;
-	}
-
-	/**
-	 * Generate a typed edge from two points
-	 *
-	 * @param s
-	 * @param e
-	 * @param _type
-	 * @param _gid
-	 */
-	public MyEdge(MyPoint s, MyPoint e, int _type, int _gid) {
-		super(_type, _gid);
-		init();
-		point[0] = s;
-		point[1] = e;
+		this.start = ed.start;
+		this.end = ed.end;
+		this.left = ed.left;
+		this.right = ed.right;
+		this.marked = ed.marked;
+		this.outsideMesh = ed.outsideMesh;
 	}
 
 	/**
@@ -110,9 +77,9 @@ public class MyEdge extends MyElement {
 	 */
 	public MyPoint point(int i) {
 		if (i == 0)
-			return point[0];
+			return this.start;
 		else
-			return point[1];
+			return this.end;
 	}
 
 	/**
@@ -121,7 +88,7 @@ public class MyEdge extends MyElement {
 	 * @return leftTriangle
 	 */
 	public MyTriangle getLeft() {
-		return left;
+		return this.left;
 	}
 
 	/**
@@ -130,7 +97,7 @@ public class MyEdge extends MyElement {
 	 * @return rightTriangle
 	 */
 	public MyTriangle getRight() {
-		return right;
+		return this.right;
 	}
 
 	/**
@@ -139,7 +106,7 @@ public class MyEdge extends MyElement {
 	 * @return leftTriangle
 	 */
 	public void setLeft(MyTriangle aTriangle) {
-		 left=aTriangle;
+		this.left=aTriangle;
 	}
 
 	/**
@@ -148,7 +115,7 @@ public class MyEdge extends MyElement {
 	 * @return rightTriangle
 	 */
 	public void setRight(MyTriangle aTriangle) {
-		 right=aTriangle;
+		this.right=aTriangle;
 	}
 	
 	/**
@@ -157,7 +124,7 @@ public class MyEdge extends MyElement {
 	 * @return end
 	 */
 	public MyPoint getStart() {
-		return point[0];
+		return this.start;
 	}
 
 	/**
@@ -166,7 +133,7 @@ public class MyEdge extends MyElement {
 	 * @return end
 	 */
 	public MyPoint getEnd() {
-		return point[1];
+		return this.end;
 	}
 
 	/**
@@ -175,7 +142,7 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setStart(MyPoint p) {
-		point[0] = p;
+		this.start = p;
 	}
 
 	/**
@@ -184,7 +151,7 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setEnd(MyPoint p) {
-		point[1] = p;
+		this.end = p;
 	}
 
 	/**
@@ -192,7 +159,7 @@ public class MyEdge extends MyElement {
 	 * @return marked
 	 */
 	public boolean isMarked() {
-		return (marked != 0);
+		return (this.marked != 0);
 	}
 
 	/**
@@ -200,10 +167,11 @@ public class MyEdge extends MyElement {
 	 * @param marked
 	 */
 	public void setMarked(boolean marked) {
+
 		if (marked)
 			this.marked = 1;
 		else
-			this.marked=0;
+			this.marked = 0;
 	}
 
 	
@@ -212,7 +180,7 @@ public class MyEdge extends MyElement {
 	 * @return outsideMesh
 	 */
 	public boolean isOutsideMesh() {
-		return (outsideMesh != 0);
+		return (this.outsideMesh != 0);
 	}
 
 	/**
@@ -236,17 +204,17 @@ public class MyEdge extends MyElement {
 	 */
 	public int intersects(MyPoint p1, MyPoint p2) {
 		int result = 0;
-		MyPoint p3 = point[0];
-		MyPoint p4 = point[1];
+		MyPoint p3 = this.start;
+		MyPoint p4 = this.end;
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
 
-		double a1 = p2.x - p1.x;
-		double b1 = p4.x - p3.x;
-		double c1 = p3.x - p1.x;
-		double a2 = p2.y - p1.y;
-		double b2 = p4.y - p3.y;
-		double c2 = p3.y - p1.y;
+		double a1 = p2.getX() - p1.getX();
+		double b1 = p4.getX() - p3.getX();
+		double c1 = p3.getX() - p1.getX();
+		double a2 = p2.getY() - p1.getY();
+		double b2 = p4.getY() - p3.getY();
+		double c2 = p3.getY() - p1.getY();
 		double t1, t2;
 		double epsilon = MyTools.epsilon;
 
@@ -269,24 +237,24 @@ public class MyEdge extends MyElement {
 
 		} else {
 			// Check if p3 is between p1 and p2
-			if (Math.abs(p2.x - p1.x) > epsilon)
-				t1 = (p3.x - p1.x) / (p2.x - p1.x);
+			if (Math.abs(p2.getX() - p1.getX()) > epsilon)
+				t1 = (p3.getX() - p1.getX()) / (p2.getX() - p1.getX());
 			else
-				t1 = (p3.y - p1.y) / (p2.y - p1.y);
+				t1 = (p3.getY() - p1.getY()) / (p2.getY() - p1.getY());
 
 			if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 				// Check if p4 is between p1 and p2
-				if (Math.abs(p2.x - p1.x) > epsilon)
-					t1 = (p4.x - p1.x) / (p2.x - p1.x);
+				if (Math.abs(p2.getX() - p1.getX()) > epsilon)
+					t1 = (p4.getX() - p1.getX()) / (p2.getX() - p1.getX());
 				else
-					t1 = (p4.y - p1.y) / (p2.y - p1.y);
+					t1 = (p4.getY() - p1.getY()) / (p2.getY() - p1.getY());
 
 				if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 					// Check if p1 is between p3 and p4
-					if (Math.abs(p4.x - p3.x) > epsilon)
-						t1 = (p1.x - p3.x) / (p4.x - p3.x);
+					if (Math.abs(p4.getX() - p3.getX()) > epsilon)
+						t1 = (p1.getX() - p3.getX()) / (p4.getX() - p3.getX());
 					else
-						t1 = (p1.y - p3.y) / (p4.y - p3.y);
+						t1 = (p1.getY() - p3.getY()) / (p4.getY() - p3.getY());
 
 					if ((-epsilon > t1) || (t1 > 1 + epsilon))
 						// we do not check for p2 because it is now impossible
@@ -311,18 +279,18 @@ public class MyEdge extends MyElement {
 	 */
 	public MyPoint getIntersection(MyPoint p1, MyPoint p2) {
 		MyPoint intersection = null;
-		MyPoint p3 = point[0];
-		MyPoint p4 = point[1];
+		MyPoint p3 = this.start;
+		MyPoint p4 = this.end;
 
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
 
-		double a1 = p2.x - p1.x;
-		double b1 = p4.x - p3.x;
-		double c1 = p3.x - p1.x;
-		double a2 = p2.y - p1.y;
-		double b2 = p4.y - p3.y;
-		double c2 = p3.y - p1.y;
+		double a1 = p2.getX() - p1.getX();
+		double b1 = p4.getX() - p3.getX();
+		double c1 = p3.getX() - p1.getX();
+		double a2 = p2.getY() - p1.getY();
+		double b2 = p4.getY() - p3.getY();
+		double c2 = p3.getY() - p1.getY();
 		double epsilon = MyTools.epsilon;
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
@@ -350,10 +318,10 @@ public class MyEdge extends MyElement {
 					// y = y2 t1 + (1 - t1) y1
 					// z = z2 t1 + (1 - t1) z1
 					// z = z4 t2 + (1 - t2) z3
-					double x = p2.x * t1 + (1 - t1) * p1.x;
-					double y = p2.y * t1 + (1 - t1) * p1.y;
-					// double z = p2.z * t1 + (1 - t1) * p1.z;
-					double z = p4.z * t2 + (1 - t2) * p3.z;
+					double x = p2.getX() * t1 + (1 - t1) * p1.getX();
+					double y = p2.getY() * t1 + (1 - t1) * p1.getY();
+					// double z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
+					double z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
 
 					intersection = new MyPoint(x, y, z);
 
@@ -380,7 +348,7 @@ public class MyEdge extends MyElement {
 	 * @return intersection
 	 */
 	public MyPoint getIntersection(MyEdge anEdge) {
-		return getIntersection(anEdge.point[0], anEdge.point[1]);
+		return getIntersection(anEdge.start, anEdge.end);
 	}
 
 	/**
@@ -393,8 +361,8 @@ public class MyEdge extends MyElement {
 	public boolean isInside(MyPoint p) {
 		boolean isInside = false;
 
-		MyPoint p1 = point[0];
-		MyPoint p2 = point[1];
+		MyPoint p1 = this.start;
+		MyPoint p2 = this.end;
 
 		// x = x2 t1 + (1 - t1) x1
 		// y = y2 t1 + (1 - t1) y1
@@ -407,16 +375,16 @@ public class MyEdge extends MyElement {
 		// t1 = (y - y1) / (y2 - y1)
 		double t1, t2;
 
-		double a1 = p2.x - p1.x;
-		double c1 = p.x - p1.x;
-		double a2 = p2.y - p1.y;
-		double c2 = p.y - p1.y;
+		double a1 = p2.getX() - p1.getX();
+		double c1 = p.getX() - p1.getX();
+		double a2 = p2.getY() - p1.getY();
+		double c2 = p.getY() - p1.getY();
 		double epsilon = MyTools.epsilon;
 
 		if (Math.abs(a1) > epsilon) {
 			t1 = c1 / a1;
 			if ((-epsilon < t1) && (t1 < 1 + epsilon)) {
-				// p.x is between p1.x and p2.x
+				// p.getX() is between p1.getX() and p2.getX()
 				if (Math.abs(a2) > epsilon) {
 					t2 = c2 / a2;
 					if ((-epsilon < t2) && (t2 < 1 + epsilon)
@@ -424,18 +392,18 @@ public class MyEdge extends MyElement {
 						// same t value => ok
 						isInside = true;
 				} else if (Math.abs(c2) < epsilon) {
-					// p1.y, p2.y and p.y are the same
+					// p1.getY(), p2.getY() and p.getY() are the same
 					isInside = true;
 				}
 			}
 		} else if (Math.abs(c1) < epsilon) {
-			// p1.x, p2.x and p.x are the same
+			// p1.getX(), p2.getX() and p.getX() are the same
 			if (Math.abs(a2) > epsilon) {
 				t2 = c2 / a2;
 				if ((-epsilon < t2) && (t2 < 1 + epsilon))
 					isInside = true;
 			} else if (Math.abs(c2) < epsilon) {
-				// p1.y, p2.y and p.y are also the same
+				// p1.getY(), p2.getY() and p.getY() are also the same
 				isInside = true;
 			}
 
@@ -454,9 +422,9 @@ public class MyEdge extends MyElement {
 	public boolean isExtremity(MyPoint p) {
 		boolean isExtremity = false;
 
-		if (point[0].squareDistance_2D(p) < MyTools.epsilon)
+		if (this.start.squareDistance_2D(p) < MyTools.epsilon)
 			isExtremity = true;
-		else if (point[1].squareDistance_2D(p) < MyTools.epsilon)
+		else if (this.end.squareDistance_2D(p) < MyTools.epsilon)
 			isExtremity = true;
 		return isExtremity;
 	}
@@ -468,30 +436,15 @@ public class MyEdge extends MyElement {
 	 * @return
 	 */
 	public boolean isLeft(MyPoint p) {
-		MyPoint p1 = point[0];
-		MyPoint p2 = point[1];
-		double ux = p2.x - p1.x;
-		double uy = p2.y - p1.y;
-		double vx = p.x - p1.x;
-		double vy = p.y - p1.y;
+		MyPoint p1 = this.start;
+		MyPoint p2 = this.end;
+		double ux = p2.getX() - p1.getX();
+		double uy = p2.getY() - p1.getY();
+		double vx = p.getX() - p1.getX();
+		double vy = p.getY() - p1.getY();
 		double res = ux * vy - uy * vx;
 
 		return res > 0;
-	}
-
-	/**
-	 * swap the 2 points of the edge
-	 */
-	public void swap() {
-		// swap points
-		MyPoint aPoint = point[1];
-		point[1] = point[0];
-		point[0] = aPoint;
-
-		// swap triangles
-		MyTriangle aTriangle = left;
-		left = right;
-		right = aTriangle;
 	}
 
 	/**
@@ -501,14 +454,30 @@ public class MyEdge extends MyElement {
 	 * @return
 	 */
 	public boolean isRight(MyPoint p) {
-		MyPoint p1 = point[0];
-		MyPoint p2 = point[1];
-		double ux = p2.x - p1.x;
-		double uy = p2.y - p1.y;
-		double vx = p.x - p1.x;
-		double vy = p.y - p1.y;
+		MyPoint p1 = this.start;
+		MyPoint p2 = this.end;
+		double ux = p2.getX() - p1.getX();
+		double uy = p2.getY() - p1.getY();
+		double vx = p.getX() - p1.getX();
+		double vy = p.getY() - p1.getY();
 		double res = ux * vy - uy * vx;
 		return res < 0;
+	}
+
+	/**
+	 * Swap the 2 points of the edge
+	 * also swap connected triangles
+	 */
+	public void swap() {
+		// swap points
+		MyPoint aPoint = this.end;
+		this.end = this.start;
+		this.start = aPoint;
+
+		// swap triangles
+		MyTriangle aTriangle = left;
+		left = right;
+		right = aTriangle;
 	}
 
 	/**
@@ -518,7 +487,7 @@ public class MyEdge extends MyElement {
 	 */
 	public boolean isFlatSlope() {
 		boolean isFlat = true;
-		if (Math.abs(point[0].z - point[1].z) > MyTools.epsilon)
+		if (Math.abs(this.start.getZ() - this.end.getZ()) > MyTools.epsilon)
 			isFlat = false;
 		return isFlat;
 	}
@@ -529,27 +498,21 @@ public class MyEdge extends MyElement {
 	 * @return isFlat
 	 */
 	public MyPoint getBarycenter() {
-		double x = 0, y = 0, z = 0;
-		for (int i = 0; i < 2; i++) {
-			x += point[i].x;
-			y += point[i].y;
-			z += point[i].z;
-		}
-		x /= 2;
-		y /= 2;
-		z /= 2;
+		double x = (this.start.getX()+this.end.getX())/2.0;
+		double y = (this.start.getY()+this.end.getY())/2.0;
+		double z = (this.start.getZ()+this.end.getZ())/2.0;
 		return new MyPoint(x, y, z);
 	}
 
 	/**
-	 * Check if the point p is on the right
+	 * Get edge hashCode as min hasCode of its points
 	 *
 	 * @param p
 	 * @return
 	 */
 	public int hashCode() {
-		MyPoint p1 = point[0];
-		MyPoint p2 = point[1];
+		MyPoint p1 = this.start;
+		MyPoint p2 = this.end;
 		int hashValue = 0;
 
 		int v1 = p1.hashCode();
@@ -569,7 +532,7 @@ public class MyEdge extends MyElement {
 	 */
 	protected void setColor(Graphics g) {
 		((Graphics2D) g).setStroke(new BasicStroke(1));
-		if (property_type > 0 ) {
+		if (getProperty() != 0 ) {
 			g.setColor(Color.red);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 		} else if (marked == 1) {
@@ -592,14 +555,15 @@ public class MyEdge extends MyElement {
 	 */
 	protected void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
-		g.drawLine((int) ((point[0].x - minX) * scaleX + decalageX), decalageY
-				+ (int) ((point[0].y - minY) * scaleY),
-				(int) ((point[1].x - minX) * scaleX + decalageX), decalageY
-						+ (int) ((point[1].y - minY) * scaleY));
+		setColor(g);
+		g.drawLine((int) ((this.start.getX() - minX) * scaleX + decalageX), decalageY
+				+ (int) ((this.start.getY() - minY) * scaleY),
+				(int) ((this.end.getX() - minX) * scaleX + decalageX), decalageY
+						+ (int) ((this.end.getY() - minY) * scaleY));
 		if (marked > 0) {
-			point[0].displayObject(g, decalageX, decalageY, minX, minY, scaleX,
+			this.start.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
 					scaleY);
-			point[1].displayObject(g, decalageX, decalageY, minX, minY, scaleX,
+			this.end.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
 					scaleY);
 		}
 	}
@@ -622,15 +586,15 @@ public class MyEdge extends MyElement {
 		if (pente == null) {
 			Coordinate d = new Coordinate();
 			Geometry g = this.geom;
-			d.x = g.getCoordinates()[1].x - g.getCoordinates()[0].x;
-			d.y = g.getCoordinates()[1].y - g.getCoordinates()[0].y;
-			d.z = g.getCoordinates()[1].z - g.getCoordinates()[0].z;
-			double norme = Math.sqrt(d.x * d.x + d.y * d.y + d.z * d.z);
+			d.getX() = g.getCoordinates()[1].getX() - g.getCoordinates()[0].getX();
+			d.getY() = g.getCoordinates()[1].getY() - g.getCoordinates()[0].getY();
+			d.getZ() = g.getCoordinates()[1].getZ() - g.getCoordinates()[0].getZ();
+			double norme = Math.sqrt(d.getX() * d.getX() + d.getY() * d.getY() + d.getZ() * d.getZ());
 			// normage du vecteur
 			if (norme > 0) {
-				d.x = d.x / norme;
-				d.y = d.y / norme;
-				d.z = d.z / norme;
+				d.getX() = d.getX() / norme;
+				d.getY() = d.getY() / norme;
+				d.getZ() = d.getZ() / norme;
 			}
 			pente = d;
 		}
@@ -641,9 +605,9 @@ public class MyEdge extends MyElement {
 */
 	public int getGradient() {
 		int gradient;
-		if (getStart().z > getEnd().z) {
+		if (getStart().getZ() > getEnd().getZ()) {
 			gradient = MyEdge.DOWNSLOPE;
-		} else if (getStart().z < getEnd().z) {
+		} else if (getStart().getZ() < getEnd().getZ()) {
 			gradient = MyEdge.UPSLOPE;
 		} else {
 			gradient = MyEdge.FLATSLOPE;

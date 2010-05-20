@@ -1,6 +1,6 @@
 package org.jdelaunay.delaunay;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class MyTools {
 
@@ -42,7 +42,7 @@ public class MyTools {
 		j = max_index;
 		enreg_ref = (max_index + min_index) / 2;
 		anElement = (MyElement)elements.get(enreg_ref);
-		cle_ref = anElement.getGID();
+		cle_ref = anElement.getGid();
 		do {
 			// first : increasing index
 			found = false;
@@ -51,7 +51,7 @@ public class MyTools {
 					found = true;
 				else {
 					anElement = (MyElement)elements.get(i);
-					valGid = anElement.getGID();
+					valGid = anElement.getGid();
 					if (valGid > cle_ref)
 						found = true;
 					else
@@ -65,7 +65,7 @@ public class MyTools {
 					found = true;
 				else {
 					anElement = (MyElement)elements.get(j);
-					valGid = anElement.getGID();
+					valGid = anElement.getGid();
 					if (valGid <= cle_ref)
 						found = true;
 					else
@@ -354,6 +354,50 @@ public class MyTools {
 			// if right side is not empty
 			quickSort_Edges(edges, i, max_index, switchPoints);
 		}
+	}
+
+	/**
+	 * Linear Z interpolation
+	 * 
+	 * @param p1
+	 * @param p2
+	 * @param aPoint
+	 * @return
+	 */
+	public static double interpolateZ(MyPoint p1, MyPoint p2, MyPoint aPoint) {
+		double D = p1.squareDistance(p2);
+		double Z = p2.getZ() - p1.getZ();
+
+		double d = aPoint.squareDistance(p1);
+		double factor = d / D;
+		return p1.getZ() + (factor * Z);
+
+	}
+
+	/**
+	 * Check if the edge already exists returns null if it doesn't
+	 * 
+	 * @param p1
+	 * @param p2
+	 * @param EdgeList
+	 * @return theEdge
+	 */
+	protected static MyEdge checkTwoPointsEdge(MyPoint p1, MyPoint p2,
+			LinkedList<MyEdge> EdgeList) {
+		// Check if the two points already lead to an existing edge.
+		// If the edge exists it must be in the non-processed edges
+		MyEdge theEdge = null;
+		MyPoint test1, test2;
+		ListIterator<MyEdge> iter1 = EdgeList.listIterator();
+		while (iter1.hasNext() && (theEdge == null)) {
+			MyEdge anEdge = iter1.next();
+			test1 = anEdge.getStart();
+			test2 = anEdge.getEnd();
+			if (((test1 == p1) && (test2 == p2))
+					|| ((test1 == p2) && (test2 == p1)))
+				theEdge = anEdge;
+		}
+		return theEdge;
 	}
 
 }

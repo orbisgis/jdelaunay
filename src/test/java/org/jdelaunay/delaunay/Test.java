@@ -1,8 +1,5 @@
 package org.jdelaunay.delaunay;
 
-import java.util.ArrayList;
-
-import org.jdelaunay.delaunay.*;
 
 public class Test {
 
@@ -12,21 +9,17 @@ public class Test {
 	 */
 	public static void main(String[] args) throws DelaunayError {
 		MyMesh aMesh = new MyMesh();
-		Delaunay testDelaunay = new Delaunay(aMesh);
-		testDelaunay.setPrecision(1.0e-3);
-		testDelaunay.setVerbose(true);
+		aMesh.setPrecision(1.0e-3);
+		aMesh.setVerbose(true);
 
 		aMesh.setMax(1300, 700);
-		// aMesh.readMesh("test.txt");
-		aMesh.setRandomPoints(90000);
+		// aMesh.readMesh();
+		aMesh.setRandomPoints(20000);
+		//aMesh.setRandomEdges(2);
 
-//		aMesh.setRandomEdges(2);
-		// aMesh.setDisplayCircles(true);
-
-		aMesh.setStart();
 		try {
 			// process triangularization
-			testDelaunay.processDelaunay();
+			aMesh.processDelaunay();
 
 			// testDelaunay.removeFlatTriangles();
 
@@ -37,14 +30,13 @@ public class Test {
 		} catch (DelaunayError e) {
 			e.printStackTrace();
 		}
-		aMesh.setEnd();
 		// aMesh.saveMesh();
 
 		MyDrawing aff2 = new MyDrawing();
 		aff2.add(aMesh);
 		aMesh.setAffiche(aff2);
 
-		aMesh.saveMeshAsXML();
+		//aMesh.saveMesh();
 		// aMesh.VRMLexport();
 	}
 }

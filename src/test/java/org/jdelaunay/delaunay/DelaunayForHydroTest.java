@@ -1,8 +1,9 @@
 package org.jdelaunay.delaunay;
 
-import java.util.*;
-import org.jdelaunay.delaunay.*;
-import org.jhydrocell.hydronetwork.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import org.jhydrocell.hydronetwork.MyHydroNetwork;
 
 
 public class DelaunayForHydroTest extends BaseTest {
@@ -16,13 +17,12 @@ public class DelaunayForHydroTest extends BaseTest {
 	public void testRemoveFlatTriangles() throws DelaunayError {
 
 		MyMesh aMesh = new MyMesh();
-		Delaunay testDelaunay = new Delaunay(aMesh);
-		testDelaunay.setPrecision(1.0e-3);
-		testDelaunay.setVerbose(true);
+		aMesh.setPrecision(1.0e-3);
+		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
 		aMesh.setStart();
 		aMesh.setMax(1300, 700);
-		testDelaunay.processDelaunay();
+		aMesh.processDelaunay();
 
 		LinkedList<MyTriangle> triangles = aMesh.getTriangles();
 
@@ -35,7 +35,7 @@ public class DelaunayForHydroTest extends BaseTest {
 		}
 
 		assertTrue(nbFlat > 0);
-		testDelaunay.removeFlatTriangles();
+		aMesh.removeFlatTriangles();
 		triangles = aMesh.getTriangles();
 
 		nbFlat = 0;
@@ -53,14 +53,13 @@ public class DelaunayForHydroTest extends BaseTest {
 	public void testEdgesMorphologicalClassification() throws DelaunayError {
 
 		MyMesh aMesh = new MyMesh();
-		Delaunay testDelaunay = new Delaunay(aMesh);
-		MyHydroNetwork HydroNetwork = new MyHydroNetwork(testDelaunay);
-		testDelaunay.setPrecision(1.0e-3);
-		testDelaunay.setVerbose(true);
+		MyHydroNetwork HydroNetwork = new MyHydroNetwork(aMesh);
+		aMesh.setPrecision(1.0e-3);
+		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
 		aMesh.setStart();
 		aMesh.setMax(1300, 700);
-		testDelaunay.processDelaunay();
+		aMesh.processDelaunay();
 		
 		
 		
@@ -70,7 +69,7 @@ public class DelaunayForHydroTest extends BaseTest {
 
 		for (MyEdge myEdge : edges) {
 
-			myEdge.getType();
+			myEdge.getProperty();
 		}
 
 	}

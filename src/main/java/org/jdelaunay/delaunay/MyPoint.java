@@ -5,20 +5,26 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
  * @date 2009-01-12
- * @version 1.0
+ * @revision 2010-05-14
+ * @version 2.0
  */
 
 import java.awt.*;
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyPoint extends MyElement {
-	protected double x, y, z;
+public class MyPoint extends MyElement  {
+	protected Coordinate coord;
 	protected byte marked;
 
-	private void init() {
-		x = 0;
-		y = 0;
-		z = 0;
+	/**
+	 * Initialize point 
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	private void init(double x, double y, double z) {
+		this.coord = new Coordinate(x,y,z);
 		marked = 0;
 	}
 
@@ -27,128 +33,96 @@ public class MyPoint extends MyElement {
 	 */
 	public MyPoint() {
 		super();
-		init();
+		init(0.0,0.0,0.0);
 	}
 
 	/**
-	 * Build a point at coordinates _x, _y, 0.0 with no type
+	 * Build a point at coordinates x, y, 0.0 with no type
 	 * 
-	 * @param _x
-	 * @param _y
+	 * @param x
+	 * @param y
 	 */
-	public MyPoint(double _x, double _y) {
+	public MyPoint(double x, double y) {
 		super();
-		init();
-		x = _x;
-		y = _y;
+		init(x, y, 0.0);
 	}
 
 	/**
-	 * Build a point at coordinates _x, _y, _z with no type
+	 * Build a point at coordinates x, y, z with no type
 	 * 
-	 * @param _x
-	 * @param _y
-	 * @param _z
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
-	public MyPoint(double _x, double _y, double _z) {
+	public MyPoint(double x, double y, double z) {
 		super();
-		init();
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-
-	/**
-	 * Build a point at coordinates _x, _y, _z with a type
-	 * 
-	 * @param _x
-	 * @param _y
-	 * @param _z
-	 * @param _type
-	 */
-	public MyPoint(double _x, double _y, double _z, int _type) {
-		super(_type);
-		init();
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-
-	/**
-	 * Build a point at coordinates _x, _y, _z with a type and a gid
-	 * 
-	 * @param _x
-	 * @param _y
-	 * @param _z
-	 * @param _type
-	 * @param _gid
-	 */
-	public MyPoint(double _x, double _y, double _z, int _type, int _gid) {
-		super(_type, _gid);
-		init();
-		x = _x;
-		y = _y;
-		z = _z;
+		init(x,y,z);
 	}
 
 	/**
 	 * Build a point as a copy of another point
 	 */
-	public MyPoint(MyPoint _pt) {
-		super((MyElement) _pt);
-		init();
-		x = _pt.x;
-		y = _pt.y;
-		z = _pt.z;
+	public MyPoint(MyPoint pt) {
+		super((MyElement) pt);
+		init(pt.coord.x,pt.coord.y,pt.coord.z);
 	}
 
+	/**
+	 * Build a point as a copy of jts Coordinates
+	 */
 	public MyPoint(Coordinate coord) {
 		super();
-		init();
-		x = coord.x;
-		y = coord.y;
-		z = coord.z;
+		init(coord.x,coord.y,coord.z);
 	}
 
 	/**
 	 * Get X coordinate
-	 * 
 	 * @return x
 	 */
 	public double getX() {
-		return x;
+		return this.coord.x;
 	}
 
 	/**
 	 * Get Y coordinate
-	 * 
 	 * @return y
 	 */
 	public double getY() {
-		return y;
+		return this.coord.y;
 	}
 
 	/**
 	 * Get Z coordinate
-	 * 
 	 * @return z
 	 */
 	public double getZ() {
-		return z;
+		return this.coord.z;
 	}
 
 	/**
+	 * Set X coordinate
+	 * @param z
+	 */
+	public void setX(double x) {
+		this.coord.x = x;
+	}
+	/**
+	 * Set Y coordinate
+	 * @param z
+	 */
+	public void setY(double y) {
+		this.coord.y = y;
+	}
+	/**
 	 * Set Z coordinate
-	 * 
 	 * @param z
 	 */
 	public void setZ(double z) {
-		this.z = z;
+		this.coord.z = z;
 	}
 
 	/**
 	 * return true if the point is marked, false otherwise
-	 * 
 	 * @return marked
 	 */
 	public boolean isMarked() {
@@ -157,7 +131,6 @@ public class MyPoint extends MyElement {
 
 	/**
 	 * mark, unmark the point
-	 * 
 	 * @param marked
 	 */
 	public void setMarked(boolean marked) {
@@ -168,12 +141,11 @@ public class MyPoint extends MyElement {
 	}
 
 	/**
-	 * Translate to Coordinate
-	 * 
+	 * return jts Coordinate
 	 * @return
 	 */
 	public Coordinate getCoordinate() {
-		return new Coordinate(x, y, z);
+		return coord;
 	}
 
 	/**
@@ -183,7 +155,7 @@ public class MyPoint extends MyElement {
 	 * @return distance
 	 */
 	public double squareDistance_1D(MyPoint aPoint) {
-		return (x - aPoint.x) * (x - aPoint.x);
+		return (coord.x - aPoint.coord.x) * (coord.x - aPoint.coord.x);
 	}
 
 	/**
@@ -193,7 +165,7 @@ public class MyPoint extends MyElement {
 	 * @return distance
 	 */
 	public double squareDistance_2D(MyPoint aPoint) {
-		return squareDistance(aPoint.x, aPoint.y);
+		return squareDistance(aPoint.coord.x, aPoint.coord.y);
 	}
 
 	/**
@@ -214,7 +186,7 @@ public class MyPoint extends MyElement {
 	 * @return distance
 	 */
 	public double squareDistance(MyPoint aPoint) {
-		return squareDistance(aPoint.x, aPoint.y, aPoint.z);
+		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
 	}
 
 	/**
@@ -225,7 +197,7 @@ public class MyPoint extends MyElement {
 	 * @return distance
 	 */
 	public double squareDistance(double x, double y) {
-		return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y);
+		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y);
 	}
 
 	/**
@@ -237,8 +209,8 @@ public class MyPoint extends MyElement {
 	 * @return distance
 	 */
 	public double squareDistance(double x, double y, double z) {
-		return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y)
-				+ (z - this.z) * (z - this.z);
+		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y)
+				+ (z - this.coord.z) * (z - this.coord.z);
 	}
 
 	/*
@@ -247,7 +219,7 @@ public class MyPoint extends MyElement {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Point [" + x + " " + y + " " + z + "]";
+		return "Point [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
 	}
 
 	/**
@@ -269,8 +241,9 @@ public class MyPoint extends MyElement {
 	 */
 	protected void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
-		g.drawOval((int) ((x - minX) * scaleX + decalageX) - 1,
-				(int) ((y - minY) * scaleY + decalageY) - 1, 1, 1);
+		setColor(g);
+		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
+				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);
 
 		/*
 		 * if (gid > 0) { g.drawString("" + gid, (int) ((x - minX) * scaleX +

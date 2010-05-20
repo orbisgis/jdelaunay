@@ -25,11 +25,9 @@ public class HydroPolygonUtil {
 
 	public HydroPolygonUtil(MyTriangle myTriangle) {
 
-		MyPoint[] points = myTriangle.getPoints();
-
-		Coordinate p1 = points[0].getCoordinate();
-		Coordinate p2 = points[1].getCoordinate();
-		Coordinate p3 = points[2].getCoordinate();
+		Coordinate p1 = myTriangle.getPoint(0).getCoordinate();
+		Coordinate p2 = myTriangle.getPoint(1).getCoordinate();
+		Coordinate p3 = myTriangle.getPoint(2).getCoordinate();
 
 		LinearRing shell = gf.createLinearRing(new Coordinate[] { p1, p2, p3,
 				p1 });
