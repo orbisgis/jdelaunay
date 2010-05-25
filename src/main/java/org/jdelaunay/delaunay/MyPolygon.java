@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class MyPolygon extends MyElement {
-	
+
 	private Polygon polygon;
 	private ArrayList<MyEdge> edges;
-	
-	
+
 	/**
 	 * Generate a polygon.
+	 * 
 	 * @param polygon
 	 */
 	public MyPolygon(Polygon polygon) {
@@ -30,6 +30,7 @@ public class MyPolygon extends MyElement {
 
 	/**
 	 * Generate a polygon with property.
+	 * 
 	 * @param polygon
 	 * @param _property
 	 */
@@ -37,28 +38,40 @@ public class MyPolygon extends MyElement {
 		super(_property);
 		init(polygon);
 	}
-	
 
 	/**
 	 * Initialize data.
+	 * 
 	 * @param polygon
 	 */
-	private void init(Polygon polygon) {		
+	private void init(Polygon polygon) {
 		if (polygon.isEmpty())
 			throw new IllegalArgumentException("Polygon is empty");
-		
-		this.polygon=polygon;
-		
-		edges=new ArrayList<MyEdge>();
-		
-		for( int i=1;i<polygon.getNumPoints();i++)
-		{
-			edges.add(new MyEdge(
-				new MyPoint(polygon.getCoordinates()[i-1]),
-				new MyPoint(polygon.getCoordinates()[i]) 
-				));
+		else {
+			this.polygon = polygon;
+
+			// create edge list
+			edges = new ArrayList<MyEdge>();
+
+			// add edges to the edge list
+			// each point is created one
+			int nbPoints = polygon.getNumPoints();
+			MyPoint lastPoint = null;
+			MyPoint firstPoint = null;
+
+			for (int i = 0; i < nbPoints; i++) {
+				MyPoint aPoint = new MyPoint(polygon.getCoordinates()[i]);
+				if (firstPoint == null)
+					firstPoint = aPoint;
+				if (lastPoint != null) {
+					edges.add(new MyEdge(lastPoint, aPoint));
+				}
+				lastPoint = aPoint;
+			}
+			if ((lastPoint != null) && (lastPoint != firstPoint)) {
+				edges.add(new MyEdge(lastPoint, firstPoint));
+			}
 		}
-		
 	}
 
 	/**
@@ -67,10 +80,10 @@ public class MyPolygon extends MyElement {
 	public Polygon getPolygon() {
 		return polygon;
 	}
-	
-	
+
 	/**
 	 * Get the edges structure.
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getEdges() {
