@@ -21,7 +21,7 @@ public class MyMesh {
 	protected ArrayList<MyEdge> edges;
 	protected LinkedList<MyTriangle> triangles;
 	protected LinkedList<MyPolygon> polygons;
-	
+
 	protected ArrayList<MyEdge> constraintsEdges;
 
 	// bounding box
@@ -94,6 +94,7 @@ public class MyMesh {
 
 	/**
 	 * Tell if delaunay has been applied
+	 * 
 	 * @return
 	 */
 	public boolean isMeshComputed() {
@@ -123,6 +124,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of points in the Mesh
+	 * 
 	 * @return NbPoints
 	 */
 	public int getNbPoints() {
@@ -131,6 +133,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of edges in the Mesh
+	 * 
 	 * @return NbEdges
 	 */
 	public int getNbEdges() {
@@ -139,6 +142,7 @@ public class MyMesh {
 
 	/**
 	 * Get the current number of triangles in the Mesh
+	 * 
 	 * @return NbTriangles
 	 */
 	public int getNbTriangles() {
@@ -147,6 +151,7 @@ public class MyMesh {
 
 	/**
 	 * Get the points structure
+	 * 
 	 * @return points
 	 */
 	public ArrayList<MyPoint> getPoints() {
@@ -155,6 +160,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
+	 * 
 	 * @param point
 	 */
 	public void setPoints(ArrayList<MyPoint> point) {
@@ -165,6 +171,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the points of the array
+	 * 
 	 * @param point
 	 */
 	public void setPoints(LinkedList<MyPoint> point) {
@@ -175,6 +182,7 @@ public class MyMesh {
 
 	/**
 	 * Set the points as the array
+	 * 
 	 * @param point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> point) {
@@ -183,6 +191,7 @@ public class MyMesh {
 
 	/**
 	 * Get the edges structure
+	 * 
 	 * @return edges
 	 */
 	public ArrayList<MyEdge> getEdges() {
@@ -191,6 +200,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
+	 * 
 	 * @param edges
 	 */
 	public void setConstraintEdges(ArrayList<MyEdge> edges) {
@@ -201,6 +211,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
+	 * 
 	 * @param edges
 	 */
 	public void setEdges(ArrayList<MyEdge> edges) {
@@ -209,6 +220,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the LinkedList
+	 * 
 	 * @param edges
 	 */
 	public void setConstraintEdges(LinkedList<MyEdge> edges) {
@@ -219,6 +231,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the edges of the ArrayList
+	 * 
 	 * @param edges
 	 */
 	public void setEdges(LinkedList<MyEdge> edges) {
@@ -227,6 +240,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
+	 * 
 	 * @param edges
 	 */
 	public void setConstraintEdgesRef(ArrayList<MyEdge> edges) {
@@ -235,6 +249,7 @@ public class MyMesh {
 
 	/**
 	 * Set the edges as the LinkedList
+	 * 
 	 * @param edges
 	 */
 	public void setEdgesRef(ArrayList<MyEdge> edges) {
@@ -351,10 +366,10 @@ public class MyMesh {
 	}
 
 	/**
-	 * Set refinement. Refinement value can be any value of :
-	 * refinement_minArea = remove triangles with a too small area
-	 * refinement_maxArea = split too large triangles refinement_minAngle =
-	 * remove triangle with a too small angle
+	 * Set refinement. Refinement value can be any value of : refinement_minArea
+	 * = remove triangles with a too small area refinement_maxArea = split too
+	 * large triangles refinement_minAngle = remove triangle with a too small
+	 * angle
 	 * 
 	 * @param refinement
 	 */
@@ -385,14 +400,14 @@ public class MyMesh {
 	/**
 	 * Start timer
 	 */
-	public void setStartPoint() {
+	public void setStart() {
 		startComputation = Calendar.getInstance().getTime().getTime();
 	}
 
 	/**
 	 * End of timer - generate duration
 	 */
-	public void setEndPoint() {
+	public void setEnd() {
 		duration = Calendar.getInstance().getTime().getTime()
 				- startComputation;
 	}
@@ -512,6 +527,7 @@ public class MyMesh {
 
 	/**
 	 * Get point, creates it if necessary
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -527,6 +543,7 @@ public class MyMesh {
 
 	/**
 	 * Get point, creates it if necessary
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -606,32 +623,44 @@ public class MyMesh {
 
 	/**
 	 * Create a new edge in the mesh
+	 * 
 	 * @param aPoint1
 	 * @param aPoint2
+	 * @throws DelaunayError
 	 */
-	public void createEdge(MyPoint aPoint1, MyPoint aPoint2) {
-		if (!points.contains(aPoint1))
-			points.add(aPoint1);
-		if (!points.contains(aPoint2))
-			points.add(aPoint2);
-		MyEdge anEdge = new MyEdge(aPoint1, aPoint2);
-		constraintsEdges.add(anEdge);
+	public void createEdge(MyPoint aPoint1, MyPoint aPoint2)
+			throws DelaunayError {
+		if (isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_Generated);
+		else {
+			if (!points.contains(aPoint1))
+				points.add(aPoint1);
+			if (!points.contains(aPoint2))
+				points.add(aPoint2);
+			MyEdge anEdge = new MyEdge(aPoint1, aPoint2);
+			constraintsEdges.add(anEdge);
+		}
 	}
 
 	/**
 	 * Create a new edge in the mesh as a copy of current edge
-	 * @param aPoint1
-	 * @param aPoint2
+	 * 
+	 * @param anEdge
+	 * @throws DelaunayError
 	 */
-	public void createEdge(MyEdge anEdge) {
-		MyPoint aPoint1 = anEdge.getStartPoint();
-		MyPoint aPoint2 = anEdge.getEndPoint();
-		createEdge(aPoint1, aPoint2);
+	public void createEdge(MyEdge anEdge) throws DelaunayError {
+		if (isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_Generated);
+		else if (! constraintsEdges.contains(anEdge)) {
+			MyPoint aPoint1 = anEdge.getStartPoint();
+			MyPoint aPoint2 = anEdge.getEndPoint();
+			createEdge(aPoint1, aPoint2);
+		}
 	}
-	
+
 	// ------------------------------------------------------------------------------------------
 	// Random mesh elements
-	
+
 	/**
 	 * Set bounding box for the generation
 	 * 
@@ -700,7 +729,7 @@ public class MyMesh {
 		else {
 			boolean startedLocaly = false;
 			if (startComputation == 0) {
-				setStartPoint();
+				setStart();
 				startedLocaly = true;
 			}
 			// general data structures
@@ -711,7 +740,7 @@ public class MyMesh {
 			if (verbose)
 				System.out.println("Sorting points");
 			sortAndSimplify();
-			
+
 			// we build a first triangle with the 3 first points we find
 			if (verbose)
 				System.out.println("Processing triangularization");
@@ -789,7 +818,7 @@ public class MyMesh {
 				System.out.println("  Triangles : " + triangles.size());
 			}
 			if (startedLocaly)
-				setEndPoint();
+				setEnd();
 		}
 	}
 
@@ -822,7 +851,7 @@ public class MyMesh {
 			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
 		else {
 			// add point in the triangle
-			if (! points.contains(aPoint))
+			if (!points.contains(aPoint))
 				points.add(aPoint);
 			addPointInsideTriangle(aTriangle, aPoint);
 
@@ -856,23 +885,30 @@ public class MyMesh {
 	 * triangle that contains the point, null otherwise.
 	 * 
 	 * @param aPoint
+	 * @return returnedPoint
 	 * @throws DelaunayError
 	 */
-	public void addPoint(MyPoint aPoint) throws DelaunayError {
+	private MyPoint addPoint(MyPoint aPoint, double precision)
+			throws DelaunayError {
 		// First we check if the point is in the points list
 		boolean foundPoint = points.contains(aPoint);
-		if (! foundPoint) {
+		MyPoint returnedPoint = aPoint;
+
+		if (!foundPoint) {
 			// We check if it is closed to another point
 			foundPoint = false;
-			ListIterator<MyPoint> iterPoint = points.listIterator();
-			while ((iterPoint.hasNext()) && (! foundPoint)) {
-				MyPoint anOldPoint = iterPoint.next();
-				if (anOldPoint.closedTo(aPoint, precision)) {
-					foundPoint = true;
+			if (precision > 0.0) {
+				ListIterator<MyPoint> iterPoint = points.listIterator();
+				while ((iterPoint.hasNext()) && (!foundPoint)) {
+					MyPoint anOldPoint = iterPoint.next();
+					if (anOldPoint.closedTo(aPoint, precision)) {
+						foundPoint = true;
+						returnedPoint = anOldPoint;
+					}
 				}
 			}
-		
-			if (! foundPoint) {
+
+			if (!foundPoint) {
 				// First we find inside which triangle it is
 				MyTriangle foundTriangle = getTriangle(aPoint);
 
@@ -890,6 +926,18 @@ public class MyMesh {
 				}
 			}
 		}
+		return returnedPoint;
+	}
+
+	/**
+	 * Add a point in the mesh and rebuild triangularization Returns the
+	 * triangle that contains the point, null otherwise.
+	 * 
+	 * @param aPoint
+	 * @throws DelaunayError
+	 */
+	public void addPoint(MyPoint aPoint) throws DelaunayError {
+		addPoint(aPoint, this.precision);
 	}
 
 	/**
@@ -911,8 +959,8 @@ public class MyMesh {
 	}
 
 	/**
-	 * Add a point inside a triangle
-	 * The point is supposed to be in the points list
+	 * Add a point inside a triangle The point is supposed to be in the points
+	 * list
 	 * 
 	 * @param aTriangle
 	 * @param aPoint
@@ -929,7 +977,7 @@ public class MyMesh {
 		MyPoint alterPoint = aTriangle.getAlterPoint(firstPoint, secondPoint);
 
 		// First step, we check if the point is one of the current points
-		
+
 		// We need 2 more triangles
 		MyTriangle aTriangle1 = new MyTriangle();
 		MyTriangle aTriangle2 = new MyTriangle();
@@ -954,7 +1002,8 @@ public class MyMesh {
 		aTriangle1.edges[2] = anEdge[1];
 
 		// Triangle 2 : secondPoint, aPoint, alterPoint
-		if ((secondPoint == oldEdge[1].getStartPoint()) || (secondPoint == oldEdge[1].getEndPoint()))
+		if ((secondPoint == oldEdge[1].getStartPoint())
+				|| (secondPoint == oldEdge[1].getEndPoint()))
 			aTriangle2.edges[0] = oldEdge[1];
 		else
 			aTriangle2.edges[0] = oldEdge[2];
@@ -962,13 +1011,14 @@ public class MyMesh {
 		aTriangle2.edges[2] = anEdge[0];
 
 		// Triangle 3 : firstPoint, aPoint, alterPoint
-		if ((firstPoint == oldEdge[2].getStartPoint()) || (firstPoint == oldEdge[2].getEndPoint()))
+		if ((firstPoint == oldEdge[2].getStartPoint())
+				|| (firstPoint == oldEdge[2].getEndPoint()))
 			aTriangle3.edges[0] = oldEdge[2];
 		else
 			aTriangle3.edges[0] = oldEdge[1];
 		aTriangle3.edges[1] = anEdge[1];
 		aTriangle3.edges[2] = anEdge[2];
-		
+
 		// Link outside edges to triangles
 		if (aTriangle1.edges[0].left == aTriangle)
 			aTriangle1.edges[0].left = aTriangle1;
@@ -982,17 +1032,16 @@ public class MyMesh {
 			aTriangle3.edges[0].left = aTriangle3;
 		else
 			aTriangle3.edges[0].right = aTriangle3;
-		
+
 		// Link inside edges to triangles
-		
+
 		// anEdge[0] is connected to triangles 1 and 2
 		// firstPoint is not in anEdge[0]
 		// Triangle with anEdge[0] and firstPoint is Triangle 1
 		if (anEdge[0].isLeft(firstPoint)) {
 			anEdge[0].left = aTriangle1;
 			anEdge[0].right = aTriangle2;
-		}
-		else {
+		} else {
 			anEdge[0].right = aTriangle1;
 			anEdge[0].left = aTriangle2;
 		}
@@ -1003,8 +1052,7 @@ public class MyMesh {
 		if (anEdge[1].isLeft(alterPoint)) {
 			anEdge[1].left = aTriangle3;
 			anEdge[1].right = aTriangle1;
-		}
-		else {
+		} else {
 			anEdge[1].right = aTriangle3;
 			anEdge[1].left = aTriangle1;
 		}
@@ -1015,8 +1063,7 @@ public class MyMesh {
 		if (anEdge[2].isLeft(firstPoint)) {
 			anEdge[2].left = aTriangle3;
 			anEdge[2].right = aTriangle2;
-		}
-		else {
+		} else {
 			anEdge[2].right = aTriangle3;
 			anEdge[2].left = aTriangle2;
 		}
@@ -1291,31 +1338,55 @@ public class MyMesh {
 
 	/**
 	 * Add a polygon to the Mesh
+	 * 
 	 * @param aPolygon
+	 * @throws DelaunayError
 	 */
-	public void addPolygon(MyPolygon aPolygon)  throws DelaunayError {
+	public void addPolygon(MyPolygon aPolygon) throws DelaunayError {
+		if (!isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+		else {
+			/*
+			 * toDo :
+			 * - save polygon in the polygon list
+			 * - if Mesh is not yet generated
+			 *   + add each segment of the polygon to the constraintEdge list
+			 *   or process polygon list in processDelanay
+			 *   + alter processDelaunay with a post-processing of polygons
+			 *   to give the triangles in the polygon the polygon's property
+			 * - if Mesh is computed
+			 *   + insert each point of the polygon in the Mesh (use addPoint)
+			 *   + add edges to the mesh (use addEdge)
+			 *   edges must be locked
+			 *   + give the triangles in the polygon the polygon's property
+			 * - add a reference to 1 triangle in the polygon to MyPolygon
+			 *   and do not forget to fill this reference
+			 */
+			
+			for (MyEdge anEdge : aPolygon.getEdges()) {
+				anEdge.setMarked(false);
+				points.add(anEdge.getStartPoint());
+				points.add(anEdge.getEndPoint());
+				edges.add(anEdge);
+			}
 
-		for (MyEdge anEdge : aPolygon.getEdges()) {
-			anEdge.setMarked(false);
-			points.add(anEdge.startPoint);
-			points.add(anEdge.endPoint);
-			edges.add(anEdge);
-		}
+			meshComputed = false;
+			processDelaunay();
 
-		meshComputed = false;
-		processDelaunay();
-
-		for (MyTriangle atriangle : triangles) {
+			for (MyTriangle atriangle : triangles) {
 				if (aPolygon.getPolygon().contains(
-						new GeometryFactory().createPoint(atriangle.getBarycenter()
-								.getCoordinate())))
+						new GeometryFactory().createPoint(atriangle
+								.getBarycenter().getCoordinate())))
 					atriangle.setProperty(aPolygon.getProperty());
+			}
 		}
 	}
-	
+
 	/**
 	 * Refine mesh according to the type of refinement that has been defined in
 	 * the refinement variable
+	 * 
+	 * @throws DelaunayError
 	 */
 	public void refineMesh() throws DelaunayError {
 		if (!isMeshComputed())
@@ -1339,11 +1410,12 @@ public class MyMesh {
 						double area = aTriangle.computeArea();
 						if (area > maxArea) {
 							badTrianglesList.add(aTriangle);
-							
+
 							// Generate barycenter
 							MyPoint newPoint = aTriangle.getBarycenter();
 							if (softInterpolate) {
-								double ZValue = aTriangle.softInterpolateZ(newPoint);
+								double ZValue = aTriangle
+										.softInterpolateZ(newPoint);
 								newPoint.setZ(ZValue);
 							}
 							barycenter.add(newPoint);
@@ -1371,7 +1443,8 @@ public class MyMesh {
 					}
 
 					// Try to flip-flap
-					// We do not count modifications for this : if it fails we do not want to retry
+					// We do not count modifications for this : if it fails we
+					// do not want to retry
 					while (!badTrianglesList.isEmpty()) {
 						MyTriangle aTriangle = badTrianglesList.getFirst();
 						badTrianglesList.removeFirst();
@@ -1380,7 +1453,9 @@ public class MyMesh {
 						MyEdge longest = aTriangle.edges[0];
 						double maxLength = longest.getSquared2DLength();
 						for (int i = 1; i < 3; i++) {
-							double length = aTriangle.edges[i].getSquared2DLength();;
+							double length = aTriangle.edges[i]
+									.getSquared2DLength();
+							;
 							if (length > maxLength) {
 								maxLength = length;
 								longest = aTriangle.edges[i];
@@ -1389,7 +1464,7 @@ public class MyMesh {
 
 						// try to flip-flap
 						tryFlipFlap(aTriangle, longest);
-						
+
 					}
 				}
 			} while (nbDone != 0);
@@ -1434,12 +1509,14 @@ public class MyMesh {
 	}
 
 	/**
-	 * Mark existing edges (constraintsEdges and edges are supposed to be sorted)
+	 * Mark existing edges (constraintsEdges and edges are supposed to be
+	 * sorted)
 	 * 
 	 * @param constraintsEdges
 	 * @return list of remaining edges
 	 */
-	private ArrayList<MyEdge> processEdges_Step0(ArrayList<MyEdge> constraintsEdges) {
+	private ArrayList<MyEdge> processEdges_Step0(
+			ArrayList<MyEdge> constraintsEdges) {
 		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
 
 		// While there is still an edge to process
@@ -1457,12 +1534,14 @@ public class MyMesh {
 	}
 
 	/**
-	 * Mark existing edges (constraintsEdges and edges are supposed to be sorted)
+	 * Mark existing edges (constraintsEdges and edges are supposed to be
+	 * sorted)
 	 * 
 	 * @param constraintsEdges
 	 * @return list of remaining edges
 	 */
-	private ArrayList<MyEdge> processEdges_Step1(ArrayList<MyEdge> constraintsEdges) {
+	private ArrayList<MyEdge> processEdges_Step1(
+			ArrayList<MyEdge> constraintsEdges) {
 		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
 
 		MyEdge currentEdge = null;
@@ -1628,12 +1707,14 @@ public class MyMesh {
 	}
 
 	/**
-	 * Mark existing edges (constraintsEdges and edges are supposed to be sorted)
+	 * Mark existing edges (constraintsEdges and edges are supposed to be
+	 * sorted)
 	 * 
 	 * @param constraintsEdges
 	 * @return list of remaining edges
 	 */
-	private ArrayList<MyEdge> processEdges_Step2(ArrayList<MyEdge> constraintsEdges) {
+	private ArrayList<MyEdge> processEdges_Step2(
+			ArrayList<MyEdge> constraintsEdges) {
 		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
 		ArrayList<MyEdge> EdgesToSwap = new ArrayList<MyEdge>();
 
@@ -1735,7 +1816,8 @@ public class MyMesh {
 	}
 
 	/**
-	 * Mark existing edges (constraintsEdges and edges are supposed to be sorted)
+	 * Mark existing edges (constraintsEdges and edges are supposed to be
+	 * sorted)
 	 * 
 	 * @param constraintsEdges
 	 * @return list of remaining edges
@@ -2781,7 +2863,8 @@ public class MyMesh {
 		else
 			scaleY = scaleX;
 		minX = theBox.minx;
-//		minY = theBox.maxy;// coordinate 0 in Y is at top of screen (don't forget make change in sub method)
+		// minY = theBox.maxy;// coordinate 0 in Y is at top of screen (don't
+		// forget make change in sub method)
 		minY = theBox.miny;// coordinate 0 in Y is at bottom of screen
 		int decalageX = 10;
 		int decalageY = 630;
@@ -2943,12 +3026,13 @@ public class MyMesh {
 
 			writer.write("\n");
 			/*
-			 * for (MyEdge anEdge : edges) { writer.write(anEdge.getStartPoint().gid
-			 * + "\t" + anEdge.getEndPoint().gid + "\t" + anEdge.gid + "\n"); }
+			 * for (MyEdge anEdge : edges) {
+			 * writer.write(anEdge.getStartPoint().gid + "\t" +
+			 * anEdge.getEndPoint().gid + "\t" + anEdge.gid + "\n"); }
 			 */
-			 for (MyEdge anEdge : constraintsEdges) {
-				writer.write(anEdge.getStartPoint().gid + "\t" + anEdge.getEndPoint().gid
-						+ "\t" + anEdge.gid + "\n");
+			for (MyEdge anEdge : constraintsEdges) {
+				writer.write(anEdge.getStartPoint().gid + "\t"
+						+ anEdge.getEndPoint().gid + "\t" + anEdge.gid + "\n");
 			}
 
 			writer.close();
