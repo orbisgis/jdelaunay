@@ -154,7 +154,7 @@ public class MyPoint extends MyElement  {
 	 * @param aPoint
 	 * @return distance
 	 */
-	public double squareDistance_1D(MyPoint aPoint) {
+	protected double squareDistance_1D(MyPoint aPoint) {
 		return (coord.x - aPoint.coord.x) * (coord.x - aPoint.coord.x);
 	}
 
@@ -164,7 +164,7 @@ public class MyPoint extends MyElement  {
 	 * @param aPoint
 	 * @return distance
 	 */
-	public double squareDistance_2D(MyPoint aPoint) {
+	protected double squareDistance_2D(MyPoint aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y);
 	}
 
@@ -175,7 +175,7 @@ public class MyPoint extends MyElement  {
 	 * @param y
 	 * @return distance
 	 */
-	public double squareDistance_2D(double x, double y) {
+	protected double squareDistance_2D(double x, double y) {
 		return squareDistance(x, y);
 	}
 
@@ -185,7 +185,7 @@ public class MyPoint extends MyElement  {
 	 * @param aPoint
 	 * @return distance
 	 */
-	public double squareDistance(MyPoint aPoint) {
+	protected double squareDistance(MyPoint aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
 	}
 
@@ -196,7 +196,7 @@ public class MyPoint extends MyElement  {
 	 * @param y
 	 * @return distance
 	 */
-	public double squareDistance(double x, double y) {
+	protected double squareDistance(double x, double y) {
 		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y);
 	}
 
@@ -208,9 +208,20 @@ public class MyPoint extends MyElement  {
 	 * @param z
 	 * @return distance
 	 */
-	public double squareDistance(double x, double y, double z) {
+	protected double squareDistance(double x, double y, double z) {
 		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y)
 				+ (z - this.coord.z) * (z - this.coord.z);
+	}
+
+	/**
+	 * Check if the point is closed to the current point
+	 * 
+	 * @param aPoint
+	 * @param tolarence
+	 * @return closedTo
+	 */
+	protected boolean closedTo(MyPoint aPoint, double tolarence) {
+		return (squareDistance(aPoint) < tolarence*tolarence);
 	}
 
 	/*
@@ -242,10 +253,8 @@ public class MyPoint extends MyElement  {
 	protected void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
-//		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
-//				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1); // coordinate 0 in Y is at top of screen
 		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
-				(int) (decalageY-(this.coord.y - minY) * scaleY) - 1, 1, 1); // coordinate 0 in Y is at bottom of screen
+				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);
 
 		/*
 		 * if (gid > 0) { g.drawString("" + gid, (int) ((x - minX) * scaleX +
