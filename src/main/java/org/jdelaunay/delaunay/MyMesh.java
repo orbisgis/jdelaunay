@@ -3,9 +3,9 @@ package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
  *
- * @author Jean-Yves MARTIN, Erwan BOCHER
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-05-16
+ * @revision 2010-05-24
  * @version 2.0
  */
 
@@ -196,6 +196,14 @@ public class MyMesh {
 	}
 
 	/**
+	 * Set the edges as the edges of the ArrayList
+	 * @param edges
+	 */
+	public void setEdges(ArrayList<MyEdge> edges) {
+		setConstraintEdges(edges);
+	}
+
+	/**
 	 * Set the edges as the edges of the LinkedList
 	 * @param edges
 	 */
@@ -206,11 +214,27 @@ public class MyMesh {
 	}
 
 	/**
+	 * Set the edges as the edges of the ArrayList
+	 * @param edges
+	 */
+	public void setEdges(LinkedList<MyEdge> edges) {
+		setConstraintEdges(edges);
+	}
+
+	/**
 	 * Set the edges as the LinkedList
 	 * @param edges
 	 */
 	public void setConstraintEdgesRef(ArrayList<MyEdge> edges) {
 		this.constraintsEdges = edges;
+	}
+
+	/**
+	 * Set the edges as the LinkedList
+	 * @param edges
+	 */
+	public void setEdgesRef(ArrayList<MyEdge> edges) {
+		setConstraintEdgesRef(edges);
 	}
 
 	/**
@@ -645,7 +669,6 @@ public class MyMesh {
 			}
 		}
 	}
-
 
 	// ------------------------------------------------------------------------------------------
 	/**
@@ -2551,19 +2574,15 @@ public class MyMesh {
 
 		// mark the two saved edges and remove mark on longest if necessary
 		if (marked) {
+			remain[0].setMarked(true);
+			remain[1].setMarked(true);
 			removeEdge.setMarked(false);
-			for (int i = 0; i < 2; i++) {
-				if (remain[k].isMarked())
-					remain[k].setMarked(marked);
-			}
 		}
 
 		if (property != 0) {
 			removeEdge.removeProperties();
-
-			for (int i = 0; i < 2; i++) {
-				remain[k].removeProperties();
-			}
+			remain[0].removeProperties();
+			remain[1].removeProperties();
 		}
 	}
 
@@ -2725,7 +2744,8 @@ public class MyMesh {
 		else
 			scaleY = scaleX;
 		minX = theBox.minx;
-		minY = theBox.maxy;
+//		minY = theBox.maxy;// coordinate 0 in Y is at top of screen (don't forget make change in sub method)
+		minY = theBox.miny;// coordinate 0 in Y is at bottom of screen
 		int decalageX = 10;
 		int decalageY = 630;
 
