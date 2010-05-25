@@ -12,7 +12,7 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 
 public class MyEdge extends MyElement {
-	protected MyPoint start, end;
+	protected MyPoint startPoint, endPoint;
 	protected MyTriangle left, right;
 
 	protected byte marked;
@@ -26,8 +26,8 @@ public class MyEdge extends MyElement {
 	 * Initialize data
 	 */
 	private void init() {
-		this.start = null;
-		this.end = null;
+		this.startPoint = null;
+		this.endPoint = null;
 		this.left = null;
 		this.right = null;
 		this.marked = 0;
@@ -45,14 +45,14 @@ public class MyEdge extends MyElement {
 	/**
 	 * Generate an edge from two points
 	 *
-	 * @param start
-	 * @param end
+	 * @param startPoint
+	 * @param endPoint
 	 */
-	public MyEdge(MyPoint start, MyPoint end) {
+	public MyEdge(MyPoint startPoint, MyPoint endPoint) {
 		super();
 		init();
-		this.start = start;
-		this.end = end;
+		this.startPoint = startPoint;
+		this.endPoint = endPoint;
 	}
 
 	/**
@@ -63,8 +63,8 @@ public class MyEdge extends MyElement {
 	public MyEdge(MyEdge ed) {
 		super((MyElement)ed);
 		init();
-		this.start = ed.start;
-		this.end = ed.end;
+		this.startPoint = ed.startPoint;
+		this.endPoint = ed.endPoint;
 		this.left = ed.left;
 		this.right = ed.right;
 		this.marked = ed.marked;
@@ -77,9 +77,9 @@ public class MyEdge extends MyElement {
 	 */
 	public MyPoint point(int i) {
 		if (i == 0)
-			return this.start;
+			return this.startPoint;
 		else
-			return this.end;
+			return this.endPoint;
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class MyEdge extends MyElement {
 	 * @return end
 	 */
 	public MyPoint getStart() {
-		return this.start;
+		return this.startPoint;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class MyEdge extends MyElement {
 	 * @return end
 	 */
 	public MyPoint getEnd() {
-		return this.end;
+		return this.endPoint;
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class MyEdge extends MyElement {
 	 * @return end
 	 */
 	public MyPoint getStartPoint() {
-		return this.start;
+		return this.startPoint;
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class MyEdge extends MyElement {
 	 * @return end
 	 */
 	public MyPoint getEndPoint() {
-		return this.end;
+		return this.endPoint;
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setStart(MyPoint p) {
-		this.start = p;
+		this.startPoint = p;
 	}
 
 	/**
@@ -169,14 +169,32 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setEnd(MyPoint p) {
-		this.end = p;
+		this.endPoint = p;
+	}
+
+	/**
+	 * Set edge start point
+	 *
+	 * @param p
+	 */
+	public void setStartPoint(MyPoint p) {
+		this.startPoint = p;
+	}
+
+	/**
+	 * Set edge end point
+	 *
+	 * @param p
+	 */
+	public void setEndPoint(MyPoint p) {
+		this.endPoint = p;
 	}
 
 	/**
 	 * get squared 2D length
 	 */
 	protected double getSquared2DLength() {
-		return start.squareDistance_2D(end);
+		return startPoint.squareDistance_2D(endPoint);
 	}
 
 	/**
@@ -190,7 +208,7 @@ public class MyEdge extends MyElement {
 	 * get squared 3D length
 	 */
 	protected double getSquared3DLength() {
-		return start.squareDistance(end);
+		return startPoint.squareDistance(endPoint);
 	}
 
 	/**
@@ -249,8 +267,8 @@ public class MyEdge extends MyElement {
 	 */
 	public int intersects(MyPoint p1, MyPoint p2) {
 		int result = 0;
-		MyPoint p3 = this.start;
-		MyPoint p4 = this.end;
+		MyPoint p3 = this.startPoint;
+		MyPoint p4 = this.endPoint;
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
 
@@ -324,8 +342,8 @@ public class MyEdge extends MyElement {
 	 */
 	public MyPoint getIntersection(MyPoint p1, MyPoint p2) {
 		MyPoint intersection = null;
-		MyPoint p3 = this.start;
-		MyPoint p4 = this.end;
+		MyPoint p3 = this.startPoint;
+		MyPoint p4 = this.endPoint;
 
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
@@ -393,7 +411,7 @@ public class MyEdge extends MyElement {
 	 * @return intersection
 	 */
 	public MyPoint getIntersection(MyEdge anEdge) {
-		return getIntersection(anEdge.start, anEdge.end);
+		return getIntersection(anEdge.startPoint, anEdge.endPoint);
 	}
 
 	/**
@@ -406,8 +424,8 @@ public class MyEdge extends MyElement {
 	public boolean isInside(MyPoint p) {
 		boolean isInside = false;
 
-		MyPoint p1 = this.start;
-		MyPoint p2 = this.end;
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
 
 		// x = x2 t1 + (1 - t1) x1
 		// y = y2 t1 + (1 - t1) y1
@@ -467,9 +485,9 @@ public class MyEdge extends MyElement {
 	public boolean isExtremity(MyPoint p) {
 		boolean isExtremity = false;
 
-		if (this.start.squareDistance_2D(p) < MyTools.epsilon)
+		if (this.startPoint.squareDistance_2D(p) < MyTools.epsilon)
 			isExtremity = true;
-		else if (this.end.squareDistance_2D(p) < MyTools.epsilon)
+		else if (this.endPoint.squareDistance_2D(p) < MyTools.epsilon)
 			isExtremity = true;
 		return isExtremity;
 	}
@@ -481,8 +499,8 @@ public class MyEdge extends MyElement {
 	 * @return
 	 */
 	public boolean isLeft(MyPoint p) {
-		MyPoint p1 = this.start;
-		MyPoint p2 = this.end;
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
 		double vx = p.getX() - p1.getX();
@@ -499,8 +517,8 @@ public class MyEdge extends MyElement {
 	 * @return
 	 */
 	public boolean isRight(MyPoint p) {
-		MyPoint p1 = this.start;
-		MyPoint p2 = this.end;
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
 		double vx = p.getX() - p1.getX();
@@ -515,9 +533,9 @@ public class MyEdge extends MyElement {
 	 */
 	public void swap() {
 		// swap points
-		MyPoint aPoint = this.end;
-		this.end = this.start;
-		this.start = aPoint;
+		MyPoint aPoint = this.endPoint;
+		this.endPoint = this.startPoint;
+		this.startPoint = aPoint;
 
 		// swap triangles
 		MyTriangle aTriangle = left;
@@ -532,7 +550,7 @@ public class MyEdge extends MyElement {
 	 */
 	public boolean isFlatSlope() {
 		boolean isFlat = true;
-		if (Math.abs(this.start.getZ() - this.end.getZ()) > MyTools.epsilon)
+		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > MyTools.epsilon)
 			isFlat = false;
 		return isFlat;
 	}
@@ -543,9 +561,9 @@ public class MyEdge extends MyElement {
 	 * @return isFlat
 	 */
 	public MyPoint getBarycenter() {
-		double x = (this.start.getX()+this.end.getX())/2.0;
-		double y = (this.start.getY()+this.end.getY())/2.0;
-		double z = (this.start.getZ()+this.end.getZ())/2.0;
+		double x = (this.startPoint.getX()+this.endPoint.getX())/2.0;
+		double y = (this.startPoint.getY()+this.endPoint.getY())/2.0;
+		double z = (this.startPoint.getZ()+this.endPoint.getZ())/2.0;
 		return new MyPoint(x, y, z);
 	}
 
@@ -556,8 +574,8 @@ public class MyEdge extends MyElement {
 	 * @return
 	 */
 	public int hashCode() {
-		MyPoint p1 = this.start;
-		MyPoint p2 = this.end;
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
 		int hashValue = 0;
 
 		int v1 = p1.hashCode();
@@ -601,14 +619,14 @@ public class MyEdge extends MyElement {
 	protected void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
-		g.drawLine((int) ((this.start.getX() - minX) * scaleX + decalageX), decalageY
-				+ (int) ((this.start.getY() - minY) * scaleY),
-				(int) ((this.end.getX() - minX) * scaleX + decalageX), decalageY
-						+ (int) ((this.end.getY() - minY) * scaleY));
+		g.drawLine((int) ((this.startPoint.getX() - minX) * scaleX + decalageX), decalageY
+				- (int) ((this.startPoint.getY() - minY) * scaleY),
+				(int) ((this.endPoint.getX() - minX) * scaleX + decalageX), decalageY
+						- (int) ((this.endPoint.getY() - minY) * scaleY)); // coordinate 0 in Y is at bottom of screen
 		if (marked > 0) {
-			this.start.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
+			this.startPoint.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
 					scaleY);
-			this.end.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
+			this.endPoint.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
 					scaleY);
 		}
 	}

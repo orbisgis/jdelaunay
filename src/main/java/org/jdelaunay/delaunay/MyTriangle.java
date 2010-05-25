@@ -62,7 +62,7 @@ public class MyTriangle extends MyElement {
 		
 		connectEdges();
 		recomputeCenter();
-		radius = e1.getStart().squareDistance_2D(x_center, y_center);
+		radius = e1.getStartPoint().squareDistance_2D(x_center, y_center);
 	}
 
 	/**
@@ -95,13 +95,13 @@ public class MyTriangle extends MyElement {
 	public MyPoint getPoint(int i) {
 		MyPoint p;
 		if (i==0)
-			p = edges[0].getStart();
+			p = edges[0].getStartPoint();
 		else if (i==1)
-			p = edges[0].getEnd();
+			p = edges[0].getEndPoint();
 		else {
-			p = edges[1].getStart();
-			if ((p==edges[0].getStart()) || (p==edges[0].getEnd()))
-				p = edges[1].getEnd();
+			p = edges[1].getStartPoint();
+			if ((p==edges[0].getStartPoint()) || (p==edges[0].getEndPoint()))
+				p = edges[1].getEndPoint();
 		}
 		return p;
 	}
@@ -154,11 +154,11 @@ public class MyTriangle extends MyElement {
 	 */
 	protected void recomputeCenter() {
 		MyPoint p1,p2,p3;
-		p1 = edges[0].getStart();
-		p2 = edges[0].getEnd();
-		p3 = edges[1].getStart();
+		p1 = edges[0].getStartPoint();
+		p2 = edges[0].getEndPoint();
+		p3 = edges[1].getStartPoint();
 		if ((p3==p1)||(p3==p2))
-			p3 = edges[1].getEnd();
+			p3 = edges[1].getEndPoint();
 
 		double p1Sq = p1.getX() * p1.getX() + p1.getY() * p1.getY();
 		double p2Sq = p2.getX() * p2.getX() + p2.getY() * p2.getY();
@@ -278,11 +278,11 @@ public class MyTriangle extends MyElement {
 		double ZValue = 0;
 
 		MyPoint p1,p2,p3;
-		p1 = edges[0].getStart();
-		p2 = edges[0].getEnd();
-		p3 = edges[1].getStart();
+		p1 = edges[0].getStartPoint();
+		p2 = edges[0].getEndPoint();
+		p3 = edges[1].getStartPoint();
 		if ((p3==p1)||(p3==p2))
-			p3 = edges[1].getEnd();
+			p3 = edges[1].getEndPoint();
 
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
@@ -342,11 +342,11 @@ public class MyTriangle extends MyElement {
 	 */
 	public double computeArea() {
 		MyPoint p1,p2,p3;
-		p1 = edges[0].getStart();
-		p2 = edges[0].getEnd();
-		p3 = edges[1].getStart();
+		p1 = edges[0].getStartPoint();
+		p2 = edges[0].getEndPoint();
+		p3 = edges[1].getStartPoint();
 		if ((p3==p1)||(p3==p2))
-			p3 = edges[1].getEnd();
+			p3 = edges[1].getEndPoint();
 
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
@@ -443,14 +443,14 @@ public class MyTriangle extends MyElement {
 			MyEdge anEdge = edges[i];
 			for (j = 0; j < 2; j++) {
 				if (j == 0)
-					aPoint = anEdge.getStart();
+					aPoint = anEdge.getStartPoint();
 				else
-					aPoint = anEdge.getEnd();
+					aPoint = anEdge.getEndPoint();
 				int foundPoint = 0;
 				for (k = 0; k < 3; k++) {
-					if (edges[k].getStart() == aPoint)
+					if (edges[k].getStartPoint() == aPoint)
 						foundPoint++;
-					if (edges[k].getEnd() == aPoint)
+					if (edges[k].getEndPoint() == aPoint)
 						foundPoint++;
 				}
 				if (foundPoint != 2)
@@ -510,8 +510,8 @@ public class MyTriangle extends MyElement {
 	 * @return isFlat
 	 */
 	protected MyPoint getAlterPoint(MyEdge anEdge) {
-		MyPoint start = anEdge.getStart();
-		MyPoint end = anEdge.getEnd();
+		MyPoint start = anEdge.getStartPoint();
+		MyPoint end = anEdge.getEndPoint();
 		return getAlterPoint(start, end);
 	}
 
@@ -523,28 +523,28 @@ public class MyTriangle extends MyElement {
 	protected MyPoint getAlterPoint(MyPoint p1, MyPoint p2) {
 		MyPoint alterPoint = null;
 
-		if (p1 == edges[0].getStart()) {
-			if (p2 == edges[0].getEnd()) {
-				alterPoint = edges[1].getStart();
+		if (p1 == edges[0].getStartPoint()) {
+			if (p2 == edges[0].getEndPoint()) {
+				alterPoint = edges[1].getStartPoint();
 				if ((alterPoint== p1) || (alterPoint==p2))
-					alterPoint = edges[1].getEnd();
+					alterPoint = edges[1].getEndPoint();
 			}
 			else {
-				alterPoint = edges[0].getEnd();
+				alterPoint = edges[0].getEndPoint();
 			}
 		}
-		else if (p2 == edges[0].getStart()) {
-			if (p1 == edges[0].getEnd()) {
-				alterPoint = edges[1].getStart();
+		else if (p2 == edges[0].getStartPoint()) {
+			if (p1 == edges[0].getEndPoint()) {
+				alterPoint = edges[1].getStartPoint();
 				if ((alterPoint== p1) || (alterPoint==p2))
-					alterPoint = edges[1].getEnd();
+					alterPoint = edges[1].getEndPoint();
 			}
 			else {
-				alterPoint = edges[0].getEnd();
+				alterPoint = edges[0].getEndPoint();
 			}
 		}
 		else
-			alterPoint = edges[0].getStart();
+			alterPoint = edges[0].getStartPoint();
 
 		return alterPoint;
 	}
@@ -560,8 +560,8 @@ public class MyTriangle extends MyElement {
 		int i = 0;
 		while ((i < 3) && (alterEdge == null)) {
 			MyEdge testEdge = edges[i];
-			test1 = testEdge.getStart();
-			test2 = testEdge.getEnd();
+			test1 = testEdge.getStartPoint();
+			test2 = testEdge.getEndPoint();
 			if ((test1 == p1) && (test2 == p2))
 				alterEdge = testEdge;
 			else if ((test1 == p2) && (test2 == p1))
@@ -581,15 +581,15 @@ public class MyTriangle extends MyElement {
 	public boolean belongsTo(MyPoint aPoint) {
 		boolean belongs = false;
 		MyEdge anEdge = this.getEdge(0);
-		if (anEdge.getStart() == aPoint)
+		if (anEdge.getStartPoint() == aPoint)
 			belongs = true;
-		else if (anEdge.getEnd() == aPoint)
+		else if (anEdge.getEndPoint() == aPoint)
 			belongs = true;
 		else {
 			anEdge = this.getEdge(1);
-			if (anEdge.getStart() == aPoint)
+			if (anEdge.getStartPoint() == aPoint)
 				belongs = true;
-			else if (anEdge.getEnd() == aPoint)
+			else if (anEdge.getEndPoint() == aPoint)
 				belongs = true;
 		}
 
@@ -604,15 +604,15 @@ public class MyTriangle extends MyElement {
 	public boolean isClosedFromPoints(MyPoint aPoint) {
 		boolean closedTo = false;
 		MyEdge anEdge = this.getEdge(0);
-		if (anEdge.getStart() == aPoint)
+		if (anEdge.getStartPoint() == aPoint)
 			closedTo = true;
-		else if (anEdge.getEnd() == aPoint)
+		else if (anEdge.getEndPoint() == aPoint)
 			closedTo = true;
 		else {
 			anEdge = this.getEdge(1);
-			if (anEdge.getStart() == aPoint)
+			if (anEdge.getStartPoint() == aPoint)
 				closedTo = true;
-			else if (anEdge.getEnd() == aPoint)
+			else if (anEdge.getEndPoint() == aPoint)
 				closedTo = true;
 		}
 

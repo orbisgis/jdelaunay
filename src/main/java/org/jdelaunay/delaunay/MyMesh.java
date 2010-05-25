@@ -13,6 +13,8 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
+import com.vividsolutions.jts.geom.GeometryFactory;
+
 public class MyMesh {
 	// Vectors with points and edges
 	protected ArrayList<MyPoint> points;
@@ -383,14 +385,14 @@ public class MyMesh {
 	/**
 	 * Start timer
 	 */
-	public void setStart() {
+	public void setStartPoint() {
 		startComputation = Calendar.getInstance().getTime().getTime();
 	}
 
 	/**
 	 * End of timer - generate duration
 	 */
-	public void setEnd() {
+	public void setEndPoint() {
 		duration = Calendar.getInstance().getTime().getTime()
 				- startComputation;
 	}
@@ -622,8 +624,8 @@ public class MyMesh {
 	 * @param aPoint2
 	 */
 	public void createEdge(MyEdge anEdge) {
-		MyPoint aPoint1 = anEdge.getStart();
-		MyPoint aPoint2 = anEdge.getEnd();
+		MyPoint aPoint1 = anEdge.getStartPoint();
+		MyPoint aPoint2 = anEdge.getEndPoint();
 		createEdge(aPoint1, aPoint2);
 	}
 	
@@ -698,7 +700,7 @@ public class MyMesh {
 		else {
 			boolean startedLocaly = false;
 			if (startComputation == 0) {
-				setStart();
+				setStartPoint();
 				startedLocaly = true;
 			}
 			// general data structures
@@ -737,8 +739,8 @@ public class MyMesh {
 				e2 = new MyEdge(p2, p3);
 				e3 = new MyEdge(p3, p1);
 			} else {
-				e1.setStart(p2);
-				e1.setEnd(p1);
+				e1.setStartPoint(p2);
+				e1.setEndPoint(p1);
 
 				e2 = new MyEdge(p1, p3);
 				e3 = new MyEdge(p3, p2);
@@ -787,7 +789,7 @@ public class MyMesh {
 				System.out.println("  Triangles : " + triangles.size());
 			}
 			if (startedLocaly)
-				setEnd();
+				setEndPoint();
 		}
 	}
 
@@ -922,8 +924,8 @@ public class MyMesh {
 		for (int i = 0; i < 3; i++) {
 			oldEdge[i] = aTriangle.edges[i];
 		}
-		MyPoint firstPoint = aTriangle.edges[0].getStart();
-		MyPoint secondPoint = aTriangle.edges[0].getEnd();
+		MyPoint firstPoint = aTriangle.edges[0].getStartPoint();
+		MyPoint secondPoint = aTriangle.edges[0].getEndPoint();
 		MyPoint alterPoint = aTriangle.getAlterPoint(firstPoint, secondPoint);
 
 		// First step, we check if the point is one of the current points
@@ -952,7 +954,7 @@ public class MyMesh {
 		aTriangle1.edges[2] = anEdge[1];
 
 		// Triangle 2 : secondPoint, aPoint, alterPoint
-		if ((secondPoint == oldEdge[1].getStart()) || (secondPoint == oldEdge[1].getEnd()))
+		if ((secondPoint == oldEdge[1].getStartPoint()) || (secondPoint == oldEdge[1].getEndPoint()))
 			aTriangle2.edges[0] = oldEdge[1];
 		else
 			aTriangle2.edges[0] = oldEdge[2];
@@ -960,7 +962,7 @@ public class MyMesh {
 		aTriangle2.edges[2] = anEdge[0];
 
 		// Triangle 3 : firstPoint, aPoint, alterPoint
-		if ((firstPoint == oldEdge[2].getStart()) || (firstPoint == oldEdge[2].getEnd()))
+		if ((firstPoint == oldEdge[2].getStartPoint()) || (firstPoint == oldEdge[2].getEndPoint()))
 			aTriangle3.edges[0] = oldEdge[2];
 		else
 			aTriangle3.edges[0] = oldEdge[1];
@@ -1047,9 +1049,9 @@ public class MyMesh {
 		LinkedList<MyTriangle> impactedTriangles = new LinkedList<MyTriangle>();
 		if (!anEdge.isExtremity(aPoint)) {
 			// point is not an extremity => insert it
-			MyPoint start = anEdge.getStart();
+			MyPoint start = anEdge.getStartPoint();
 
-			MyPoint end = anEdge.getEnd();
+			MyPoint end = anEdge.getEndPoint();
 
 			// triangles and their copies to generate the new ones
 			MyTriangle triangleList[] = new MyTriangle[2];
@@ -1106,8 +1108,8 @@ public class MyMesh {
 
 			// then split anEdge
 			remainEdge = new MyEdge(anEdge);
-			remainEdge.setStart(aPoint);
-			anEdge.setEnd(aPoint);
+			remainEdge.setStartPoint(aPoint);
+			anEdge.setEndPoint(aPoint);
 
 			// Make the triangles ok
 			// changes in the new triangles
@@ -1273,11 +1275,11 @@ public class MyMesh {
 	public void addEdge(MyEdge anEdge) throws DelaunayError {
 		if (!isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else if (anEdge.getStart().squareDistance(anEdge.getEnd()) < tolarence)
+		else if (anEdge.getStartPoint().squareDistance(anEdge.getEndPoint()) < tolarence)
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
-		else if (!points.contains(anEdge.getStart()))
+		else if (!points.contains(anEdge.getStartPoint()))
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
-		else if (!points.contains(anEdge.getEnd()))
+		else if (!points.contains(anEdge.getEndPoint()))
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
@@ -1291,8 +1293,24 @@ public class MyMesh {
 	 * Add a polygon to the Mesh
 	 * @param aPolygon
 	 */
-	public void addPolygon(MyPolygon aPolygon) {
-		
+	public void addPolygon(MyPolygon aPolygon)  throws DelaunayError {
+
+		for (MyEdge anEdge : aPolygon.getEdges()) {
+			anEdge.setMarked(false);
+			points.add(anEdge.startPoint);
+			points.add(anEdge.endPoint);
+			edges.add(anEdge);
+		}
+
+		meshComputed = false;
+		processDelaunay();
+
+		for (MyTriangle atriangle : triangles) {
+				if (aPolygon.getPolygon().contains(
+						new GeometryFactory().createPoint(atriangle.getBarycenter()
+								.getCoordinate())))
+					atriangle.setProperty(aPolygon.getProperty());
+		}
 	}
 	
 	/**
@@ -1462,8 +1480,8 @@ public class MyMesh {
 			currentEdge = iterEdge.next();
 
 			// Compute edge intersection with the Mesh
-			MyPoint p1 = currentEdge.getStart();
-			MyPoint p2 = currentEdge.getEnd();
+			MyPoint p1 = currentEdge.getStartPoint();
+			MyPoint p2 = currentEdge.getEndPoint();
 
 			cle_ref1 = p1.getX();
 			cle_ref2 = p1.getY();
@@ -1488,8 +1506,8 @@ public class MyMesh {
 			int i = index;
 			while ((!found) && (!ended) && (i < maxIndex)) {
 				currentEdge2 = edges.get(i);
-				MyPoint p3 = currentEdge2.getStart();
-				MyPoint p4 = currentEdge2.getEnd();
+				MyPoint p3 = currentEdge2.getStartPoint();
+				MyPoint p4 = currentEdge2.getEndPoint();
 				cle1 = p3.getX();
 				cle2 = p3.getY();
 				cle3 = p4.getX();
@@ -1577,8 +1595,8 @@ public class MyMesh {
 				MyEdge possibleEdge = null;
 				for (int j = 0; j < 3; j++) {
 					MyEdge anEdge = aTriangle.edges[j];
-					if ((anEdge.getStart() != start)
-							&& (anEdge.getEnd() != start))
+					if ((anEdge.getStartPoint() != start)
+							&& (anEdge.getEndPoint() != start))
 						possibleEdge = anEdge;
 				}
 
@@ -1635,8 +1653,8 @@ public class MyMesh {
 			boolean found = false;
 
 			// Compute edge intersection with the Mesh
-			MyPoint p1 = currentEdge.getStart();
-			MyPoint p2 = currentEdge.getEnd();
+			MyPoint p1 = currentEdge.getStartPoint();
+			MyPoint p2 = currentEdge.getEndPoint();
 
 			cle_ref1 = p1.getX();
 			cle_ref3 = p2.getX();
@@ -1650,8 +1668,8 @@ public class MyMesh {
 			int i = index;
 			while ((!found) && (!ended) && (i < maxIndex)) {
 				currentEdge2 = edges.get(i);
-				MyPoint p3 = currentEdge2.getStart();
-				MyPoint p4 = currentEdge2.getEnd();
+				MyPoint p3 = currentEdge2.getStartPoint();
+				MyPoint p4 = currentEdge2.getEndPoint();
 				cle1 = p3.getX();
 				cle3 = p4.getX();
 				if (cle3 < cle1) {
@@ -1692,7 +1710,7 @@ public class MyMesh {
 							found = true;
 
 							// look for swapping edge
-							if (p1 == swapEdge.getEnd())
+							if (p1 == swapEdge.getEndPoint())
 								swapEdge.swap();
 						}
 					}
@@ -1744,8 +1762,8 @@ public class MyMesh {
 			CurrentEdge = iterEdge.next();
 
 			// Compute edge intersection with the Mesh
-			MyPoint p1 = CurrentEdge.getStart();
-			MyPoint p2 = CurrentEdge.getEnd();
+			MyPoint p1 = CurrentEdge.getStartPoint();
+			MyPoint p2 = CurrentEdge.getEndPoint();
 
 			// Intersection points - this is an ArrayList because we need to
 			// sort it
@@ -1759,8 +1777,8 @@ public class MyMesh {
 			// of points
 
 			for (MyEdge anEdge : edges) {
-				MyPoint p3 = anEdge.getStart();
-				MyPoint p4 = anEdge.getEnd();
+				MyPoint p3 = anEdge.getStartPoint();
+				MyPoint p4 = anEdge.getEndPoint();
 
 				// possible intersection
 				MyPoint IntersectionPoint1 = null;
@@ -1817,8 +1835,8 @@ public class MyMesh {
 				MyPoint IntersectionPoint = intersect2.next();
 
 				if (anEdge != null) {
-					MyPoint start = anEdge.getStart();
-					MyPoint end = anEdge.getEnd();
+					MyPoint start = anEdge.getStartPoint();
+					MyPoint end = anEdge.getEndPoint();
 
 					// if the intersection point is one of the start or end
 					// points, do nothing
@@ -1897,7 +1915,7 @@ public class MyMesh {
 					anEdge.setProperty(CurrentEdge.getProperty());
 
 					// look for swapping edge
-					if (anEdge.getEnd() == p)
+					if (anEdge.getEndPoint() == p)
 						anEdge.swap();
 				}
 				LastPoint = p;
@@ -1952,25 +1970,25 @@ public class MyMesh {
 		// We have the replacement list - apply it in edges
 		for (MyEdge anEdge : edges) {
 			MyPoint aPoint;
-			aPoint = anEdge.getStart();
+			aPoint = anEdge.getStartPoint();
 			if (Replace.containsKey(aPoint)) {
-				anEdge.setStart(Replace.get(aPoint));
+				anEdge.setStartPoint(Replace.get(aPoint));
 			}
-			aPoint = anEdge.getEnd();
+			aPoint = anEdge.getEndPoint();
 			if (Replace.containsKey(aPoint)) {
-				anEdge.setEnd(Replace.get(aPoint));
+				anEdge.setEndPoint(Replace.get(aPoint));
 			}
 		}
 
 		for (MyEdge anEdge : constraintsEdges) {
 			MyPoint aPoint;
-			aPoint = anEdge.getStart();
+			aPoint = anEdge.getStartPoint();
 			if (Replace.containsKey(aPoint)) {
-				anEdge.setStart(Replace.get(aPoint));
+				anEdge.setStartPoint(Replace.get(aPoint));
 			}
-			aPoint = anEdge.getEnd();
+			aPoint = anEdge.getEndPoint();
 			if (Replace.containsKey(aPoint)) {
-				anEdge.setEnd(Replace.get(aPoint));
+				anEdge.setEndPoint(Replace.get(aPoint));
 			}
 		}
 
@@ -2004,8 +2022,8 @@ public class MyMesh {
 			test = anEdge.isRight(aPoint);
 			if (test) {
 				// We have the edge and the 2 point, in reverse order
-				p2 = anEdge.getStart();
-				p1 = anEdge.getEnd();
+				p2 = anEdge.getStartPoint();
+				p1 = anEdge.getEndPoint();
 
 				// triangle points order is p1, p2, aPoint
 
@@ -2078,8 +2096,8 @@ public class MyMesh {
 		MyPoint p1, p2, p3, p4;
 
 		if ((aTriangle1 != null) && (aTriangle2 != null)) {
-			p1 = anEdge.getStart();
-			p2 = anEdge.getEnd();
+			p1 = anEdge.getStartPoint();
+			p2 = anEdge.getEndPoint();
 
 			p3 = p4 = null;
 
@@ -2116,8 +2134,8 @@ public class MyMesh {
 						System.out.println("ERREUR");
 					} else {
 						// Set points
-						anEdge.setStart(p3);
-						anEdge.setEnd(p4);
+						anEdge.setStartPoint(p3);
+						anEdge.setEndPoint(p4);
 
 						// Put it into triangles
 						aTriangle1.edges[0] = anEdge10;
@@ -2276,7 +2294,7 @@ public class MyMesh {
 			if (maxLength < dist)
 				maxLength = dist;
 
-			dist = middle.squareDistance_2D(anEdge.getStart());
+			dist = middle.squareDistance_2D(anEdge.getStartPoint());
 			if (minLength > dist)
 				minLength = dist;
 			if (maxLength < dist)
@@ -2299,7 +2317,7 @@ public class MyMesh {
 			MyTriangle alterTriangle = trianglesToProcess[i];
 			MyPoint alterPoint = alterTriangle.getAlterPoint(anEdge);
 
-			double basicZ = anEdge.getStart().getZ();
+			double basicZ = anEdge.getStartPoint().getZ();
 			double altZ = alterPoint.getZ();
 
 			// Split the edge in the middle
@@ -2526,11 +2544,11 @@ public class MyMesh {
 		else {
 			// get longest edge
 			MyEdge longest = aTriangle.edges[0];
-			double maxLength = longest.getStart().squareDistance_2D(
-					longest.getEnd());
+			double maxLength = longest.getStartPoint().squareDistance_2D(
+					longest.getEndPoint());
 			for (int i = 1; i < 3; i++) {
-				double length = aTriangle.edges[i].getStart()
-						.squareDistance_2D(aTriangle.edges[i].getEnd());
+				double length = aTriangle.edges[i].getStartPoint()
+						.squareDistance_2D(aTriangle.edges[i].getEndPoint());
 				if (length > maxLength) {
 					maxLength = length;
 					longest = aTriangle.edges[i];
@@ -2620,9 +2638,9 @@ public class MyMesh {
 				ListIterator<MyEdge> iterEdge = edges.listIterator();
 				while ((iterEdge.hasNext()) && (!found)) {
 					MyEdge anEdge = iterEdge.next();
-					if (anEdge.getStart() == aPoint)
+					if (anEdge.getStartPoint() == aPoint)
 						found = true;
-					else if (anEdge.getEnd() == aPoint)
+					else if (anEdge.getEndPoint() == aPoint)
 						found = true;
 				}
 				if (!found)
@@ -2662,8 +2680,8 @@ public class MyMesh {
 		ListIterator<MyEdge> iter1 = EdgeList.listIterator();
 		while (iter1.hasNext() && (theEdge == null)) {
 			MyEdge anEdge = iter1.next();
-			if (((anEdge.getStart() == p1) && (anEdge.getEnd() == p2))
-					|| ((anEdge.getStart() == p2) && (anEdge.getEnd() == p1)))
+			if (((anEdge.getStartPoint() == p1) && (anEdge.getEndPoint() == p2))
+					|| ((anEdge.getStartPoint() == p2) && (anEdge.getEndPoint() == p1)))
 				theEdge = anEdge;
 		}
 		return theEdge;
@@ -2687,8 +2705,8 @@ public class MyMesh {
 		int i = 0;
 		while ((i < size) && (theEdge == null)) {
 			MyEdge anEdge = EdgeQueueList[i];
-			if (((anEdge.getStart() == p1) && (anEdge.getEnd() == p2))
-					|| ((anEdge.getStart() == p2) && (anEdge.getEnd() == p1)))
+			if (((anEdge.getStartPoint() == p1) && (anEdge.getEndPoint() == p2))
+					|| ((anEdge.getStartPoint() == p2) && (anEdge.getEndPoint() == p1)))
 				theEdge = anEdge;
 			else
 				i++;
@@ -2698,8 +2716,8 @@ public class MyMesh {
 
 	public MyPoint findUperPoint(MyEdge edge) {
 
-		MyPoint p1 = edge.getStart();
-		MyPoint p2 = edge.getEnd();
+		MyPoint p1 = edge.getStartPoint();
+		MyPoint p2 = edge.getEndPoint();
 		if (p1.getZ() > p2.getZ()) {
 			return p1;
 		} else if (p1.getZ() > p2.getZ()) {
@@ -2860,9 +2878,9 @@ public class MyMesh {
 			writer.write("\t<Edges>\n");
 			for (MyEdge anEdge : edges) {
 				writer.write("\t\t<Segment id=\"" + anEdge.getGid() + "\">\n");
-				writer.write("\t\t\t<Start>" + anEdge.getStart().getGid()
+				writer.write("\t\t\t<Start>" + anEdge.getStartPoint().getGid()
 						+ "</Start>\n");
-				writer.write("\t\t\t<End>" + anEdge.getEnd().getGid()
+				writer.write("\t\t\t<End>" + anEdge.getEndPoint().getGid()
 						+ "</End>\n");
 				if (anEdge.getProperty() == 0)
 					writer.write("\t\t\t<Type />\n");
@@ -2925,10 +2943,11 @@ public class MyMesh {
 
 			writer.write("\n");
 			/*
-			 * for (MyEdge anEdge : edges) { writer.write(anEdge.getStart().gid
-			 * + "\t" + anEdge.getEnd().gid + "\t" + anEdge.gid + "\n"); }
-			 */for (MyEdge anEdge : constraintsEdges) {
-				writer.write(anEdge.getStart().gid + "\t" + anEdge.getEnd().gid
+			 * for (MyEdge anEdge : edges) { writer.write(anEdge.getStartPoint().gid
+			 * + "\t" + anEdge.getEndPoint().gid + "\t" + anEdge.gid + "\n"); }
+			 */
+			 for (MyEdge anEdge : constraintsEdges) {
+				writer.write(anEdge.getStartPoint().gid + "\t" + anEdge.getEndPoint().gid
 						+ "\t" + anEdge.gid + "\n");
 			}
 
@@ -2995,11 +3014,11 @@ public class MyMesh {
 						switch (i) {
 						case 0:
 							gid = Integer.parseInt(mot);
-							anEdge.setStart(getPointFromGID(gid));
+							anEdge.setStartPoint(getPointFromGID(gid));
 							break;
 						case 1:
 							gid = Integer.parseInt(mot);
-							anEdge.setEnd(getPointFromGID(gid));
+							anEdge.setEndPoint(getPointFromGID(gid));
 							break;
 						case 2:
 							anEdge.gid = Integer.parseInt(mot);
@@ -3174,9 +3193,9 @@ public class MyMesh {
 							for (int j = 0; j < 2; j++) {
 								MyPoint aPoint;
 								if (j == 0)
-									aPoint = anEdge.getStart();
+									aPoint = anEdge.getStartPoint();
 								else
-									aPoint = anEdge.getEnd();
+									aPoint = anEdge.getEndPoint();
 								if (!addPoint.containsKey(aPoint)) {
 									maxGid++;
 									MyPoint aPoint2 = new MyPoint(aPoint);
@@ -3217,8 +3236,8 @@ public class MyMesh {
 						if (anEdge.getProperty() == 1) {
 							wallNumber++;
 							writer.write("#wall " + (wallNumber - 1) + "\n");
-							MyPoint p1 = anEdge.getStart();
-							MyPoint p2 = anEdge.getEnd();
+							MyPoint p1 = anEdge.getStartPoint();
+							MyPoint p2 = anEdge.getEndPoint();
 							MyPoint p3 = addPoint.get(p1);
 							MyPoint p4 = addPoint.get(p2);
 
@@ -3281,8 +3300,8 @@ public class MyMesh {
 						} else if (type == 8) {
 							cz = 0;
 						}
-						VRMLexport_line(writer, anEdge.getStart(), anEdge
-								.getEnd(), dx, dy, dz, cx, cy, cz);
+						VRMLexport_line(writer, anEdge.getStartPoint(), anEdge
+								.getEndPoint(), dx, dy, dz, cx, cy, cz);
 					}
 				}
 

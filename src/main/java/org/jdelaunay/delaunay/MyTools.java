@@ -198,10 +198,10 @@ public class MyTools {
 		j = max_index;
 		enreg_ref = (max_index + min_index) / 2;
 		MyEdge anEdge = edges.get(enreg_ref);
-		cle_ref1 = anEdge.getStart().getX();
-		cle_ref2 = anEdge.getStart().getY();
-		cle_ref3 = anEdge.getEnd().getX();
-		cle_ref4 = anEdge.getEnd().getY();
+		cle_ref1 = anEdge.getStartPoint().getX();
+		cle_ref2 = anEdge.getStartPoint().getY();
+		cle_ref3 = anEdge.getEndPoint().getX();
+		cle_ref4 = anEdge.getEndPoint().getY();
 		if (cle_ref3 < cle_ref1) {
 			x = cle_ref3;
 			cle_ref3 = cle_ref1;
@@ -232,10 +232,10 @@ public class MyTools {
 					found = true;
 				else {
 					anEdge = edges.get(i);
-					cle1 = anEdge.getStart().getX();
-					cle2 = anEdge.getStart().getY();
-					cle3 = anEdge.getEnd().getX();
-					cle4 = anEdge.getEnd().getY();
+					cle1 = anEdge.getStartPoint().getX();
+					cle2 = anEdge.getStartPoint().getY();
+					cle3 = anEdge.getEndPoint().getX();
+					cle4 = anEdge.getEndPoint().getY();
 					if (cle3 < cle1) {
 						x = cle3;
 						cle3 = cle1;
@@ -287,10 +287,10 @@ public class MyTools {
 					found = true;
 				else {
 					anEdge = edges.get(j);
-					cle1 = anEdge.getStart().getX();
-					cle2 = anEdge.getStart().getY();
-					cle3 = anEdge.getEnd().getX();
-					cle4 = anEdge.getEnd().getY();
+					cle1 = anEdge.getStartPoint().getX();
+					cle2 = anEdge.getStartPoint().getY();
+					cle3 = anEdge.getEndPoint().getX();
+					cle4 = anEdge.getEndPoint().getY();
 					if (cle3 < cle1) {
 						x = cle3;
 						cle3 = cle1;
@@ -391,8 +391,8 @@ public class MyTools {
 		ListIterator<MyEdge> iter1 = EdgeList.listIterator();
 		while (iter1.hasNext() && (theEdge == null)) {
 			MyEdge anEdge = iter1.next();
-			test1 = anEdge.getStart();
-			test2 = anEdge.getEnd();
+			test1 = anEdge.getStartPoint();
+			test2 = anEdge.getEndPoint();
 			if (((test1 == p1) && (test2 == p2))
 					|| ((test1 == p2) && (test2 == p1)))
 				theEdge = anEdge;
