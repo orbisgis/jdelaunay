@@ -18,6 +18,7 @@ public class MyMesh {
 	protected ArrayList<MyPoint> points;
 	protected ArrayList<MyEdge> edges;
 	protected LinkedList<MyTriangle> triangles;
+	protected LinkedList<MyPolygon> polygons;
 	
 	protected ArrayList<MyEdge> constraintsEdges;
 
@@ -65,6 +66,7 @@ public class MyMesh {
 		this.edges = new ArrayList<MyEdge>();
 		this.triangles = new LinkedList<MyTriangle>();
 		this.constraintsEdges = new ArrayList<MyEdge>();
+		this.polygons = new LinkedList<MyPolygon>();
 
 		this.maxx = 1200;
 		this.maxy = 700;
@@ -254,6 +256,15 @@ public class MyMesh {
 	 */
 	public LinkedList<MyTriangle> getTriangles() {
 		return triangles;
+	}
+
+	/**
+	 * Get the polygon structure
+	 * 
+	 * @return triangle
+	 */
+	public LinkedList<MyPolygon> getPolygons() {
+		return this.polygons;
 	}
 
 	/**
@@ -1276,6 +1287,14 @@ public class MyMesh {
 		}
 	}
 
+	/**
+	 * Add a polygon to the Mesh
+	 * @param aPolygon
+	 */
+	public void addPolygon(MyPolygon aPolygon) {
+		
+	}
+	
 	/**
 	 * Refine mesh according to the type of refinement that has been defined in
 	 * the refinement variable
