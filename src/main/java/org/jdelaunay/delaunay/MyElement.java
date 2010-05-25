@@ -14,18 +14,24 @@ public abstract class MyElement {
 	protected int property;
 
 	/**
+	 * Default initialization
+	 */
+	private void init() {
+		this.gid = -1;
+		this.property = 0;
+	}
+	/**
 	 * default constructor
 	 */
 	public MyElement() {
-		this.gid = -1;
-		this.property = 0;
+		init();
 	}
 	
 	/**
 	 * Constructor
 	 */
 	public MyElement(MyElement element) {
-		this.gid = -1;
+		init();
 		this.property = element.property;
 	}
 
@@ -33,7 +39,7 @@ public abstract class MyElement {
 	 * Constructor
 	 */
 	public MyElement(int property) {
-		this.gid = -1;
+		init();
 		this.property = property;
 	}
 
@@ -41,6 +47,7 @@ public abstract class MyElement {
 	 * Constructor
 	 */
 	public MyElement(int property, int gid) {
+		init();
 		this.gid = gid;
 		this.property = property;
 	}
@@ -116,5 +123,4 @@ public abstract class MyElement {
 	public void removeProperties() {
 		this.property = 0;
 	}
-
 }
