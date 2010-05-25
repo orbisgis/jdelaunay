@@ -137,6 +137,24 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
+	 * Returned edge start point
+	 *
+	 * @return end
+	 */
+	public MyPoint getStartPoint() {
+		return this.start;
+	}
+
+	/**
+	 * Returned edge end point
+	 *
+	 * @return end
+	 */
+	public MyPoint getEndPoint() {
+		return this.end;
+	}
+
+	/**
 	 * Set edge start point
 	 *
 	 * @param p
