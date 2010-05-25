@@ -8,7 +8,7 @@ import org.jhydrocell.utilities.*;
 
 public class MyHydroNetwork {
 	private MyMesh theMesh;
-	
+
 	private LinkedList<MyPoint> listEntry;
 	private LinkedList<MyPoint> listExit;
 	private LinkedList<MyPoint> listIntermediate;
@@ -17,7 +17,10 @@ public class MyHydroNetwork {
 	private int listDefinition;
 	private boolean connectToSurface;
 
-	public MyHydroNetwork() {
+	/**
+	 * Global initialization
+	 */
+	private void init() {
 		theMesh = null;
 
 		listEntry = new LinkedList<MyPoint>();
@@ -27,38 +30,37 @@ public class MyHydroNetwork {
 		listPrepare = new LinkedList<MyPoint>();
 		listDefinition = 0;
 		connectToSurface = true;
-}
-	
-	public MyHydroNetwork(MyMesh aMesh) {
-		theMesh = aMesh;
+	}
 
-		listEntry = new LinkedList<MyPoint>();
-		listExit = new LinkedList<MyPoint>();
-		listIntermediate = new LinkedList<MyPoint>();
-		listEdges = new LinkedList<MyEdge>();
-		listPrepare = new LinkedList<MyPoint>();
-		listDefinition = 0;
-		connectToSurface = true;
-}
+	/**
+	 * Constructor
+	 */
+	public MyHydroNetwork() {
+		init();
+	}
+
+	/**
+	 * Constructor
+	 */
+	public MyHydroNetwork(MyMesh aMesh) {
+		init();
+		theMesh = aMesh;
+	}
 
 	/**
 	 * Morphological qualification
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void morphologicalQualification() throws DelaunayError {
-
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (! theMesh.isMeshComputed())
+		else if (!theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 
-			/**
-			 * Edges : topographic qualifications
-			 */
+			// Edges : topographic qualifications
 			for (MyEdge edge : theMesh.getEdges()) {
-
 				HydroLineUtil hydroLineUtil = new HydroLineUtil(edge);
 				HydroPolygonUtil hydroPolygonUtil = null;
 				MyTriangle aTriangleLeft = edge.getLeft();
@@ -75,22 +77,17 @@ public class MyHydroNetwork {
 
 				// Qualification des triangles
 				if (aTriangleRight != null) {
-
 					hydroPolygonUtil = new HydroPolygonUtil(aTriangleRight);
 					boolean pointeVersEdge = hydroPolygonUtil
 							.getPenteVersEdge(edge);
-
 					if (pointeVersEdge) {
 						rightTtoEdge = true;
-
 					} else if (hydroPolygonUtil.getSlope() > 0) {
 						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
 								hydroPolygonUtil.get3DVector())) {
-
 							rightTColinear = true;
 						}
 					} else if (hydroPolygonUtil.getSlope() == 0) {
-
 						righTFlat = true;
 					}
 				}
@@ -106,16 +103,13 @@ public class MyHydroNetwork {
 							.getPenteVersEdge(edge);
 
 					if (pointeVersEdge) {
-
 						leftTtoEdge = true;
 					} else if (hydroPolygonUtil.getSlope() > 0) {
 						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
 								hydroPolygonUtil.get3DVector())) {
-
 							leftTColinear = true;
 						}
 					} else if (hydroPolygonUtil.getSlope() == 0) {
-
 						leftTFlat = true;
 					}
 
@@ -127,40 +121,31 @@ public class MyHydroNetwork {
 
 				// Qualification de la pente de l'edge parcouru
 				int edgeGradient = edge.getGradient();
-
 				if (!leftBorder && !rightBorder) {
-
 					// Traitement des ridges
 					if ((!rightTtoEdge && !leftTtoEdge)
 							&& (!righTFlat && !leftTFlat)) {
-
 						edge.addProperty(HydroProperties.RIDGE);
-
 					}
 
 					// Cas des talwegs
 					else if (rightTtoEdge && leftTtoEdge) {
-
 						edge.addProperty(HydroProperties.TALWEG);
-						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
-						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
+						edge.getStart().addProperty(HydroProperties.TALWEG);
+						edge.getEnd().addProperty(HydroProperties.TALWEG);
 
 					}
 
 					// Le triangle de gauche pointe sur l'edge mais pas le
 					// triangle de droite
 					else if ((leftTtoEdge && !rightTtoEdge) && !righTFlat) {
-
 						edge.addProperty(HydroProperties.RIGHTSLOPE);
-
 					}
 
 					// Le triangle de droite pointe sur l'edge mais pas le
 					// triangle de gauche
 					else if ((rightTtoEdge && !leftTtoEdge) && (!leftTFlat)) {
-
 						edge.addProperty(HydroProperties.LEFTTSLOPE);
-
 					}
 
 					// Traitement du rebord droit
@@ -179,105 +164,90 @@ public class MyHydroNetwork {
 					// Traitement du fond gauche
 					else if ((rightTtoEdge && !leftTtoEdge)
 							&& (leftTFlat && !righTFlat)) {
-
 						edge.addProperty(HydroProperties.LEFTWELL);
 					}
 
 					// Traitement du fond droit
 					else if ((!rightTtoEdge && leftTtoEdge)
 							&& (!leftTFlat && righTFlat)) {
-
 						edge.addProperty(HydroProperties.RIGHTWELL);
 					}
 
 					// Cas particulier des talwegs colineaires
 
 					// Talweg colineaire gauche
-
 					else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
-
 						edge.addProperty(HydroProperties.LEFTCOLINEAR);
-						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
-						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
+						edge.getStart().addProperty(HydroProperties.TALWEG);
+						edge.getEnd().addProperty(HydroProperties.TALWEG);
 
 					}
 
 					// Talweg colineaire droit
-
 					else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
-
 						edge.addProperty(HydroProperties.RIGHTCOLINEAR);
-						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
-						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
+						edge.getStart().addProperty(HydroProperties.TALWEG);
+						edge.getEnd().addProperty(HydroProperties.TALWEG);
 
 					}
 
 					// Les deux triangles sont colineaires
-
 					else if ((!leftTtoEdge && !rightTtoEdge)
 							&& (rightTColinear && leftTColinear)) {
-
 						edge.addProperty(HydroProperties.DOUBLECOLINEAR);
 
-						edge.getStartPoint().addProperty(HydroProperties.TALWEG);
-						edge.getEndPoint().addProperty(HydroProperties.TALWEG);
+						edge.getStart().addProperty(HydroProperties.TALWEG);
+						edge.getEnd().addProperty(HydroProperties.TALWEG);
 
 					}
 
 					// Le reste est plat
 					else {
-
 						edge.addProperty(HydroProperties.FLAT);
-
 					}
-
 				}
 
 				// Traitement des bords plats
 				else {
 					edge.addProperty(HydroProperties.BORDER);
 				}
-
 			}
-
 		}
 	}
 
 	public void talwegBuilder() throws DelaunayError {
-
 		if (theMesh == null)
 			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
-		else if (! theMesh.isMeshComputed())
+		else if (!theMesh.isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
-		/**
-		 * The code below is used to insert new talweg in the TIN
-		 */
+			/**
+			 * The code below is used to insert new talweg in the TIN
+			 */
 
-		ArrayList<MyPoint> listPointAtraiter = new ArrayList<MyPoint>();
-		ArrayList<MyTriangle> listTriangles = new ArrayList<MyTriangle>();
+			ArrayList<MyPoint> listPointAtraiter = new ArrayList<MyPoint>();
+			ArrayList<MyTriangle> listTriangles = new ArrayList<MyTriangle>();
 
-		for (MyEdge edge : theMesh.getEdges()) {
+			for (MyEdge edge : theMesh.getEdges()) {
 
-			// Edge talweg
-			if ((!edge.hasProperty(HydroProperties.TALWEG))
-					|| (!edge.hasProperty(HydroProperties.LEFTCOLINEAR))
-					|| (!edge.hasProperty(HydroProperties.RIGHTCOLINEAR))
-					|| (!edge.hasProperty(HydroProperties.DOUBLECOLINEAR))) {
+				// Edge talweg
+				if ((!edge.hasProperty(HydroProperties.TALWEG))
+						|| (!edge.hasProperty(HydroProperties.LEFTCOLINEAR))
+						|| (!edge.hasProperty(HydroProperties.RIGHTCOLINEAR))
+						|| (!edge.hasProperty(HydroProperties.DOUBLECOLINEAR))) {
 
-				MyPoint uperPoint = theMesh.findUperPoint(edge);
+					MyPoint uperPoint = theMesh.findUperPoint(edge);
 
-				if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
-					if (!listPointAtraiter.contains(uperPoint)) {
-						listPointAtraiter.add(uperPoint);
+					if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
+						if (!listPointAtraiter.contains(uperPoint)) {
+							listPointAtraiter.add(uperPoint);
 
+						}
 					}
 				}
 			}
+			theMesh.setAllGids();
 		}
-
-		theMesh.setAllGids();
-	}
 	}
 
 	/**
@@ -302,8 +272,8 @@ public class MyHydroNetwork {
 					}
 
 					// Changes edges connections
-					newEdge.setRight( null );
-					anEdge.setLeft ( null );
+					newEdge.setRight(null);
+					anEdge.setLeft(null);
 
 					// add the new edge
 					addedEdges.add(newEdge);
@@ -316,10 +286,11 @@ public class MyHydroNetwork {
 			theEdges.add(anEdge);
 		}
 	}
+
 	// ----------------------------------------------------------------
 	/**
 	 * Defines a new branch type
-	 *
+	 * 
 	 * @param branchType
 	 * @param connectToSurface
 	 * @throws DelaunayError
@@ -336,7 +307,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * Defines a new branch type on the surface
-	 *
+	 * 
 	 * @param branchType
 	 * @throws DelaunayError
 	 */
@@ -346,7 +317,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * defines a new branch
-	 *
+	 * 
 	 * @param theList
 	 * @throws DelaunayError
 	 */
@@ -424,7 +395,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * Validate branch and end that branch type
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	private void branchValidate() throws DelaunayError {
@@ -441,21 +412,12 @@ public class MyHydroNetwork {
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
 					// Connect it to the surface
-					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
-					aPoint.setZ( ZValue);
+					double ZValue = referenceTriangle.softInterpolateZ(aPoint);
+					aPoint.setZ(ZValue);
 
 					theMesh.addPoint(referenceTriangle, aPoint);
 				} else {
-					referenceTriangle = theMesh.addPoint(aPoint);
-
-					if (referenceTriangle != null) {
-						double ZValue = 0;
-						for (int i = 0; i < 3; i++) {
-							if (referenceTriangle.getPoint(i) != aPoint)
-								ZValue += referenceTriangle.getPoint(i).getZ();
-						}
-						aPoint.setZ( ZValue / 2);
-					}
+					theMesh.addPoint(aPoint);
 				}
 			}
 		}
@@ -467,30 +429,21 @@ public class MyHydroNetwork {
 				// Already in the points list => do noting
 			} else {
 				points.add(aPoint);
-				aPoint.setMarked (true);
+				aPoint.setMarked(true);
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
-					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
+					double ZValue = referenceTriangle.softInterpolateZ(aPoint);
 					if (connectToSurface) {
 						// Connect it to the surface
-						aPoint.setZ( ZValue );
+						aPoint.setZ(ZValue);
 
 						theMesh.addPoint(referenceTriangle, aPoint);
 					} else {
 						if (aPoint.getZ() > ZValue)
-							aPoint.setZ( ZValue - 1.0);
+							aPoint.setZ(ZValue - 1.0);
 					}
 				} else if (connectToSurface) {
-					referenceTriangle = theMesh.addPoint(aPoint);
-
-					if (referenceTriangle != null) {
-						double ZValue = 0;
-						for (int i = 0; i < 3; i++) {
-							if (referenceTriangle.getPoint(i) != aPoint)
-								ZValue += referenceTriangle.getPoint(i).getZ();
-						}
-						aPoint.setZ( ZValue / 2);
-					}
+					theMesh.addPoint(aPoint);
 				}
 			}
 		}
@@ -504,32 +457,23 @@ public class MyHydroNetwork {
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
 					// Connect it to the surface
-					double ZValue = referenceTriangle.getSurfacePoint(aPoint);
-					aPoint.setZ( ZValue);
+					double ZValue = referenceTriangle.softInterpolateZ(aPoint);
+					aPoint.setZ(ZValue);
 
 					theMesh.addPoint(referenceTriangle, aPoint);
 				} else {
-					referenceTriangle = theMesh.addPoint(aPoint);
-
-					if (referenceTriangle != null) {
-						double ZValue = 0;
-						for (int i = 0; i < 3; i++) {
-							if (referenceTriangle.getPoint(i) != aPoint)
-								ZValue += referenceTriangle.getPoint(i).getZ();
-						}
-						aPoint.setZ( ZValue / 2);
-					}
+					theMesh.addPoint(aPoint);
 				}
 			}
 		}
 
 		// add edges
 		for (MyEdge anEdge : listEdges) {
-			anEdge.setMarked (true);
+			anEdge.setMarked(true);
 			if (connectToSurface)
 				theMesh.addEdge(anEdge);
 			else {
-				anEdge.setOutsideMesh ( true );
+				anEdge.setOutsideMesh(true);
 				edges.add(anEdge);
 			}
 		}
@@ -548,7 +492,7 @@ public class MyHydroNetwork {
 	// ----------------------------------------------------------------
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -562,7 +506,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -577,7 +521,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * add a sewer entry
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -588,7 +532,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @throws DelaunayError
@@ -601,7 +545,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -615,7 +559,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * add a sewer exit
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -627,7 +571,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * add a sewer point (neither start or exit
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -642,7 +586,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * add a sewer point (neither start or exit
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -652,7 +596,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * use a sewer point to start a new branch
-	 *
+	 * 
 	 * @param x
 	 * @param y
 	 * @param z
@@ -666,7 +610,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * use a sewer point to start a new branch
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -677,7 +621,7 @@ public class MyHydroNetwork {
 	// ----------------------------------------------------------------
 	/**
 	 * Start sewers definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void sewerStart() throws DelaunayError {
@@ -686,7 +630,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * define a new sewer branch
-	 *
+	 * 
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
@@ -702,7 +646,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * Validate and end sewer definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void sewerValidate() throws DelaunayError {
@@ -714,7 +658,7 @@ public class MyHydroNetwork {
 	// ----------------------------------------------------------------
 	/**
 	 * Start ditches definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void ditchStart() throws DelaunayError {
@@ -723,7 +667,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * define a new ditch branch
-	 *
+	 * 
 	 * @param ditchList
 	 * @throws DelaunayError
 	 */
@@ -739,7 +683,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * Validate and end ditches definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void ditchValidate() throws DelaunayError {
@@ -751,7 +695,7 @@ public class MyHydroNetwork {
 	// ----------------------------------------------------------------
 	/**
 	 * Start rivers definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void riverStart() throws DelaunayError {
@@ -760,7 +704,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * define a new river branch
-	 *
+	 * 
 	 * @param riverList
 	 * @throws DelaunayError
 	 */
@@ -776,7 +720,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * Validate and end rivers definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void riverValidate() throws DelaunayError {
@@ -788,7 +732,7 @@ public class MyHydroNetwork {
 	// ----------------------------------------------------------------
 	/**
 	 * Start walls definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void wallStart() throws DelaunayError {
@@ -797,7 +741,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * define a new wall branch
-	 *
+	 * 
 	 * @param wallList
 	 * @throws DelaunayError
 	 */
@@ -813,7 +757,7 @@ public class MyHydroNetwork {
 
 	/**
 	 * Validate and end walls definition
-	 *
+	 * 
 	 * @throws DelaunayError
 	 */
 	public void wallValidate() throws DelaunayError {
