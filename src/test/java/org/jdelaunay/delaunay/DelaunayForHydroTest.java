@@ -1,9 +1,8 @@
-package org.jdelaunay.delaunay;
+package org.jdelaunay.test;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
-import org.jhydrocell.hydronetwork.MyHydroNetwork;
+import java.util.*;
+import org.jdelaunay.delaunay.*;
+import org.jhydrocell.hydronetwork.*;
 
 
 public class DelaunayForHydroTest extends BaseTest {
