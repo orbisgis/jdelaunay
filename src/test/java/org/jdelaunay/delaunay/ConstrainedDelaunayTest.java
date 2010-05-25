@@ -1,6 +1,7 @@
-package org.jdelaunay.delaunay;
+package org.jdelaunay.test;
 
-import java.util.ArrayList;
+import java.util.*;
+import org.jdelaunay.delaunay.*;
 
 public class ConstrainedDelaunayTest extends BaseTest {
 
@@ -9,14 +10,16 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
-		aMesh.setRandomPoints(100);
-		aMesh.setRandomEdges(50);
-		aMesh.setStart();
+		
 		aMesh.setMax(1300, 700);
+		aMesh.setRandomPoints(1000);
+		aMesh.setRandomEdges(50);
+
 		aMesh.processDelaunay();
-		aMesh.setEnd();
+
 		show(aMesh);
 		System.out.println();
+		assertTrue(true);
 	}
 
 	public void testDelaunayBreaklines() throws DelaunayError {
@@ -24,14 +27,15 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
+		
 		aMesh.setPoints(getPoints());
-		aMesh.setEdges(getBreaklines());
-		aMesh.setStart();
-		aMesh.setMax(1300, 700);
+		aMesh.setConstraintEdges(getBreaklines());
+		
 		aMesh.processDelaunay();
-		aMesh.setEnd();
+
 		show(aMesh);
 		System.out.println();
+		assertTrue(true);
 	}
 
 	public void testGIDS() throws DelaunayError {
@@ -39,13 +43,13 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
+		
 		aMesh.setPoints(getPoints());
-		aMesh.setEdges(getBreaklines());
-		aMesh.setStart();
-		aMesh.setMax(1300, 700);
+		aMesh.setConstraintEdges(getBreaklines());
+		
 		aMesh.processDelaunay();
-		aMesh.setEnd();
-		testGID(aMesh);
+
+		assertGIDUnicity(aMesh);
 	}
 
 	public void testDuplicatesXYZBreakline() throws DelaunayError {
@@ -53,16 +57,16 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
+		
 		aMesh.setPoints(getPoints());
 		ArrayList<MyEdge> breaklines = getBreaklines();
 		breaklines.add(new MyEdge(new MyPoint(120, 10, 2), new MyPoint(102, 10,
 				1)));
-		aMesh.setEdges(breaklines);
-		aMesh.setStart();
-		aMesh.setMax(1300, 700);
+		aMesh.setConstraintEdges(breaklines);
+
 		aMesh.processDelaunay();
-		aMesh.setEnd();
+
 		show(aMesh);
 		System.out.println();
-	}
+		assertTrue(true);	}
 }
