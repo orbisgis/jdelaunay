@@ -9,9 +9,9 @@ package org.jdelaunay.delaunay;
  */
 
 public class MyBox {
-	public double minx, maxx;
-	public double miny, maxy;
-	public double minz, maxz;
+	protected double minx, maxx;
+	protected double miny, maxy;
+	protected double minz, maxz;
 	private boolean empty;
 
 	/**
