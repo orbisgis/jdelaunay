@@ -237,7 +237,25 @@ public class MyEdge extends MyElement {
 			this.marked = 0;
 	}
 
-	
+	/**
+	 * get the mark of the edge
+	 * @return marked
+	 */
+	public boolean isLocked() {
+		return (this.marked != 0);
+	}
+
+	/**
+	 * set the mark of the edge
+	 * @param marked
+	 */
+	public void setLocked(boolean marked) {
+		if (marked)
+			this.marked = 1;
+		else
+			this.marked = 0;
+	}
+
 	/**
 	 * check if edge is taken into account in the triangularization
 	 * @return outsideMesh
@@ -257,6 +275,27 @@ public class MyEdge extends MyElement {
 			this.outsideMesh = 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
+	 */
+	public MyBox getBoundingBox() {
+		MyBox aBox = new MyBox();
+		aBox.alterBox( this.startPoint);
+		aBox.alterBox( this.endPoint);
+		
+		return aBox;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
+	 */
+	public boolean contains(MyPoint aPoint) {
+		if (intersects(aPoint, aPoint) > 0)
+			return true;
+		else
+			return false;
+	}
+	
 	/**
 	 * check if two edges intersects
 	 *
