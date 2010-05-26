@@ -12,11 +12,10 @@ package org.jdelaunay.delaunay;
 import java.awt.*;
 
 public class MyEdge extends MyElement {
-	protected MyPoint startPoint, endPoint;
-	protected MyTriangle left, right;
+	private MyPoint startPoint, endPoint;
+	private MyTriangle left, right;
 
-	protected byte marked;
-	protected byte outsideMesh;
+	private int indicator;
 
 	static final int UPSLOPE = -1;
 	static final int DOWNSLOPE = 1;
@@ -30,8 +29,7 @@ public class MyEdge extends MyElement {
 		this.endPoint = null;
 		this.left = null;
 		this.right = null;
-		this.marked = 0;
-		this.outsideMesh = 0;
+		this.indicator = 0;
 	}
 
 	/**
@@ -67,8 +65,7 @@ public class MyEdge extends MyElement {
 		this.endPoint = ed.endPoint;
 		this.left = ed.left;
 		this.right = ed.right;
-		this.marked = ed.marked;
-		this.outsideMesh = ed.outsideMesh;
+		this.indicator = ed.indicator;
 	}
 
 	/**
@@ -219,22 +216,43 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
-	 * get the mark of the edge
+	 * get the value of a specific bit
+	 * @param byteNumber
 	 * @return marked
 	 */
-	public boolean isMarked() {
-		return (this.marked != 0);
+	private boolean testBit(int byteNumber) {
+		return ((this.indicator & (1 << byteNumber)) != 0);
+	}
+
+	/**
+	 * set the value of a specific bit
+	 * @param byteNumber
+	 * @param value
+	 */
+	private void setBit(int byteNumber, boolean value) {
+		int test = (1 << byteNumber);
+		if (value)
+			this.indicator = (this.indicator | test);
+		else
+			this.indicator = (this.indicator | test) - test;
+	}
+	
+	/**
+	 * get the mark of the edge
+	 * @param byteNumber
+	 * @return marked
+	 */
+	public boolean isMarked(int byteNumber) {
+		return testBit(3+byteNumber);
 	}
 
 	/**
 	 * set the mark of the edge
+	 * @param byteNumber
 	 * @param marked
 	 */
-	public void setMarked(boolean marked) {
-		if (marked)
-			this.marked = 1;
-		else
-			this.marked = 0;
+	public void setMarked(int byteNumber, boolean marked) {
+		setBit(3+byteNumber, marked);
 	}
 
 	/**
@@ -242,18 +260,15 @@ public class MyEdge extends MyElement {
 	 * @return marked
 	 */
 	public boolean isLocked() {
-		return (this.marked != 0);
+		return testBit(2);
 	}
 
 	/**
 	 * set the mark of the edge
 	 * @param marked
 	 */
-	public void setLocked(boolean marked) {
-		if (marked)
-			this.marked = 1;
-		else
-			this.marked = 0;
+	public void setLocked(boolean locked) {
+		setBit(2, locked);
 	}
 
 	/**
@@ -261,7 +276,7 @@ public class MyEdge extends MyElement {
 	 * @return outsideMesh
 	 */
 	public boolean isOutsideMesh() {
-		return (this.outsideMesh != 0);
+		return testBit(1);
 	}
 
 	/**
@@ -269,12 +284,10 @@ public class MyEdge extends MyElement {
 	 * @param outsideMesh
 	 */
 	public void setOutsideMesh(boolean outsideMesh) {
-		if (outsideMesh)
-			this.outsideMesh = 1;
-		else
-			this.outsideMesh = 0;
+		setBit(1, outsideMesh);
 	}
 
+	
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
 	 */
@@ -637,9 +650,9 @@ public class MyEdge extends MyElement {
 		if (getProperty() != 0 ) {
 			g.setColor(Color.red);
 			((Graphics2D) g).setStroke(new BasicStroke(2));
-		} else if (marked == 1) {
+		} else if (isLocked()) {
 			g.setColor(Color.CYAN);
-		} else if (marked == 2) {
+		} else if (isOutsideMesh()) {
 			g.setColor(Color.pink);
 		} else
 			g.setColor(Color.black);
@@ -662,7 +675,7 @@ public class MyEdge extends MyElement {
 				decalageY + (int) ((this.startPoint.getY() - minY) * scaleY),
 				(int) ((this.endPoint.getX() - minX) * scaleX + decalageX), decalageY
 						+ (int) ((this.endPoint.getY() - minY) * scaleY)); // coordinate 0 in Y is at bottom of screen
-		if (marked > 0) {
+		if (isLocked()) {
 			this.startPoint.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
 					scaleY);
 			this.endPoint.displayObject(g, decalageX, decalageY, minX, minY, scaleX,
