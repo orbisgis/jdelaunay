@@ -1,9 +1,7 @@
-package org.jdelaunay.test;
+package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
-
-import org.jdelaunay.delaunay.*;
 
 import junit.framework.TestCase;
 

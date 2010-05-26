@@ -13,10 +13,8 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setRandomPoints(5000);
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		aMesh.setEnd();
 		show(aMesh);
 		System.out.println();
 
@@ -28,10 +26,8 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		aMesh.setEnd();
 		show(aMesh);
 		System.out.println();
 
@@ -43,14 +39,12 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
-		aMesh.setStart();
 		aMesh.processDelaunay();
 		aMesh.setMinArea(1000);
 		assertTrue(aMesh.getMinArea() == 1000);
 		aMesh.setRefinment(aMesh.refinement_maxArea);
 
 		aMesh.refineMesh();
-		aMesh.setEnd();
 
 
 		show(aMesh);
@@ -75,10 +69,8 @@ public class DelaunayTest extends BaseTest {
 		ArrayList<MyPoint> pts = getPoints();
 		pts.add(new MyPoint(52, 100, 1));
 		aMesh.setPoints(pts);
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		aMesh.setEnd();
 		assertTrue(aMesh.getNbPoints() == pts.size() - 1);
 
 	}
@@ -91,10 +83,8 @@ public class DelaunayTest extends BaseTest {
 		ArrayList<MyPoint> pts = getPoints();
 		pts.add(new MyPoint(52, 100, 10));
 		aMesh.setPoints(pts);
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		aMesh.setEnd();
 		show(aMesh);
 		assertTrue(aMesh.getNbPoints() == pts.size() - 1);
 
@@ -110,10 +100,8 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		aMesh.setEnd();
 		assertGIDUnicity(aMesh);
 	}
 
@@ -142,12 +130,9 @@ public class DelaunayTest extends BaseTest {
 
 		aMesh.setEdges(edges);
 		aMesh.setPoints(points);
-		aMesh.setStart();
 
 		// process triangularization
 		aMesh.processDelaunay();
-
-		aMesh.setEnd();
 
 		int j=0;
 		for (int i=0;i<aMesh.getEdges().size()-1;i++) {

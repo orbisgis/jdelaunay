@@ -1,7 +1,6 @@
-package org.jdelaunay.test;
+package org.jdelaunay.delaunay;
 
-import java.util.*;
-import org.jdelaunay.delaunay.*;
+import java.util.ArrayList;
 
 public class ConstrainedDelaunayTest extends BaseTest {
 

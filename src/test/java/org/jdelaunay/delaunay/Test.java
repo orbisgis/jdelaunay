@@ -1,8 +1,6 @@
-package org.jdelaunay.test;
+package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
-
-import org.jdelaunay.delaunay.*;
 
 public class Test {
 

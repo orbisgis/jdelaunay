@@ -18,17 +18,12 @@ public class TestPolygon  extends BaseTest  {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
 		
 		aMesh.addPolygon(aPolygon);
 		
 		show(aMesh);
-		
-		aMesh.setEnd();
-		
-		System.in.read();	
 	}
 
 }

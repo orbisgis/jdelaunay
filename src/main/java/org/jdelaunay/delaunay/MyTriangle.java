@@ -717,9 +717,13 @@ public class MyTriangle extends MyElement {
 		xPoints[1] = (int) ((p2.getX() - minX) * scaleX + decalageX);
 		xPoints[2] = (int) ((p3.getX() - minX) * scaleX + decalageX);
 
-		yPoints[0] = (int) ((p1.getY() - minY) * scaleY + decalageY);
-		yPoints[1] = (int) ((p2.getY() - minY) * scaleY + decalageY);
-		yPoints[2] = (int) ((p3.getY() - minY) * scaleY + decalageY);
+//		yPoints[0] = (int) ((p1.getY() - minY) * scaleY + decalageY);// coordinate 0 in Y is at top of screen (don't forget make change in sub method)
+//		yPoints[1] = (int) ((p2.getY() - minY) * scaleY + decalageY);
+//		yPoints[2] = (int) ((p3.getY() - minY) * scaleY + decalageY);
+//		
+		yPoints[0] = (int) (decalageY - (p1.getY() - minY) * scaleY);// coordinate 0 in Y is at bottom of screen
+		yPoints[1] = (int) (decalageY - (p2.getY() - minY) * scaleY);
+		yPoints[2] = (int) (decalageY - (p3.getY() - minY) * scaleY);
 
 		setColor(g);
 		g.fillPolygon(xPoints, yPoints, 3);

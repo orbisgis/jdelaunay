@@ -1,8 +1,9 @@
-package org.jdelaunay.test;
+package org.jdelaunay.delaunay;
 
-import java.util.*;
-import org.jdelaunay.delaunay.*;
-import org.jhydrocell.hydronetwork.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import org.jhydrocell.hydronetwork.MyHydroNetwork;
 
 
 public class DelaunayForHydroTest extends BaseTest {
@@ -19,7 +20,6 @@ public class DelaunayForHydroTest extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
 
@@ -45,8 +45,9 @@ public class DelaunayForHydroTest extends BaseTest {
 			}
 		}
 		assertTrue(nbFlat == 0);
-		aMesh.setEnd();
-
+		MyDrawing aff2 = new MyDrawing();
+		aff2.add(aMesh);
+		aMesh.setAffiche(aff2);
 	}
 
 	public void testEdgesMorphologicalClassification() throws DelaunayError {
@@ -56,7 +57,6 @@ public class DelaunayForHydroTest extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
-		aMesh.setStart();
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
 		
@@ -70,6 +70,10 @@ public class DelaunayForHydroTest extends BaseTest {
 
 			myEdge.getProperty();
 		}
-
+		
+		
+		MyDrawing aff2 = new MyDrawing();
+		aff2.add(aMesh);
+		aMesh.setAffiche(aff2);
 	}
 }

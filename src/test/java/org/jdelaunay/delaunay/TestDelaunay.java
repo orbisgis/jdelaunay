@@ -1,8 +1,7 @@
-package org.jdelaunay.test;
+package org.jdelaunay.delaunay;
 
-import java.util.*;
-
-import org.jdelaunay.delaunay.*;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class TestDelaunay extends BaseTest {
 	/**
