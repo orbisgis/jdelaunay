@@ -148,6 +148,25 @@ public class MyPoint extends MyElement  {
 		return coord;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
+	 */
+	public MyBox getBoundingBox() {
+		MyBox aBox = new MyBox();
+		aBox.alterBox( this);
+		
+		return aBox;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
+	 */
+	public boolean contains(MyPoint aPoint) {
+		if (squareDistance(aPoint) < 0.000001)
+			return true;
+		else
+			return false;
+	}
 	/**
 	 * linear square distance to another point
 	 * 
