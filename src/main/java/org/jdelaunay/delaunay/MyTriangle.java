@@ -228,17 +228,17 @@ public class MyTriangle extends MyElement {
 			// Start point should be start
 			MyPoint aPoint = this.getAlterPoint(edges[i]);
 			if (edges[i].isLeft(aPoint)) {
-				if (edges[i].left == null)
-					edges[i].left = this;
+				if (edges[i].getLeft() == null)
+					edges[i].setLeft( this );
 				else {
-					edges[i].right = this;
+					edges[i].setRight( this );
 				}
 			}
 			else {
-				if (edges[i].right == null)
-					edges[i].right = this;
+				if (edges[i].getRight() == null)
+					edges[i].setRight( this );
 				else {
-					edges[i].left = this;
+					edges[i].setLeft( this );
 				}
 			}
 		}
@@ -281,7 +281,7 @@ public class MyTriangle extends MyElement {
 		int k = 0;
 		while ((k < 3) && (isInside)) {
 			MyEdge theEdge = edges[k];
-			if (theEdge.left == this) {
+			if (theEdge.getLeft() == this) {
 				if (theEdge.isRight(aPoint))
 					isInside = false;
 			} else {
@@ -346,10 +346,10 @@ public class MyTriangle extends MyElement {
 			MyEdge anEdge = edges[i];
 			MyTriangle aTriangle = null;
 			if (anEdge != null)
-				if (anEdge.left == this)
-					aTriangle = anEdge.right;
+				if (anEdge.getLeft() == this)
+					aTriangle = anEdge.getRight();
 				else
-					aTriangle = anEdge.left;
+					aTriangle = anEdge.getLeft();
 			if (aTriangle != null) {
 				weight += 1.0;
 				ZValue += aTriangle.interpolateZ(aPoint);
@@ -452,9 +452,9 @@ public class MyTriangle extends MyElement {
 		i = 0;
 		while ((i < 3) && (correct)) {
 			int foundEdge = 0;
-			if (edges[i].left == this)
+			if (edges[i].getLeft() == this)
 				foundEdge++;
-			if (edges[i].right == this)
+			if (edges[i].getRight() == this)
 				foundEdge++;
 
 			if (foundEdge != 1)
@@ -717,13 +717,9 @@ public class MyTriangle extends MyElement {
 		xPoints[1] = (int) ((p2.getX() - minX) * scaleX + decalageX);
 		xPoints[2] = (int) ((p3.getX() - minX) * scaleX + decalageX);
 
-//		yPoints[0] = (int) ((p1.getY() - minY) * scaleY + decalageY);// coordinate 0 in Y is at top of screen (don't forget make change in sub method)
-//		yPoints[1] = (int) ((p2.getY() - minY) * scaleY + decalageY);
-//		yPoints[2] = (int) ((p3.getY() - minY) * scaleY + decalageY);
-//		
-		yPoints[0] = (int) (decalageY - (p1.getY() - minY) * scaleY);// coordinate 0 in Y is at bottom of screen
-		yPoints[1] = (int) (decalageY - (p2.getY() - minY) * scaleY);
-		yPoints[2] = (int) (decalageY - (p3.getY() - minY) * scaleY);
+		yPoints[0] = (int) ((p1.getY() - minY) * scaleY + decalageY);
+		yPoints[1] = (int) ((p2.getY() - minY) * scaleY + decalageY);
+		yPoints[2] = (int) ((p3.getY() - minY) * scaleY + decalageY);
 
 		setColor(g);
 		g.fillPolygon(xPoints, yPoints, 3);
