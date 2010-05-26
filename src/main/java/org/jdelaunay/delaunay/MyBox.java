@@ -46,6 +46,16 @@ public class MyBox {
 	}
 
 	/**
+	 * set a box according to coordinates
+	 * @param aBox
+	 */
+	public MyBox(MyBox aBox) {
+		init();
+
+		setBox(aBox.minx,aBox.maxx, aBox.miny, aBox.maxy, aBox.minz, aBox.maxz);
+	}
+
+	/**
 	 * set box coordinates
 	 * 
 	 * @param _minx
