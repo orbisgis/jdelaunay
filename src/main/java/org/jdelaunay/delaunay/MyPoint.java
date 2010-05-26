@@ -13,8 +13,8 @@ import java.awt.*;
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyPoint extends MyElement  {
-	protected Coordinate coord;
-	protected byte marked;
+	private Coordinate coord;
+	private int marked;
 
 	/**
 	 * Initialize point 
@@ -162,7 +162,7 @@ public class MyPoint extends MyElement  {
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
 	public boolean contains(MyPoint aPoint) {
-		if (squareDistance(aPoint) < 0.000001)
+		if (squareDistance(aPoint) < MyTools.epsilon2)
 			return true;
 		else
 			return false;
@@ -272,12 +272,9 @@ public class MyPoint extends MyElement  {
 	protected void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
-//		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
-//				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);// coordinate 0 in Y is at top of screen (don't forget make change in sub method)
-
 		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
-				(int) (decalageY - (this.coord.y - minY) * scaleY) - 1, 1, 1);// coordinate 0 in Y is at bottom of screen
-		
+				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);
+
 		/*
 		 * if (gid > 0) { g.drawString("" + gid, (int) ((x - minX) * scaleX +
 		 * decalageX), (int) ((y - minY) * scaleY + decalageY) - 1); }
