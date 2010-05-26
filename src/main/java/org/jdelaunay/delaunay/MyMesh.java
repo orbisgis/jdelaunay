@@ -29,9 +29,9 @@ public class MyMesh {
 	private MyBox theBox;
 
 	// GIDs
-	protected int point_GID;
-	protected int edge_GID;
-	protected int triangle_GID;
+	private int point_GID;
+	private int edge_GID;
+	private int triangle_GID;
 
 	// Parameters
 	private boolean meshComputed;
@@ -57,6 +57,7 @@ public class MyMesh {
 	public static final int refinement_maxArea = 1;
 	public static final int refinement_minAngle = 2;
 	public static final int refinement_softInterpolate = 4;
+	public static final int refinement_obtuseAngle = 8;
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
@@ -651,7 +652,7 @@ public class MyMesh {
 	public void createEdge(MyEdge anEdge) throws DelaunayError {
 		if (isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_Generated);
-		else if (! constraintsEdges.contains(anEdge)) {
+		else if (!constraintsEdges.contains(anEdge)) {
 			MyPoint aPoint1 = anEdge.getStartPoint();
 			MyPoint aPoint2 = anEdge.getEndPoint();
 			createEdge(aPoint1, aPoint2);
@@ -683,7 +684,10 @@ public class MyMesh {
 			double x = Math.random() * maxx;
 			double y = Math.random() * maxy;
 			double z = Math.random() * (maxx + maxy) / 20.0;
-
+			if (i == 0) {
+				x = 0;
+				y = 0;
+			}
 			MyPoint aPoint = new MyPoint(x, y, z);
 			aPoint.setGID(i);
 
@@ -706,7 +710,7 @@ public class MyMesh {
 					end = (int) Math.round(Math.random() * NbPoints);
 				MyEdge anEdge = new MyEdge(points.get(start), points.get(end));
 				anEdge.setGID(i);
-				anEdge.marked = 1;
+				anEdge.setLocked(true);
 				constraintsEdges.add(anEdge);
 			}
 		}
@@ -1020,18 +1024,18 @@ public class MyMesh {
 		aTriangle3.edges[2] = anEdge[2];
 
 		// Link outside edges to triangles
-		if (aTriangle1.edges[0].left == aTriangle)
-			aTriangle1.edges[0].left = aTriangle1;
+		if (aTriangle1.edges[0].getLeft() == aTriangle)
+			aTriangle1.edges[0].setLeft(aTriangle1);
 		else
-			aTriangle1.edges[0].right = aTriangle1;
-		if (aTriangle2.edges[0].left == aTriangle)
-			aTriangle2.edges[0].left = aTriangle2;
+			aTriangle1.edges[0].setRight(aTriangle1);
+		if (aTriangle2.edges[0].getLeft() == aTriangle)
+			aTriangle2.edges[0].setLeft(aTriangle2);
 		else
-			aTriangle2.edges[0].right = aTriangle2;
-		if (aTriangle3.edges[0].left == aTriangle)
-			aTriangle3.edges[0].left = aTriangle3;
+			aTriangle2.edges[0].setRight(aTriangle2);
+		if (aTriangle3.edges[0].getLeft() == aTriangle)
+			aTriangle3.edges[0].setLeft(aTriangle3);
 		else
-			aTriangle3.edges[0].right = aTriangle3;
+			aTriangle3.edges[0].setRight(aTriangle3);
 
 		// Link inside edges to triangles
 
@@ -1039,33 +1043,33 @@ public class MyMesh {
 		// firstPoint is not in anEdge[0]
 		// Triangle with anEdge[0] and firstPoint is Triangle 1
 		if (anEdge[0].isLeft(firstPoint)) {
-			anEdge[0].left = aTriangle1;
-			anEdge[0].right = aTriangle2;
+			anEdge[0].setLeft(aTriangle1);
+			anEdge[0].setRight(aTriangle2);
 		} else {
-			anEdge[0].right = aTriangle1;
-			anEdge[0].left = aTriangle2;
+			anEdge[0].setRight(aTriangle1);
+			anEdge[0].setLeft(aTriangle2);
 		}
 
 		// anEdge[1] is connected to triangles 1 and 3
 		// alterPoint is not in anEdge[1]
 		// Triangle with anEdge[1] and alterPoint is Triangle 3
 		if (anEdge[1].isLeft(alterPoint)) {
-			anEdge[1].left = aTriangle3;
-			anEdge[1].right = aTriangle1;
+			anEdge[1].setLeft(aTriangle3);
+			anEdge[1].setRight(aTriangle1);
 		} else {
-			anEdge[1].right = aTriangle3;
-			anEdge[1].left = aTriangle1;
+			anEdge[1].setRight(aTriangle3);
+			anEdge[1].setLeft(aTriangle1);
 		}
 
 		// anEdge[2] is connected to triangles 3 and 2
 		// firstPoint is not in anEdge[2]
 		// Triangle with anEdge[2] and firstPoint is Triangle 3
 		if (anEdge[2].isLeft(firstPoint)) {
-			anEdge[2].left = aTriangle3;
-			anEdge[2].right = aTriangle2;
+			anEdge[2].setLeft(aTriangle3);
+			anEdge[2].setRight(aTriangle2);
 		} else {
-			anEdge[2].right = aTriangle3;
-			anEdge[2].left = aTriangle2;
+			anEdge[2].setRight(aTriangle3);
+			anEdge[2].setLeft(aTriangle2);
 		}
 
 		// Rebuild all topologies
@@ -1121,9 +1125,9 @@ public class MyMesh {
 				// Get base triangle
 				MyTriangle aTriangle1 = null;
 				if (k == 0)
-					aTriangle1 = anEdge.left;
+					aTriangle1 = anEdge.getLeft();
 				else
-					aTriangle1 = anEdge.right;
+					aTriangle1 = anEdge.getRight();
 				triangleList[k] = aTriangle1;
 				new_triangleList[k] = null;
 
@@ -1146,10 +1150,12 @@ public class MyMesh {
 
 					if (alterEdgeList_end[k] == null)
 						System.out.println("ERREUR");
-					else if (alterEdgeList_end[k].left == aTriangle1)
-						alterTriangleList_end[k] = alterEdgeList_end[k].right;
+					else if (alterEdgeList_end[k].getLeft() == aTriangle1)
+						alterTriangleList_end[k] = alterEdgeList_end[k]
+								.getRight();
 					else
-						alterTriangleList_end[k] = alterEdgeList_end[k].left;
+						alterTriangleList_end[k] = alterEdgeList_end[k]
+								.getLeft();
 				}
 			}
 
@@ -1213,20 +1219,20 @@ public class MyMesh {
 			// change alterEdgeList_end connection
 			for (int k = 0; k < 2; k++) {
 				if (alterEdgeList_end[k] != null) {
-					if (alterEdgeList_end[k].left == triangleList[k])
-						alterEdgeList_end[k].left = new_triangleList[k];
+					if (alterEdgeList_end[k].getLeft() == triangleList[k])
+						alterEdgeList_end[k].setLeft(new_triangleList[k]);
 					else
-						alterEdgeList_end[k].right = new_triangleList[k];
+						alterEdgeList_end[k].setRight(new_triangleList[k]);
 				}
 			}
 
 			// change remainEdge connections
 			for (int k = 0; k < 2; k++) {
 				if (remainEdge != null) {
-					if (remainEdge.left == triangleList[k])
-						remainEdge.left = new_triangleList[k];
-					if (remainEdge.right == triangleList[k])
-						remainEdge.right = new_triangleList[k];
+					if (remainEdge.getLeft() == triangleList[k])
+						remainEdge.setLeft(new_triangleList[k]);
+					if (remainEdge.getRight() == triangleList[k])
+						remainEdge.setRight(new_triangleList[k]);
 				}
 			}
 
@@ -1234,11 +1240,11 @@ public class MyMesh {
 			for (int k = 0; k < 2; k++) {
 				if (newEdges[k] != null) {
 					if (newEdges[k].isLeft(end)) {
-						newEdges[k].left = new_triangleList[k];
-						newEdges[k].right = triangleList[k];
+						newEdges[k].setLeft(new_triangleList[k]);
+						newEdges[k].setRight(triangleList[k]);
 					} else {
-						newEdges[k].left = triangleList[k];
-						newEdges[k].right = new_triangleList[k];
+						newEdges[k].setLeft(triangleList[k]);
+						newEdges[k].setRight(new_triangleList[k]);
 					}
 				}
 			}
@@ -1347,24 +1353,20 @@ public class MyMesh {
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
 			/*
-			 * toDo :
-			 * - save polygon in the polygon list
-			 * - if Mesh is not yet generated
-			 *   + add each segment of the polygon to the constraintEdge list
-			 *   or process polygon list in processDelanay
-			 *   + alter processDelaunay with a post-processing of polygons
-			 *   to give the triangles in the polygon the polygon's property
-			 * - if Mesh is computed
-			 *   + insert each point of the polygon in the Mesh (use addPoint)
-			 *   + add edges to the mesh (use addEdge)
-			 *   edges must be locked
-			 *   + give the triangles in the polygon the polygon's property
-			 * - add a reference to 1 triangle in the polygon to MyPolygon
-			 *   and do not forget to fill this reference
+			 * toDo : - save polygon in the polygon list - if Mesh is not yet
+			 * generated + add each segment of the polygon to the constraintEdge
+			 * list or process polygon list in processDelanay + alter
+			 * processDelaunay with a post-processing of polygons to give the
+			 * triangles in the polygon the polygon's property - if Mesh is
+			 * computed + insert each point of the polygon in the Mesh (use
+			 * addPoint) + add edges to the mesh (use addEdge) edges must be
+			 * locked + give the triangles in the polygon the polygon's property
+			 * - add a reference to 1 triangle in the polygon to MyPolygon and
+			 * do not forget to fill this reference
 			 */
-			
+
 			for (MyEdge anEdge : aPolygon.getEdges()) {
-				anEdge.setMarked(false);
+				anEdge.setMarked(1, false);
 				points.add(anEdge.getStartPoint());
 				points.add(anEdge.getEndPoint());
 				edges.add(anEdge);
@@ -1467,6 +1469,10 @@ public class MyMesh {
 
 					}
 				}
+
+				if ((refinement & refinement_obtuseAngle) != 0) {
+				}
+
 			} while (nbDone != 0);
 		}
 	}
@@ -1521,8 +1527,8 @@ public class MyMesh {
 
 		// While there is still an edge to process
 		for (MyEdge anEdge : constraintsEdges) {
-			if (anEdge.outsideMesh != 0) {
-				anEdge.marked = 1;
+			if (anEdge.isOutsideMesh()) {
+				anEdge.setLocked(true);
 				edges.add(anEdge);
 			} else {
 				// To be connected
@@ -1648,7 +1654,7 @@ public class MyMesh {
 
 			if (found) {
 				// Edge exists => mark it
-				currentEdge2.marked = 1;
+				currentEdge2.setLocked(true);
 				currentEdge2.setProperty(currentEdge.getProperty());
 			} else {
 				// Not found
@@ -1665,9 +1671,9 @@ public class MyMesh {
 		while ((canLink == null) && (i < 2)) {
 			MyTriangle aTriangle;
 			if (i == 0)
-				aTriangle = testEdge.left;
+				aTriangle = testEdge.getLeft();
 			else
-				aTriangle = testEdge.right;
+				aTriangle = testEdge.getRight();
 
 			if (aTriangle != null) {
 				// Check for the edge that does not include start
@@ -1682,10 +1688,10 @@ public class MyMesh {
 				// Check for the triangle that is not aTriangle;
 				MyTriangle alterTriangle = null;
 				if (possibleEdge != null)
-					if (possibleEdge.left == aTriangle)
-						alterTriangle = possibleEdge.right;
+					if (possibleEdge.getLeft() == aTriangle)
+						alterTriangle = possibleEdge.getRight();
 					else
-						alterTriangle = possibleEdge.left;
+						alterTriangle = possibleEdge.getLeft();
 
 				// Check if the last point is end
 				boolean match = false;
@@ -1695,7 +1701,7 @@ public class MyMesh {
 
 				// Check if we can swap that edge
 				if (match) {
-					if (possibleEdge.marked == 0)
+					if (!possibleEdge.isLocked())
 						if (possibleEdge.getIntersection(start, end) != null)
 							canLink = possibleEdge;
 				}
@@ -1807,9 +1813,9 @@ public class MyMesh {
 
 		// swap edges
 		for (MyEdge anEdge : EdgesToSwap) {
-			if (anEdge.marked == 0)
-				swapTriangle(anEdge.left, anEdge.right, anEdge, true);
-			anEdge.marked = 1;
+			if (!anEdge.isLocked())
+				swapTriangle(anEdge.getLeft(), anEdge.getRight(), anEdge, true);
+			anEdge.setLocked(true);
 		}
 
 		return remainEdges;
@@ -1930,9 +1936,9 @@ public class MyMesh {
 							// Get base triangle
 							MyTriangle aTriangle1 = null;
 							if (k == 0)
-								aTriangle1 = anEdge.left;
+								aTriangle1 = anEdge.getLeft();
 							else
-								aTriangle1 = anEdge.right;
+								aTriangle1 = anEdge.getRight();
 
 							if (aTriangle1 != null)
 								alterPoints[k] = aTriangle1
@@ -1951,9 +1957,9 @@ public class MyMesh {
 						for (int k = 0; k < 2; k++) {
 							MyTriangle aTriangle1 = null;
 							if (k == 0)
-								aTriangle1 = anEdge.left;
+								aTriangle1 = anEdge.getLeft();
 							else
-								aTriangle1 = anEdge.right;
+								aTriangle1 = anEdge.getRight();
 
 							for (int l = 0; l < 2; l++) {
 								if (aTriangle1 != null) {
@@ -1980,7 +1986,7 @@ public class MyMesh {
 					// Not between p1 and p2 => removed
 					iterPoint.remove();
 				} else
-					aPoint.marked = 1;
+					aPoint.setMarked(true);
 			}
 
 			// Then we mark all edges from p1 to p2
@@ -1991,9 +1997,9 @@ public class MyMesh {
 			for (MyPoint p : addedPoints) {
 				MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
 				if (anEdge != null) {
-					anEdge.marked = 1;
-					LastPoint.marked = 1;
-					p.marked = 1;
+					anEdge.setLocked(true);
+					LastPoint.setMarked(true);
+					p.setMarked(true);
 					anEdge.setProperty(CurrentEdge.getProperty());
 
 					// look for swapping edge
@@ -2161,7 +2167,7 @@ public class MyMesh {
 
 		// add the newEdges to the boundary list
 		for (MyEdge anEdge : newEdges)
-			if ((anEdge.left == null) || (anEdge.right == null))
+			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
 				boundaryEdges.add(anEdge);
 
 		// Process badTriangleQueueList
@@ -2229,22 +2235,22 @@ public class MyMesh {
 						aTriangle2.edges[2] = anEdge22;
 
 						// We have to reconnect anEdge12 and anEdge22
-						if (anEdge12.left == aTriangle2)
-							anEdge12.left = aTriangle1;
+						if (anEdge12.getLeft() == aTriangle2)
+							anEdge12.setLeft(aTriangle1);
 						else
-							anEdge12.right = aTriangle1;
-						if (anEdge22.left == aTriangle1)
-							anEdge22.left = aTriangle2;
+							anEdge12.setRight(aTriangle1);
+						if (anEdge22.getLeft() == aTriangle1)
+							anEdge22.setLeft(aTriangle2);
 						else
-							anEdge22.right = aTriangle2;
+							anEdge22.setRight(aTriangle2);
 
 						// The set right side for anEdge
 						if (anEdge.isLeft(p1)) {
-							anEdge.left = aTriangle1;
-							anEdge.right = aTriangle2;
+							anEdge.setLeft(aTriangle1);
+							anEdge.setRight(aTriangle2);
 						} else {
-							anEdge.left = aTriangle2;
-							anEdge.right = aTriangle1;
+							anEdge.setLeft(aTriangle2);
+							anEdge.setRight(aTriangle1);
 						}
 
 						// do not forget to recompute circles
@@ -2269,7 +2275,7 @@ public class MyMesh {
 
 				boolean doIt = true;
 
-				if (anEdge.marked == 1)
+				if (anEdge.isLocked())
 					doIt = false;
 				else if (AlreadySeen.contains(anEdge))
 					doIt = false;
@@ -2287,8 +2293,8 @@ public class MyMesh {
 							MyEdge addEdge;
 							for (int j = 0; j < 3; j++) {
 								addEdge = aTriangle1.edges[j];
-								if ((addEdge.left != null)
-										&& (addEdge.right != null)) {
+								if ((addEdge.getLeft() != null)
+										&& (addEdge.getRight() != null)) {
 									if (addEdge != anEdge)
 										if (!badEdgesQueueList
 												.contains(addEdge))
@@ -2296,8 +2302,8 @@ public class MyMesh {
 								}
 
 								addEdge = aTriangle2.edges[j];
-								if ((addEdge.left != null)
-										&& (addEdge.right != null)) {
+								if ((addEdge.getLeft() != null)
+										&& (addEdge.getRight() != null)) {
 									if (addEdge != anEdge)
 										if (!badEdgesQueueList
 												.contains(addEdge))
@@ -2337,12 +2343,12 @@ public class MyMesh {
 		for (int i = 0; i < 3; i++) {
 			MyEdge anEdge = aTriangle.edges[i];
 			MyTriangle alterTriangle;
-			if (anEdge.left == aTriangle)
-				alterTriangle = anEdge.right;
+			if (anEdge.getLeft() == aTriangle)
+				alterTriangle = anEdge.getRight();
 			else
-				alterTriangle = anEdge.left;
+				alterTriangle = anEdge.getLeft();
 
-			if (anEdge.marked == 0)
+			if (!anEdge.isLocked())
 				if (alterTriangle != null) {
 					if (!alterTriangle.isFlatSlope()) {
 						edgeToProcess[nbElements] = anEdge;
@@ -2491,9 +2497,10 @@ public class MyMesh {
 					int i = 0;
 					while ((!canRemove) && (i < 3)) {
 						MyEdge anEdge = aTriangle.edges[i];
-						if (anEdge.marked == 0)
+						if (!anEdge.isLocked())
 							// it must not be on the mesh edge
-							if ((anEdge.left != null) && (anEdge.right != null))
+							if ((anEdge.getLeft() != null)
+									&& (anEdge.getRight() != null))
 								canRemove = true;
 							else
 								i++;
@@ -2526,18 +2533,18 @@ public class MyMesh {
 					int i = 0;
 					while ((canChange) && (i < 3)) {
 						MyEdge anEdge = aTriangle.edges[i];
-						if (anEdge.marked == 0) {
+						if (!anEdge.isLocked()) {
 							// That edge can be tried
-							if (anEdge.left == aTriangle) {
+							if (anEdge.getLeft() == aTriangle) {
 								// check if right triangle is not flat
-								if (anEdge.right != null)
-									if (anEdge.right.isFlatSlope()) {
+								if (anEdge.getRight() != null)
+									if (anEdge.getRight().isFlatSlope()) {
 										canChange = false;
 									}
 							} else {
 								// check if right triangle is not flat
-								if (anEdge.left != null)
-									if (anEdge.left.isFlatSlope()) {
+								if (anEdge.getLeft() != null)
+									if (anEdge.getLeft().isFlatSlope()) {
 										canChange = false;
 									}
 							}
@@ -2564,18 +2571,18 @@ public class MyMesh {
 						int i = 0;
 						while ((!canChange) && (i < 3)) {
 							MyEdge anEdge = aTriangle.edges[i];
-							if (anEdge.marked == 0) {
+							if (!anEdge.isLocked()) {
 								// That edge can be tried
-								if (anEdge.left == aTriangle) {
+								if (anEdge.getLeft() == aTriangle) {
 									// check if right triangle is not flat
-									if (anEdge.right != null)
-										if (!anEdge.right.isFlatSlope()) {
+									if (anEdge.getRight() != null)
+										if (!anEdge.getRight().isFlatSlope()) {
 											canChange = true;
 										}
 								} else {
 									// check if right triangle is not flat
-									if (anEdge.left != null)
-										if (!anEdge.left.isFlatSlope()) {
+									if (anEdge.getLeft() != null)
+										if (!anEdge.getLeft().isFlatSlope()) {
 											canChange = true;
 										}
 								}
@@ -2659,7 +2666,7 @@ public class MyMesh {
 			}
 		}
 
-		boolean marked = removeEdge.isMarked();
+		boolean marked = removeEdge.isLocked();
 		int property = removeEdge.getProperty();
 
 		// Use the flip-flop algorithm on the longest edge
@@ -2678,10 +2685,10 @@ public class MyMesh {
 
 			// remove references from edges
 			for (int i = 0; i < 3; i++) {
-				if (aTriangle.edges[i].left == aTriangle)
-					aTriangle.edges[i].left = null;
-				if (aTriangle.edges[i].right == aTriangle)
-					aTriangle.edges[i].right = null;
+				if (aTriangle.edges[i].getLeft() == aTriangle)
+					aTriangle.edges[i].setLeft(null);
+				if (aTriangle.edges[i].getRight() == aTriangle)
+					aTriangle.edges[i].setRight(null);
 			}
 
 			// remove longest edge
@@ -2693,9 +2700,9 @@ public class MyMesh {
 
 		// mark the two saved edges and remove mark on longest if necessary
 		if (marked) {
-			remain[0].setMarked(true);
-			remain[1].setMarked(true);
-			removeEdge.setMarked(false);
+			remain[0].setLocked(true);
+			remain[1].setLocked(true);
+			removeEdge.setLocked(false);
 		}
 
 		if (property != 0) {
@@ -2851,7 +2858,7 @@ public class MyMesh {
 	 * 
 	 * @param g
 	 */
-	public void displayObject(Graphics g) {
+	protected void displayObject(Graphics g) {
 		getBoundingBox();
 		double scaleX, scaleY;
 		double minX, minY;
@@ -2867,22 +2874,23 @@ public class MyMesh {
 		// forget make change in sub method)
 		minY = theBox.miny;// coordinate 0 in Y is at bottom of screen
 		int decalageX = 10;
-		int decalageY = 30;
+		int decalageY = 630;
+		scaleY = -scaleY;
+
+		int legende = 650;
 
 		g.setColor(Color.white);
-		g.fillRect(decalageX - 5, 640, decalageX - 5 + 1200, 100);
+		g.fillRect(0, 0, decalageX + 5 + 1200, decalageY + 10);
+		g.fillRect(0, legende, decalageX + 5 + 1200, legende + 100);
 
 		g.setColor(Color.black);
 		g.drawString(triangles.size() + " Triangles - " + edges.size()
 				+ " Edges - " + points.size() + " Points", decalageX,
-				640 + decalageY);
+				legende + 10);
 		if (duration > 0) {
 			g.drawString("Computation time : " + duration + " ms", decalageX,
-					655 + decalageY);
+					legende + 25);
 		}
-
-		g.setColor(Color.white);
-		g.fillRect(decalageX - 5, 30 - 5, decalageX - 5 + 1200, 30 - 5 + 600);
 
 		// Draw triangles
 		if (!triangles.isEmpty()) {
@@ -2906,7 +2914,7 @@ public class MyMesh {
 
 		if (!edges.isEmpty())
 			for (MyEdge aVertex : edges) {
-				if (aVertex.marked > 0) {
+				if (aVertex.isLocked()) {
 					aVertex.displayObject(g, decalageX, decalageY, minX, minY,
 							scaleX, scaleY);
 				}
@@ -2970,15 +2978,15 @@ public class MyMesh {
 				else
 					writer.write("\t\t\t<Type>" + anEdge.getProperty()
 							+ "</Type>\n");
-				if (anEdge.left == null)
+				if (anEdge.getLeft() == null)
 					writer.write("\t\t\t<Left>-1</Left>\n");
 				else
-					writer.write("\t\t\t<Left>" + anEdge.left.getGid()
+					writer.write("\t\t\t<Left>" + anEdge.getLeft().getGid()
 							+ "</Left>\n");
-				if (anEdge.right == null)
+				if (anEdge.getRight() == null)
 					writer.write("\t\t\t<Right>-1</Right>\n");
 				else
-					writer.write("\t\t\t<Right>" + anEdge.right.getGid()
+					writer.write("\t\t\t<Right>" + anEdge.getRight().getGid()
 							+ "</Right>\n");
 				writer.write("\t\t</Segment>\n");
 			}
