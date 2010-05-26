@@ -27,15 +27,7 @@ public class DelaunayError extends Throwable {
 	public final static int DelaunayError_incorrectTopology = 201;
 	public final static int DelaunayError_outsideTriangle = 202;
 	
-	public final static int DelaunayError_invalidSewerPoint = 301;
-	public final static int DelaunayError_invalidSewerStart = 302;
-	public final static int DelaunayError_invalidSewerEnd = 303;
-	public final static int DelaunayError_invalidSewerDirection = 304;
-
-	public final static int DelaunayError_invalidWallPoint = 311;
-	public final static int DelaunayError_invalidWallStart = 312;
-	public final static int DelaunayError_invalidWallEnd = 313;
-
+	public final static int DelaunayError_invalidCall = 998;
 	public final static int DelaunayError_internalError = 999;
 
 	public DelaunayError() {
@@ -74,25 +66,14 @@ public class DelaunayError extends Throwable {
 			return "one point is not inserted in the triangularization";
 		case DelaunayError_incorrectTopology:
 			return "Incorrect topology";
-		case DelaunayError_internalError:
-			return "internal error, please call support";
 		case DelaunayError_outsideTriangle:
 			return "point is outside the triangle";
-		case DelaunayError_invalidSewerPoint :
-			return "invalid sewer point";
-		case DelaunayError_invalidSewerStart :
-			return "invalid sewer start point";
-		case DelaunayError_invalidSewerEnd :
-			return "invalid sewer exit point";
-		case DelaunayError_invalidSewerDirection :
-			return "invalid sewer direction";
-		case DelaunayError_invalidWallPoint :
-			return "invalid wall point";
-		case DelaunayError_invalidWallStart :
-			return "invalid wall point start";
-		case DelaunayError_invalidWallEnd :
-			return "invalid wall point end";
 		
+		case DelaunayError_invalidCall:
+			return "Invalid function call";
+		case DelaunayError_internalError:
+			return "internal error, please call support";
+			
 		default:
 			return "";
 		}
