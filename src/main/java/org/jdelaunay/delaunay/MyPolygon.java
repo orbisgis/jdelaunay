@@ -11,7 +11,7 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.*;
 
 public class MyPolygon extends MyElement {
 
@@ -89,4 +89,27 @@ public class MyPolygon extends MyElement {
 	public ArrayList<MyEdge> getEdges() {
 		return edges;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
+	 */
+	public MyBox getBoundingBox() {
+		MyBox aBox = new MyBox();
+
+		int nbPoints = polygon.getNumPoints();
+		for (int i = 0; i < nbPoints; i++) {
+			Coordinate pt = polygon.getCoordinates()[i];
+			aBox.alterBox( pt.x, pt.y, pt.z );
+		}
+		
+		return aBox;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
+	 */
+	public boolean contains(MyPoint aPoint) {
+		return false;
+	}
+
 }
