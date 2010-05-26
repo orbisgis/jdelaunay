@@ -90,6 +90,18 @@ public class MyPolygon extends MyElement {
 		return edges;
 	}
 	
+	/**
+	 * Get points.
+	 * 
+	 * @return points
+	 */
+	public ArrayList<MyPoint> getPoints() {
+		ArrayList<MyPoint> points= new ArrayList<MyPoint>();
+		for (int i = 0; i < polygon.getNumPoints()-1; i++)
+			points.add(new MyPoint(polygon.getCoordinates()[i]));
+		return points;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
 	 */

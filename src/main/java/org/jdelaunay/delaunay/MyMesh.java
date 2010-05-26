@@ -740,6 +740,18 @@ public class MyMesh {
 			badEdgesQueueList = new LinkedList<MyEdge>();
 			boundaryEdges = new LinkedList<MyEdge>();
 
+			if(polygons.size()>0)
+			{
+				// adding points and edges of polygon to the mesh
+				if (verbose)
+					System.out.println("adding point and edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
+			
+				for(MyPolygon aPolygon : polygons)
+				{	points.addAll(aPolygon.getPoints());
+					constraintsEdges.addAll(aPolygon.getEdges());
+				}
+			}
+			
 			// sort points
 			if (verbose)
 				System.out.println("Sorting points");
@@ -807,6 +819,7 @@ public class MyMesh {
 			if (verbose)
 				System.out.println("Adding edges");
 			processEdges(constraintsEdges);
+			
 
 			// adding GIDs
 			if (verbose)
@@ -1349,9 +1362,10 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addPolygon(MyPolygon aPolygon) throws DelaunayError {
-		if (!isMeshComputed())
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else {
+		polygons.add(aPolygon);
+		
+		if (isMeshComputed())
+		{
 			/*
 			 * toDo : - save polygon in the polygon list - if Mesh is not yet
 			 * generated + add each segment of the polygon to the constraintEdge
@@ -1365,22 +1379,22 @@ public class MyMesh {
 			 * do not forget to fill this reference
 			 */
 
-			for (MyEdge anEdge : aPolygon.getEdges()) {
-				anEdge.setMarked(1, false);
-				points.add(anEdge.getStartPoint());
-				points.add(anEdge.getEndPoint());
-				edges.add(anEdge);
-			}
-
-			meshComputed = false;
-			processDelaunay();
-
-			for (MyTriangle atriangle : triangles) {
-				if (aPolygon.getPolygon().contains(
-						new GeometryFactory().createPoint(atriangle
-								.getBarycenter().getCoordinate())))
-					atriangle.setProperty(aPolygon.getProperty());
-			}
+//			for (MyEdge anEdge : aPolygon.getEdges()) {
+//				anEdge.setMarked(1, false);
+//				points.add(anEdge.getStartPoint());
+//				points.add(anEdge.getEndPoint());
+//				edges.add(anEdge);
+//			}
+//
+//			meshComputed = false;
+//			processDelaunay();
+//
+//			for (MyTriangle atriangle : triangles) {
+//				if (aPolygon.getPolygon().contains(
+//						new GeometryFactory().createPoint(atriangle
+//								.getBarycenter().getCoordinate())))
+//					atriangle.setProperty(aPolygon.getProperty());
+//			}
 		}
 	}
 
