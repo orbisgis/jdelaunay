@@ -149,6 +149,32 @@ public class MyTriangle extends MyElement {
 		return new Coordinate(this.x_center, this.y_center, 0.0);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
+	 */
+	public MyBox getBoundingBox() {
+		MyBox aBox = new MyBox();
+
+		MyPoint p1,p2,p3;
+		p1 = edges[0].getStartPoint();
+		p2 = edges[0].getEndPoint();
+		p3 = edges[1].getStartPoint();
+		if ((p3==p1)||(p3==p2))
+			p3 = edges[1].getEndPoint();
+		aBox.alterBox( p1);
+		aBox.alterBox( p2);
+		aBox.alterBox( p3);
+		
+		return aBox;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
+	 */
+	public boolean contains(MyPoint aPoint) {
+		return isInside(aPoint);
+	}
+
 	/**
 	 * Recompute the center of the circle that joins the 3 points : the CircumCenter
 	 */
