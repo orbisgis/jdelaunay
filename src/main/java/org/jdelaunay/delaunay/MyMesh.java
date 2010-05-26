@@ -2867,7 +2867,7 @@ public class MyMesh {
 		// forget make change in sub method)
 		minY = theBox.miny;// coordinate 0 in Y is at bottom of screen
 		int decalageX = 10;
-		int decalageY = 630;
+		int decalageY = 30;
 
 		g.setColor(Color.white);
 		g.fillRect(decalageX - 5, 640, decalageX - 5 + 1200, 100);
@@ -2875,10 +2875,10 @@ public class MyMesh {
 		g.setColor(Color.black);
 		g.drawString(triangles.size() + " Triangles - " + edges.size()
 				+ " Edges - " + points.size() + " Points", decalageX,
-				30 + decalageY);
+				640 + decalageY);
 		if (duration > 0) {
 			g.drawString("Computation time : " + duration + " ms", decalageX,
-					45 + decalageY);
+					655 + decalageY);
 		}
 
 		g.setColor(Color.white);
