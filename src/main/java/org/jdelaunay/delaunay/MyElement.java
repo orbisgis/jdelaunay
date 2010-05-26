@@ -123,4 +123,19 @@ public abstract class MyElement {
 	public void removeProperties() {
 		this.property = 0;
 	}
+	
+	/**
+	 * Computed bounding box
+	 * 
+	 * @return
+	 */
+	public abstract MyBox getBoundingBox();
+	
+	/**
+	 * Check if the point is inside the element
+	 * 
+	 * @param aPoint
+	 * @return bool
+	 */
+	public abstract boolean contains(MyPoint aPoint);
 }
