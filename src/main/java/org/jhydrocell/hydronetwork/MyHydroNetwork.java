@@ -469,7 +469,7 @@ public class MyHydroNetwork {
 
 		// add edges
 		for (MyEdge anEdge : listEdges) {
-			anEdge.setMarked(true);
+			anEdge.setMarked(0,true); //FIXME check if it's good ( old version : anEdge.setMarked(true); )
 			if (connectToSurface)
 				theMesh.addEdge(anEdge);
 			else {

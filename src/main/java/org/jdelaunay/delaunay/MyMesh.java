@@ -742,13 +742,12 @@ public class MyMesh {
 
 			if(polygons.size()>0)
 			{
-				// adding points and edges of polygon to the mesh
+				// adding points of polygon to the mesh
 				if (verbose)
-					System.out.println("adding point and edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
+					System.out.println("Adding point of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
 			
 				for(MyPolygon aPolygon : polygons)
 				{	points.addAll(aPolygon.getPoints());
-					constraintsEdges.addAll(aPolygon.getEdges());
 				}
 			}
 			
@@ -820,6 +819,30 @@ public class MyMesh {
 				System.out.println("Adding edges");
 			processEdges(constraintsEdges);
 			
+			
+			if(polygons.size()>0)
+			{
+				if (verbose)
+					System.out.println("Processing edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
+			
+				for(MyPolygon aPolygon : polygons)
+				{	
+					// Adding edges of polygon to the mesh.
+					for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
+					{	if(aEdge.isLocked())
+						{	
+							// Set property of polygon to triangle who are inside the polygon.
+							if(aPolygon.contains(aEdge.getLeft().getBarycenter()))
+							{	getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
+								break;
+							}else if(aPolygon.contains(aEdge.getRight().getBarycenter()))
+							{	getTriangleInPolygon(aPolygon, aEdge.getRight());
+								break;
+							}
+						}
+					}
+				}
+			}
 
 			// adding GIDs
 			if (verbose)
@@ -836,7 +859,7 @@ public class MyMesh {
 			}
 			if (startedLocaly)
 				setEnd();
-		}
+		}			
 	}
 
 	/**
@@ -1397,6 +1420,62 @@ public class MyMesh {
 //			}
 		}
 	}
+	
+	
+	/**
+	 * @param aPolygon
+	 * @param refTriangle
+	 * @return List of triangle who are inside the polygon.
+	 */
+	private LinkedList<MyTriangle> getTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) {
+		LinkedList<MyTriangle> triangleOfPolygon = new LinkedList<MyTriangle>();
+		
+		refTriangle.setProperty(aPolygon.getProperty());
+		triangleOfPolygon.add(refTriangle);
+		ListIterator<MyTriangle> triangleOfPolygonIt=triangleOfPolygon.listIterator();
+
+		MyTriangle aTriangleInPolygon;
+		MyTriangle unknowTriangle;
+		MyEdge aEdge;
+		
+		while (triangleOfPolygonIt.hasNext()) {
+			aTriangleInPolygon = (MyTriangle) triangleOfPolygonIt.next();
+
+			aTriangleInPolygon.setMarked(0, true);
+			
+			for(int i=0; i<3;i++)
+			{
+				aEdge= aTriangleInPolygon.getEdge(i);
+				unknowTriangle = aEdge.getLeft();
+				
+				// if left triangle is inside the polygon
+				if(unknowTriangle!=null && !unknowTriangle.equals(aTriangleInPolygon) && !unknowTriangle.isMarked(0) && aPolygon.contains(unknowTriangle.getBarycenter()))
+				{
+					unknowTriangle.setProperty(aPolygon.getProperty());
+					triangleOfPolygonIt.add(unknowTriangle);
+					triangleOfPolygonIt.previous();
+				}else
+				{
+					unknowTriangle = aEdge.getRight();
+					
+					// if right triangle is inside the polygon
+					if(unknowTriangle!=null && !unknowTriangle.equals(aTriangleInPolygon) && !unknowTriangle.isMarked(0) && aPolygon.contains(unknowTriangle.getBarycenter()))
+					{
+						unknowTriangle.setProperty(aPolygon.getProperty());
+						triangleOfPolygonIt.add(unknowTriangle);
+						triangleOfPolygonIt.previous();
+					}
+				}
+			}
+		}
+		
+		while (triangleOfPolygonIt.hasPrevious()) {
+			aTriangleInPolygon = (MyTriangle) triangleOfPolygonIt.previous();
+			aTriangleInPolygon.setMarked(0, false);
+		}
+		
+		return triangleOfPolygon;
+	}
 
 	/**
 	 * Refine mesh according to the type of refinement that has been defined in
@@ -1496,7 +1575,7 @@ public class MyMesh {
 	 * 
 	 * @param constraintsEdges
 	 */
-	private void processEdges(ArrayList<MyEdge> constraintsEdges) {
+	private ArrayList<MyEdge> processEdges(ArrayList<MyEdge> constraintsEdges) {
 		int nbEdges = edges.size();
 		if (nbEdges > 0)
 			MyTools.quickSort_Edges(edges, 0, nbEdges - 1, false);
@@ -1525,7 +1604,7 @@ public class MyMesh {
 		int nbEdges4 = remain2.size();
 		if (nbEdges4 > 0)
 			MyTools.quickSort_Edges(remain2, 0, nbEdges4 - 1, true);
-		processOtherEdges(remain2);
+		return processOtherEdges(remain2);
 	}
 
 	/**
@@ -1842,10 +1921,10 @@ public class MyMesh {
 	 * @param constraintsEdges
 	 * @return list of remaining edges
 	 */
-	private void processOtherEdges(ArrayList<MyEdge> constraintsEdges) {
+	private ArrayList<MyEdge> processOtherEdges(ArrayList<MyEdge> constraintsEdges) {
 		// List of triangles that are created when there is an intersection
 		MyEdge CurrentEdge = null;
-
+		ArrayList<MyEdge> possibleEdges =null;
 		int iter = 0;
 		int maxIter = constraintsEdges.size();
 
@@ -1872,7 +1951,7 @@ public class MyMesh {
 			ArrayList<MyPoint> addedPoints = new ArrayList<MyPoint>();
 			ArrayList<MyEdge> IntersectedEdges = new ArrayList<MyEdge>();
 			// Edges that can participate to p1 p2
-			ArrayList<MyEdge> possibleEdges = new ArrayList<MyEdge>();
+			possibleEdges = new ArrayList<MyEdge>();
 
 			// First we get all intersection points
 			// We need then because we have to compare alterPoint with this list
@@ -2026,6 +2105,8 @@ public class MyMesh {
 
 		// Then apply the flip-flop algorithm
 		processBadEdges();
+		
+		return possibleEdges;
 	}
 
 	/**

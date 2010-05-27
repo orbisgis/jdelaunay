@@ -19,6 +19,9 @@ public class MyTriangle extends MyElement {
 
 	private double x_center, y_center;
 	private double radius;
+	
+	private int indicator;
+
 
 	/**
 	 * Initialize data structure This method is called by every constructor
@@ -28,6 +31,7 @@ public class MyTriangle extends MyElement {
 		this.x_center = 0;
 		this.y_center = 0;
 		this.radius = -1;
+		this.indicator = 0;
 	}
 
 	/**
@@ -147,6 +151,46 @@ public class MyTriangle extends MyElement {
 	 */
 	public Coordinate getCircumCenter() {
 		return new Coordinate(this.x_center, this.y_center, 0.0);
+	}
+	
+	/**
+	 * get the value of a specific bit
+	 * @param byteNumber
+	 * @return marked
+	 */
+	private boolean testBit(int byteNumber) {
+		return ((this.indicator & (1 << byteNumber)) != 0);
+	}
+
+	/**
+	 * set the value of a specific bit
+	 * @param byteNumber
+	 * @param value
+	 */
+	private void setBit(int byteNumber, boolean value) {
+		int test = (1 << byteNumber);
+		if (value)
+			this.indicator = (this.indicator | test);
+		else
+			this.indicator = (this.indicator | test) - test;
+	}
+	
+	/**
+	 * get the mark of the edge
+	 * @param byteNumber
+	 * @return marked
+	 */
+	public boolean isMarked(int byteNumber) {
+		return testBit(3+byteNumber);
+	}
+
+	/**
+	 * set the mark of the edge
+	 * @param byteNumber
+	 * @param marked
+	 */
+	public void setMarked(int byteNumber, boolean marked) {
+		setBit(3+byteNumber, marked);
 	}
 
 	/* (non-Javadoc)
@@ -685,7 +729,9 @@ public class MyTriangle extends MyElement {
 	 * @param g
 	 */
 	protected void setColor(Graphics g) {
-		if (isFlatSlope())
+		if(property>0)
+			g.setColor(new Color(property));
+		else if (isFlatSlope())
 			g.setColor(Color.green);
 		else
 			g.setColor(Color.yellow);

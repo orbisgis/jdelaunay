@@ -120,8 +120,8 @@ public class MyPolygon extends MyElement {
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
-	public boolean contains(MyPoint aPoint) {
-		return false;
+	public boolean contains(MyPoint aPoint) { //FIXME check if we have better code
+		return polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 	}
 
 }
