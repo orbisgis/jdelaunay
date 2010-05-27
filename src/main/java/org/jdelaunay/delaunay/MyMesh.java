@@ -1387,12 +1387,12 @@ public class MyMesh {
 			{	if(aEdge.isLocked())
 				{	
 					// Set property of polygon to triangle who are inside the polygon.
-					if(aPolygon.contains(aEdge.getLeft().getBarycenter()))
+					if(aEdge.getLeft()!=null && aPolygon.contains(aEdge.getLeft().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getLeft());
 						getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
 						break;
-					}else if(aPolygon.contains(aEdge.getRight().getBarycenter()))
+					}else if(aEdge.getRight()!=null && aPolygon.contains(aEdge.getRight().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getRight());
 						getTriangleInPolygon(aPolygon, aEdge.getRight());
@@ -1568,12 +1568,12 @@ public class MyMesh {
 			{	if(aEdge.isLocked())
 				{	
 					// Set property of polygon to triangle who are inside the polygon.
-					if(aPolygon.contains(aEdge.getLeft().getBarycenter()))
+					if(aEdge.getLeft()!=null && aPolygon.contains(aEdge.getLeft().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getLeft());
 						getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
 						break;
-					}else if(aPolygon.contains(aEdge.getRight().getBarycenter()))
+					}else if(aEdge.getRight()!=null && aPolygon.contains(aEdge.getRight().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getRight());
 						getTriangleInPolygon(aPolygon, aEdge.getRight());
