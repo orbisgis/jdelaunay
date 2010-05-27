@@ -17,6 +17,7 @@ public class MyPolygon extends MyElement {
 
 	private Polygon polygon;
 	private ArrayList<MyEdge> edges;
+	private MyTriangle refTriangle;
 
 	/**
 	 * Generate a polygon.
@@ -49,6 +50,8 @@ public class MyPolygon extends MyElement {
 			throw new IllegalArgumentException("Polygon is empty");
 		else {
 			this.polygon = polygon;
+			
+			refTriangle=null;
 
 			// create edge list
 			edges = new ArrayList<MyEdge>();
@@ -72,6 +75,21 @@ public class MyPolygon extends MyElement {
 				edges.add(new MyEdge(lastPoint, firstPoint));
 			}
 		}
+	}
+
+	/**
+	 * @return The reference triangle.
+	 */
+	public MyTriangle getRefTriangle() {
+		return refTriangle;
+	}
+
+	/**
+	 * Set the reference triangle.
+	 * @param refTriangle
+	 */
+	public void setRefTriangle(MyTriangle refTriangle) {
+		this.refTriangle = refTriangle;
 	}
 
 	/**

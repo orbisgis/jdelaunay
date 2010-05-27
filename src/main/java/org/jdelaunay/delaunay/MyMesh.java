@@ -747,8 +747,7 @@ public class MyMesh {
 					System.out.println("Adding point of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
 			
 				for(MyPolygon aPolygon : polygons)
-				{	points.addAll(aPolygon.getPoints());
-				}
+					points.addAll(aPolygon.getPoints());
 			}
 			
 			// sort points
@@ -824,24 +823,7 @@ public class MyMesh {
 			{
 				if (verbose)
 					System.out.println("Processing edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
-			
-				for(MyPolygon aPolygon : polygons)
-				{	
-					// Adding edges of polygon to the mesh.
-					for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
-					{	if(aEdge.isLocked())
-						{	
-							// Set property of polygon to triangle who are inside the polygon.
-							if(aPolygon.contains(aEdge.getLeft().getBarycenter()))
-							{	getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
-								break;
-							}else if(aPolygon.contains(aEdge.getRight().getBarycenter()))
-							{	getTriangleInPolygon(aPolygon, aEdge.getRight());
-								break;
-							}
-						}
-					}
-				}
+				processPolygons();
 			}
 
 			// adding GIDs
@@ -1389,35 +1371,40 @@ public class MyMesh {
 		
 		if (isMeshComputed())
 		{
-			/*
-			 * toDo : - save polygon in the polygon list - if Mesh is not yet
-			 * generated + add each segment of the polygon to the constraintEdge
-			 * list or process polygon list in processDelanay + alter
-			 * processDelaunay with a post-processing of polygons to give the
-			 * triangles in the polygon the polygon's property - if Mesh is
-			 * computed + insert each point of the polygon in the Mesh (use
-			 * addPoint) + add edges to the mesh (use addEdge) edges must be
-			 * locked + give the triangles in the polygon the polygon's property
-			 * - add a reference to 1 triangle in the polygon to MyPolygon and
-			 * do not forget to fill this reference
-			 */
-
-//			for (MyEdge anEdge : aPolygon.getEdges()) {
-//				anEdge.setMarked(1, false);
-//				points.add(anEdge.getStartPoint());
-//				points.add(anEdge.getEndPoint());
-//				edges.add(anEdge);
-//			}
-//
-//			meshComputed = false;
-//			processDelaunay();
-//
-//			for (MyTriangle atriangle : triangles) {
-//				if (aPolygon.getPolygon().contains(
-//						new GeometryFactory().createPoint(atriangle
-//								.getBarycenter().getCoordinate())))
-//					atriangle.setProperty(aPolygon.getProperty());
-//			}
+			if (verbose)
+				System.out.println("Adding point of polygon");
+		
+			// adding points of polygon to the mesh
+			for (MyPoint aPoint : aPolygon.getPoints()) {
+				addPoint(aPoint);
+			}
+			
+			if (verbose)
+				System.out.println("Processing edges of polygon");
+			
+			// Adding edges of polygon to the mesh.
+			for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
+			{	if(aEdge.isLocked())
+				{	
+					// Set property of polygon to triangle who are inside the polygon.
+					if(aPolygon.contains(aEdge.getLeft().getBarycenter()))
+					{	
+						aPolygon.setRefTriangle(aEdge.getLeft());
+						getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
+						break;
+					}else if(aPolygon.contains(aEdge.getRight().getBarycenter()))
+					{	
+						aPolygon.setRefTriangle(aEdge.getRight());
+						getTriangleInPolygon(aPolygon, aEdge.getRight());
+						break;
+					}
+				}
+			}
+			
+			// adding GIDs
+			if (verbose)
+				System.out.println("set GIDs");
+			setAllGids();
 		}
 	}
 	
@@ -1570,6 +1557,33 @@ public class MyMesh {
 		}
 	}
 
+	/**
+	 *  Add edges of polygons and set polygon's property to triangle who are inside the polygon.
+	 */
+	private void processPolygons() {
+		for(MyPolygon aPolygon : polygons)
+		{	
+			// Adding edges of polygon to the mesh.
+			for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
+			{	if(aEdge.isLocked())
+				{	
+					// Set property of polygon to triangle who are inside the polygon.
+					if(aPolygon.contains(aEdge.getLeft().getBarycenter()))
+					{	
+						aPolygon.setRefTriangle(aEdge.getLeft());
+						getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
+						break;
+					}else if(aPolygon.contains(aEdge.getRight().getBarycenter()))
+					{	
+						aPolygon.setRefTriangle(aEdge.getRight());
+						getTriangleInPolygon(aPolygon, aEdge.getRight());
+						break;
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Add edges defined at the beginning of the process
 	 * 
