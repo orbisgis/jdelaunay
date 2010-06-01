@@ -45,6 +45,7 @@ public class MyMesh {
 	private long duration;
 	private long startComputation;
 	private MyDrawing affiche;
+	private boolean usePolygonZ;
 
 	// Working index vector
 	private LinkedList<MyEdge> badEdgesQueueList;
@@ -283,6 +284,15 @@ public class MyMesh {
 	 */
 	public LinkedList<MyPolygon> getPolygons() {
 		return this.polygons;
+	}
+	
+	/**
+	 * Get one polygon.
+	 * @param index
+	 * @return A polygon in mesh.
+	 */
+	public MyPolygon getPolygon(int index) {
+		return polygons.get(index);
 	}
 
 	/**
@@ -807,7 +817,7 @@ public class MyMesh {
 				MyPoint aPoint = iterPoint.next();
 				if (!aPoint.isMarked()) {
 					if (myInsertPoint(aPoint) == null)
-						System.out.println("Erreur");
+						System.out.println("Erreur flip-flop");//FIXME problem
 				}
 			}
 
@@ -1359,6 +1369,9 @@ public class MyMesh {
 			processEdges(theList);
 		}
 	}
+	
+
+	
 
 	/**
 	 * Add a polygon to the Mesh
@@ -1367,6 +1380,18 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addPolygon(MyPolygon aPolygon) throws DelaunayError {
+		addPolygon(aPolygon, false);
+	}
+	
+	/**
+	 * Add a polygon to the Mesh
+	 * 
+	 * @param aPolygon
+	 * @param isEmpty If true, remove triangle inside polygon.
+	 * @throws DelaunayError
+	 */
+	public void addPolygon(MyPolygon aPolygon, boolean isEmpty) throws DelaunayError {
+		
 		polygons.add(aPolygon);
 		
 		if (isMeshComputed())
@@ -1381,25 +1406,7 @@ public class MyMesh {
 			
 			if (verbose)
 				System.out.println("Processing edges of polygon");
-			
-			// Adding edges of polygon to the mesh.
-			for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
-			{	if(aEdge.isLocked())
-				{	
-					// Set property of polygon to triangle who are inside the polygon.
-					if(aEdge.getLeft()!=null && aPolygon.contains(aEdge.getLeft().getBarycenter()))
-					{	
-						aPolygon.setRefTriangle(aEdge.getLeft());
-						getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
-						break;
-					}else if(aEdge.getRight()!=null && aPolygon.contains(aEdge.getRight().getBarycenter()))
-					{	
-						aPolygon.setRefTriangle(aEdge.getRight());
-						getTriangleInPolygon(aPolygon, aEdge.getRight());
-						break;
-					}
-				}
-			}
+			processOnePolygon(aPolygon);
 			
 			// adding GIDs
 			if (verbose)
@@ -1410,11 +1417,12 @@ public class MyMesh {
 	
 	
 	/**
+	 * Set new property to triangles who are inside the polygon.
 	 * @param aPolygon
 	 * @param refTriangle
 	 * @return List of triangle who are inside the polygon.
 	 */
-	private LinkedList<MyTriangle> getTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) {
+	public LinkedList<MyTriangle> setPropertyToTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) {
 		LinkedList<MyTriangle> triangleOfPolygon = new LinkedList<MyTriangle>();
 		
 		refTriangle.setProperty(aPolygon.getProperty());
@@ -1463,6 +1471,11 @@ public class MyMesh {
 		
 		return triangleOfPolygon;
 	}
+	
+	
+	
+	
+
 
 	/**
 	 * Refine mesh according to the type of refinement that has been defined in
@@ -1559,10 +1572,28 @@ public class MyMesh {
 
 	/**
 	 *  Add edges of polygons and set polygon's property to triangle who are inside the polygon.
+	 * @throws DelaunayError 
 	 */
-	private void processPolygons() {
+	private void processPolygons() throws DelaunayError {
 		for(MyPolygon aPolygon : polygons)
 		{	
+			processOnePolygon(aPolygon);
+		}
+	}
+	
+	
+	/**
+	 *  Add edges of one polygon and set polygon's property to triangle who are inside the polygon.
+	 * @throws DelaunayError 
+	 */
+	private void processOnePolygon(MyPolygon aPolygon) throws DelaunayError {
+		
+		usePolygonZ=aPolygon.isUsePolygonZ();
+		
+		if(aPolygon.isEmpty())
+		{
+			// Create a polygon with NO triangle inside.
+			
 			// Adding edges of polygon to the mesh.
 			for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
 			{	if(aEdge.isLocked())
@@ -1571,12 +1602,35 @@ public class MyMesh {
 					if(aEdge.getLeft()!=null && aPolygon.contains(aEdge.getLeft().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getLeft());
-						getTriangleInPolygon(aPolygon, aEdge.getLeft())	;
+						removeTriangleInPolygon(aPolygon, aEdge.getLeft());
 						break;
 					}else if(aEdge.getRight()!=null && aPolygon.contains(aEdge.getRight().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getRight());
-						getTriangleInPolygon(aPolygon, aEdge.getRight());
+						removeTriangleInPolygon(aPolygon, aEdge.getRight());
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			// Create a polygon with triangle inside.
+			
+			// Adding edges of polygon to the mesh.
+			for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
+			{	if(aEdge.isLocked())
+				{	
+					// Set property of polygon to triangle who are inside the polygon.
+					if(aEdge.getLeft()!=null && aPolygon.contains(aEdge.getLeft().getBarycenter()))
+					{	
+						aPolygon.setRefTriangle(aEdge.getLeft());
+						setPropertyToTriangleInPolygon(aPolygon, aEdge.getLeft());
+						break;
+					}else if(aEdge.getRight()!=null && aPolygon.contains(aEdge.getRight().getBarycenter()))
+					{	
+						aPolygon.setRefTriangle(aEdge.getRight());
+						setPropertyToTriangleInPolygon(aPolygon, aEdge.getRight());
 						break;
 					}
 				}
@@ -1987,13 +2041,13 @@ public class MyMesh {
 					break;
 				case 3:
 					// There is an intersection point
-					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
+					IntersectionPoint1 = anEdge.getIntersection(p1, p2, usePolygonZ);
 					possibleEdges.add(anEdge);
 					saveEdge = null;
 					break;
 				case 1:
 					// There is an intersection point
-					IntersectionPoint1 = anEdge.getIntersection(p1, p2);
+					IntersectionPoint1 = anEdge.getIntersection(p1, p2, usePolygonZ);
 					break;
 				case 2:
 					// points are on the same line and intersects
@@ -2758,6 +2812,81 @@ public class MyMesh {
 		}
 	}
 
+	
+	/**
+	 * Remove triangles who are inside the polygon from the Mesh.
+	 * @param aPolygon
+	 * @param refTriangle
+	 * @throws DelaunayError
+	 */
+	public void removeTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) throws DelaunayError {
+		LinkedList<MyTriangle> triangleOfPolygon = new LinkedList<MyTriangle>();
+		
+		triangleOfPolygon.add(refTriangle);
+		ListIterator<MyTriangle> triangleOfPolygonIt=triangleOfPolygon.listIterator();
+
+		MyTriangle aTriangleInPolygon;
+		MyTriangle unknowTriangle;
+		MyEdge aEdge;
+		
+		// Search triangles who are inside the polygon.
+		while (triangleOfPolygonIt.hasNext()) {
+			aTriangleInPolygon = (MyTriangle) triangleOfPolygonIt.next();
+
+			aTriangleInPolygon.setMarked(0, true);
+			
+			for(int i=0; i<3;i++)
+			{
+				aEdge= aTriangleInPolygon.getEdge(i);
+				unknowTriangle = aEdge.getLeft();
+				
+				// if left triangle is inside the polygon
+				if(unknowTriangle!=null && !unknowTriangle.equals(aTriangleInPolygon) && !unknowTriangle.isMarked(0) && aPolygon.contains(unknowTriangle.getBarycenter()))
+				{
+					triangleOfPolygonIt.add(unknowTriangle);
+					triangleOfPolygonIt.previous();
+				}else
+				{
+					unknowTriangle = aEdge.getRight();
+					
+					// if right triangle is inside the polygon
+					if(unknowTriangle!=null && !unknowTriangle.equals(aTriangleInPolygon) && !unknowTriangle.isMarked(0) && aPolygon.contains(unknowTriangle.getBarycenter()))
+					{
+						triangleOfPolygonIt.add(unknowTriangle);
+						triangleOfPolygonIt.previous();
+					}
+				}
+			}
+		}
+		
+		// Remove triangles form the mesh.
+		while (triangleOfPolygonIt.hasPrevious()) {
+			aTriangleInPolygon = (MyTriangle) triangleOfPolygonIt.previous();
+			aTriangleInPolygon.setMarked(0, false);
+			
+			
+			for(int i=0; i<3;i++)
+			{
+				aEdge= aTriangleInPolygon.getEdge(i);
+				unknowTriangle = aEdge.getLeft();
+				if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)) {
+					aEdge.setLeft(null);
+				}
+				else
+				{
+					unknowTriangle = aEdge.getRight();
+					if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)){
+						aEdge.setRight(null);
+					}
+				}
+					
+			}
+			triangles.remove(aTriangleInPolygon);
+			
+			//TODO remove points
+		}
+	}
+	
 	/**
 	 * try to apply a flip-flap algorithm on it
 	 * 

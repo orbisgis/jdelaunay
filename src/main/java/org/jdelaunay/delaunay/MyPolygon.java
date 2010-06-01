@@ -18,6 +18,16 @@ public class MyPolygon extends MyElement {
 	private Polygon polygon;
 	private ArrayList<MyEdge> edges;
 	private MyTriangle refTriangle;
+	
+	/**
+	 * True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 */
+	private boolean usePolygonZ;
+	
+	/**
+	 * True, if we remove triangle who are inside the polygon.
+	 */
+	private boolean isEmpty;
 
 	/**
 	 * Generate a polygon.
@@ -27,6 +37,18 @@ public class MyPolygon extends MyElement {
 	public MyPolygon(Polygon polygon) {
 		super();
 		init(polygon);
+	}
+	
+	/**
+	 * Generate a polygon.
+	 * 
+	 * @param polygon
+	 * @param isEmpty True, if we remove triangle who are inside the polygon.
+	 */
+	public MyPolygon(Polygon polygon, boolean isEmpty) {
+		super();
+		init(polygon);
+		this.isEmpty=isEmpty;
 	}
 
 	/**
@@ -39,7 +61,35 @@ public class MyPolygon extends MyElement {
 		super(_property);
 		init(polygon);
 	}
-
+	
+	/**
+	 * Generate a polygon with property.
+	 * 
+	 * @param polygon
+	 * @param _property
+	 * @param True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 */
+	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ) {
+		super(_property);
+		init(polygon);
+		this.usePolygonZ=usePolygonZ;
+	}
+	
+	/**
+	 * Generate a polygon with property.
+	 * 
+	 * @param polygon
+	 * @param _property
+	 * @param usePolygonZ True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 * @param isEmpty True, if we remove triangle who are inside the polygon.
+	 */
+	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ, boolean isEmpty) {
+		super(_property);
+		init(polygon);
+		this.usePolygonZ=usePolygonZ;
+		this.isEmpty=isEmpty;
+	}
+	
 	/**
 	 * Initialize data.
 	 * 
@@ -52,7 +102,10 @@ public class MyPolygon extends MyElement {
 			this.polygon = polygon;
 			
 			refTriangle=null;
-
+			
+			usePolygonZ=false;
+			isEmpty=false;
+			
 			// create edge list
 			edges = new ArrayList<MyEdge>();
 
@@ -77,6 +130,36 @@ public class MyPolygon extends MyElement {
 		}
 	}
 
+	/**
+	 * @return True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 */
+	public boolean isUsePolygonZ() {
+		return usePolygonZ;
+	}
+	
+	/**
+	 * @param usePolygonZ True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 */
+	public void setUsePolygonZ(boolean usePolygonZ) {
+		this.usePolygonZ = usePolygonZ;
+	}
+
+	
+	/**
+	 * @return True, if we remove triangle who are inside the polygon.
+	 */
+	public boolean isEmpty() { 
+		return isEmpty;
+	}
+
+	/**
+	 * True, if we remove triangle who are inside the polygon.
+	 * @param isEmpty
+	 */
+	public void setEmpty(boolean isEmpty) { 
+		this.isEmpty = isEmpty;
+	}
+	
 	/**
 	 * @return The reference triangle.
 	 */

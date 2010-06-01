@@ -385,6 +385,7 @@ public class MyEdge extends MyElement {
 		return result;
 	}
 
+	
 	/**
 	 * intersects two edges returns null if there is no intersection
 	 *
@@ -393,6 +394,19 @@ public class MyEdge extends MyElement {
 	 * @return intersection
 	 */
 	public MyPoint getIntersection(MyPoint p1, MyPoint p2) {
+		return getIntersection(p1, p2, false);
+	}
+	
+	/**
+	 * intersects two edges returns null if there is no intersection
+	 *
+	 * @param p1
+	 * @param p2
+	 * @param useCoordZOfp1p2 If true, the coordinate of intersection get in Z the average of p1 and p2 Z. Don't care of p3 and, p4 Z.
+	 * Else if false, the coordinate of intersection get in Z the average of p1, p2, p3 and p4 Z.
+	 * @return intersection
+	 */
+	public MyPoint getIntersection(MyPoint p1, MyPoint p2, boolean useCoordZOfp1p2) {
 		MyPoint intersection = null;
 		MyPoint p3 = this.startPoint;
 		MyPoint p4 = this.endPoint;
@@ -435,9 +449,18 @@ public class MyEdge extends MyElement {
 					// z = z4 t2 + (1 - t2) z3
 					double x = p2.getX() * t1 + (1 - t1) * p1.getX();
 					double y = p2.getY() * t1 + (1 - t1) * p1.getY();
-					// double z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
-					double z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
-
+					
+					
+					double z=0;
+					if(useCoordZOfp1p2)
+					{
+						// Average of p1 and p2 Z. Don't care of p3 and p4 Z.
+						z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
+					}else
+					{
+						// Average of p1, p2, p3 and p4 Z.
+						z= p4.getZ() * t2 + (1 - t2) * p3.getZ();
+					}
 					intersection = new MyPoint(x, y, z);
 
 					// Last verification
