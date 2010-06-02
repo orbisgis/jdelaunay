@@ -117,4 +117,10 @@ public class MyBox {
 		double z = aPoint.getZ();
 		alterBox(x,y,z);
 	}
+	
+	
+	public String toString()
+	{
+		return "min x["+minx+"] y["+miny+"] z["+minz+"] | max x["+maxx+"] y["+maxy+"] z["+maxz+"]";
+	}
 }

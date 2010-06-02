@@ -21,9 +21,9 @@ public class MyMesh {
 	protected ArrayList<MyEdge> edges;
 	protected LinkedList<MyTriangle> triangles;
 	protected LinkedList<MyPolygon> polygons;
-
 	protected ArrayList<MyEdge> constraintsEdges;
-
+	protected MyQuadTreeMapper quadTree;
+	
 	// bounding box
 	protected int maxx, maxy;
 	private MyBox theBox;
@@ -71,6 +71,7 @@ public class MyMesh {
 		this.triangles = new LinkedList<MyTriangle>();
 		this.constraintsEdges = new ArrayList<MyEdge>();
 		this.polygons = new LinkedList<MyPolygon>();
+		this.quadTree = new MyQuadTreeMapper<MyElement>();
 
 		this.maxx = 1200;
 		this.maxy = 700;
@@ -822,6 +823,14 @@ public class MyMesh {
 			}
 
 			meshComputed = true;
+			
+			getBoundingBox();
+			if (verbose)
+				System.out.println("Set bounding box : "+theBox.maxx+" "+theBox.maxy+" "+theBox.minx+" "+theBox.miny);
+			
+			if (verbose)
+				System.out.println("Create and complete a quad tree");
+			quadTree=new MyQuadTreeMapper<MyPoint>(theBox, points);
 
 			// Add the edges in the edges array
 			if (verbose)
@@ -838,12 +847,15 @@ public class MyMesh {
 
 			// adding GIDs
 			if (verbose)
-				System.out.println("set GIDs");
+				System.out.println("Set GIDs");
 			setAllGids();
+			
+
+			
 
 			// It's fine, we computed the mesh
 			if (verbose) {
-				System.out.println("end processing");
+				System.out.println("End processing");
 				System.out.println("Triangularization end phase : ");
 				System.out.println("  Points : " + points.size());
 				System.out.println("  Edges : " + edges.size());
@@ -853,7 +865,7 @@ public class MyMesh {
 				setEnd();
 		}			
 	}
-
+	
 	/**
 	 * Re-Generate the Delaunay's triangularization with a flip-flop algorithm.
 	 * Mesh must have been set. Every triangle and edge is removed to restart
@@ -948,12 +960,14 @@ public class MyMesh {
 				if (foundTriangle != null) {
 					// the point is inside the foundTriangle triangle
 					points.add(aPoint);
+					quadTree.add(aPoint);
 					addPointInsideTriangle(foundTriangle, aPoint);
 				} else {
 					// the point is outside the mesh
 					// The boundary edge list is ok
 					// We insert the point in the mesh
 					points.add(aPoint);
+					quadTree.add(aPoint);
 					foundTriangle = myInsertPoint(aPoint);
 				}
 			}
@@ -2882,9 +2896,17 @@ public class MyMesh {
 					
 			}
 			triangles.remove(aTriangleInPolygon);
-			
-			//TODO remove points
 		}
+		
+		//Remove points from the mesh.
+		for(Object element : quadTree.removeAllStric(aPolygon))
+		{
+			if(element.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint"))
+			{
+					points.remove(element);	
+			}
+		}
+
 	}
 	
 	/**
