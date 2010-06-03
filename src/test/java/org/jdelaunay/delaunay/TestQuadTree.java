@@ -1,6 +1,7 @@
 package org.jdelaunay.delaunay;
 
 import java.io.IOException;
+import java.util.Date;
 
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -36,7 +37,7 @@ public class TestQuadTree extends BaseTest  {
 //		System.out.println("points :\n"+aMesh.points+"\n");
 //		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));//new MyBox(0, 130, 0, 30, 0, 40)
 //		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
-		System.out.println("fin 01\n");
+		System.out.println("end 01\n");
 	}
 	
 	
@@ -72,7 +73,7 @@ public class TestQuadTree extends BaseTest  {
 
 //		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
 //		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
-		System.out.println("fin 02\n");
+		System.out.println("end 02\n");
 	}
 	
 	public void testQuadTree_03() throws DelaunayError, IOException, ParseException {
@@ -105,13 +106,15 @@ public class TestQuadTree extends BaseTest  {
 
 //		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
 //		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
-		System.out.println("fin 03\n");
+		System.out.println("end 03\n");
 	}
 	
 	
 	
-	public void testQuadTreeRandomPoints_04() throws DelaunayError, ParseException {
+	public void testQuadTreeRandomPoints_04() throws DelaunayError, ParseException, IOException {
 
+		long start = System.currentTimeMillis();
+		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
 		MyPolygon aPolygon = new MyPolygon(polygon,16750080);
@@ -128,16 +131,19 @@ public class TestQuadTree extends BaseTest  {
 		
 		aMesh.processDelaunay();
 		
+		long end = System.currentTimeMillis();
+		System.out.println("Duration " + (end-start)+"ms");
+		
 		aPolygon.setEmpty(true);
 		aMesh.addPolygon(aPolygon);
 		
 		show(aMesh);
 
+		end = System.currentTimeMillis();
+		System.out.println("Duration " + (end-start)+"ms soit "+((end-start)/60000)+"min");
+		System.in.read();
+		System.out.println("end 04\n");
 		
-//		System.out.println(aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
-//		System.out.println(aMesh.quadTree.removeAllStric(aPolygon));
-		
-		System.out.println("fin 04\n");
 	}
 
 }

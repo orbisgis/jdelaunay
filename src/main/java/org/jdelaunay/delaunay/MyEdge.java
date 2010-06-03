@@ -253,6 +253,9 @@ public class MyEdge extends MyElement {
 	 */
 	public void setMarked(int byteNumber, boolean marked) {
 		setBit(3+byteNumber, marked);
+		
+		startPoint.setMarked(marked);//FIXME
+		endPoint.setMarked(marked);
 	}
 
 	/**

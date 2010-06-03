@@ -358,8 +358,6 @@ public class MyQuadTree<T extends MyElement> {
 			}
 		}
 		
-		for(T element :allElements)//FIXME
-			System.out.println(">>"+theList.remove(element)+" | "+(MyPoint)element);
 
 		// test bounding box of the each subarea and search inside if it is
 		// in the

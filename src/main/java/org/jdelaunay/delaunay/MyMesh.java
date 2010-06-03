@@ -2846,6 +2846,7 @@ public class MyMesh {
 	}
 
 	
+	
 	/**
 	 * Remove triangles who are inside the polygon from the Mesh.
 	 * @param aPolygon
@@ -2863,12 +2864,12 @@ public class MyMesh {
 		MyEdge aEdge;
 		
 		if(verbose)
-			System.out.println("Search triangles inside polygon.");
+			System.out.println("Search and remove triangles inside polygon.");
 		
-		// Search triangles who are inside the polygon.
+		// Search and remove triangles who are inside the polygon.
 		while (triangleOfPolygonIt.hasNext()) {
 			aTriangleInPolygon = (MyTriangle) triangleOfPolygonIt.next();
-
+			
 			aTriangleInPolygon.setMarked(0, true);
 			
 			for(int i=0; i<3;i++)
@@ -2892,54 +2893,44 @@ public class MyMesh {
 						triangleOfPolygonIt.previous();
 					}
 				}
-			}
-		}
-		
-		if(verbose)
-			System.out.println("Remove triangles inside polygon.");
-		
-		ArrayList<MyPoint> removePoints = new ArrayList<MyPoint>();
-		
-		// Remove triangles form the mesh.
-		while (triangleOfPolygonIt.hasPrevious()) {
-			aTriangleInPolygon = (MyTriangle) triangleOfPolygonIt.previous();
-			aTriangleInPolygon.setMarked(0, false);
-			
-			
-			for(int i=0; i<3;i++)
-			{
-				aEdge= aTriangleInPolygon.getEdge(i);
-				
-				removePoints.add(aEdge.getStartPoint());
-				removePoints.add(aEdge.getEndPoint());
 
-				unknowTriangle = aEdge.getLeft();
-				if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)) {
-						aEdge.setLeft(null);
-				}
-				else
+				
+				if(!aEdge.getStartPoint().isMarked())
+					points.remove(aEdge.getStartPoint());
+				
+				if(!aEdge.getEndPoint().isMarked())
+					points.remove(aEdge.getEnd());
+				
+	
+				if(aEdge.isLocked())
 				{
-					unknowTriangle = aEdge.getRight();
-					if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)){
-						aEdge.setRight(null);
+					unknowTriangle = aEdge.getLeft();
+					if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)) {
+							aEdge.setLeft(null);
+					}
+					else
+					{
+						unknowTriangle = aEdge.getRight();
+						if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)){
+							aEdge.setRight(null);
+						}
 					}
 				}
+				else
+					edges.remove(aEdge);
 					
 			}
 			triangles.remove(aTriangleInPolygon);
+			
+			
 		}
-		
-		if(verbose)
-			System.out.println("Remove points inside polygon.");
-		removePoints.removeAll(aPolygon.getPoints());
-		points.removeAll(removePoints);
 		
 		aEdge=null;
 		aTriangleInPolygon=null;
 		unknowTriangle=null;
-		removePoints=null;
 		triangleOfPolygon=null;
 	}
+	
 	
 	/**
 	 * try to apply a flip-flap algorithm on it
