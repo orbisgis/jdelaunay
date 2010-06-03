@@ -259,8 +259,8 @@ public class MyQuadTree<T extends MyElement> {
 			if (theQuadTree[i] != null) {
 				MyBox testBox = getSector(i, boundingBox);
 				
-				if (!((searchBoundingBox.maxx < testBox.minx) || (searchBoundingBox.minx > testBox.maxx)
-				|| (searchBoundingBox.miny > testBox.maxy) || (searchBoundingBox.maxy < testBox.miny)) )
+				if (!((searchBoundingBox.maxx <= testBox.minx) || (searchBoundingBox.minx >= testBox.maxx)
+				|| (searchBoundingBox.miny >= testBox.maxy) || (searchBoundingBox.maxy <= testBox.miny)) )
 				{
 					// One point at least is inside => memorize it
 					allElements.addAll(theQuadTree[i].searchAll(searchBoundingBox, testBox));
@@ -355,9 +355,11 @@ public class MyQuadTree<T extends MyElement> {
 			if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint") && aPolygon.contains((MyPoint)searchedElement)	)
 			{	
 				allElements.add(searchedElement);
-			}			
+			}
 		}
-		theList.removeAll(allElements);
+		
+		for(T element :allElements)//FIXME
+			System.out.println(">>"+theList.remove(element)+" | "+(MyPoint)element);
 
 		// test bounding box of the each subarea and search inside if it is
 		// in the
@@ -371,9 +373,11 @@ public class MyQuadTree<T extends MyElement> {
 				|| (searchBoundingBox.miny > testBox.maxy) || (searchBoundingBox.maxy < testBox.miny)) )
 				{
 					// One point at least is inside => memorize it
-					allElements.addAll(theQuadTree[i].removeAllStric(aPolygon, aPolygon.getBoundingBox(),boundingBox));
-					if(theQuadTree[i].theList.size()<=0)
-						theQuadTree[i]=null;
+					allElements.addAll(theQuadTree[i].removeAllStric(aPolygon, searchBoundingBox,boundingBox));
+
+					//FIXME
+//					if(theQuadTree[i].theList.size()<=0)
+//						theQuadTree[i]=null;
 				}
 			}
 			i++;

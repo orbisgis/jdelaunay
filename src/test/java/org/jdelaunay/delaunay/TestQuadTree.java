@@ -34,8 +34,8 @@ public class TestQuadTree extends BaseTest  {
 		
 		show(aMesh);
 //		System.out.println("points :\n"+aMesh.points+"\n");
-		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));//new MyBox(0, 130, 0, 30, 0, 40)
-		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
+//		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));//new MyBox(0, 130, 0, 30, 0, 40)
+//		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
 		System.out.println("fin 01\n");
 	}
 	
@@ -70,8 +70,8 @@ public class TestQuadTree extends BaseTest  {
 		
 		show(aMesh);
 
-		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
-		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
+//		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
+//		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
 		System.out.println("fin 02\n");
 	}
 	
@@ -103,9 +103,41 @@ public class TestQuadTree extends BaseTest  {
 		
 		show(aMesh);
 
-		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
-		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
+//		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
+//		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
 		System.out.println("fin 03\n");
+	}
+	
+	
+	
+	public void testQuadTreeRandomPoints_04() throws DelaunayError, ParseException {
+
+		WKTReader reader = new WKTReader();
+		Polygon polygon = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
+		MyPolygon aPolygon = new MyPolygon(polygon,16750080);
+		
+		
+		
+		MyMesh aMesh = new MyMesh();
+		aMesh.setPrecision(1.0e-3);
+		aMesh.setVerbose(true);
+		aMesh.setRandomPoints(50000);
+		aMesh.setMax(1300, 700);
+		
+	
+		
+		aMesh.processDelaunay();
+		
+		aPolygon.setEmpty(true);
+		aMesh.addPolygon(aPolygon);
+		
+		show(aMesh);
+
+		
+//		System.out.println(aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
+//		System.out.println(aMesh.quadTree.removeAllStric(aPolygon));
+		
+		System.out.println("fin 04\n");
 	}
 
 }
