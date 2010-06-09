@@ -63,7 +63,8 @@ public class TestPolygon  extends BaseTest  {
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
 		
-		aMesh.addPolygon(aPolygon, true);
+		aPolygon.setEmpty(true);
+		aMesh.addPolygon(aPolygon);
 		
 		show(aMesh);
 		System.out.println("fin 01bis");
@@ -154,11 +155,13 @@ public class TestPolygon  extends BaseTest  {
 
 		aMesh.addPolygon(aPolygon2);
 		aMesh.addPolygon(aPolygon);
+		aPolygon3.setEmpty(true);
 		aMesh.addPolygon(aPolygon3);
 
 		aMesh.processDelaunay();
 		
 		show(aMesh);
+		aMesh.VRMLexport();
 		System.out.println("end");
 	}
 	
@@ -227,4 +230,43 @@ public class TestPolygon  extends BaseTest  {
 		System.out.println("end");
 	}
 
+	
+	
+	public void testPolygon_07() throws DelaunayError, IOException, ParseException {
+		
+		WKTReader reader = new WKTReader();
+		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
+		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		
+		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
+		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		
+		Polygon polygon3 = (Polygon) reader.read("POLYGON((80 20 10, 80 80 10, 120 80 30, 120 20 30, 80 20 10))");
+		MyPolygon aPolygon3 = new MyPolygon(polygon3,5210967);
+		
+		Polygon polygon4 = (Polygon) reader.read("POLYGON((70 55 5, 70 45 5, 110 45 5, 110 55 5, 70 55 5))");
+		MyPolygon aPolygon4 = new MyPolygon(polygon4,13606732);
+		 
+		MyMesh aMesh = new MyMesh();
+		aMesh.setPrecision(1.0e-3);
+		aMesh.setVerbose(true);
+		aMesh.setPoints(getPoints());
+		aMesh.setMax(1300, 700);
+
+		aMesh.addPolygon(aPolygon2);
+		aMesh.addPolygon(aPolygon);
+		
+		aPolygon3.setUsePolygonZ(true);
+		aMesh.addPolygon(aPolygon3);
+
+		aPolygon4.setUsePolygonZ(true);
+		aMesh.addPolygon(aPolygon4);
+		
+		aMesh.processDelaunay();
+
+		
+		show(aMesh);
+		aMesh.VRMLexport("testPolygon_07-2.wrl");
+		System.out.println("end");
+	}
 }

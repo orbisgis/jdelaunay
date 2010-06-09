@@ -408,7 +408,7 @@ public class MyHydroNetwork {
 			if (points.contains(aPoint)) {
 				// Already in the points list => do noting
 			} else {
-				aPoint.setMarked(true);
+				aPoint.setMarked(0, true);//FIXME check me
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
 					// Connect it to the surface
@@ -429,7 +429,7 @@ public class MyHydroNetwork {
 				// Already in the points list => do noting
 			} else {
 				points.add(aPoint);
-				aPoint.setMarked(true);
+				aPoint.setMarked(0, true);//FIXME check me
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
 					double ZValue = referenceTriangle.softInterpolateZ(aPoint);
@@ -453,7 +453,7 @@ public class MyHydroNetwork {
 			if (points.contains(aPoint)) {
 				// Already in the points list => do noting
 			} else {
-				aPoint.setMarked(true);
+				aPoint.setMarked(0, true);//FIXME check me
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
 					// Connect it to the surface

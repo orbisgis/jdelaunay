@@ -120,22 +120,40 @@ public class TestQuadTree extends BaseTest  {
 		MyPolygon aPolygon = new MyPolygon(polygon,16750080);
 		
 		
+		Polygon polygon2 = (Polygon) reader.read("POLYGON((100 20 10, 100 80 10, 180 80 10, 180 20 10, 100 20 10))");
+		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
 		
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
-		aMesh.setRandomPoints(50000);
+		aMesh.setRandomPoints(500000);// if 10 000 000 => java.lang.OutOfMemoryError: GC overhead limit exceeded
 		aMesh.setMax(1300, 700);
-		
+
 	
 		
-		aMesh.processDelaunay();
+
 		
 		long end = System.currentTimeMillis();
 		System.out.println("Duration " + (end-start)+"ms");
 		
 		aPolygon.setEmpty(true);
+//		aPolygon.setMustBeTriangulated(true);
+		
+		aPolygon.setUsePolygonZ(true);
+		
 		aMesh.addPolygon(aPolygon);
+		
+
+		aPolygon2.setEmpty(true);
+//		aPolygon2.setMustBeTriangulated(true);
+		
+		aPolygon2.setUsePolygonZ(true);
+		
+		aMesh.addPolygon(aPolygon2);
+		
+		
+		
+		aMesh.processDelaunay();
 		
 		show(aMesh);
 
@@ -143,6 +161,7 @@ public class TestQuadTree extends BaseTest  {
 		System.out.println("Duration " + (end-start)+"ms soit "+((end-start)/60000)+"min");
 		System.in.read();
 		System.out.println("end 04\n");
+//		aMesh.VRMLexport();
 		
 	}
 

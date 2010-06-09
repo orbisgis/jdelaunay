@@ -5,8 +5,8 @@ package org.jdelaunay.delaunay;
  *
  * @author Erwan BOCHER, Adelin PIAU
  * @date 2010-05-20
- * @revision 2010-05-20
- * @version 2.0
+ * @revision 2010-06-9
+ * @version 2.1
  */
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ public class MyPolygon extends MyElement {
 	private Polygon polygon;
 	private ArrayList<MyEdge> edges;
 	private MyTriangle refTriangle;
+
 	
 	/**
 	 * True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
@@ -29,6 +30,9 @@ public class MyPolygon extends MyElement {
 	 */
 	private boolean isEmpty;
 
+	
+	private boolean mustBeTriangulated;
+	
 	/**
 	 * Generate a polygon.
 	 * 
@@ -160,6 +164,18 @@ public class MyPolygon extends MyElement {
 		this.isEmpty = isEmpty;
 	}
 	
+	public boolean mustBeTriangulated()
+	{
+		return mustBeTriangulated;
+	}
+	
+	public void setMustBeTriangulated(boolean mustBeTriangulated)
+	{
+		this.mustBeTriangulated=mustBeTriangulated;
+		setEmpty(mustBeTriangulated);
+	}
+	
+	
 	/**
 	 * @return The reference triangle.
 	 */
@@ -223,6 +239,10 @@ public class MyPolygon extends MyElement {
 	 */
 	public boolean contains(MyPoint aPoint) { //FIXME check if we have better code
 		return polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
+	}
+	
+	public boolean contains(Coordinate coordinate) { //FIXME check if we have better code
+		return polygon.contains(new GeometryFactory().createPoint(coordinate));
 	}
 
 }

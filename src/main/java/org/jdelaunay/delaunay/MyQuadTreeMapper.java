@@ -7,8 +7,8 @@ import java.util.ArrayList;
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-02
- * @version 1.1
+ * @revision 2010-06-9
+ * @version 1.2
  */
 
 public class MyQuadTreeMapper<T extends MyElement> {
@@ -74,6 +74,24 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		}
 	}
 	
+	
+	/**
+	 * add all elements in the QuadTree
+	 * @param elements
+	 */
+	public void addAll(ArrayList<T> elements) {
+		if (this.usable) {
+			MyBox theBox;
+			for(T element:elements)
+			{
+				theBox = element.getBoundingBox();
+				myQuadTree.add(element, theBox, myBoundingBox);
+			}
+		}
+		
+	}
+	
+	
 	/**
 	 * Search the element that contains the point
 	 * @param aPoint
@@ -83,6 +101,32 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		T anElement = null;
 		if (this.usable) {
 			anElement = myQuadTree.search(aPoint, myBoundingBox);
+		}
+		return anElement;
+	}
+	
+	/**
+	 * Search the element that contains the point
+	 * @param aPoint
+	 * @return anElement
+	 */
+	public T search(double x, double y) {
+		T anElement = null;
+		if (this.usable) {
+			anElement = myQuadTree.search(new MyPoint(x,y), myBoundingBox);
+		}
+		return anElement;
+	}
+	
+	/**
+	 * Search the element that contains the point
+	 * @param aPoint
+	 * @return anElement
+	 */
+	public T search(double x, double y, double z) {
+		T anElement = null;
+		if (this.usable) {
+			anElement = myQuadTree.search(new MyPoint(x,y, z), myBoundingBox);
 		}
 		return anElement;
 	}
@@ -119,7 +163,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	/**
 	 * Remove all elements strictly inside the polygon's area.
 	 * @param aPolygon Area of search.
-	 * @return All elements strictly inside the area searchBoundingBox.
+	 * @return All elements in the quadtree with out elements strictly inside the area searchBoundingBox.
 	 */
 	public ArrayList<T> removeAllStric(MyPolygon aPolygon) {
 		ArrayList<T>  allElements = null;
@@ -128,4 +172,11 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		}
 		return allElements;
 	}
+	
+	public ArrayList<T> getAll()
+	{
+		return myQuadTree.getAll();
+	}
+
+
 }

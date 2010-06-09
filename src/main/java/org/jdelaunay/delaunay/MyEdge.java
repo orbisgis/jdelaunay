@@ -3,13 +3,16 @@ package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
  *
- * @author Jean-Yves MARTIN, Erwan BOCHER
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-05-14
+ * @revision 2010-06-9
  * @version 1.1
  */
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class MyEdge extends MyElement {
 	private MyPoint startPoint, endPoint;
@@ -254,8 +257,8 @@ public class MyEdge extends MyElement {
 	public void setMarked(int byteNumber, boolean marked) {
 		setBit(3+byteNumber, marked);
 		
-		startPoint.setMarked(marked);//FIXME
-		endPoint.setMarked(marked);
+		startPoint.setMarked(byteNumber, marked);
+		endPoint.setMarked(byteNumber, marked);
 	}
 
 	/**

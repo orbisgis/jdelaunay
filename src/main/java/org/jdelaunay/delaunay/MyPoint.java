@@ -3,9 +3,9 @@ package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
  *
- * @author Jean-Yves MARTIN, Erwan BOCHER
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-05-14
+ * @revision 2010-06-9
  * @version 2.0
  */
 
@@ -14,7 +14,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyPoint extends MyElement  {
 	private Coordinate coord;
-	private int marked;
+	private int indicator;
 
 	/**
 	 * Initialize point 
@@ -25,7 +25,8 @@ public class MyPoint extends MyElement  {
 	 */
 	private void init(double x, double y, double z) {
 		this.coord = new Coordinate(x,y,z);
-		marked = 0;
+		this.indicator = 0;
+
 	}
 
 	/**
@@ -121,25 +122,75 @@ public class MyPoint extends MyElement  {
 		this.coord.z = z;
 	}
 
+
+	
 	/**
-	 * return true if the point is marked, false otherwise
+	 * get the value of a specific bit
+	 * @param byteNumber
+	 * @return marked
+	 */
+	private boolean testBit(int byteNumber) {
+		return ((this.indicator & (1 << byteNumber)) != 0);
+	}
+
+	/**
+	 * set the value of a specific bit
+	 * @param byteNumber
+	 * @param value
+	 */
+	private void setBit(int byteNumber, boolean value) {
+		int test = (1 << byteNumber);
+		if (value)
+			this.indicator = (this.indicator | test);
+		else
+			this.indicator = (this.indicator | test) - test;
+	}
+	
+	/**
+	 * get the mark of the edge
+	 * @param byteNumber
 	 * @return marked
 	 */
 	public boolean isMarked() {
-		return (marked != 0);
+		return testBit(2);
+	}
+	
+	/**
+	 * get the mark of the edge
+	 * @param byteNumber
+	 * @return marked
+	 */
+	public boolean isMarked(int byteNumber) {
+		return testBit(3+byteNumber);
 	}
 
 	/**
-	 * mark, unmark the point
+	 * set the mark of the edge
+	 * @param byteNumber
 	 * @param marked
 	 */
-	public void setMarked(boolean marked) {
-		if (marked)
-			this.marked = 1;
-		else
-			this.marked = 0;
+	public void setMarked(int byteNumber, boolean marked) {
+		setBit(3+byteNumber, marked);
 	}
 
+	/**
+	 * get the mark of the edge
+	 * @return marked
+	 */
+	public boolean isLocked() {
+		return testBit(2);
+	}
+
+	/**
+	 * set the mark of the edge
+	 * @param marked
+	 */
+	public void setLocked(boolean locked) {
+		setBit(2, locked);
+	}
+	
+	
+	
 	/**
 	 * return jts Coordinate
 	 * @return

@@ -49,7 +49,7 @@ public class DelaunayTest extends BaseTest {
 
 		show(aMesh);
 		
-		LinkedList<MyTriangle> triangles = aMesh.getTriangles();
+		ArrayList<MyTriangle> triangles = aMesh.getTriangles();
 
 		for (MyTriangle myTriangle : triangles) {
 

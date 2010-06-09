@@ -1,11 +1,12 @@
 package org.jdelaunay.delaunay;
 
+
 /**
  * Delaunay Package.
  *
- * @author Jean-Yves MARTIN, Erwan BOCHER
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-05-16
+ * @revision 2010-06-9
  * @version 2.0
  */
 

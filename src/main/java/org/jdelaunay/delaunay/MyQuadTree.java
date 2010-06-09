@@ -1,14 +1,16 @@
 package org.jdelaunay.delaunay;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * Delaunay Package.
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-02
- * @version 1.1
+ * @revision 2010-06-9
+ * @version 1.2
  */
 
 public class MyQuadTree<T extends MyElement> {
@@ -262,7 +264,6 @@ public class MyQuadTree<T extends MyElement> {
 				if (!((searchBoundingBox.maxx <= testBox.minx) || (searchBoundingBox.minx >= testBox.maxx)
 				|| (searchBoundingBox.miny >= testBox.maxy) || (searchBoundingBox.maxy <= testBox.miny)) )
 				{
-					// One point at least is inside => memorize it
 					allElements.addAll(theQuadTree[i].searchAll(searchBoundingBox, testBox));
 				}
 			}
@@ -312,7 +313,6 @@ public class MyQuadTree<T extends MyElement> {
 				if (!((searchBoundingBox.maxx < testBox.minx) || (searchBoundingBox.minx > testBox.maxx)
 				|| (searchBoundingBox.miny > testBox.maxy) || (searchBoundingBox.maxy < testBox.miny)) )
 				{
-					// One point at least is inside => memorize it
 					allElements.addAll(theQuadTree[i].searchAllStric(searchBoundingBox, testBox));
 				}
 			}
@@ -343,7 +343,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * 
 	 * @param aPolygon Area of search.
 	 * @param boundingBox Bounding box of quad tree.
-	 * @return All elements strictly inside the area searchBoundingBox.
+	 * @return All elements in the quadtree with out elements strictly inside the area searchBoundingBox.
 	 */
 	private ArrayList<T> removeAllStric(MyPolygon aPolygon, MyBox searchBoundingBox, MyBox boundingBox) {
 		ArrayList<T>  allElements = new ArrayList<T>();
@@ -352,10 +352,65 @@ public class MyQuadTree<T extends MyElement> {
 		ListIterator<T> iterList = theList.listIterator();
 		while ((iterList.hasNext())) {
 			T searchedElement = iterList.next();
-			if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint") && aPolygon.contains((MyPoint)searchedElement)	)
+			
+			if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint") && aPolygon.contains((MyPoint)searchedElement) && !((MyPoint)searchedElement).isMarked())
 			{	
-				allElements.add(searchedElement);
+//				allElements.add(searchedElement);
+				iterList.remove();
 			}
+			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyEdge") && aPolygon.contains(((MyEdge)searchedElement).getStart()) && aPolygon.contains(((MyEdge)searchedElement).getEnd())	)
+			{	
+//				allElements.add(searchedElement);
+				iterList.remove();
+			}
+			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyTriangle") && aPolygon.contains(((MyTriangle)searchedElement).getBarycenter()))
+			{	
+//				allElements.add(searchedElement);
+				iterList.remove();
+			}
+			else
+				allElements.add(searchedElement);
+		}
+		
+
+		// test bounding box of the each subarea and search inside if it is
+		// in the
+		// box
+		int i = 0;
+		MyBox testBox;
+		while ((i < 4)) {
+			if (theQuadTree[i] != null) {
+				testBox = getSector(i, boundingBox);
+				
+//				if(searchBoundingBox.minx <= testBox.maxx && searchBoundingBox.maxx >= testBox.minx
+//					&& searchBoundingBox.miny <= testBox.maxy && searchBoundingBox.maxy >= testBox.miny)
+//				{
+
+					allElements.addAll(theQuadTree[i].removeAllStric(aPolygon, searchBoundingBox,testBox));
+					// Remove empty node
+					if(theQuadTree[i].theList.size()<=0 && theQuadTree[i].theQuadTree[0]==null
+														&& theQuadTree[i].theQuadTree[1]==null
+														&& theQuadTree[i].theQuadTree[2]==null
+														&& theQuadTree[i].theQuadTree[3]==null)
+						theQuadTree[i]=null;
+//				}
+
+
+			}
+			i++;
+		}
+		return allElements;
+	}
+	
+	
+	protected ArrayList<T> getAll() {
+		ArrayList<T>  allElements = new ArrayList<T>();
+		
+		// test root list
+		ListIterator<T> iterList = theList.listIterator();
+		while ((iterList.hasNext())) {
+			T searchedElement = iterList.next();
+			allElements.add(searchedElement);
 		}
 		
 
@@ -365,18 +420,8 @@ public class MyQuadTree<T extends MyElement> {
 		int i = 0;
 		while ((i < 4)) {
 			if (theQuadTree[i] != null) {
-				MyBox testBox = getSector(i, boundingBox);
-				
-				if (!((searchBoundingBox.maxx < testBox.minx) || (searchBoundingBox.minx > testBox.maxx)
-				|| (searchBoundingBox.miny > testBox.maxy) || (searchBoundingBox.maxy < testBox.miny)) )
-				{
-					// One point at least is inside => memorize it
-					allElements.addAll(theQuadTree[i].removeAllStric(aPolygon, searchBoundingBox,boundingBox));
+					allElements.addAll(theQuadTree[i].getAll());
 
-					//FIXME
-//					if(theQuadTree[i].theList.size()<=0)
-//						theQuadTree[i]=null;
-				}
 			}
 			i++;
 		}

@@ -23,7 +23,7 @@ public class DelaunayForHydroTest extends BaseTest {
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
 
-		LinkedList<MyTriangle> triangles = aMesh.getTriangles();
+		ArrayList<MyTriangle> triangles = aMesh.getTriangles();
 
 		int nbFlat = 0;
 		for (MyTriangle myTriangle : triangles) {

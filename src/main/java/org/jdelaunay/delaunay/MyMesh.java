@@ -5,24 +5,43 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-05-24
- * @version 2.0
+ * @revision 2010-06-9
+ * @version 2.1
  */
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-
-import com.vividsolutions.jts.geom.GeometryFactory;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.StringTokenizer;
 
 public class MyMesh {
 	// Vectors with points and edges
 	protected ArrayList<MyPoint> points;
+	protected MyQuadTreeMapper<MyPoint> pointsQuadTree;
+	
 	protected ArrayList<MyEdge> edges;
-	protected LinkedList<MyTriangle> triangles;
+	protected MyQuadTreeMapper<MyEdge> edgesQuadTree;
+	
+	protected ArrayList<MyTriangle> triangles;
+	protected MyQuadTreeMapper<MyTriangle>  trianglesQuadTrees;
+	
 	protected LinkedList<MyPolygon> polygons;
 	protected ArrayList<MyEdge> constraintsEdges;
-//	protected MyQuadTreeMapper quadTree;
+
 	
 	// bounding box
 	protected int maxx, maxy;
@@ -46,6 +65,7 @@ public class MyMesh {
 	private long startComputation;
 	private MyDrawing affiche;
 	private boolean usePolygonZ;
+	private boolean isBoundingBoxInit;
 
 	// Working index vector
 	private LinkedList<MyEdge> badEdgesQueueList;
@@ -67,8 +87,11 @@ public class MyMesh {
 	public MyMesh() {
 		// Generate vectors
 		this.points = new ArrayList<MyPoint>();
+		this.pointsQuadTree = new MyQuadTreeMapper<MyPoint>();
 		this.edges = new ArrayList<MyEdge>();
-		this.triangles = new LinkedList<MyTriangle>();
+		this.triangles = new ArrayList<MyTriangle>();
+
+		
 		this.constraintsEdges = new ArrayList<MyEdge>();
 		this.polygons = new LinkedList<MyPolygon>();
 //		this.quadTree = new MyQuadTreeMapper<MyElement>();
@@ -76,6 +99,7 @@ public class MyMesh {
 		this.maxx = 1200;
 		this.maxy = 700;
 		this.theBox = new MyBox();
+		this.isBoundingBoxInit=false;
 
 		this.meshComputed = false;
 
@@ -122,6 +146,7 @@ public class MyMesh {
 		for (MyPoint aPoint : this.points) {
 			this.theBox.alterBox(aPoint);
 		}
+		isBoundingBoxInit=true;
 		return this.theBox;
 	}
 
@@ -170,7 +195,6 @@ public class MyMesh {
 		this.points = new ArrayList<MyPoint>();
 		for (MyPoint aPoint : point)
 		{	this.points.add(aPoint);
-//			quadTree.add(aPoint);
 		}
 	}
 
@@ -183,7 +207,6 @@ public class MyMesh {
 		this.points = new ArrayList<MyPoint>();
 		for (MyPoint aPoint : point)
 		{	this.points.add(aPoint);
-//			quadTree.add(aPoint);
 		}
 	}
 
@@ -278,7 +301,7 @@ public class MyMesh {
 	 * 
 	 * @return triangle
 	 */
-	public LinkedList<MyTriangle> getTriangles() {
+	public ArrayList<MyTriangle> getTriangles() {
 		return triangles;
 	}
 
@@ -517,6 +540,8 @@ public class MyMesh {
 			aPoint = null;
 
 		return aPoint;
+		
+//		return points.search(x,y,z);
 	}
 
 	/**
@@ -539,6 +564,7 @@ public class MyMesh {
 			aPoint = null;
 
 		return aPoint;
+//		return points.search(x,y);
 	}
 
 	/**
@@ -585,16 +611,10 @@ public class MyMesh {
 		MyPoint aPoint4 = new MyPoint(theBox.maxx, theBox.miny);
 
 		points.add(aPoint1);
-//		quadTree.add(aPoint1);
-
 		points.add(aPoint2);
-//		quadTree.add(aPoint2);
-		
 		points.add(aPoint3);
-//		quadTree.add(aPoint3);
-		
 		points.add(aPoint4);
-//		quadTree.add(aPoint4);
+
 		
 		// Generate lines, taking into account the fact there are points withe
 		// the same x and y
@@ -658,11 +678,9 @@ public class MyMesh {
 		else {
 			if (!points.contains(aPoint1))
 			{	points.add(aPoint1);
-//				quadTree.add(aPoint1);	
 			}
 			if (!points.contains(aPoint2))
 			{	points.add(aPoint2);
-//				quadTree.add(aPoint2);
 			}
 			MyEdge anEdge = new MyEdge(aPoint1, aPoint2);
 			constraintsEdges.add(anEdge);
@@ -718,7 +736,6 @@ public class MyMesh {
 			aPoint.setGID(i);
 
 			points.add(aPoint);
-//			quadTree.add(aPoint);
 		}
 	}
 
@@ -774,7 +791,8 @@ public class MyMesh {
 					System.out.println("Adding point of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
 			
 				for(MyPolygon aPolygon : polygons)
-					points.addAll(aPolygon.getPoints());
+				{	points.addAll(aPolygon.getPoints());
+				}
 			}
 			
 			// sort points
@@ -840,14 +858,9 @@ public class MyMesh {
 
 			meshComputed = true;
 			
-			getBoundingBox();
-			if (verbose)
-				System.out.println("Set bounding box : "+theBox.maxx+" "+theBox.maxy+" "+theBox.minx+" "+theBox.miny);
+			pointsQuadTree=null;
+			edgesQuadTree=null;
 			
-//			if (verbose)
-//				System.out.println("Create and complete a quad tree");
-//			quadTree=new MyQuadTreeMapper<MyPoint>(theBox, points);
-
 			// Add the edges in the edges array
 			if (verbose)
 				System.out.println("Adding edges");
@@ -891,7 +904,7 @@ public class MyMesh {
 	 */
 	public void reprocessDelaunay() throws DelaunayError {
 		edges = new ArrayList<MyEdge>();
-		triangles = new LinkedList<MyTriangle>();
+		triangles = new ArrayList<MyTriangle>();
 		meshComputed = false;
 
 		// Restart the process
@@ -913,7 +926,6 @@ public class MyMesh {
 			// add point in the triangle
 			if (!points.contains(aPoint))
 			{	points.add(aPoint);
-//				quadTree.add(aPoint);
 			}
 			addPointInsideTriangle(aTriangle, aPoint);
 
@@ -978,14 +990,12 @@ public class MyMesh {
 				if (foundTriangle != null) {
 					// the point is inside the foundTriangle triangle
 					points.add(aPoint);
-//					quadTree.add(aPoint);
 					addPointInsideTriangle(foundTriangle, aPoint);
 				} else {
 					// the point is outside the mesh
 					// The boundary edge list is ok
 					// We insert the point in the mesh
 					points.add(aPoint);
-//					quadTree.add(aPoint);
 					foundTriangle = myInsertPoint(aPoint);
 				}
 			}
@@ -1322,7 +1332,6 @@ public class MyMesh {
 			// Add elements to the lists
 			// add point to the list
 			points.add(aPoint);
-//			quadTree.add(aPoint);
 
 			// add the 3 new edges to the list
 			newEdges[2] = remainEdge;
@@ -1403,9 +1412,6 @@ public class MyMesh {
 		}
 	}
 	
-
-	
-
 	/**
 	 * Add a polygon to the Mesh
 	 * 
@@ -1413,17 +1419,6 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addPolygon(MyPolygon aPolygon) throws DelaunayError {
-		addPolygon(aPolygon, false);
-	}
-	
-	/**
-	 * Add a polygon to the Mesh
-	 * 
-	 * @param aPolygon
-	 * @param isEmpty If true, remove triangle inside polygon.
-	 * @throws DelaunayError
-	 */
-	public void addPolygon(MyPolygon aPolygon, boolean isEmpty) throws DelaunayError {
 		
 		polygons.add(aPolygon);
 		
@@ -1436,6 +1431,9 @@ public class MyMesh {
 			for (MyPoint aPoint : aPolygon.getPoints()) {
 				addPoint(aPoint);
 			}
+			
+			pointsQuadTree=null;//FIXME not very good but it dosen't need to adding always new point or edges.
+			edgesQuadTree=null;
 			
 			if (verbose)
 				System.out.println("Processing edges of polygon");
@@ -1608,6 +1606,7 @@ public class MyMesh {
 	 * @throws DelaunayError 
 	 */
 	private void processPolygons() throws DelaunayError {
+		
 		for(MyPolygon aPolygon : polygons)
 		{	
 			processOnePolygon(aPolygon);
@@ -1625,7 +1624,7 @@ public class MyMesh {
 		
 		if(aPolygon.isEmpty())
 		{
-			// Create a polygon with NO triangle inside.
+			
 			
 			// Adding edges of polygon to the mesh.
 			for(MyEdge aEdge : processEdges(aPolygon.getEdges()) )
@@ -1635,12 +1634,18 @@ public class MyMesh {
 					if(aEdge.getLeft()!=null && aPolygon.contains(aEdge.getLeft().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getLeft());
-						removeTriangleInPolygon(aPolygon, aEdge.getLeft());
+						if(aPolygon.mustBeTriangulated())
+							processSomePoints(removeTriangleInPolygon(aPolygon, aEdge.getLeft()));// Create a polygon with NEW triangle inside.
+						else
+							removeTriangleInPolygon(aPolygon, aEdge.getLeft());// Create a polygon with NO triangle inside.
 						break;
 					}else if(aEdge.getRight()!=null && aPolygon.contains(aEdge.getRight().getBarycenter()))
 					{	
 						aPolygon.setRefTriangle(aEdge.getRight());
-						removeTriangleInPolygon(aPolygon, aEdge.getRight());
+						if(aPolygon.mustBeTriangulated())
+							processSomePoints(removeTriangleInPolygon(aPolygon, aEdge.getRight()));// Create a polygon with NEW triangle inside.
+						else
+							removeTriangleInPolygon(aPolygon, aEdge.getRight());// Create a polygon with NO triangle inside.
 						break;
 					}
 				}
@@ -2180,7 +2185,7 @@ public class MyMesh {
 					// Not between p1 and p2 => removed
 					iterPoint.remove();
 				} else
-					aPoint.setMarked(true);
+					aPoint.isLocked();
 			}
 
 			// Then we mark all edges from p1 to p2
@@ -2192,8 +2197,8 @@ public class MyMesh {
 				MyEdge anEdge = checkTwoPointsEdge(p, LastPoint, possibleEdges);
 				if (anEdge != null) {
 					anEdge.setLocked(true);
-					LastPoint.setMarked(true);
-					p.setMarked(true);
+					LastPoint.setLocked(true);
+					p.setLocked(true);
 					anEdge.setProperty(CurrentEdge.getProperty());
 
 					// look for swapping edge
@@ -2853,7 +2858,28 @@ public class MyMesh {
 	 * @param refTriangle
 	 * @throws DelaunayError
 	 */
-	public void removeTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) throws DelaunayError {
+	public ArrayList<MyPoint> removeTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) throws DelaunayError {
+		
+		if(!isBoundingBoxInit)
+		{
+			getBoundingBox();
+			if (verbose)
+				System.out.println("Set bounding box : "+theBox.maxx+" "+theBox.maxy+" "+theBox.minx+" "+theBox.miny);
+		}
+		
+		
+		if(pointsQuadTree==null)
+		{	if (verbose)
+				System.out.println("Create and complete a quad tree for points");
+			pointsQuadTree=new MyQuadTreeMapper<MyPoint>(theBox, points);
+		}
+		
+		if(edgesQuadTree==null)
+		{	if (verbose)
+				System.out.println("Create and complete a quad tree for edges");
+			edgesQuadTree= new MyQuadTreeMapper<MyEdge>(theBox,edges);
+		}
+		
 		LinkedList<MyTriangle> triangleOfPolygon = new LinkedList<MyTriangle>();
 		
 		triangleOfPolygon.add(refTriangle);
@@ -2862,6 +2888,8 @@ public class MyMesh {
 		MyTriangle aTriangleInPolygon;
 		MyTriangle unknowTriangle;
 		MyEdge aEdge;
+		
+		ArrayList<MyPoint> pointOfPolygon = new ArrayList<MyPoint>();
 		
 		if(verbose)
 			System.out.println("Search and remove triangles inside polygon.");
@@ -2895,13 +2923,14 @@ public class MyMesh {
 				}
 
 				
-				if(!aEdge.getStartPoint().isMarked())
-					points.remove(aEdge.getStartPoint());
-				
+
+				if(aEdge.getStartPoint().isMarked())
+					pointOfPolygon.add(aEdge.getStartPoint());
+
 				if(!aEdge.getEndPoint().isMarked())
-					points.remove(aEdge.getEnd());
+					pointOfPolygon.add(aEdge.getEndPoint());
+
 				
-	
 				if(aEdge.isLocked())
 				{
 					unknowTriangle = aEdge.getLeft();
@@ -2916,19 +2945,81 @@ public class MyMesh {
 						}
 					}
 				}
-				else
-					edges.remove(aEdge);
+//				else
+//				{	
+//				 the edge can be remove
+//				}
 					
 			}
+
 			triangles.remove(aTriangleInPolygon);
 			
-			
 		}
+
+		edges=edgesQuadTree.removeAllStric(aPolygon);
+		points=pointsQuadTree.removeAllStric(aPolygon);
+
+		return pointOfPolygon;
+	}
+	
+	
+	private void processSomePoints(ArrayList<MyPoint> somePoint){
 		
-		aEdge=null;
-		aTriangleInPolygon=null;
-		unknowTriangle=null;
-		triangleOfPolygon=null;
+		if(somePoint.size()>2)
+		{
+			ListIterator<MyPoint> iterPoint= somePoint.listIterator();
+			if (verbose)
+				System.out.println("Processing triangularization");
+			
+			boundaryEdges= new LinkedList<MyEdge>();
+			
+			MyTriangle aTriangle;
+			MyPoint p1, p2, p3;
+			MyEdge e1, e2, e3;
+			p1 = p2 = p3 = null;
+	
+			p1 = iterPoint.next();
+
+			p2 = iterPoint.next();
+
+			p3 = iterPoint.next();
+
+	
+			// The triangle's edges MUST be in the right direction
+			e1 = new MyEdge(p1, p2);
+			if (e1.isLeft(p3)) {
+				e2 = new MyEdge(p2, p3);
+				e3 = new MyEdge(p3, p1);
+			} else {
+				e1.setStartPoint(p2);
+				e1.setEndPoint(p1);
+	
+				e2 = new MyEdge(p1, p3);
+				e3 = new MyEdge(p3, p2);
+			}
+
+			aTriangle = new MyTriangle(e1, e2, e3);
+			triangles.add(aTriangle);
+	
+			// Then process the other points - order don't care
+			boundaryEdges.add(e1);
+			boundaryEdges.add(e2);
+			boundaryEdges.add(e3);
+	
+			// flip-flop on a list of points
+			int count = 0;
+			MyPoint aPoint;
+			while (iterPoint.hasNext()) {
+				count++;
+				aPoint = iterPoint.next();
+				if (!aPoint.isMarked()) {
+					if (myInsertPoint(aPoint) == null)
+						System.err.println("Error flip-flop");//FIXME flip-flop problem	
+				}
+			}
+		}
+		else
+			System.err.println("Error in processSomePoints()");
 	}
 	
 	
@@ -3378,7 +3469,6 @@ public class MyMesh {
 					if (i >= 3)
 					{
 						points.add(aPoint);
-//						quadTree.add(aPoint);
 					}
 					else
 						step++;
