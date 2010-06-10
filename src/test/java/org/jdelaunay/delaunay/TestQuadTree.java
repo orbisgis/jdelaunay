@@ -58,13 +58,17 @@ public class TestQuadTree extends BaseTest  {
 		aMesh.setPoints(getPoints());
 		aMesh.setMax(1300, 700);
 		
-
+		
 		aMesh.addPolygon(aPolygon);
 		
 		aPolygon2.setEmpty(true);
 		aMesh.addPolygon(aPolygon2);
 		
 		aMesh.processDelaunay();
+		
+
+		
+	
 		
 
 		
@@ -126,7 +130,7 @@ public class TestQuadTree extends BaseTest  {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
-		aMesh.setRandomPoints(500000);// if 10 000 000 => java.lang.OutOfMemoryError: GC overhead limit exceeded
+		aMesh.setRandomPoints(10);// if 10 000 000 => java.lang.OutOfMemoryError: GC overhead limit exceeded
 		aMesh.setMax(1300, 700);
 
 	
@@ -151,9 +155,14 @@ public class TestQuadTree extends BaseTest  {
 		
 		aMesh.addPolygon(aPolygon2);
 		
-		
+		aMesh.addLevelEdge(new MyEdge(new MyPoint(30, 150, 7), new MyPoint(100, 150, 3)));
 		
 		aMesh.processDelaunay();
+		aMesh.addLevelEdge(new MyEdge(new MyPoint(30, 95, 50), new MyPoint(100, 120, 50)));
+		
+
+		
+
 		
 		show(aMesh);
 

@@ -1447,6 +1447,41 @@ public class MyMesh {
 	}
 	
 	
+
+	/**
+	 * Add a level edge
+	 * @param anEdge
+	 * @throws DelaunayError
+	 */
+	public void addLevelEdge(MyEdge anEdge) throws DelaunayError {
+		
+		anEdge.setLocked(true);
+		if (!isMeshComputed())
+		{
+			edges.add(anEdge);
+			points.add(anEdge.getStartPoint());
+			points.add(anEdge.getEndPoint());
+		}
+		else
+		{
+			if (verbose)
+				System.out.println("Adding level edge");
+		
+			addPoint(anEdge.getStartPoint());
+			addPoint(anEdge.getEndPoint());
+			addEdge(anEdge);
+			
+			pointsQuadTree=null;//FIXME not very good but it dosen't need to adding always new point or edges.
+			edgesQuadTree=null;
+			
+			// adding GIDs
+			if (verbose)
+				System.out.println("set GIDs");
+			setAllGids();//FIXME is it necessary?
+		}
+	}
+	
+	
 	/**
 	 * Set new property to triangles who are inside the polygon.
 	 * @param aPolygon
