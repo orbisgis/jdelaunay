@@ -89,12 +89,13 @@ public class MyMesh {
 		this.points = new ArrayList<MyPoint>();
 		this.pointsQuadTree = new MyQuadTreeMapper<MyPoint>();
 		this.edges = new ArrayList<MyEdge>();
+		this.edgesQuadTree = new MyQuadTreeMapper<MyEdge>();
 		this.triangles = new ArrayList<MyTriangle>();
+		this.trianglesQuadTrees = new MyQuadTreeMapper<MyTriangle>();
 
 		
 		this.constraintsEdges = new ArrayList<MyEdge>();
 		this.polygons = new LinkedList<MyPolygon>();
-//		this.quadTree = new MyQuadTreeMapper<MyElement>();
 
 		this.maxx = 1200;
 		this.maxy = 700;
@@ -783,6 +784,7 @@ public class MyMesh {
 			// general data structures
 			badEdgesQueueList = new LinkedList<MyEdge>();
 			boundaryEdges = new LinkedList<MyEdge>();
+			LinkedList<MyPoint> badPointList = new LinkedList<MyPoint>();
 
 			if(polygons.size()>0)
 			{
@@ -816,13 +818,21 @@ public class MyMesh {
 			p2 = iterPoint.next();
 			while (p2.isMarked())
 				p2 = iterPoint.next();
+			e1 = new MyEdge(p1, p2);
 
+			// The 3 points MUST NOT be colinear
 			p3 = iterPoint.next();
 			while (p3.isMarked())
 				p3 = iterPoint.next();
-
+			while ((e1.isColinear2D(p3)) && (iterPoint.hasNext())) {
+				badPointList.add(p3);
+				
+				p3 = iterPoint.next();
+				while (p3.isMarked())
+					p3 = iterPoint.next();
+			}
+			
 			// The triangle's edges MUST be in the right direction
-			e1 = new MyEdge(p1, p2);
 			if (e1.isLeft(p3)) {
 				e2 = new MyEdge(p2, p3);
 				e3 = new MyEdge(p3, p1);
@@ -846,14 +856,37 @@ public class MyMesh {
 			boundaryEdges.add(e3);
 
 			// flip-flop on a list of points
+			boolean ended = false;
+			MyPoint aPoint=null;
+			MyPoint LastTestedPoint=null;
 			int count = 0;
-			while (iterPoint.hasNext()) {
-				count++;
-				MyPoint aPoint = iterPoint.next();
-				if (!aPoint.isMarked()) {
-					if (myInsertPoint(aPoint) == null)
-						System.out.println("Erreur flip-flop");//FIXME problem
+
+			while (! ended) {
+				boolean hasGotPoint = false;
+				if (! badPointList.isEmpty()) {
+					aPoint = badPointList.getFirst();
+					if (LastTestedPoint != aPoint) {
+						badPointList.removeFirst();
+						hasGotPoint = true;
+					}
 				}
+				
+				if (! hasGotPoint)
+					if (iterPoint.hasNext()) {
+						count++;
+						aPoint = iterPoint.next();
+					}
+					else {
+						ended = true;
+						aPoint = null;
+					}
+				LastTestedPoint = aPoint;
+				
+				if (aPoint!= null)
+					if (!aPoint.isMarked()) {
+						if (myInsertPoint(aPoint) == null)
+							badPointList.addFirst(aPoint);
+					}
 			}
 
 			meshComputed = true;
@@ -918,6 +951,26 @@ public class MyMesh {
 	 * @param aPoint
 	 * @throws DelaunayError
 	 */
+	public void generateQuadTree() throws DelaunayError {
+		if (!isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+		else {
+			MyBox theBox = this.getBoundingBox();
+			if (this.trianglesQuadTrees.canBeUsed())
+				this.trianglesQuadTrees.remap(theBox);
+			else
+				this.trianglesQuadTrees.setBox(theBox);
+			this.trianglesQuadTrees.add(triangles);
+		}
+	}
+
+	/**
+	 * Add a point inside a triangle and rebuild triangularization
+	 * 
+	 * @param aTriangle
+	 * @param aPoint
+	 * @throws DelaunayError
+	 */
 	public void addPoint(MyTriangle aTriangle, MyPoint aPoint)
 			throws DelaunayError {
 		if (!aTriangle.isInside(aPoint))
@@ -932,7 +985,6 @@ public class MyMesh {
 			// Process badTriangleQueueList
 			processBadEdges();
 		}
-
 	}
 
 	/**
@@ -1021,11 +1073,17 @@ public class MyMesh {
 	 */
 	public MyTriangle getTriangle(MyPoint aPoint) {
 		MyTriangle foundTriangle = null;
-		ListIterator<MyTriangle> iterTriangle = triangles.listIterator();
-		while ((iterTriangle.hasNext()) && (foundTriangle == null)) {
-			MyTriangle aTriangle = iterTriangle.next();
-			if (aTriangle.isInside(aPoint)) {
-				foundTriangle = aTriangle;
+		
+		// Try to use QuadTree if it is possible
+		if (this.trianglesQuadTrees.canBeUsed()) {
+			foundTriangle = this.trianglesQuadTrees.search(aPoint);
+		} else {
+			ListIterator<MyTriangle> iterTriangle = triangles.listIterator();
+			while ((iterTriangle.hasNext()) && (foundTriangle == null)) {
+				MyTriangle aTriangle = iterTriangle.next();
+				if (aTriangle.isInside(aPoint)) {
+					foundTriangle = aTriangle;
+				}
 			}
 		}
 
@@ -1157,6 +1215,7 @@ public class MyMesh {
 				if (!badEdgesQueueList.contains(aTriangle3.edges[i]))
 					badEdgesQueueList.add(aTriangle3.edges[i]);
 			}
+		this.trianglesQuadTrees.cancelUsability();
 	}
 
 	/**
@@ -1359,6 +1418,7 @@ public class MyMesh {
 			}
 		}
 
+		this.trianglesQuadTrees.cancelUsability();
 		return impactedTriangles;
 	}
 
@@ -1385,6 +1445,7 @@ public class MyMesh {
 			MyEdge anEdge = new MyEdge(p1, p2);
 			theList.add(anEdge);
 			processEdges(theList);
+			this.trianglesQuadTrees.cancelUsability();
 		}
 	}
 
@@ -1409,6 +1470,7 @@ public class MyMesh {
 			ArrayList<MyEdge> theList = new ArrayList<MyEdge>();
 			theList.add(anEdge);
 			processEdges(theList);
+			this.trianglesQuadTrees.cancelUsability();
 		}
 	}
 	
@@ -1477,7 +1539,8 @@ public class MyMesh {
 			// adding GIDs
 			if (verbose)
 				System.out.println("set GIDs");
-			setAllGids();//FIXME is it necessary?
+			// GIDs have to be fixed because points may be saved in GDMS and must have a GID for that.
+			setAllGids();
 		}
 	}
 	
@@ -1630,9 +1693,23 @@ public class MyMesh {
 				}
 
 				if ((refinement & refinement_obtuseAngle) != 0) {
+					// Look for triangles with an obtuse angle
+					for (MyTriangle aTriangle : triangles) {
+						if (aTriangle.getMaxAmgle() >= 90)
+							badTrianglesList.add(aTriangle);
+					}
+					
+					// Try to flip-flap
+					while (!badTrianglesList.isEmpty()) {
+						MyTriangle aTriangle = badTrianglesList.getFirst();
+						badTrianglesList.removeFirst();
+
+						// There might be something to do...
+					}
 				}
 
 			} while (nbDone != 0);
+			this.trianglesQuadTrees.cancelUsability();
 		}
 	}
 
@@ -3000,8 +3077,7 @@ public class MyMesh {
 	
 	private void processSomePoints(ArrayList<MyPoint> somePoint){
 		
-		if(somePoint.size()>2)
-		{
+		if(somePoint.size()>2) {
 			ListIterator<MyPoint> iterPoint= somePoint.listIterator();
 			if (verbose)
 				System.out.println("Processing triangularization");
@@ -3014,9 +3090,7 @@ public class MyMesh {
 			p1 = p2 = p3 = null;
 	
 			p1 = iterPoint.next();
-
 			p2 = iterPoint.next();
-
 			p3 = iterPoint.next();
 
 	
@@ -3271,9 +3345,15 @@ public class MyMesh {
 		getBoundingBox();
 		double scaleX, scaleY;
 		double minX, minY;
+		int XSize = 1200;
+		int YSize = 600;
+		int decalageX = 10;
+		int decalageY = YSize + 30;
+		int legende = YSize + 60;
+		int bordure = 10;
 
-		scaleX = 1200 / (theBox.maxx - theBox.minx);
-		scaleY = 600 / (theBox.maxy - theBox.miny);
+		scaleX = XSize / (theBox.maxx - theBox.minx);
+		scaleY = YSize / (theBox.maxy - theBox.miny);
 		if (scaleX > scaleY)
 			scaleX = scaleY;
 		else
@@ -3282,15 +3362,13 @@ public class MyMesh {
 		// minY = theBox.maxy;// coordinate 0 in Y is at top of screen (don't
 		// forget make change in sub method)
 		minY = theBox.miny;// coordinate 0 in Y is at bottom of screen
-		int decalageX = 10;
-		int decalageY = 630;
 		scaleY = -scaleY;
 
-		int legende = 650;
-
 		g.setColor(Color.white);
-		g.fillRect(0, 0, decalageX + 5 + 1200, decalageY + 10);
-		g.fillRect(0, legende, decalageX + 5 + 1200, legende + 100);
+		g.fillRect(decalageX - bordure, decalageY - YSize - bordure, 2
+				* bordure + XSize, 2 * bordure + YSize);
+		g.fillRect(decalageX - bordure, legende - bordure, 2 * bordure + XSize,
+				2 * bordure + 50);
 
 		g.setColor(Color.black);
 		g.drawString(triangles.size() + " Triangles - " + edges.size()
@@ -3330,7 +3408,7 @@ public class MyMesh {
 			}
 
 		int psize = points.size();
-		if (psize > 0) {
+		if ((psize > 0) && (psize < 100)) {
 			for (MyPoint aPoint : points) {
 				aPoint.displayObject(g, decalageX, decalageY, minX, minY,
 						scaleX, scaleY);
