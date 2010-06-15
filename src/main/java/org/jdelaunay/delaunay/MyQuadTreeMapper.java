@@ -1,6 +1,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Delaunay Package.
@@ -15,7 +16,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	private MyBox myBoundingBox;
 	private boolean usable;
 	private MyQuadTree<T> myQuadTree;
-	private static int maxLevel = 5;
+	private int maxLevel;
 	
 	/**
 	 * Constructor
@@ -24,6 +25,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		this.myBoundingBox = null;
 		this.usable = false;
 		this.myQuadTree = null;
+		this.maxLevel = 5;
 	}
 	
 	/**
@@ -35,7 +37,58 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	public MyQuadTreeMapper(MyBox theBox) {
 		this.myBoundingBox = new MyBox(theBox);
 		this.usable = true;
+		this.maxLevel = 5;
 		this.myQuadTree = new MyQuadTree<T>(maxLevel);
+	}
+
+	/**
+	 * Constructor
+	 * @param theBox
+	 */
+	public MyQuadTreeMapper(LinkedList<T> theList) {
+		this.myBoundingBox = new MyBox();
+		for (T element : theList) {
+			MyBox aBox = element.getBoundingBox();
+			myBoundingBox.alterBox(aBox.minx, aBox.miny, aBox.minz);
+			myBoundingBox.alterBox(aBox.maxx, aBox.maxy, aBox.maxz);
+		}
+		this.usable = true;
+		this.maxLevel = 5;
+		this.myQuadTree = new MyQuadTree<T>(maxLevel);
+		add(theList);
+	}
+
+	/**
+	 * Constructor
+	 * @param theBox
+	 */
+	public MyQuadTreeMapper(ArrayList<T> theList) {
+		this.myBoundingBox = new MyBox();
+		for (T element : theList) {
+			MyBox aBox = element.getBoundingBox();
+			myBoundingBox.alterBox(aBox.minx, aBox.miny, aBox.minz);
+			myBoundingBox.alterBox(aBox.maxx, aBox.maxy, aBox.maxz);
+		}
+		this.usable = true;
+		this.maxLevel = 5;
+		this.myQuadTree = new MyQuadTree<T>(maxLevel);
+		add(theList);
+	}
+
+	/**
+	 * Tell if we can use QuadTree
+	 * @return usable
+	 */
+	public boolean canBeUsed() {
+		return this.usable;
+	}
+
+	/**
+	 * Tell if we can use QuadTree
+	 * @return usable
+	 */
+	public void cancelUsability() {
+		this.usable = false;
 	}
 	
 	/**
@@ -93,6 +146,32 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	
 	
 	/**
+	 * add a list of elements in the QuadTree
+	 * @param element
+	 */
+	public void add(LinkedList<T> theList) {
+		if (this.usable) {
+			for (T element : theList) {
+				MyBox theBox = element.getBoundingBox();
+				myQuadTree.add(element, theBox, myBoundingBox);
+			}
+		}
+	}
+
+	/**
+	 * add a list of elements in the QuadTree
+	 * @param element
+	 */
+	public void add(ArrayList<T> theList) {
+		if (this.usable) {
+			for (T element : theList) {
+				MyBox theBox = element.getBoundingBox();
+				myQuadTree.add(element, theBox, myBoundingBox);
+			}
+		}
+	}
+
+	/**
 	 * Search the element that contains the point
 	 * @param aPoint
 	 * @return anElement
@@ -103,6 +182,26 @@ public class MyQuadTreeMapper<T extends MyElement> {
 			anElement = myQuadTree.search(aPoint, myBoundingBox);
 		}
 		return anElement;
+	}
+	
+	/**
+	 * Remove data from the QuadTree
+	 */
+	protected void removeData() {
+		if (this.usable) {
+			myQuadTree.removeData();
+		}
+	}
+
+	/**
+	 * Redefine QuadTree
+	 * @param theBox
+	 */
+	protected void remap(MyBox theBox) {
+		if (this.usable) {
+			this.myBoundingBox = new MyBox(theBox);
+			this.removeData();
+		}
 	}
 	
 	/**
@@ -177,6 +276,4 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	{
 		return myQuadTree.getAll();
 	}
-
-
 }
