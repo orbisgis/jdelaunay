@@ -204,8 +204,7 @@ public class MyQuadTree<T extends MyElement> {
 			double y = aPoint.getY();
 
 			// test bounding box of the each subarea and search inside if it is
-			// in the
-			// box
+			// in the box
 			int i = 0;
 			while ((i < 4) && (anElement == null)) {
 				if (theQuadTree[i] != null) {
@@ -223,6 +222,21 @@ public class MyQuadTree<T extends MyElement> {
 		return anElement;
 	}
 
+	/**
+	 * Remove elements from the lists
+	 */
+	protected void removeData() {
+		while (! theList.isEmpty()) {
+			theList.removeFirst();
+		}
+
+		// if not found try QuadTree areas
+		for (int i=0; i<4; i++) {
+			if (theQuadTree[i] != null) {
+				theQuadTree[i].removeData();
+			}
+		}
+	}
 	
 	/**
 	 * Search all elements inside or on the area searchBoundingBox.
