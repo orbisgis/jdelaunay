@@ -869,8 +869,9 @@ public class MyMesh {
 						badPointList.removeFirst();
 						hasGotPoint = true;
 					}
+
 				}
-				
+
 				if (! hasGotPoint)
 					if (iterPoint.hasNext()) {
 						count++;
@@ -887,6 +888,7 @@ public class MyMesh {
 						if (myInsertPoint(aPoint) == null)
 							badPointList.addFirst(aPoint);
 					}
+
 			}
 
 			meshComputed = true;
@@ -1501,10 +1503,10 @@ public class MyMesh {
 				System.out.println("Processing edges of polygon");
 			processOnePolygon(aPolygon);
 			
-			// adding GIDs
-			if (verbose)
-				System.out.println("set GIDs");
-			setAllGids();
+//			// adding GIDs
+//			if (verbose)
+//				System.out.println("set GIDs");
+//			setAllGids();
 		}
 	}
 	
@@ -1520,7 +1522,10 @@ public class MyMesh {
 		anEdge.setLocked(true);
 		if (!isMeshComputed())
 		{
+//			constraintsEdges.add(anEdge);
 			edges.add(anEdge);
+//			addPoint(anEdge.getStartPoint());
+//			addPoint(anEdge.getEndPoint());
 			points.add(anEdge.getStartPoint());
 			points.add(anEdge.getEndPoint());
 		}
@@ -1536,11 +1541,13 @@ public class MyMesh {
 			pointsQuadTree=null;//FIXME not very good but it dosen't need to adding always new point or edges.
 			edgesQuadTree=null;
 			
+
 			// adding GIDs
 			if (verbose)
 				System.out.println("set GIDs");
 			// GIDs have to be fixed because points may be saved in GDMS and must have a GID for that.
 			setAllGids();
+
 		}
 	}
 	
@@ -2910,7 +2917,7 @@ public class MyMesh {
 						}
 					}
 				}
-
+//FIXME too long!_______________________________deb
 				// Apply changes
 				nbDone = 0;
 				while (!todoList.isEmpty()) {
@@ -2919,9 +2926,9 @@ public class MyMesh {
 					changeFlatTriangle(aTriangle, addedPoints, impactPoints,
 							Factor);
 					nbDone++;
-
 					badTrianglesList.remove(aTriangle);
 				}
+//FIXME too long!_______________________________fin
 				if (verbose)
 					System.out.println("Remove " + nbDone
 							+ " flat triangles / " + badTrianglesList.size());
@@ -2968,6 +2975,7 @@ public class MyMesh {
 	 * Remove triangles who are inside the polygon from the Mesh.
 	 * @param aPolygon
 	 * @param refTriangle
+	 * @return Points of polygon.
 	 * @throws DelaunayError
 	 */
 	public ArrayList<MyPoint> removeTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) throws DelaunayError {
@@ -3039,7 +3047,7 @@ public class MyMesh {
 				if(aEdge.getStartPoint().isMarked())
 					pointOfPolygon.add(aEdge.getStartPoint());
 
-				if(!aEdge.getEndPoint().isMarked())
+				if(aEdge.getEndPoint().isMarked())
 					pointOfPolygon.add(aEdge.getEndPoint());
 
 				
@@ -3082,9 +3090,9 @@ public class MyMesh {
 			if (verbose)
 				System.out.println("Processing triangularization");
 			
+			LinkedList<MyPoint> badPointList = new LinkedList<MyPoint>();
 			boundaryEdges= new LinkedList<MyEdge>();
 			
-			MyTriangle aTriangle;
 			MyPoint p1, p2, p3;
 			MyEdge e1, e2, e3;
 			p1 = p2 = p3 = null;
@@ -3107,25 +3115,47 @@ public class MyMesh {
 				e3 = new MyEdge(p3, p2);
 			}
 
-			aTriangle = new MyTriangle(e1, e2, e3);
-			triangles.add(aTriangle);
-	
+
 			// Then process the other points - order don't care
 			boundaryEdges.add(e1);
 			boundaryEdges.add(e2);
 			boundaryEdges.add(e3);
-	
+
 			// flip-flop on a list of points
+			boolean ended = false;
+			MyPoint aPoint=null;
+			MyPoint LastTestedPoint=null;
 			int count = 0;
-			MyPoint aPoint;
-			while (iterPoint.hasNext()) {
-				count++;
-				aPoint = iterPoint.next();
-				if (!aPoint.isMarked()) {
-					if (myInsertPoint(aPoint) == null)
-						System.err.println("Error flip-flop");//FIXME flip-flop problem	
+
+			while (! ended) {
+				boolean hasGotPoint = false;
+				if (! badPointList.isEmpty()) {
+					aPoint = badPointList.getFirst();
+					if (LastTestedPoint != aPoint) {
+						badPointList.removeFirst();
+						hasGotPoint = true;
+					}
+
 				}
+
+				if (! hasGotPoint)
+					if (iterPoint.hasNext()) {
+						count++;
+						aPoint = iterPoint.next();
+					}
+					else {
+						ended = true;
+						aPoint = null;
+					}
+				LastTestedPoint = aPoint;
+				
+				if (aPoint!= null)
+						if (myInsertPoint(aPoint) == null)
+							badPointList.addFirst(aPoint);
+
 			}
+
+			
 		}
 		else
 			System.err.println("Error in processSomePoints()");
