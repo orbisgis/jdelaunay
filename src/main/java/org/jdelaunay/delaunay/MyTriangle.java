@@ -471,6 +471,38 @@ public class MyTriangle extends MyElement {
 	}
 
 	/**
+	 * check if one of the triangle's angle is less than minimum
+	 *
+	 * @return maxAngle
+	 */
+	protected double getMaxAmgle() {
+		double maxAngle = 0;
+		for (int k = 0; k < 3; k++) {
+			int k1 = (k + 1) % 3;
+			int k2 = (k1 + 1) % 3;
+
+			MyPoint p1 = this.getPoint(k);
+			MyPoint p2 = this.getPoint(k1);
+			MyPoint p3 = this.getPoint(k2);
+
+			double ux = p2.getX() - p1.getX();
+			double uy = p2.getY() - p1.getY();
+			double vx = p3.getX() - p1.getX();
+			double vy = p3.getY() - p1.getY();
+
+			double dp = ux * vx + uy * vy;
+
+			double angle = Math.acos(Math.sqrt(((dp * dp))
+					/ ((ux * ux + uy * uy) * (vx * vx + vy * vy))))
+					* (180d / Math.PI);
+			if (angle > maxAngle) {
+				maxAngle = angle;
+			}
+		}
+		return maxAngle;
+	}
+
+	/**
 	 * Check if triangle topology is correct / not
 	 *
 	 * @return correct
