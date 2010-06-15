@@ -557,6 +557,58 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
+	 * check if the point is colinear to the edge in the XY plane
+	 *
+	 * @param p
+	 * @return isColinear2D
+	 */
+	public boolean isColinear2D(MyPoint p) {
+		boolean isColinear2D = false;
+
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
+
+		double a1 = p2.getX() - p1.getX();
+		double c1 = p.getX() - p1.getX();
+		double a2 = p2.getY() - p1.getY();
+		double c2 = p.getY() - p1.getY();
+		double epsilon = MyTools.epsilon;
+		double t = a1*c2 - a2*c1;
+		if (Math.abs(t) < epsilon)
+			isColinear2D = true;
+		
+		return isColinear2D;
+	}
+
+	/**
+	 * check if the point is colinear to the edge
+	 *
+	 * @param p
+	 * @return isColinear2D
+	 */
+	public boolean isColinear(MyPoint p) {
+		boolean isColinear = false;
+
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
+
+		double a1 = p2.getX() - p1.getX();
+		double c1 = p.getX() - p1.getX();
+		double a2 = p2.getY() - p1.getY();
+		double c2 = p.getY() - p1.getY();
+		double a3 = p2.getZ() - p1.getZ();
+		double c3 = p.getZ() - p1.getZ();
+		double epsilon = MyTools.epsilon;
+		double t1 = a1*c2 - a2*c1;
+		double t2 = a1*c3 - a3*c1;
+		double t3 = a3*c2 - a2*c3;
+		if ((Math.abs(t1) < epsilon) && (Math.abs(t2) < epsilon) && (Math.abs(t3) < epsilon))
+			isColinear = true;
+
+		return isColinear;
+	}
+
+	/**
 	 * check if the point is one of the extremities of the edge (on the
 	 * xy-plane)
 	 *
