@@ -116,20 +116,17 @@ public class MyPolygon extends MyElement {
 			// add edges to the edge list
 			// each point is created one
 			int nbPoints = polygon.getNumPoints();
-			MyPoint lastPoint = null;
-			MyPoint firstPoint = null;
+			MyPoint lastPoint = new MyPoint(polygon.getCoordinates()[0]);
+			MyPoint aPoint;
+			for (int i = 1; i < nbPoints; i++) {//FIXME check me
+				aPoint = new MyPoint(polygon.getCoordinates()[i]);
 
-			for (int i = 0; i < nbPoints; i++) {
-				MyPoint aPoint = new MyPoint(polygon.getCoordinates()[i]);
-				if (firstPoint == null)
-					firstPoint = aPoint;
-				if (lastPoint != null) {
 					edges.add(new MyEdge(lastPoint, aPoint));
-				}
+
 				lastPoint = aPoint;
 			}
-			if ((lastPoint != null) && (lastPoint != firstPoint)) {
-				edges.add(new MyEdge(lastPoint, firstPoint));
+			if ((lastPoint != null) && (lastPoint != new MyPoint(polygon.getCoordinates()[0]))) {
+				edges.add(new MyEdge(lastPoint, new MyPoint(polygon.getCoordinates()[0])));
 			}
 		}
 	}

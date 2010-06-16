@@ -367,12 +367,12 @@ public class MyQuadTree<T extends MyElement> {
 		while ((iterList.hasNext())) {
 			T searchedElement = iterList.next();
 			
-			if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint") && aPolygon.contains((MyPoint)searchedElement) && !((MyPoint)searchedElement).isMarked())
+			if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint") && aPolygon.contains((MyPoint)searchedElement) && !((MyPoint)searchedElement).isMarked()) //FIXME BUG here, some point are remove but they shouldn't be remove!
 			{	
 //				allElements.add(searchedElement);
 				iterList.remove();
 			}
-			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyEdge") && ( aPolygon.contains(((MyEdge)searchedElement).getStart()) || aPolygon.contains(((MyEdge)searchedElement).getEnd()) )	)
+			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyEdge") && ( aPolygon.contains(((MyEdge)searchedElement).getStartPoint()) || aPolygon.contains(((MyEdge)searchedElement).getEndPoint()) )	)
 			{	
 //				allElements.add(searchedElement);
 				iterList.remove();
@@ -387,9 +387,7 @@ public class MyQuadTree<T extends MyElement> {
 		}
 		
 
-		// test bounding box of the each subarea and search inside if it is
-		// in the
-		// box
+		// test bounding box of the each subarea and search inside if it is in the box
 		int i = 0;
 		MyBox testBox;
 		while ((i < 4)) {

@@ -3063,8 +3063,7 @@ public class MyMesh {
 
 				if(aEdge.getEndPoint().isMarked() && !pointOfPolygon.contains(aEdge.getEndPoint()))
 					pointOfPolygon.add(aEdge.getEndPoint());
-
-				
+					
 				if(aEdge.isLocked())
 				{
 					unknowTriangle = aEdge.getLeft();
@@ -3079,10 +3078,6 @@ public class MyMesh {
 						}
 					}
 				}
-//				else
-//				{	
-//				 the edge can be remove
-//				}
 					
 			}
 
@@ -3091,8 +3086,8 @@ public class MyMesh {
 		}
 
 		edges=edgesQuadTree.removeAllStric(aPolygon);
-		points=pointsQuadTree.removeAllStric(aPolygon);
-		
+//		points=pointsQuadTree.removeAllStric(aPolygon); //FIXME BUG here, some point are remove but they shouldn't be remove!
+
 		return pointOfPolygon;
 	}
 	

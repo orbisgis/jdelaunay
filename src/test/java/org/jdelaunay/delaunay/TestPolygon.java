@@ -266,7 +266,8 @@ public class TestPolygon  extends BaseTest  {
 
 		
 		show(aMesh);
-		aMesh.VRMLexport("testPolygon_07-2.wrl");
+//		aMesh.VRMLexport("testPolygon_07-2.wrl");
+			aMesh.saveMeshXML();
 		System.out.println("end");
 	}
 }
