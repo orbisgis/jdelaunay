@@ -372,7 +372,7 @@ public class MyQuadTree<T extends MyElement> {
 //				allElements.add(searchedElement);
 				iterList.remove();
 			}
-			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyEdge") && aPolygon.contains(((MyEdge)searchedElement).getStart()) && aPolygon.contains(((MyEdge)searchedElement).getEnd())	)
+			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyEdge") && ( aPolygon.contains(((MyEdge)searchedElement).getStart()) || aPolygon.contains(((MyEdge)searchedElement).getEnd()) )	)
 			{	
 //				allElements.add(searchedElement);
 				iterList.remove();

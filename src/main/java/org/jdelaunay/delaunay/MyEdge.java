@@ -811,4 +811,8 @@ public class MyEdge extends MyElement {
 		return gradient;
 	}
 
+	public String toString()
+	{
+		return "Edge ["+startPoint+", "+endPoint+"]";
+	}
 }

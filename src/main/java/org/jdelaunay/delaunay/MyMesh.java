@@ -1503,10 +1503,10 @@ public class MyMesh {
 				System.out.println("Processing edges of polygon");
 			processOnePolygon(aPolygon);
 			
-//			// adding GIDs
-//			if (verbose)
-//				System.out.println("set GIDs");
-//			setAllGids();
+			// adding GIDs
+			if (verbose)
+				System.out.println("set GIDs");
+			setAllGids();
 		}
 	}
 	
@@ -1522,8 +1522,8 @@ public class MyMesh {
 		anEdge.setLocked(true);
 		if (!isMeshComputed())
 		{
-//			constraintsEdges.add(anEdge);
-			edges.add(anEdge);
+			constraintsEdges.add(anEdge);
+//			edges.add(anEdge);
 //			addPoint(anEdge.getStartPoint());
 //			addPoint(anEdge.getEndPoint());
 			points.add(anEdge.getStartPoint());
@@ -1754,7 +1754,7 @@ public class MyMesh {
 					{	
 						aPolygon.setRefTriangle(aEdge.getLeft());
 						if(aPolygon.mustBeTriangulated())
-							processSomePoints(removeTriangleInPolygon(aPolygon, aEdge.getLeft()));// Create a polygon with NEW triangle inside.
+							processSomePoints(removeTriangleInPolygon(aPolygon, aEdge.getLeft()), aPolygon);// Create a polygon with NEW triangle inside.
 						else
 							removeTriangleInPolygon(aPolygon, aEdge.getLeft());// Create a polygon with NO triangle inside.
 						break;
@@ -1762,7 +1762,7 @@ public class MyMesh {
 					{	
 						aPolygon.setRefTriangle(aEdge.getRight());
 						if(aPolygon.mustBeTriangulated())
-							processSomePoints(removeTriangleInPolygon(aPolygon, aEdge.getRight()));// Create a polygon with NEW triangle inside.
+							processSomePoints(removeTriangleInPolygon(aPolygon, aEdge.getRight()), aPolygon);// Create a polygon with NEW triangle inside.
 						else
 							removeTriangleInPolygon(aPolygon, aEdge.getRight());// Create a polygon with NO triangle inside.
 						break;
@@ -2407,12 +2407,25 @@ public class MyMesh {
 
 	}
 
+	
+	
 	/**
 	 * Insert o point to the current triangularization
 	 * 
 	 * @param aPoint
 	 */
 	private MyTriangle myInsertPoint(MyPoint aPoint) {
+		return myInsertPoint(aPoint, 0);
+	}
+	
+	/**
+	 * Insert o point to the current triangularization
+	 * 
+	 * @param aPoint
+	 * @param property Property for the new triangle.
+	 */
+	private MyTriangle myInsertPoint(MyPoint aPoint, int property) {
+		
 		MyTriangle foundTriangle = null;
 		// We build triangles with all boundary edges for which the point is on
 		// the left
@@ -2460,6 +2473,7 @@ public class MyMesh {
 				// create triangle : take care of the order : anEdge MUST be
 				// first
 				MyTriangle aTriangle = new MyTriangle(anEdge, anEdge1, anEdge2);
+				aTriangle.setProperty(property);
 				triangles.add(aTriangle);
 
 				// We say we founded a first triangle
@@ -2917,7 +2931,7 @@ public class MyMesh {
 						}
 					}
 				}
-//FIXME too long!_______________________________deb
+//FIXME too long!_______________________________begin
 				// Apply changes
 				nbDone = 0;
 				while (!todoList.isEmpty()) {
@@ -2928,7 +2942,7 @@ public class MyMesh {
 					nbDone++;
 					badTrianglesList.remove(aTriangle);
 				}
-//FIXME too long!_______________________________fin
+//FIXME too long!_______________________________end
 				if (verbose)
 					System.out.println("Remove " + nbDone
 							+ " flat triangles / " + badTrianglesList.size());
@@ -3044,10 +3058,10 @@ public class MyMesh {
 
 				
 
-				if(aEdge.getStartPoint().isMarked())
+				if(aEdge.getStartPoint().isMarked() && !pointOfPolygon.contains(aEdge.getStartPoint()))
 					pointOfPolygon.add(aEdge.getStartPoint());
 
-				if(aEdge.getEndPoint().isMarked())
+				if(aEdge.getEndPoint().isMarked() && !pointOfPolygon.contains(aEdge.getEndPoint()))
 					pointOfPolygon.add(aEdge.getEndPoint());
 
 				
@@ -3078,14 +3092,15 @@ public class MyMesh {
 
 		edges=edgesQuadTree.removeAllStric(aPolygon);
 		points=pointsQuadTree.removeAllStric(aPolygon);
-
+		
 		return pointOfPolygon;
 	}
 	
 	
-	private void processSomePoints(ArrayList<MyPoint> somePoint){
+	private void processSomePoints(ArrayList<MyPoint> somePoint, MyPolygon aPolygon){
 		
 		if(somePoint.size()>2) {
+			
 			ListIterator<MyPoint> iterPoint= somePoint.listIterator();
 			if (verbose)
 				System.out.println("Processing triangularization");
@@ -3100,8 +3115,7 @@ public class MyMesh {
 			p1 = iterPoint.next();
 			p2 = iterPoint.next();
 			p3 = iterPoint.next();
-
-	
+			
 			// The triangle's edges MUST be in the right direction
 			e1 = new MyEdge(p1, p2);
 			if (e1.isLeft(p3)) {
@@ -3120,7 +3134,12 @@ public class MyMesh {
 			boundaryEdges.add(e1);
 			boundaryEdges.add(e2);
 			boundaryEdges.add(e3);
-
+			
+			MyTriangle refTriangle=new MyTriangle(e1, e2, e3);
+			refTriangle.setProperty(aPolygon.getProperty());
+			aPolygon.setRefTriangle(refTriangle);
+			triangles.add(refTriangle);
+			
 			// flip-flop on a list of points
 			boolean ended = false;
 			MyPoint aPoint=null;
@@ -3150,7 +3169,7 @@ public class MyMesh {
 				LastTestedPoint = aPoint;
 				
 				if (aPoint!= null)
-						if (myInsertPoint(aPoint) == null)
+						if (myInsertPoint(aPoint, aPolygon.getProperty()) == null)
 							badPointList.addFirst(aPoint);
 
 			}
