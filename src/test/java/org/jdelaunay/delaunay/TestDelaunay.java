@@ -19,6 +19,7 @@ public class TestDelaunay extends BaseTest {
 		show(aMesh);
 		System.out.println();
 		assertTrue(true);
+		
 	}
 
 	/**

@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-9
+ * @revision 2010-06-23
  * @version 2.0
  */
 
@@ -14,6 +14,16 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyPoint extends MyElement  {
 	private Coordinate coord;
+	
+	/**
+	 * byte number  | function :
+	 * 1			| isOutsideMesh / setOutsideMesh
+	 * 2			| isLocked / setLocked
+	 * 3			| isUseByLevelEdge / setUseByLevelEdge
+	 * 4			| isUseByPolygon / setUseByPolygon
+	 * 5			| isZUse / setUseZ
+	 * 6 to 32		| isMarked / setMarked
+	 */
 	private int indicator;
 
 	/**
@@ -147,34 +157,36 @@ public class MyPoint extends MyElement  {
 	}
 	
 	/**
-	 * get the mark of the edge
-	 * @param byteNumber
-	 * @return marked
-	 */
-	public boolean isMarked() {
-		return testBit(2);
-	}
-	
-	/**
-	 * get the mark of the edge
+	 * get the mark of the point
 	 * @param byteNumber
 	 * @return marked
 	 */
 	public boolean isMarked(int byteNumber) {
-		return testBit(3+byteNumber);
+		return testBit(6+byteNumber);
 	}
 
 	/**
-	 * set the mark of the edge
+	 * set the mark of the point
 	 * @param byteNumber
 	 * @param marked
 	 */
 	public void setMarked(int byteNumber, boolean marked) {
-		setBit(3+byteNumber, marked);
+		setBit(6+byteNumber, marked);
+	}
+	
+	
+	/**
+	 * Should be only use by MyEdge.
+	 * Set the mark of the point.
+	 * @param byteNumber
+	 * @param marked
+	 */
+	public void setMarkedByEdge(int byteNumber, boolean marked) {
+		setBit(byteNumber, marked);
 	}
 
 	/**
-	 * get the mark of the edge
+	 * get the mark of the point
 	 * @return marked
 	 */
 	public boolean isLocked() {
@@ -182,13 +194,61 @@ public class MyPoint extends MyElement  {
 	}
 
 	/**
-	 * set the mark of the edge
+	 * set the mark of the point
 	 * @param marked
 	 */
 	public void setLocked(boolean locked) {
 		setBit(2, locked);
 	}
 	
+	
+	/**
+	 * check if point is use by a level edge.
+	 * @return useByLevelEdge
+	 */
+	public boolean isUseByLevelEdge(){
+		return testBit(3);
+	}
+	
+	/**
+	 * set if point is use by a level edge.
+	 * @param useByLevelEdge
+	 */
+	public void setUseByLevelEdge(boolean useByLevelEdge){
+		setBit(3, useByLevelEdge);
+	}
+	
+	/**
+	 * check if point is use by a polygon.
+	 * @return useByPolygon
+	 */
+	public boolean isUseByPolygon(){
+		return testBit(4);
+	}
+	
+	/**
+	 * set if point is use by a polygon.
+	 * @param useByPolygon
+	 */
+	public void setUseByPolygon(boolean useByPolygon){
+		setBit(4, useByPolygon);
+	}
+	
+	/**
+	 * check if Z coordinate is use.
+	 * @return useZ
+	 */
+	public boolean isZUse(){
+		return testBit(5);
+	}
+	
+	/**
+	 * set if Z coordinate is use.
+	 * @param useByPolygon
+	 */
+	public void setUseZ(boolean useZ){
+		setBit(5, useZ);
+	}
 	
 	
 	/**

@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
  * @date 2009-01-12
- * @revision 2010-05-16
+ * @revision 2010-05-23
  * @version 2.0
  */
 
@@ -325,6 +325,7 @@ public class MyTriangle extends MyElement {
 		int k = 0;
 		while ((k < 3) && (isInside)) {
 			MyEdge theEdge = edges[k];
+
 			if (theEdge.getLeft() == this) {
 				if (theEdge.isRight(aPoint))
 					isInside = false;
@@ -674,6 +675,30 @@ public class MyTriangle extends MyElement {
 
 		return alterEdge;
 	}
+	
+	/**
+	 * Get the position of edge of the triangle that includes the two point
+	 *
+	 * @return postion -1 if not found.
+	 */
+	protected int getEdgePositionFromPoints(MyPoint p1, MyPoint p2) {
+		int edgePosition = -1;
+		MyPoint test1, test2;
+		int i = 0;
+		while ((i < 3) && (edgePosition == -1)) {
+			MyEdge testEdge = edges[i];
+			test1 = testEdge.getStartPoint();
+			test2 = testEdge.getEndPoint();
+			if ((test1 == p1) && (test2 == p2))
+				edgePosition = i;
+			else if ((test1 == p2) && (test2 == p1))
+				edgePosition = i;
+			else
+				i++;
+		}
+
+		return edgePosition;
+	}
 
 	/**
 	 * Check if the point belongs to the triangle
@@ -749,10 +774,7 @@ public class MyTriangle extends MyElement {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		String myString = new String("Triangle : \n");
-		for (int i = 0; i < 3; i++)
-			myString += getPoint(i).toString() + "\n";
-		return myString;
+		return "Triangle : ["+getPoint(0).toString()+", "+getPoint(1).toString()+", "+getPoint(2).toString()+"]";
 	}
 
 	/**

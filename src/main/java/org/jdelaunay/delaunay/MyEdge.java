@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-9
+ * @revision 2010-06-23
  * @version 1.1
  */
 
@@ -18,6 +18,15 @@ public class MyEdge extends MyElement {
 	private MyPoint startPoint, endPoint;
 	private MyTriangle left, right;
 
+	/**
+	 * byte number  | function :
+	 * 1			| isOutsideMesh / setOutsideMesh
+	 * 2			| isLocked / setLocked
+	 * 3			| isLevelEdge / setLevelEdge
+	 * 4			| isUseByPolygon / setUseByPolygon
+	 * 5			| isZUse / setUseZ
+	 * 6 to 32		| isMarked / setMarked
+	 */
 	private int indicator;
 
 	static final int UPSLOPE = -1;
@@ -238,6 +247,9 @@ public class MyEdge extends MyElement {
 			this.indicator = (this.indicator | test);
 		else
 			this.indicator = (this.indicator | test) - test;
+		
+		startPoint.setMarkedByEdge(byteNumber, value);
+		endPoint.setMarkedByEdge(byteNumber, value);
 	}
 	
 	/**
@@ -246,7 +258,7 @@ public class MyEdge extends MyElement {
 	 * @return marked
 	 */
 	public boolean isMarked(int byteNumber) {
-		return testBit(3+byteNumber);
+		return testBit(6+byteNumber);
 	}
 
 	/**
@@ -255,10 +267,7 @@ public class MyEdge extends MyElement {
 	 * @param marked
 	 */
 	public void setMarked(int byteNumber, boolean marked) {
-		setBit(3+byteNumber, marked);
-		
-		startPoint.setMarked(byteNumber, marked);
-		endPoint.setMarked(byteNumber, marked);
+		setBit(6+byteNumber, marked);
 	}
 
 	/**
@@ -292,7 +301,57 @@ public class MyEdge extends MyElement {
 	public void setOutsideMesh(boolean outsideMesh) {
 		setBit(1, outsideMesh);
 	}
+	
+	
+	/**
+	 * check if edge is a level edge. 
+	 * @return levelEdge
+	 */
+	public boolean isLevelEdge(){
+		return testBit(3);
+	}
+	
+	/**
+	 * set if edge is a level edge.
+	 * @param levelEdge
+	 */
+	public void setLevelEdge(boolean levelEdge){
+		setBit(3, levelEdge);
+	}
+	
+	/**
+	 * check if edge is use by a polygon
+	 * @return useByPolygon
+	 */
+	public boolean isUseByPolygon(){
+		return testBit(4);
+	}
+	
+	/**
+	 * set if edge is use by a polygon.
+	 * @param useByPolygon
+	 */
+	public void setUseByPolygon(boolean useByPolygon){
+		setBit(4, useByPolygon);
+	}
 
+	
+	/**
+	 * check if Z coordinate is use.
+	 * @return useZ
+	 */
+	public boolean isZUse(){
+		return testBit(5);
+	}
+	
+	/**
+	 * set if Z coordinate is use.
+	 * @param useByPolygon
+	 */
+	public void setUseZ(boolean useZ){
+		setBit(5, useZ);
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
@@ -456,7 +515,7 @@ public class MyEdge extends MyElement {
 					double x = p2.getX() * t1 + (1 - t1) * p1.getX();
 					double y = p2.getY() * t1 + (1 - t1) * p1.getY();
 					
-					
+
 					double z=0;
 					if(useCoordZOfp1p2)
 					{
@@ -495,6 +554,30 @@ public class MyEdge extends MyElement {
 		return getIntersection(anEdge.startPoint, anEdge.endPoint);
 	}
 
+
+	
+	/**
+	 * @param p
+	 * @return Z coordinate of point p on the edge.
+	 */
+	public double getZOnEdge(MyPoint p)
+	{
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
+
+		if(p2.getX()== p1.getX())
+		{
+			return (( p2.getX() - p.getX() )  * (p2.getZ() - p1.getZ())) / (p2.getX() - p1.getX()) ;
+		}
+		
+		if(p2.getY()== p1.getY())
+		{
+			return (( p2.getY() - p.getY() )  * (p2.getZ() - p1.getZ())) / (p2.getY() - p1.getY()) ;
+		}
+
+		return p1.getZ();
+	}
+	
 	/**
 	 * check if the point is between the extremities of the edge (on the
 	 * xy-plane)
@@ -632,15 +715,12 @@ public class MyEdge extends MyElement {
 	 * @return
 	 */
 	public boolean isLeft(MyPoint p) {
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
-		double ux = p2.getX() - p1.getX();
-		double uy = p2.getY() - p1.getY();
-		double vx = p.getX() - p1.getX();
-		double vy = p.getY() - p1.getY();
-		double res = ux * vy - uy * vx;
+		double ux = this.endPoint.getX() - this.startPoint.getX();
+		double uy = this.endPoint.getY() - this.startPoint.getY();
+		double vx = p.getX() - this.startPoint.getX();
+		double vy = p.getY() - this.startPoint.getY();
 
-		return res > 0;
+		return ux * vy - uy * vx > 0;
 	}
 
 	/**
@@ -650,6 +730,21 @@ public class MyEdge extends MyElement {
 	 * @return
 	 */
 	public boolean isRight(MyPoint p) {
+		double ux = this.endPoint.getX() - this.startPoint.getX();
+		double uy = this.endPoint.getY() - this.startPoint.getY();
+		double vx = p.getX() - this.startPoint.getX();
+		double vy = p.getY() - this.startPoint.getY();
+
+		return ux * vy - uy * vx < 0;
+	}
+
+	
+	/**
+	 * Check if the point p is on edge.
+	 * @param p
+	 * @return
+	 */
+	public boolean isOnEdge(MyPoint p) {
 		MyPoint p1 = this.startPoint;
 		MyPoint p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
@@ -657,9 +752,15 @@ public class MyEdge extends MyElement {
 		double vx = p.getX() - p1.getX();
 		double vy = p.getY() - p1.getY();
 		double res = ux * vy - uy * vx;
-		return res < 0;
+		return 	res <= MyTools.epsilon && res >= - MyTools.epsilon/* p is on p1, p2 line */ 
+		&&(ux>=0?(p1.getX()<=p.getX() && p.getX()<= p2.getX()):(p2.getX()<=p.getX() && p.getX()<= p1.getX())) /* px is in [p1x, p2x]*/
+		&&(uy>=0?(p1.getY()<=p.getY() && p.getY()<= p2.getY()):(p2.getY()<=p.getY() && p.getY()<= p1.getY()));/* py is in [p1y, p2y]*/
 	}
-
+	
+	
+	
+	
+	
 	/**
 	 * Swap the 2 points of the edge
 	 * also swap connected triangles

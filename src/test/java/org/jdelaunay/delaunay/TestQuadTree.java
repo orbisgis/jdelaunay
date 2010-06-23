@@ -1,7 +1,6 @@
 package org.jdelaunay.delaunay;
 
 import java.io.IOException;
-import java.util.Date;
 
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -65,14 +64,8 @@ public class TestQuadTree extends BaseTest  {
 		aMesh.addPolygon(aPolygon2);
 		
 		aMesh.processDelaunay();
-		
 
-		
-	
-		
 
-		
-		
 		show(aMesh);
 
 //		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));

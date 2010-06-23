@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Erwan BOCHER, Adelin PIAU
  * @date 2010-05-20
- * @revision 2010-06-9
+ * @revision 2010-06-23
  * @version 2.1
  */
 
@@ -40,6 +40,8 @@ public class MyPolygon extends MyElement {
 	 */
 	public MyPolygon(Polygon polygon) {
 		super();
+		this.usePolygonZ=false;
+		this.isEmpty=false;
 		init(polygon);
 	}
 	
@@ -52,6 +54,7 @@ public class MyPolygon extends MyElement {
 	public MyPolygon(Polygon polygon, boolean isEmpty) {
 		super();
 		init(polygon);
+		this.usePolygonZ=false;
 		this.isEmpty=isEmpty;
 	}
 
@@ -63,6 +66,8 @@ public class MyPolygon extends MyElement {
 	 */
 	public MyPolygon(Polygon polygon, int _property) {
 		super(_property);
+		this.usePolygonZ=false;
+		this.isEmpty=false;
 		init(polygon);
 	}
 	
@@ -75,8 +80,9 @@ public class MyPolygon extends MyElement {
 	 */
 	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ) {
 		super(_property);
-		init(polygon);
 		this.usePolygonZ=usePolygonZ;
+		this.isEmpty=false;
+		init(polygon);
 	}
 	
 	/**
@@ -89,9 +95,9 @@ public class MyPolygon extends MyElement {
 	 */
 	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ, boolean isEmpty) {
 		super(_property);
-		init(polygon);
 		this.usePolygonZ=usePolygonZ;
 		this.isEmpty=isEmpty;
+		init(polygon);
 	}
 	
 	/**
@@ -107,9 +113,6 @@ public class MyPolygon extends MyElement {
 			
 			refTriangle=null;
 			
-			usePolygonZ=false;
-			isEmpty=false;
-			
 			// create edge list
 			edges = new ArrayList<MyEdge>();
 
@@ -118,15 +121,19 @@ public class MyPolygon extends MyElement {
 			int nbPoints = polygon.getNumPoints();
 			MyPoint lastPoint = new MyPoint(polygon.getCoordinates()[0]);
 			MyPoint aPoint;
-			for (int i = 1; i < nbPoints; i++) {//FIXME check me
+			MyEdge aEdge;
+			for (int i = 1; i < nbPoints; i++) {
 				aPoint = new MyPoint(polygon.getCoordinates()[i]);
-
-					edges.add(new MyEdge(lastPoint, aPoint));
-
+				aEdge=new MyEdge(lastPoint, aPoint);
+				aEdge.setUseByPolygon(true);
+				edges.add(aEdge);
 				lastPoint = aPoint;
 			}
 			if ((lastPoint != null) && (lastPoint != new MyPoint(polygon.getCoordinates()[0]))) {
-				edges.add(new MyEdge(lastPoint, new MyPoint(polygon.getCoordinates()[0])));
+				aEdge=new MyEdge(lastPoint, new MyPoint(polygon.getCoordinates()[0]));
+				aEdge.setUseByPolygon(true);
+				aEdge.setUseZ(usePolygonZ);
+				edges.add(aEdge);
 			}
 		}
 	}
@@ -143,6 +150,8 @@ public class MyPolygon extends MyElement {
 	 */
 	public void setUsePolygonZ(boolean usePolygonZ) {
 		this.usePolygonZ = usePolygonZ;
+		for(MyEdge aEdge:edges)
+			aEdge.setUseZ(usePolygonZ);
 	}
 
 	
@@ -211,8 +220,14 @@ public class MyPolygon extends MyElement {
 	 */
 	public ArrayList<MyPoint> getPoints() {
 		ArrayList<MyPoint> points= new ArrayList<MyPoint>();
+		MyPoint aPoint;
 		for (int i = 0; i < polygon.getNumPoints()-1; i++)
-			points.add(new MyPoint(polygon.getCoordinates()[i]));
+		{	
+			aPoint=new MyPoint(polygon.getCoordinates()[i]);
+			aPoint.setUseByPolygon(true);
+			aPoint.setUseZ(usePolygonZ);
+			points.add(aPoint);
+		}
 		return points;
 	}
 	

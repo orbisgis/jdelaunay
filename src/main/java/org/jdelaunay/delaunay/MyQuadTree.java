@@ -9,7 +9,7 @@ import java.util.ListIterator;
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-9
+ * @revision 2010-06-23
  * @version 1.2
  */
 
@@ -367,19 +367,16 @@ public class MyQuadTree<T extends MyElement> {
 		while ((iterList.hasNext())) {
 			T searchedElement = iterList.next();
 			
-			if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint") && aPolygon.contains((MyPoint)searchedElement) && !((MyPoint)searchedElement).isMarked()) //FIXME BUG here, some point are remove but they shouldn't be remove!
+			if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint") && aPolygon.contains((MyPoint)searchedElement) && !((MyPoint)searchedElement).isUseByPolygon())
 			{	
-//				allElements.add(searchedElement);
 				iterList.remove();
 			}
-			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyEdge") && ( aPolygon.contains(((MyEdge)searchedElement).getStartPoint()) || aPolygon.contains(((MyEdge)searchedElement).getEndPoint()) )	)
+			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyEdge") && !((MyEdge)searchedElement).isUseByPolygon() && ( aPolygon.contains(((MyEdge)searchedElement).getStartPoint()) || aPolygon.contains(((MyEdge)searchedElement).getEndPoint()) )	)
 			{	
-//				allElements.add(searchedElement);
 				iterList.remove();
 			}
 			else if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyTriangle") && aPolygon.contains(((MyTriangle)searchedElement).getBarycenter()))
 			{	
-//				allElements.add(searchedElement);
 				iterList.remove();
 			}
 			else
@@ -397,7 +394,6 @@ public class MyQuadTree<T extends MyElement> {
 //				if(searchBoundingBox.minx <= testBox.maxx && searchBoundingBox.maxx >= testBox.minx
 //					&& searchBoundingBox.miny <= testBox.maxy && searchBoundingBox.maxy >= testBox.miny)
 //				{
-
 					allElements.addAll(theQuadTree[i].removeAllStric(aPolygon, searchBoundingBox,testBox));
 					// Remove empty node
 					if(theQuadTree[i].theList.size()<=0 && theQuadTree[i].theQuadTree[0]==null
