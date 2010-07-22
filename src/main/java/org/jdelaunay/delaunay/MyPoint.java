@@ -5,8 +5,8 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-23
- * @version 2.0
+ * @revision 2010-07-22
+ * @version 2.1
  */
 
 import java.awt.*;
@@ -278,6 +278,15 @@ public class MyPoint extends MyElement  {
 		else
 			return false;
 	}
+	
+	@Override
+	public boolean contains(Coordinate c) {
+		if (squareDistance(c.x, c.y, c.z) < MyTools.epsilon2)
+			return true;
+		else
+			return false;
+	}
+	
 	/**
 	 * linear square distance to another point
 	 * 
@@ -385,10 +394,5 @@ public class MyPoint extends MyElement  {
 		setColor(g);
 		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
 				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);
-
-		/*
-		 * if (gid > 0) { g.drawString("" + gid, (int) ((x - minX) * scaleX +
-		 * decalageX), (int) ((y - minY) * scaleY + decalageY) - 1); }
-		 */}
-
+	}
 }

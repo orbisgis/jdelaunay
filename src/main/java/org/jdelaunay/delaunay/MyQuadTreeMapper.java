@@ -2,21 +2,31 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 /**
  * Delaunay Package.
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-9
- * @version 1.2
+ * @revision 2010-07-22
+ * @version 1.3
  */
 
 public class MyQuadTreeMapper<T extends MyElement> {
 	private MyBox myBoundingBox;
 	private boolean usable;
 	private MyQuadTree<T> myQuadTree;
-	private int maxLevel;
+	private int maxLevel=20;//FIXME maxLevel=5 or 7 or ... ?
+	private int quadtreeSize;
+	
+
+	
+//	/**
+//	 * Use for next() function.
+//	 */
+//	private String path="0";
+//	private int index=0;
 	
 	/**
 	 * Constructor
@@ -25,7 +35,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		this.myBoundingBox = null;
 		this.usable = false;
 		this.myQuadTree = null;
-		this.maxLevel = 5;
+		this.quadtreeSize=0;
 	}
 	
 	/**
@@ -37,8 +47,8 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	public MyQuadTreeMapper(MyBox theBox) {
 		this.myBoundingBox = new MyBox(theBox);
 		this.usable = true;
-		this.maxLevel = 5;
 		this.myQuadTree = new MyQuadTree<T>(maxLevel);
+		this.quadtreeSize=0;
 	}
 
 	/**
@@ -53,9 +63,9 @@ public class MyQuadTreeMapper<T extends MyElement> {
 			myBoundingBox.alterBox(aBox.maxx, aBox.maxy, aBox.maxz);
 		}
 		this.usable = true;
-		this.maxLevel = 5;
 		this.myQuadTree = new MyQuadTree<T>(maxLevel);
 		add(theList);
+		this.quadtreeSize=theList.size();
 	}
 
 	/**
@@ -70,9 +80,9 @@ public class MyQuadTreeMapper<T extends MyElement> {
 			myBoundingBox.alterBox(aBox.maxx, aBox.maxy, aBox.maxz);
 		}
 		this.usable = true;
-		this.maxLevel = 5;
 		this.myQuadTree = new MyQuadTree<T>(maxLevel);
 		add(theList);
+		this.quadtreeSize=theList.size();
 	}
 
 	/**
@@ -101,6 +111,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		this.myBoundingBox = new MyBox(theBox);
 		this.usable = true;
 		this.myQuadTree = new MyQuadTree<T>(maxLevel, myBoundingBox, elements);
+		this.quadtreeSize=elements.size();
 	}
 
 
@@ -109,13 +120,13 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @param theBox
 	 */
 	public void setBox(MyBox theBox) {
-		if (! this.usable) {
 			this.myBoundingBox = new MyBox(theBox);
 			this.usable = true;
-			this.myQuadTree = new MyQuadTree<T>(maxLevel);
-		}
 	}
 
+	public MyBox getBox() {
+		return myBoundingBox;
+	}
 	/**
 	 * add an element in the QuadTree
 	 * @param element
@@ -124,6 +135,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		if (this.usable) {
 			MyBox theBox = element.getBoundingBox();
 			myQuadTree.add(element, theBox, myBoundingBox);
+			quadtreeSize++;
 		}
 	}
 	
@@ -140,6 +152,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 				theBox = element.getBoundingBox();
 				myQuadTree.add(element, theBox, myBoundingBox);
 			}
+			quadtreeSize+=elements.size();
 		}
 		
 	}
@@ -155,6 +168,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 				MyBox theBox = element.getBoundingBox();
 				myQuadTree.add(element, theBox, myBoundingBox);
 			}
+			quadtreeSize+=theList.size();
 		}
 	}
 
@@ -168,6 +182,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 				MyBox theBox = element.getBoundingBox();
 				myQuadTree.add(element, theBox, myBoundingBox);
 			}
+			quadtreeSize+=theList.size();
 		}
 	}
 
@@ -184,12 +199,40 @@ public class MyQuadTreeMapper<T extends MyElement> {
 		return anElement;
 	}
 	
+	
+	/**
+	 * Search the element that contains the point
+	 * @param aPoint
+	 * @return anElement
+	 */
+	public T search(MyPoint aPoint, double precision) {
+		T anElement = null;
+		if (this.usable) {
+			anElement = myQuadTree.search(aPoint, precision, myBoundingBox);
+		}
+		return anElement;
+	}
+	
+	/**
+	 * Search the element is inside the quadtree.
+	 * @param element
+	 * @return True if it is.
+	 */
+	public boolean contains(T element) {
+		if (this.usable) {
+			return myQuadTree.contains(element, myBoundingBox);
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * Remove data from the QuadTree
 	 */
 	protected void removeData() {
 		if (this.usable) {
 			myQuadTree.removeData();
+			quadtreeSize=0;
 		}
 	}
 
@@ -202,6 +245,19 @@ public class MyQuadTreeMapper<T extends MyElement> {
 			this.myBoundingBox = new MyBox(theBox);
 			this.removeData();
 		}
+	}
+	
+	/**
+	 * Search the element that have th gid
+	 * @param gid
+	 * @return anElement
+	 */
+	public T searchGID(int gid) {
+		T anElement = null;
+		if (this.usable) {
+			anElement = myQuadTree.searchGID(gid, myBoundingBox);
+		}
+		return anElement;
 	}
 	
 	/**
@@ -228,6 +284,23 @@ public class MyQuadTreeMapper<T extends MyElement> {
 			anElement = myQuadTree.search(new MyPoint(x,y, z), myBoundingBox);
 		}
 		return anElement;
+	}
+	
+	
+	/**
+	 * @param anEdge
+	 * @param searchBoundingBox Bounding box of anEdge.
+	 * @param boundingBox
+	 * @return ArrayList of Object[].<br/>
+	 * Object[0] is an MyEdge<br/>
+	 * Object[1] is an Integer ( The result of anEdge.intersects(...) ).
+	 */
+	public ArrayList<Object[]> searchIntersection(MyEdge anEdge) {
+		ArrayList<Object[]>  allElements = null;
+		if (this.usable) {
+			allElements = myQuadTree.searchIntersection(anEdge, anEdge.getBoundingBox(), myBoundingBox);
+		}
+		return allElements;
 	}
 	
 	
@@ -260,20 +333,85 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	
 	
 	/**
+	 * Search in which element middle of anElement is.
+	 * @param <E>
+	 * @param anElement
+	 * @return The element that contain anElement.
+	 */
+	public <E extends MyElement> T searchInWhichElementItIs(E anElement) {
+		if (this.usable) {
+		return myQuadTree.searchInWhichElementItIs(anElement, myBoundingBox);
+		}
+		return null;
+	}
+	
+	/**
+	 * Remove element.
+	 * @param element
+	 * @return true if it remove.
+	 */
+	public boolean remove(T element) {
+		if (this.usable) {
+			return quadtreeSize!=(quadtreeSize-=myQuadTree.remove(element, myBoundingBox));
+		}
+		return false;
+	}
+	
+	
+	/**
 	 * Remove all elements strictly inside the polygon's area.
 	 * @param aPolygon Area of search.
 	 * @return All elements in the quadtree with out elements strictly inside the area searchBoundingBox.
 	 */
-	public ArrayList<T> removeAllStric(MyPolygon aPolygon) {
-		ArrayList<T>  allElements = null;
+	public void removeAllStric(MyPolygon aPolygon) {
 		if (this.usable) {
-			allElements = myQuadTree.removeAllStric(aPolygon, myBoundingBox);
+			quadtreeSize -= myQuadTree.removeAllStric(aPolygon, myBoundingBox);
 		}
-		return allElements;
 	}
 	
+
+	
+	/**
+	 * @return All element in the quadtree.
+	 */
 	public ArrayList<T> getAll()
 	{
-		return myQuadTree.getAll();
+		if (this.usable) {
+			return myQuadTree.getAll();
+		}
+		return new ArrayList<T>();
+	}
+	
+	
+	/**
+	 * @return number of elements in the quadtree.
+	 */
+	public int size()
+	{
+		return quadtreeSize;
+	}
+
+	/**
+	 * @return True if quadtree is empty.
+	 */
+	public boolean isEmpty() {
+		return quadtreeSize<=0;
+	}
+
+	
+	/**
+	 * Set gid to all elements in the quadtree.
+	 */
+	public void setAllGIDs() {
+		if (this.usable) {
+			
+			int gid=1;
+			for(T a:myQuadTree.getAll())
+			{
+				a.setGID(gid);
+				gid++;
+			}
+		}
+		
 	}
 }

@@ -246,7 +246,6 @@ public class MyHydroNetwork {
 					}
 				}
 			}
-			theMesh.setAllGids();
 		}
 	}
 
@@ -477,8 +476,6 @@ public class MyHydroNetwork {
 				edges.add(anEdge);
 			}
 		}
-
-		theMesh.setAllGids();
 
 		// Reset informations
 		listEntry = new LinkedList<MyPoint>();

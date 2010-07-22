@@ -5,8 +5,8 @@ package org.jdelaunay.delaunay;
  *
  * @author Erwan BOCHER, Adelin PIAU
  * @date 2010-05-20
- * @revision 2010-06-23
- * @version 2.1
+ * @revision 2010-07-22
+ * @version 2.2
  */
 
 import java.util.ArrayList;
@@ -21,16 +21,19 @@ public class MyPolygon extends MyElement {
 
 	
 	/**
-	 * True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 * True, if we want to set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
 	 */
 	private boolean usePolygonZ;
 	
 	/**
-	 * True, if we remove triangle who are inside the polygon.
+	 * True, if we want to remove triangle who are inside the polygon.
 	 */
 	private boolean isEmpty;
 
 	
+	/**
+	 * True, if we want to make new triangulation inside the polygon.
+	 */
 	private boolean mustBeTriangulated;
 	
 	/**
@@ -129,12 +132,6 @@ public class MyPolygon extends MyElement {
 				edges.add(aEdge);
 				lastPoint = aPoint;
 			}
-			if ((lastPoint != null) && (lastPoint != new MyPoint(polygon.getCoordinates()[0]))) {
-				aEdge=new MyEdge(lastPoint, new MyPoint(polygon.getCoordinates()[0]));
-				aEdge.setUseByPolygon(true);
-				aEdge.setUseZ(usePolygonZ);
-				edges.add(aEdge);
-			}
 		}
 	}
 
@@ -170,11 +167,18 @@ public class MyPolygon extends MyElement {
 		this.isEmpty = isEmpty;
 	}
 	
+	
+	/**
+	 * @return True, if we make new triangulation inside the polygon.
+	 */
 	public boolean mustBeTriangulated()
 	{
 		return mustBeTriangulated;
 	}
 	
+	/**
+	 * True, if we want to make new triangulation inside the polygon.
+	 */
 	public void setMustBeTriangulated(boolean mustBeTriangulated)
 	{
 		this.mustBeTriangulated=mustBeTriangulated;
@@ -249,12 +253,21 @@ public class MyPolygon extends MyElement {
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
-	public boolean contains(MyPoint aPoint) { //FIXME check if we have better code
+	public boolean contains(MyPoint aPoint) { //FIXME make better code
 		return polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 	}
 	
-	public boolean contains(Coordinate coordinate) { //FIXME check if we have better code
+	public boolean contains(Coordinate coordinate) {  //FIXME make better code
 		return polygon.contains(new GeometryFactory().createPoint(coordinate));
+	}
+
+	@Override
+	public boolean isUseByPolygon() {
+		return true;
+	}
+
+	@Override
+	public void setUseByPolygon(boolean useByPolygon) {
 	}
 
 }

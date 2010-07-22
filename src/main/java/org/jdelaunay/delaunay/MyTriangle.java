@@ -5,8 +5,8 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
  * @date 2009-01-12
- * @revision 2010-05-23
- * @version 2.0
+ * @revision 2010-07-22
+ * @version 2.1
  */
 
 import java.awt.*;
@@ -217,6 +217,11 @@ public class MyTriangle extends MyElement {
 	 */
 	public boolean contains(MyPoint aPoint) {
 		return isInside(aPoint);
+	}
+	
+	@Override
+	public boolean contains(Coordinate c) {
+		return isInside(new MyPoint(c));
 	}
 
 	/**
@@ -845,5 +850,15 @@ public class MyTriangle extends MyElement {
 				1, 1);
 		g.drawOval((int) (x_center - r) + decalageX, decalageY
 				- (int) (y_center + r), (int) r * 2, (int) r * 2);
+	}
+
+	@Override
+	public boolean isUseByPolygon() {
+		return testBit(4);
+	}
+
+	@Override
+	public void setUseByPolygon(boolean useByPolygon) {
+		setBit(4, useByPolygon);
 	}
 }

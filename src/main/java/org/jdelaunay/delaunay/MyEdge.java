@@ -5,14 +5,16 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-23
- * @version 1.1
+ * @revision 2010-07-22
+ * @version 1.2
  */
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyEdge extends MyElement {
 	private MyPoint startPoint, endPoint;
@@ -372,6 +374,20 @@ public class MyEdge extends MyElement {
 			return true;
 		else
 			return false;
+	}
+	
+	@Override
+	public boolean contains(Coordinate c) {
+		MyPoint p1 = this.startPoint;
+		MyPoint p2 = this.endPoint;
+		double ux = p2.getX() - p1.getX();
+		double uy = p2.getY() - p1.getY();
+		double vx = c.x - p1.getX();
+		double vy = c.y - p1.getY();
+		double res = ux * vy - uy * vx;
+		return 	res <= MyTools.epsilon && res >= - MyTools.epsilon/* p is on p1, p2 line */ 
+		&&(ux>=0?(p1.getX()<=c.x && c.x<= p2.getX()):(p2.getX()<=c.x && c.x<= p1.getX())) /* px is in [p1x, p2x]*/
+		&&(uy>=0?(p1.getY()<=c.y && c.y<= p2.getY()):(p2.getY()<=c.y && c.y<= p1.getY()));/* py is in [p1y, p2y]*/
 	}
 	
 	/**

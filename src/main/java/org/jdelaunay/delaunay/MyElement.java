@@ -1,12 +1,14 @@
 package org.jdelaunay.delaunay;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 
 /**
  * Delaunay Package.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-06-9
+ * @revision 2010-07-22
  * @version 2.0
  */
 
@@ -139,4 +141,24 @@ public abstract class MyElement {
 	 * @return bool
 	 */
 	public abstract boolean contains(MyPoint aPoint);
+	
+	/**
+	 * Check if the coordinate is inside the element
+	 * 
+	 * @param c
+	 * @return bool
+	 */
+	public abstract boolean contains(Coordinate c);
+	
+	/**
+	 * check if it is use by a polygon
+	 * @return useByPolygon
+	 */
+	public abstract boolean isUseByPolygon();
+	
+	/**
+	 * set if it is use by a polygon.
+	 * @param useByPolygon
+	 */
+	public abstract void setUseByPolygon(boolean useByPolygon);
 }
