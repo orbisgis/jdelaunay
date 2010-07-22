@@ -9,7 +9,9 @@ package org.jdelaunay.delaunay;
  * @version 2.1
  */
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyPoint extends MyElement  {
@@ -32,8 +34,12 @@ public class MyPoint extends MyElement  {
 	 * @param x
 	 * @param y
 	 * @param z
+	 * @throws DelaunayError If x, y or z is not set.
 	 */
-	private void init(double x, double y, double z) {
+	private void init(double x, double y, double z) throws DelaunayError {
+		if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z))
+			throw new DelaunayError(DelaunayError.DelaunayError_errorPointxyz);
+		
 		this.coord = new Coordinate(x,y,z);
 		this.indicator = 0;
 
@@ -41,21 +47,11 @@ public class MyPoint extends MyElement  {
 
 	/**
 	 * Build a point at the origin
+	 * @throws DelaunayError  If x, y or z is not set.
 	 */
-	public MyPoint() {
+	public MyPoint() throws DelaunayError {
 		super();
 		init(0.0,0.0,0.0);
-	}
-
-	/**
-	 * Build a point at coordinates x, y, 0.0 with no type
-	 * 
-	 * @param x
-	 * @param y
-	 */
-	public MyPoint(double x, double y) {
-		super();
-		init(x, y, 0.0);
 	}
 
 	/**
@@ -64,24 +60,27 @@ public class MyPoint extends MyElement  {
 	 * @param x
 	 * @param y
 	 * @param z
+	 * @throws DelaunayError If x, y or z is not set.
 	 */
-	public MyPoint(double x, double y, double z) {
+	public MyPoint(double x, double y, double z) throws DelaunayError {
 		super();
 		init(x,y,z);
 	}
 
 	/**
 	 * Build a point as a copy of another point
+	 * @throws DelaunayError DelaunayError
 	 */
-	public MyPoint(MyPoint pt) {
+	public MyPoint(MyPoint pt) throws DelaunayError {
 		super((MyElement) pt);
 		init(pt.coord.x,pt.coord.y,pt.coord.z);
 	}
 
 	/**
 	 * Build a point as a copy of jts Coordinates
+	 * @throws DelaunayError If x, y or z is not set.
 	 */
-	public MyPoint(Coordinate coord) {
+	public MyPoint(Coordinate coord) throws DelaunayError {
 		super();
 		init(coord.x,coord.y,coord.z);
 	}

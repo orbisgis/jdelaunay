@@ -27,6 +27,8 @@ public class DelaunayError extends Throwable {
 	public final static int DelaunayError_incorrectTopology = 201;
 	public final static int DelaunayError_outsideTriangle = 202;
 	
+	public final static int DelaunayError_errorPointxyz = 300;
+	
 	public final static int DelaunayError_invalidCall = 998;
 	public final static int DelaunayError_internalError = 999;
 
@@ -69,6 +71,9 @@ public class DelaunayError extends Throwable {
 		case DelaunayError_outsideTriangle:
 			return "point is outside the triangle";
 		
+		case DelaunayError_errorPointxyz:
+			return "point should have X, Y and Z coordinates";
+			
 		case DelaunayError_invalidCall:
 			return "Invalid function call";
 		case DelaunayError_internalError:

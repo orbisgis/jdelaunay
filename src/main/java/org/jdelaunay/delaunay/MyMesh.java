@@ -28,8 +28,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
 
-import com.vividsolutions.jts.algorithm.Angle;
-
 public class MyMesh {
 	
 	// Vectors with points and edges
@@ -126,7 +124,7 @@ public class MyMesh {
 		trianglesQuadTree=new MyQuadTreeMapper<MyTriangle>(getBoundingBox());
 	}
 	
-	public void init(MyBox boundingBox)
+	public void init(MyBox boundingBox) throws DelaunayError
 	{
 		setPoints(boundingBox.getPoints());
 		edgesQuadTree=new MyQuadTreeMapper<MyEdge>(getBoundingBox());
@@ -525,20 +523,21 @@ public class MyMesh {
 	 * @param x
 	 * @param y
 	 * @param z
+	 * @throws DelaunayError
 	 */
-	protected MyPoint searchPoint(double x, double y, double z) {
+	protected MyPoint searchPoint(double x, double y, double z) throws DelaunayError {
 		return pointsQuadTree.search(new MyPoint(x, y,z), epsilon);
 	}
 
-	/**
-	 * search for a point
-	 * 
-	 * @param x
-	 * @param y
-	 */
-	protected MyPoint searchPoint(double x, double y) {
-		return pointsQuadTree.search(new MyPoint(x, y), epsilon);
-	}
+//	/**
+//	 * search for a point
+//	 * 
+//	 * @param x
+//	 * @param y
+//	 */
+//	protected MyPoint searchPoint(double x, double y) {
+//		return pointsQuadTree.search(new MyPoint(x, y), epsilon);
+//	}
 
 	/**
 	 * Get point, creates it if necessary
@@ -546,8 +545,9 @@ public class MyMesh {
 	 * @param x
 	 * @param y
 	 * @param z
+	 * @throws DelaunayError
 	 */
-	public MyPoint getPoint(double x, double y, double z) {
+	public MyPoint getPoint(double x, double y, double z) throws DelaunayError {
 		MyPoint aPoint = searchPoint(x, y, z);
 
 		if (aPoint == null)
@@ -556,31 +556,32 @@ public class MyMesh {
 		return aPoint;
 	}
 
-	/**
-	 * Get point, creates it if necessary
-	 * 
-	 * @param x
-	 * @param y
-	 */
-	public MyPoint getPoint(double x, double y) {
-		MyPoint aPoint = searchPoint(x, y);
-
-		if (aPoint == null)
-			aPoint = new MyPoint(x, y);
-
-		return aPoint;
-	}
+//	/**
+//	 * Get point, creates it if necessary
+//	 * 
+//	 * @param x
+//	 * @param y
+//	 */
+//	public MyPoint getPoint(double x, double y) {
+//		MyPoint aPoint = searchPoint(x, y);
+//
+//		if (aPoint == null)
+//			aPoint = new MyPoint(x, y);
+//
+//		return aPoint;
+//	}
 
 	/**
 	 * Add the bounding box to current data
+	 * @throws DelaunayError 
 	 */
-	public void addBoundingBox() {
+	public void addBoundingBox() throws DelaunayError {
 		getBoundingBox();
 		// Add bounding Box
-		MyPoint aPoint1 = new MyPoint(theBox.minx, theBox.miny);
-		MyPoint aPoint2 = new MyPoint(theBox.minx, theBox.maxy);
-		MyPoint aPoint3 = new MyPoint(theBox.maxx, theBox.maxy);
-		MyPoint aPoint4 = new MyPoint(theBox.maxx, theBox.miny);
+		MyPoint aPoint1 = new MyPoint(theBox.minx, theBox.miny, 0);
+		MyPoint aPoint2 = new MyPoint(theBox.minx, theBox.maxy, 0);
+		MyPoint aPoint3 = new MyPoint(theBox.maxx, theBox.maxy, 0);
+		MyPoint aPoint4 = new MyPoint(theBox.maxx, theBox.miny, 0);
 
 		point_GID++;
 		aPoint1.setGID(point_GID);
@@ -708,8 +709,9 @@ public class MyMesh {
 	 * Generate random points
 	 * 
 	 * @param _NbPoints
+	 * @throws DelaunayError 
 	 */
-	public void setRandomPoints(int _NbPoints) {
+	public void setRandomPoints(int _NbPoints) throws DelaunayError {
 		ArrayList<MyPoint> points= new ArrayList<MyPoint>();
 		for (int i = 0; i < _NbPoints; i++) {
 			// Generate random coordinates
@@ -794,7 +796,7 @@ public class MyMesh {
 					i++;
 					for(MyPoint aPoint2:aPolygon.getPoints())
 					{
-						p=searchPoint(aPoint2.getX(), aPoint2.getY());
+						p=searchPoint(aPoint2.getX(), aPoint2.getY(), aPoint2.getZ());
 						if(p!=null)
 						{	if(aPolygon.isUsePolygonZ())
 								p=aPoint2;
@@ -1041,7 +1043,7 @@ public class MyMesh {
 
 		if (!foundPoint) {
 
-			MyPoint p=searchPoint(aPoint.getX(), aPoint.getY());
+			MyPoint p=searchPoint(aPoint.getX(), aPoint.getY(), aPoint.getZ());
 				
 			if(p!=null)
 			{
@@ -1802,8 +1804,9 @@ public class MyMesh {
 	 * @param aPolygon
 	 * @param refTriangle
 	 * @return List of triangle who are inside the polygon.
+	 * @throws DelaunayError 
 	 */
-	public LinkedList<MyTriangle> setPropertyToTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) {
+	public LinkedList<MyTriangle> setPropertyToTriangleInPolygon(MyPolygon aPolygon, MyTriangle refTriangle) throws DelaunayError {
 		LinkedList<MyTriangle> triangleOfPolygon = new LinkedList<MyTriangle>();
 
 		refTriangle.setProperty(aPolygon.getProperty());
@@ -1953,7 +1956,7 @@ public class MyMesh {
 					
 					// Try to flip-flap
 					while (!badTrianglesList.isEmpty()) {
-						MyTriangle aTriangle = badTrianglesList.getFirst();
+						/*MyTriangle aTriangle =*/ badTrianglesList.getFirst();
 						badTrianglesList.removeFirst();
 
 						// There might be something to do...
@@ -2043,8 +2046,9 @@ public class MyMesh {
 	 * Add edges defined at the beginning of the process
 	 * 
 	 * @param constraintsEdges
+	 * @throws DelaunayError 
 	 */
-	private ArrayList<MyEdge> processEdges(ArrayList<MyEdge> constraintsEdges) {
+	private ArrayList<MyEdge> processEdges(ArrayList<MyEdge> constraintsEdges) throws DelaunayError {
 		
 		int nbEdges2 = constraintsEdges.size();
 		if (nbEdges2 > 0)
@@ -2238,7 +2242,7 @@ public class MyMesh {
 	}
 
 
-	private MyEdge lookForSwap(MyEdge testEdge, MyPoint start, MyPoint end) {
+	private MyEdge lookForSwap(MyEdge testEdge, MyPoint start, MyPoint end) throws DelaunayError {
 		MyEdge canLink = null;
 		int i = 0;
 
@@ -2292,9 +2296,10 @@ public class MyMesh {
 	 * 
 	 * @param constraintsEdges
 	 * @return list of remaining edges
+	 * @throws DelaunayError 
 	 */
 	private ArrayList<MyEdge> processEdges_Step2(
-			ArrayList<MyEdge> constraintsEdges) {
+			ArrayList<MyEdge> constraintsEdges) throws DelaunayError {
 		ArrayList<MyEdge> remainEdges = new ArrayList<MyEdge>();
 		ArrayList<MyEdge> EdgesToSwap = new ArrayList<MyEdge>();
 		ArrayList<MyEdge> possibleIntersectEdges;
@@ -2408,8 +2413,9 @@ public class MyMesh {
 	 * 
 	 * @param constraintsEdges
 	 * @return list of remaining edges
+	 * @throws DelaunayError 
 	 */
-	private ArrayList<MyEdge> processOtherEdges(ArrayList<MyEdge> constraintsEdges) {
+	private ArrayList<MyEdge> processOtherEdges(ArrayList<MyEdge> constraintsEdges) throws DelaunayError {
 
 		// List of triangles that are created when there is an intersection
 		MyEdge CurrentEdge = null;
@@ -2966,10 +2972,11 @@ public class MyMesh {
 	 * process a flat triangle
 	 * 
 	 * @param aTriangle
+	 * @throws DelaunayError 
 	 */
 	private void changeFlatTriangle(MyTriangle aTriangle,
 			LinkedList<MyPoint> addedPoints, LinkedList<MyPoint> impactPoints,
-			LinkedList<Double> Factor) {
+			LinkedList<Double> Factor) throws DelaunayError {
 		// Save all possible (edges and triangles)
 		MyEdge edgeToProcess[] = new MyEdge[3];
 		MyTriangle trianglesToProcess[] = new MyTriangle[3];
@@ -3891,15 +3898,17 @@ public class MyMesh {
 
 	/**
 	 * Read Mesh points from the file
+	 * @throws DelaunayError 
 	 */
-	public void readMesh() {
+	public void readMesh() throws DelaunayError {
 		readMesh("Mesh.txt");
 	}
 
 	/**
 	 * Read Mesh points from the file
+	 * @throws DelaunayError 
 	 */
-	public void readMesh(String path) {
+	public void readMesh(String path) throws DelaunayError {
 		Reader reader;
 		try {
 			String delimiteurs = "\t";
@@ -4019,8 +4028,9 @@ public class MyMesh {
 	// ----------------------------------------------------------------
 	/**
 	 * Export to VRML file Mesh.wrl
+	 * @throws DelaunayError 
 	 */
-	public void VRMLexport() {
+	public void VRMLexport() throws DelaunayError {
 		VRMLexport("Mesh.wrl");
 	}
 
@@ -4028,8 +4038,9 @@ public class MyMesh {
 	 * Export to VRML file
 	 * 
 	 * @param path
+	 * @throws DelaunayError 
 	 */
-	public void VRMLexport(String path) {
+	public void VRMLexport(String path) throws DelaunayError {
 		try {
 			Writer writer = new FileWriter(path);
 			processVRMLexport(writer);
@@ -4039,7 +4050,7 @@ public class MyMesh {
 
 	}
 
-	public void processVRMLexport(Writer writer) {
+	public void processVRMLexport(Writer writer) throws DelaunayError {
 		if (writer != null)
 			try {
 				ArrayList<MyPoint> points=pointsQuadTree.getAll();
@@ -4327,7 +4338,7 @@ public class MyMesh {
 	 * 
 	 * @param elements
 	 */
-	protected void SetAllGIDs(ArrayList elements) {
+	protected void SetAllGIDs(ArrayList<? extends MyElement> elements) {
 		// set a GID to every element
 		int maxGID = 0;
 		for (Object anObject : elements) {

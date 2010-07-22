@@ -473,8 +473,9 @@ public class MyEdge extends MyElement {
 	 * @param p1
 	 * @param p2
 	 * @return intersection
+	 * @throws DelaunayError 
 	 */
-	public MyPoint getIntersection(MyPoint p1, MyPoint p2) {
+	public MyPoint getIntersection(MyPoint p1, MyPoint p2) throws DelaunayError {
 		return getIntersection(p1, p2, false);
 	}
 	
@@ -486,8 +487,9 @@ public class MyEdge extends MyElement {
 	 * @param useCoordZOfp1p2 If true, the coordinate of intersection get in Z the average of p1 and p2 Z. Don't care of p3 and, p4 Z.
 	 * Else if false, the coordinate of intersection get in Z the average of p1, p2, p3 and p4 Z.
 	 * @return intersection
+	 * @throws DelaunayError 
 	 */
-	public MyPoint getIntersection(MyPoint p1, MyPoint p2, boolean useCoordZOfp1p2) {
+	public MyPoint getIntersection(MyPoint p1, MyPoint p2, boolean useCoordZOfp1p2) throws DelaunayError {
 		MyPoint intersection = null;
 		MyPoint p3 = this.startPoint;
 		MyPoint p4 = this.endPoint;
@@ -565,8 +567,9 @@ public class MyEdge extends MyElement {
 	 *
 	 * @param anEdge
 	 * @return intersection
+	 * @throws DelaunayError 
 	 */
-	public MyPoint getIntersection(MyEdge anEdge) {
+	public MyPoint getIntersection(MyEdge anEdge) throws DelaunayError {
 		return getIntersection(anEdge.startPoint, anEdge.endPoint);
 	}
 
@@ -809,8 +812,9 @@ public class MyEdge extends MyElement {
 	 * Get the barycenter of the triangle
 	 *
 	 * @return isFlat
+	 * @throws DelaunayError 
 	 */
-	public MyPoint getBarycenter() {
+	public MyPoint getBarycenter() throws DelaunayError {
 		double x = (this.startPoint.getX()+this.endPoint.getX())/2.0;
 		double y = (this.startPoint.getY()+this.endPoint.getY())/2.0;
 		double z = (this.startPoint.getZ()+this.endPoint.getZ())/2.0;

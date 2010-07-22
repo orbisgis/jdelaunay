@@ -11,7 +11,9 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class MyPolygon extends MyElement {
 
@@ -40,8 +42,9 @@ public class MyPolygon extends MyElement {
 	 * Generate a polygon.
 	 * 
 	 * @param polygon
+	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon) {
+	public MyPolygon(Polygon polygon) throws DelaunayError {
 		super();
 		this.usePolygonZ=false;
 		this.isEmpty=false;
@@ -53,8 +56,9 @@ public class MyPolygon extends MyElement {
 	 * 
 	 * @param polygon
 	 * @param isEmpty True, if we remove triangle who are inside the polygon.
+	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, boolean isEmpty) {
+	public MyPolygon(Polygon polygon, boolean isEmpty) throws DelaunayError {
 		super();
 		init(polygon);
 		this.usePolygonZ=false;
@@ -66,8 +70,9 @@ public class MyPolygon extends MyElement {
 	 * 
 	 * @param polygon
 	 * @param _property
+	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int _property) {
+	public MyPolygon(Polygon polygon, int _property) throws DelaunayError {
 		super(_property);
 		this.usePolygonZ=false;
 		this.isEmpty=false;
@@ -80,8 +85,9 @@ public class MyPolygon extends MyElement {
 	 * @param polygon
 	 * @param _property
 	 * @param True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ) {
+	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ) throws DelaunayError {
 		super(_property);
 		this.usePolygonZ=usePolygonZ;
 		this.isEmpty=false;
@@ -95,8 +101,9 @@ public class MyPolygon extends MyElement {
 	 * @param _property
 	 * @param usePolygonZ True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
 	 * @param isEmpty True, if we remove triangle who are inside the polygon.
+	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ, boolean isEmpty) {
+	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ, boolean isEmpty) throws DelaunayError {
 		super(_property);
 		this.usePolygonZ=usePolygonZ;
 		this.isEmpty=isEmpty;
@@ -107,8 +114,9 @@ public class MyPolygon extends MyElement {
 	 * Initialize data.
 	 * 
 	 * @param polygon
+	 * @throws DelaunayError 
 	 */
-	private void init(Polygon polygon) {
+	private void init(Polygon polygon) throws DelaunayError {
 		if (polygon.isEmpty())
 			throw new IllegalArgumentException("Polygon is empty");
 		else {
@@ -221,8 +229,9 @@ public class MyPolygon extends MyElement {
 	 * Get points.
 	 * 
 	 * @return points
+	 * @throws DelaunayError 
 	 */
-	public ArrayList<MyPoint> getPoints() {
+	public ArrayList<MyPoint> getPoints() throws DelaunayError {
 		ArrayList<MyPoint> points= new ArrayList<MyPoint>();
 		MyPoint aPoint;
 		for (int i = 0; i < polygon.getNumPoints()-1; i++)

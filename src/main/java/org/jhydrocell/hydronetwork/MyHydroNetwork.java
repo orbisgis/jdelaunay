@@ -1,10 +1,19 @@
 package org.jhydrocell.hydronetwork;
 
-import java.util.*;
-import com.vividsolutions.jts.geom.Coordinate;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
-import org.jdelaunay.delaunay.*;
-import org.jhydrocell.utilities.*;
+import org.jdelaunay.delaunay.DelaunayError;
+import org.jdelaunay.delaunay.MyEdge;
+import org.jdelaunay.delaunay.MyMesh;
+import org.jdelaunay.delaunay.MyPoint;
+import org.jdelaunay.delaunay.MyTriangle;
+import org.jhydrocell.utilities.HydroLineUtil;
+import org.jhydrocell.utilities.HydroPolygonUtil;
+import org.jhydrocell.utilities.MathUtil;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class MyHydroNetwork {
 	private MyMesh theMesh;
@@ -495,24 +504,10 @@ public class MyHydroNetwork {
 	 * @param z
 	 * @throws DelaunayError
 	 */
-	public void addSewerEntry(double x, double y) throws DelaunayError {
-		// Search for the point
-		MyPoint sewerPoint = theMesh.getPoint(x, y);
-		addSewerEntry(sewerPoint);
-	}
-
-	/**
-	 * add a sewer entry
-	 * 
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @throws DelaunayError
-	 */
 	public void addSewerEntry(double x, double y, double z)
 			throws DelaunayError {
 		// Search for the point
-		MyPoint sewerPoint = theMesh.getPoint(x, y);
+		MyPoint sewerPoint = theMesh.getPoint(x, y, z);
 		addSewerEntry(sewerPoint);
 	}
 
@@ -525,19 +520,6 @@ public class MyHydroNetwork {
 	public void addSewerEntry(MyPoint sewerPoint) throws DelaunayError {
 		listPrepare = new LinkedList<MyPoint>();
 		listPrepare.add(sewerPoint);
-	}
-
-	/**
-	 * add a sewer exit
-	 * 
-	 * @param x
-	 * @param y
-	 * @throws DelaunayError
-	 */
-	public void addSewerExit(double x, double y) throws DelaunayError {
-		// Search for the point
-		MyPoint sewerPoint = theMesh.getPoint(x, y);
-		addSewerExit(sewerPoint);
 	}
 
 	/**

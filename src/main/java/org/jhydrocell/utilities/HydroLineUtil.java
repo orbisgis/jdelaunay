@@ -1,6 +1,7 @@
 package org.jhydrocell.utilities;
 
-import org.jdelaunay.delaunay.*;
+import org.jdelaunay.delaunay.MyEdge;
+import org.jdelaunay.delaunay.MyPoint;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;

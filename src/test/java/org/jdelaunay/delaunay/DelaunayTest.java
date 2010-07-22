@@ -2,7 +2,6 @@ package org.jdelaunay.delaunay;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class DelaunayTest extends BaseTest {
 

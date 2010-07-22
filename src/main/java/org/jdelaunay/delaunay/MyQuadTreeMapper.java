@@ -2,7 +2,6 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.regex.Pattern;
 
 /**
  * Delaunay Package.
@@ -19,14 +18,6 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	private MyQuadTree<T> myQuadTree;
 	private int maxLevel=20;//FIXME maxLevel=5 or 7 or ... ?
 	private int quadtreeSize;
-	
-
-	
-//	/**
-//	 * Use for next() function.
-//	 */
-//	private String path="0";
-//	private int index=0;
 	
 	/**
 	 * Constructor
@@ -264,21 +255,9 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * Search the element that contains the point
 	 * @param aPoint
 	 * @return anElement
+	 * @throws DelaunayError 
 	 */
-	public T search(double x, double y) {
-		T anElement = null;
-		if (this.usable) {
-			anElement = myQuadTree.search(new MyPoint(x,y), myBoundingBox);
-		}
-		return anElement;
-	}
-	
-	/**
-	 * Search the element that contains the point
-	 * @param aPoint
-	 * @return anElement
-	 */
-	public T search(double x, double y, double z) {
+	public T search(double x, double y, double z) throws DelaunayError {
 		T anElement = null;
 		if (this.usable) {
 			anElement = myQuadTree.search(new MyPoint(x,y, z), myBoundingBox);
@@ -337,8 +316,9 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @param <E>
 	 * @param anElement
 	 * @return The element that contain anElement.
+	 * @throws DelaunayError 
 	 */
-	public <E extends MyElement> T searchInWhichElementItIs(E anElement) {
+	public <E extends MyElement> T searchInWhichElementItIs(E anElement) throws DelaunayError {
 		if (this.usable) {
 		return myQuadTree.searchInWhichElementItIs(anElement, myBoundingBox);
 		}

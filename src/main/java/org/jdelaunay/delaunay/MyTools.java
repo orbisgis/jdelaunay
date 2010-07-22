@@ -1,6 +1,8 @@
 package org.jdelaunay.delaunay;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class MyTools {
 
@@ -29,7 +31,7 @@ public class MyTools {
 	 * @param min_index
 	 * @param max_index
 	 */
-	protected static void quickSortGID(ArrayList elements,
+	protected static void quickSortGID(ArrayList<? extends MyElement> elements,
 			int min_index, int max_index) {
 		int i, j;
 		int enreg_ref;

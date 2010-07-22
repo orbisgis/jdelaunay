@@ -13,13 +13,19 @@ public class TestDelaunay extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setMax(1300, 700);
-		aMesh.setRandomPoints(5000);
-
+		aMesh.setRandomPoints(1000000);
+		
+		long start = System.currentTimeMillis();
+		
 		aMesh.processDelaunay();
+		
+		long end = System.currentTimeMillis();
+		System.out.println("Duration " + (end-start)+"ms");
+		
 		show(aMesh);
 		System.out.println();
 		assertTrue(true);
-		
+		System.out.println("end");
 	}
 
 	/**
@@ -211,5 +217,6 @@ public class TestDelaunay extends BaseTest {
 				assertTrue(false);
 			}
 		}
+		System.out.println("finish");
 	}
 }

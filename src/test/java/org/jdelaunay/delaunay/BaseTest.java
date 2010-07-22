@@ -12,8 +12,9 @@ public class BaseTest extends TestCase {
 	/**
 	 * Generate an array of points
 	 * @return
+	 * @throws DelaunayError 
 	 */
-	public static ArrayList<MyPoint> getPoints() {
+	public static ArrayList<MyPoint> getPoints() throws DelaunayError {
 		ArrayList<MyPoint> points = new ArrayList<MyPoint>();
 		points.add(new MyPoint(12, 10, 2));
 		points.add(new MyPoint(120, 10, 20));
@@ -33,8 +34,9 @@ public class BaseTest extends TestCase {
 	/**
 	 * Generate an array of edges
 	 * @return
+	 * @throws DelaunayError 
 	 */
-	public static ArrayList<MyEdge> getBreaklines() {
+	public static ArrayList<MyEdge> getBreaklines() throws DelaunayError {
 		ArrayList<MyEdge> edges = new ArrayList<MyEdge>();
 		edges.add(new MyEdge(new MyPoint(12, 10, 2), new MyPoint(102, 100, 1)));
 		edges.add(new MyEdge(new MyPoint(50, 10, 2), new MyPoint(10, 10, 1)));

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Test {
 
-	public static ArrayList<MyPoint> getPoints() {
+	public static ArrayList<MyPoint> getPoints() throws DelaunayError {
 		ArrayList<MyPoint> points = new ArrayList<MyPoint>();
 		points.add(new MyPoint(12, 10, 2));
 		points.add(new MyPoint(120, 10, 20));

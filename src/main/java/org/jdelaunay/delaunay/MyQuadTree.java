@@ -3,7 +3,6 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.regex.Pattern;
 
 /**
  * Delaunay Package.
@@ -526,8 +525,9 @@ public class MyQuadTree<T extends MyElement> {
 	 * @param anElement
 	 * @param boundingBox
 	 * @return The element that contain anElement.
+	 * @throws DelaunayError 
 	 */
-	protected <E extends MyElement> T searchInWhichElementItIs(E anElement, MyBox boundingBox) {
+	protected <E extends MyElement> T searchInWhichElementItIs(E anElement, MyBox boundingBox) throws DelaunayError {
 		T  foudElement = null;
 		
 		// test root list

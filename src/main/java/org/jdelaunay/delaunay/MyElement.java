@@ -147,8 +147,9 @@ public abstract class MyElement {
 	 * 
 	 * @param c
 	 * @return bool
+	 * @throws DelaunayError 
 	 */
-	public abstract boolean contains(Coordinate c);
+	public abstract boolean contains(Coordinate c) throws DelaunayError;
 	
 	/**
 	 * check if it is use by a polygon

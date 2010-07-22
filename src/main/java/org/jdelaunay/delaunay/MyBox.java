@@ -153,12 +153,12 @@ public class MyBox {
 		return "min x["+minx+"] y["+miny+"] z["+minz+"] | max x["+maxx+"] y["+maxy+"] z["+maxz+"]";
 	}
 
-	public ArrayList<MyPoint> getPoints() {
+	public ArrayList<MyPoint> getPoints() throws DelaunayError {
 		ArrayList<MyPoint> points = new ArrayList<MyPoint>();
-		points.add(new MyPoint(minx, miny));
-		points.add(new MyPoint(minx, maxy));
-		points.add(new MyPoint(maxx, miny));
-		points.add(new MyPoint(maxx, maxy));
+		points.add(new MyPoint(minx, miny, 0));
+		points.add(new MyPoint(minx, maxy, 0));
+		points.add(new MyPoint(maxx, miny, 0));
+		points.add(new MyPoint(maxx, maxy, 0));
 		return points;
 	}
 }

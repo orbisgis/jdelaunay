@@ -9,8 +9,10 @@ package org.jdelaunay.delaunay;
  * @version 2.1
  */
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -220,7 +222,7 @@ public class MyTriangle extends MyElement {
 	}
 	
 	@Override
-	public boolean contains(Coordinate c) {
+	public boolean contains(Coordinate c) throws DelaunayError {
 		return isInside(new MyPoint(c));
 	}
 
@@ -755,8 +757,9 @@ public class MyTriangle extends MyElement {
 	 * Get the barycenter of the triangle
 	 *
 	 * @return isFlat
+	 * @throws DelaunayError 
 	 */
-	public MyPoint getBarycenter() {
+	public MyPoint getBarycenter() throws DelaunayError {
 		double x = 0, y = 0, z = 0;
 		MyPoint aPoint;
 		for (int i = 0; i < 3; i++) {
