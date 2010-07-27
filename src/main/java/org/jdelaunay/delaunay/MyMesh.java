@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-07-27
  * @version 2.1
  */
 
@@ -1189,6 +1189,10 @@ public class MyMesh {
 					triangle2.setGID(triangle_GID);
 					trianglesQuadTree.add(triangle2);
 					
+					if(anEdge.isUseByPolygon())
+					{
+						newEdge3.setUseByPolygon(true);
+					}
 
 					edge_GID++;
 					newEdge3.setGID(edge_GID);
@@ -1266,6 +1270,11 @@ public class MyMesh {
 					triangle2.setGID(triangle_GID);
 					trianglesQuadTree.add(triangle2);
 					
+					
+					if(anEdge.isUseByPolygon())
+					{
+						newEdge3.setUseByPolygon(true);
+					}
 
 					edge_GID++;
 					newEdge3.setGID(edge_GID);
@@ -1278,7 +1287,13 @@ public class MyMesh {
 			trianglesQuadTree.remove(anEdge.getRight());
 		}
 		
-
+		if(anEdge.isUseByPolygon())
+		{
+			newEdge1.setUseByPolygon(true);
+			newEdge2.setUseByPolygon(true);
+		}
+		
+			
 		edge_GID++;
 		newEdge1.setGID(edge_GID);
 		edgesQuadTree.add(newEdge1);
@@ -1539,7 +1554,7 @@ public class MyMesh {
 			
 			// then split anEdge
 			remainEdge = new MyEdge(anEdge);
-			remainEdge.setStartPoint(aPoint);
+			remainEdge.setStartPoint(aPoint);		
 			anEdge.setEndPoint(aPoint);
 
 			edge_GID++;
@@ -2376,8 +2391,9 @@ public class MyMesh {
 						if (mayTest) {
 							MyEdge swapEdge = lookForSwap(currentEdge2, start, end);
 							if (swapEdge != null) {
-								EdgesToSwap.add(swapEdge);
 								swapEdge.setProperty(currentEdge.getProperty());
+								EdgesToSwap.add(swapEdge);
+
 								found = true;
 	
 								// look for swapping edge
@@ -2418,7 +2434,7 @@ public class MyMesh {
 	private ArrayList<MyEdge> processOtherEdges(ArrayList<MyEdge> constraintsEdges) throws DelaunayError {
 
 		// List of triangles that are created when there is an intersection
-		MyEdge CurrentEdge = null;
+		MyEdge currentEdge = null;
 		ArrayList<MyEdge> possibleEdges =null;
 		int iter = 0;
 		int maxIter = constraintsEdges.size();
@@ -2437,11 +2453,11 @@ public class MyMesh {
 				System.out.println("Processing edge " + iter + " / " + maxIter);
 
 			// Get first edge then remove it from the list
-			CurrentEdge = iterEdge.next();
+			currentEdge = iterEdge.next();
 
 			// Compute edge intersection with the Mesh
-			MyPoint p1 = CurrentEdge.getStartPoint();
-			MyPoint p2 = CurrentEdge.getEndPoint();
+			MyPoint p1 = currentEdge.getStartPoint();
+			MyPoint p2 = currentEdge.getEndPoint();
 			// Intersection points - this is an ArrayList because we need to
 			// sort it
 			ArrayList<MyPoint> addedPoints = new ArrayList<MyPoint>();
@@ -2453,7 +2469,7 @@ public class MyMesh {
 			// We need then because we have to compare alterPoint with this list
 			// of points
 
-			ArrayList<Object[]> result=edgesQuadTree.searchIntersection(CurrentEdge);
+			ArrayList<Object[]> result=edgesQuadTree.searchIntersection(currentEdge);
 			for (int i =0;i<result.size();i++ ) {
 				MyEdge anEdge = (MyEdge) result.get(i)[0];
 
@@ -2572,7 +2588,7 @@ public class MyMesh {
 			ListIterator<MyPoint> iterPoint = addedPoints.listIterator();
 			while (iterPoint.hasNext()) {
 				MyPoint aPoint = iterPoint.next();
-				if (!CurrentEdge.isInside(aPoint)) {
+				if (!currentEdge.isInside(aPoint)) {
 					// Not between p1 and p2 => removed
 					iterPoint.remove();
 				} else
@@ -2591,7 +2607,7 @@ public class MyMesh {
 					anEdge.setLocked(true);
 					LastPoint.setLocked(true);
 					p.setLocked(true);
-					anEdge.setProperty(CurrentEdge.getProperty());
+					anEdge.setProperty(currentEdge.getProperty());
 
 					// look for swapping edge
 					if (anEdge.getEndPoint() == p)
@@ -3325,53 +3341,53 @@ public class MyMesh {
 				aEdge= aTriangleInPolygon.getEdge(i);
 				unknowTriangle = aEdge.getLeft();
 				
-				// if left triangle is inside the polygon
-				if(unknowTriangle!=null && !unknowTriangle.equals(aTriangleInPolygon) && !unknowTriangle.isMarked(0) && aPolygon.contains(unknowTriangle.getBarycenter()))
-				{
-					triangleOfPolygonIt.add(unknowTriangle);
-					triangleOfPolygonIt.previous();
-				}else
+				if(unknowTriangle==null || unknowTriangle.equals(aTriangleInPolygon) || unknowTriangle.isMarked(0) )
 				{
 					unknowTriangle = aEdge.getRight();
 					
-					// if right triangle is inside the polygon
-					if(unknowTriangle!=null && !unknowTriangle.equals(aTriangleInPolygon) && !unknowTriangle.isMarked(0) && aPolygon.contains(unknowTriangle.getBarycenter()))
+					if(unknowTriangle!=null && !unknowTriangle.equals(aTriangleInPolygon) && !unknowTriangle.isMarked(0) )
 					{
-						triangleOfPolygonIt.add(unknowTriangle);
-						triangleOfPolygonIt.previous();
+						if(aPolygon.contains(unknowTriangle.getBarycenter()))// right edge is inside the polygon
+						{
+							aEdge.setRight(null);
+							triangleOfPolygonIt.add(unknowTriangle);
+							triangleOfPolygonIt.previous();
+						}
+						else{ // right edge is outside the polygon 
+							aEdge.setUseByPolygon(true);
+							aEdge.setLeft(null);
+						}
+							
 					}
+				}
+				else if( aPolygon.contains(unknowTriangle.getBarycenter()))// left edge is inside the polygon
+				{
+					aEdge.setLeft(null);
+					triangleOfPolygonIt.add(unknowTriangle);
+					triangleOfPolygonIt.previous();
+				}
+				else // left edge is outside the polygon 
+				{
+					aEdge.setUseByPolygon(true);
+					aEdge.setRight(null);
+					
 				}
 
 				
-
 				if(!pointOfPolygon.contains(aEdge.getStartPoint()))
 					pointOfPolygon.add(aEdge.getStartPoint());
 
 				if(!pointOfPolygon.contains(aEdge.getEndPoint()))
 					pointOfPolygon.add(aEdge.getEndPoint());
-					
-				if(aEdge.isLocked())
-				{
-					unknowTriangle = aEdge.getLeft();
-					if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)) {
-							aEdge.setLeft(null);
-					}
-					else
-					{
-						unknowTriangle = aEdge.getRight();
-						if(unknowTriangle!=null && unknowTriangle.equals(aTriangleInPolygon)){
-							aEdge.setRight(null);
-						}
-					}
-				}
+
 					
 			}
 			trianglesQuadTree.remove(aTriangleInPolygon);
 		}
 
 
-//		edgesQuadTree.removeAllStric(aPolygon); 
-//		pointsQuadTree.removeAllStric(aPolygon); 	//FIXME it's make problem in wrl file
+		edgesQuadTree.removeAllStric(aPolygon); 
+		pointsQuadTree.removeAllStric(aPolygon); 	//FIXME it's make problem in wrl file
 
 		return pointOfPolygon;
 	}
@@ -3451,8 +3467,11 @@ public class MyMesh {
 				LastTestedPoint = aPoint;
 				
 				if (aPoint!= null)
-						if (myInsertPoint(aPoint, aPolygon.getProperty()) == null)
+				{
+					aPoint.setUseByPolygon(true);
+					if (myInsertPoint(aPoint, aPolygon.getProperty()) == null)
 							badPointList.addFirst(aPoint);
+				}
 
 			}
 		}
@@ -3556,6 +3575,7 @@ public class MyMesh {
 				if (!found)
 				{
 					cpt++;
+					System.out.println("not connect : "+aPoint);
 //					throw new DelaunayError(
 //							DelaunayError.DelaunayError_nonInsertedPoint);
 				}

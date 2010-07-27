@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-07-27
  * @version 1.2
  */
 
@@ -80,6 +80,7 @@ public class MyEdge extends MyElement {
 		this.left = ed.left;
 		this.right = ed.right;
 		this.indicator = ed.indicator;
+		this.property = ed.property;
 	}
 
 	/**
@@ -171,6 +172,9 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setStart(MyPoint p) {
+		if(isUseByPolygon())
+			p.setUseByPolygon(true);
+		
 		this.startPoint = p;
 	}
 
@@ -180,6 +184,9 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setEnd(MyPoint p) {
+		if(isUseByPolygon())
+			p.setUseByPolygon(true);
+		
 		this.endPoint = p;
 	}
 
@@ -189,6 +196,9 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setStartPoint(MyPoint p) {
+		if(isUseByPolygon())
+			p.setUseByPolygon(true);
+		
 		this.startPoint = p;
 	}
 
@@ -198,6 +208,9 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 */
 	public void setEndPoint(MyPoint p) {
+		if(isUseByPolygon())
+			p.setUseByPolygon(true);
+		
 		this.endPoint = p;
 	}
 
@@ -558,7 +571,6 @@ public class MyEdge extends MyElement {
 				}
 			}
 		}
-
 		return intersection;
 	}
 

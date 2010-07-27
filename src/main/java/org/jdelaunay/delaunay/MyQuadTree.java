@@ -9,7 +9,7 @@ import java.util.ListIterator;
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-07-27
  * @version 1.3
  */
 
@@ -834,18 +834,20 @@ public class MyQuadTree<T extends MyElement> {
 		int quadtreeSize=0;
 		// test root list
 		ListIterator<T> iterList;
-		iterList = theList[0].listIterator();
+		
+		iterList = theList[0].listIterator();		
 		while ((iterList.hasNext())) {
 			T searchedElement = iterList.next();
 			
 			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
 				break;
 			
-			if(aPolygon.contains(searchedElement.getBoundingBox().getMiddle()) && !searchedElement.isUseByPolygon())//it doesn't run
+			if(!searchedElement.isUseByPolygon() && aPolygon.contains(searchedElement.getBoundingBox().getMiddle()))
 			{	
 				iterList.remove();
 				quadtreeSize++;
 			}
+
 		}
 		for(int i=1;i<6;i++)
 		{
@@ -858,7 +860,8 @@ public class MyQuadTree<T extends MyElement> {
 					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
 						break;
 					
-					if(aPolygon.contains(searchedElement.getBoundingBox().getMiddle()) && !searchedElement.isUseByPolygon())//it doesn't run
+
+					if(!searchedElement.isUseByPolygon() && aPolygon.contains(searchedElement.getBoundingBox().getMiddle()))
 					{	
 						iterList.remove();
 						quadtreeSize++;

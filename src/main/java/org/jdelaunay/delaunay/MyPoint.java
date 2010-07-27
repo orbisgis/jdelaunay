@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-07-27
  * @version 2.1
  */
 
@@ -368,7 +368,7 @@ public class MyPoint extends MyElement  {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Point [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
+		return "Point "+gid+" [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
 	}
 
 	/**
