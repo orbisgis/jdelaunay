@@ -22,6 +22,9 @@
  *
  * Ce programme est distribu� sous la licence logiciel libre du CNRS CeCILL.
  * Pour utiliser ce programme ou le modifier vous devez accepter pleinement et respecter les conditions de cette licence.
+ * 
+ * 
+ * @revision 2010-10-04
  */
 
 package org.jhydrocell.utilities;
@@ -115,7 +118,7 @@ public class MathUtil {
 	}
 
 	public static double Norme(Coordinate v) {
-		return v.z == Double.NaN ? Math.sqrt(v.x * v.x + v.y * v.y) : Math
+		return Double.isNaN(v.z) ? Math.sqrt(v.x * v.x + v.y * v.y) : Math
 				.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
 
@@ -202,7 +205,7 @@ public class MathUtil {
 	            // t2 = ((x2 - x1) (y3 - y1) - (y2 - y1) (x3 - x1)) / d
 
 	            double t1 = (c2 * b1 - c1 * b2) / d;
-	            double t2 = (a1 * c2 - a2 * c1) / d;
+//	            double t2 = (a1 * c2 - a2 * c1) / d;
 
 	            if ((-EPSILON <= t1) && (t1 <= 1 + EPSILON)) {
 	                // it intersects

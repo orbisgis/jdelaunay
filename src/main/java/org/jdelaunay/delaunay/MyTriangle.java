@@ -3,9 +3,9 @@ package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
  *
- * @author Jean-Yves MARTIN, Erwan BOCHER
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-10-04
  * @version 2.1
  */
 
@@ -615,11 +615,11 @@ public class MyTriangle extends MyElement {
 	}
 
 	/**
-	 * Get the point of the triangle that does not belong to the edge
+	 * Get the point of the triangle that is not belong to the edge
 	 *
-	 * @return isFlat
+	 * @return alterPoint
 	 */
-	protected MyPoint getAlterPoint(MyEdge anEdge) {
+	public MyPoint getAlterPoint(MyEdge anEdge) {
 		MyPoint start = anEdge.getStartPoint();
 		MyPoint end = anEdge.getEndPoint();
 		return getAlterPoint(start, end);
@@ -864,4 +864,16 @@ public class MyTriangle extends MyElement {
 	public void setUseByPolygon(boolean useByPolygon) {
 		setBit(4, useByPolygon);
 	}
+	
+	
+//	public  boolean getPenteVersEdge(MyEdge myEdge) {
+//		HydroTriangleUtil hpu=new HydroTriangleUtil(this);
+//		return hpu.getPenteVersEdge(myEdge);
+//	}
+//	
+//	
+//	public Coordinate getNormal() {
+//		HydroTriangleUtil htu=new HydroTriangleUtil(this);
+//		return htu.getNormal();
+//	}
 }

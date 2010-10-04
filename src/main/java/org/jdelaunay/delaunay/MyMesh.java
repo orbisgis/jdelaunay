@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-27
+ * @revision 2010-10-04
  * @version 2.1
  */
 
@@ -61,7 +61,7 @@ public class MyMesh {
 	private long startComputation;
 	private MyDrawing affiche;
 	private boolean usePolygonZ;
-	private boolean isBoundingBoxInit;
+//	private boolean isBoundingBoxInit;
 
 	// Working index vector
 	private LinkedList<MyEdge> badEdgesQueueList;
@@ -85,7 +85,7 @@ public class MyMesh {
 		this.maxx = 1200;
 		this.maxy = 700;
 		this.theBox = new MyBox();
-		this.isBoundingBoxInit=false;
+//		this.isBoundingBoxInit=false;
 		
 		
 		// Generate vectors
@@ -153,7 +153,7 @@ public class MyMesh {
 	 * Compute Mesh bounding box
 	 */
 	public MyBox getBoundingBox() {
-		isBoundingBoxInit=true;
+//		isBoundingBoxInit=true;
 		this.theBox = pointsQuadTree.getBox();
 		return this.theBox;
 	}
@@ -1066,11 +1066,6 @@ public class MyMesh {
 					{	aPoint.setZ(foundTriangle.interpolateZ(aPoint));
 					}
 					
-					point_GID++;
-					aPoint.setGID(point_GID);
-					pointsQuadTree.add(aPoint);
-					
-					
 					if(foundTriangle.getEdge(0).isOnEdge(aPoint))
 					{
 						addPointOnEdge(aPoint, foundTriangle.getEdge(0));
@@ -1110,7 +1105,7 @@ public class MyMesh {
 						point_GID++;
 						aPoint.setGID(point_GID);
 						pointsQuadTree.add(aPoint);
-						foundTriangle = myInsertPoint(aPoint);
+						myInsertPoint(aPoint);
 					}
 				}
 			}
@@ -1127,8 +1122,15 @@ public class MyMesh {
 	 */
 	private void addPointOnEdge(MyPoint aPoint, MyEdge anEdge)
 	{
+		
+		point_GID++;
+		aPoint.setGID(point_GID);
+		pointsQuadTree.add(aPoint);
+		
 		MyEdge newEdge1=null;
 		MyEdge newEdge2=null;
+		MyEdge newEdge3, anEdge4, anEdge5;
+		MyTriangle tmp1, tmp2, triangle1, triangle2;
 		// Make new triangle at left of edge.
 		if(anEdge.getLeft()!=null)
 		{
@@ -1137,18 +1139,18 @@ public class MyMesh {
 				if(anEdge.getLeft().getPoint(j)!=anEdge.getStartPoint() && anEdge.getLeft().getPoint(j)!=anEdge.getEndPoint())
 				{
 					
-					MyEdge newEdge3=new MyEdge(anEdge.getLeft().getPoint(j),aPoint);
+					newEdge3=new MyEdge(anEdge.getLeft().getPoint(j),aPoint);
 					
 					newEdge1= new MyEdge(anEdge.getStartPoint(), aPoint);
-					MyEdge anEdge4=anEdge.getLeft().getEdgeFromPoints(anEdge.getStartPoint(), anEdge.getLeft().getPoint(j));
+					anEdge4=anEdge.getLeft().getEdgeFromPoints(anEdge.getStartPoint(), anEdge.getLeft().getPoint(j));
 					
 	
-					MyTriangle tmp1;
+					
 					tmp1=anEdge4.getRight();
-					MyTriangle tmp2;
+
 					tmp2=anEdge4.getLeft();
 					
-					MyTriangle triangle1=new MyTriangle(newEdge1, anEdge4, newEdge3);
+					triangle1=new MyTriangle(newEdge1, anEdge4, newEdge3);
 					
 					if(anEdge4.isRight(aPoint))//FIXME setRight / setLeft not very good!
 					{
@@ -1162,12 +1164,12 @@ public class MyMesh {
 					}
 	
 					newEdge2= new MyEdge(aPoint,anEdge.getEndPoint());
-					MyEdge anEdge5=anEdge.getLeft().getEdgeFromPoints(anEdge.getEndPoint(), anEdge.getLeft().getPoint(j));
+					anEdge5=anEdge.getLeft().getEdgeFromPoints(anEdge.getEndPoint(), anEdge.getLeft().getPoint(j));
 					
 					tmp1=anEdge5.getRight();
 					tmp2=anEdge5.getLeft();
 					
-					MyTriangle 	triangle2=new MyTriangle(newEdge2, newEdge3, anEdge5  );
+					triangle2=new MyTriangle(newEdge2, newEdge3, anEdge5  );
 					
 					if(anEdge5.isRight(aPoint))//FIXME setRight / setLeft not very good!
 					{
@@ -1218,17 +1220,17 @@ public class MyMesh {
 						newEdge2= new MyEdge(aPoint,anEdge.getEndPoint());
 					}
 					
-					MyEdge newEdge3=new MyEdge(anEdge.getRight().getPoint(j),aPoint);
+					newEdge3=new MyEdge(anEdge.getRight().getPoint(j),aPoint);
 					
 					newEdge1= new MyEdge(anEdge.getStartPoint(), aPoint);
-					MyEdge anEdge4=anEdge.getRight().getEdgeFromPoints(anEdge.getStartPoint(), anEdge.getRight().getPoint(j));
+					anEdge4=anEdge.getRight().getEdgeFromPoints(anEdge.getStartPoint(), anEdge.getRight().getPoint(j));
 					
-					MyTriangle tmp1;
+
 					tmp1=anEdge4.getRight();
-					MyTriangle tmp2;
+
 					tmp2=anEdge4.getLeft();
 					
-					MyTriangle triangle1=new MyTriangle(newEdge1, anEdge4, newEdge3);
+					triangle1=new MyTriangle(newEdge1, anEdge4, newEdge3);
 					
 					if(anEdge4.isRight(aPoint))//FIXME setRight / setLeft not very good!
 					{
@@ -1242,13 +1244,13 @@ public class MyMesh {
 					}
 	
 					newEdge2= new MyEdge(aPoint,anEdge.getEndPoint());
-					MyEdge anEdge5=anEdge.getRight().getEdgeFromPoints(anEdge.getEndPoint(), anEdge.getRight().getPoint(j));
+					anEdge5=anEdge.getRight().getEdgeFromPoints(anEdge.getEndPoint(), anEdge.getRight().getPoint(j));
 					
 					
 					tmp1=anEdge5.getRight();
 					tmp2=anEdge5.getLeft();
 					
-					MyTriangle 	triangle2=new MyTriangle(newEdge2, newEdge3, anEdge5  );
+					triangle2=new MyTriangle(newEdge2, newEdge3, anEdge5  );
 					
 					if(anEdge5.isRight(aPoint))//FIXME setRight / setLeft not very good!
 					{
@@ -1302,9 +1304,8 @@ public class MyMesh {
 		newEdge2.setGID(edge_GID);
 		edgesQuadTree.add(newEdge2);
 
-		edge_GID++;
-		anEdge.setGID(edge_GID);
 		edgesQuadTree.remove(anEdge);
+		anEdge=null;
 	}
 	
 	/**
@@ -1351,6 +1352,11 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	private void addPointInsideTriangle(MyTriangle aTriangle, MyPoint aPoint) {
+		
+		point_GID++;
+		aPoint.setGID(point_GID);
+		pointsQuadTree.add(aPoint);
+		
 		// Save current edges
 		MyEdge oldEdge[] = new MyEdge[3];
 		for (int i = 0; i < 3; i++) {
@@ -1949,7 +1955,6 @@ public class MyMesh {
 						for (int i = 1; i < 3; i++) {
 							double length = aTriangle.edges[i]
 									.getSquared2DLength();
-							;
 							if (length > maxLength) {
 								maxLength = length;
 								longest = aTriangle.edges[i];
@@ -3136,7 +3141,7 @@ public class MyMesh {
 	 * 
 	 * @throws DelaunayError
 	 */
-	public void removeFlatTriangles() throws DelaunayError {
+	public void removeFlatTriangles_b() throws DelaunayError {// old
 		if (!isMeshComputed())
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
 		else {
@@ -3278,6 +3283,222 @@ public class MyMesh {
 		}
 	}
 
+	
+	
+	/**
+	 * Remove all flat triangles
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void removeFlatTriangles() throws DelaunayError {//it's the new version
+		if (!isMeshComputed())
+			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+		else {
+			
+			if(verbose)
+				System.out.println("Remove flat triangles...\n\n");
+			
+
+			
+
+			MyEdge anEdge;
+			MyPoint aPoint;
+			MyTriangle unknowTriangle;
+			ArrayList<MyTriangle> todoTriangles= new ArrayList<MyTriangle>();
+			for(MyTriangle aTriangle:trianglesQuadTree.getAll())
+			{
+				if(aTriangle.isFlatSlope()) 
+				{
+					todoTriangles.add(aTriangle);
+				}
+			}
+			
+			LinkedList<Object[]> todoPoint;
+			LinkedList<MyEdge> todoEdges= new LinkedList<MyEdge>();
+			double a,b,c;
+			int size=todoTriangles.size(), cpt=0;
+			for(MyTriangle aTriangle:todoTriangles)
+			{
+				System.out.print("\r"+cpt+" / "+size);
+				cpt++;
+				todoPoint = new LinkedList<Object[]>();
+				for(int i=0; i<3;i++)// for all edges of triangle
+				{
+					anEdge= aTriangle.getEdge(i);
+					
+					if(!anEdge.isMarked(0))
+					{
+						if(!anEdge.isLevelEdge() && !anEdge.isUseByPolygon())
+						{
+							aPoint=anEdge.getBarycenter();
+							
+							unknowTriangle = anEdge.getLeft();
+							if(aTriangle.equals(unknowTriangle))
+								unknowTriangle = anEdge.getRight();
+							
+							if(unknowTriangle!=null && unknowTriangle.getAlterPoint(anEdge.getStartPoint(), anEdge.getEndPoint()).getZ() <anEdge.getStartPoint().getZ() )
+								aPoint.setZ(aPoint.getZ()-1);//FIXME
+							else
+								aPoint.setZ(aPoint.getZ()+1);//FIXME
+			
+							todoPoint.add(new Object[]{aPoint, anEdge});
+
+							
+						}
+					anEdge.setMarked(0, true);
+					}
+					
+				}
+				
+				
+				if(todoPoint.size()==2)
+				{
+					todoEdges.add(new MyEdge((MyPoint)todoPoint.getFirst()[0], (MyPoint)todoPoint.get(1)[0]));
+				
+					if(((MyPoint)todoPoint.getFirst()[0]).squareDistance(aTriangle.getAlterPoint(((MyEdge)todoPoint.getFirst()[1]))) < ((MyPoint)todoPoint.get(1)[0]).squareDistance(aTriangle.getAlterPoint(((MyEdge)todoPoint.get(1)[1]))))
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.getFirst()[0], aTriangle.getAlterPoint(((MyEdge)todoPoint.getFirst()[1]))));
+					else
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(1)[0], aTriangle.getAlterPoint(((MyEdge)todoPoint.get(1)[1]))));
+							
+				}else if(todoPoint.size()==3)
+				{
+					
+					a=((MyPoint)todoPoint.get(0)[0]).squareDistance(((MyPoint)todoPoint.get(1)[0]));
+					b=((MyPoint)todoPoint.get(1)[0]).squareDistance(((MyPoint)todoPoint.get(2)[0]));
+					c=((MyPoint)todoPoint.get(2)[0]).squareDistance(((MyPoint)todoPoint.get(0)[0]));
+					
+					if(a<=c && b<=c)
+					{
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.getFirst()[0], ((MyPoint)todoPoint.get(1)[0])));
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(1)[0], ((MyPoint)todoPoint.get(2)[0])));
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(1)[0], aTriangle.getAlterPoint(((MyEdge)todoPoint.get(1)[1]))));
+						
+					}else if(b<=a && c<=a)
+					{
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(2)[0], ((MyPoint)todoPoint.get(0)[0])));
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(1)[0], ((MyPoint)todoPoint.get(2)[0])));
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(2)[0], aTriangle.getAlterPoint(((MyEdge)todoPoint.get(2)[1]))));
+						
+					}else if(c<=b && a<=b)
+					{
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(2)[0], ((MyPoint)todoPoint.get(0)[0])));
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.getFirst()[0], ((MyPoint)todoPoint.get(1)[0])));
+						todoEdges.add(new MyEdge((MyPoint)todoPoint.get(0)[0], aTriangle.getAlterPoint(((MyEdge)todoPoint.get(0)[1]))));
+					}
+						
+						
+					
+				}else if(todoPoint.size()==1)
+				{
+					todoEdges.add(new MyEdge((MyPoint)todoPoint.getFirst()[0], aTriangle.getAlterPoint(((MyEdge)todoPoint.getFirst()[1]))));
+				}
+				
+				
+			}
+			System.out.println("ajout des edgess...");
+			size=todoEdges.size();
+			cpt=0;
+			for(MyEdge e:todoEdges)// trop lent!!!!
+			{
+		//		TODO
+				/*TODO :
+				 * suppr triangle et sous triangles
+				 * découpe des edges
+				 * ajout des edges
+				 * ajout des triangles
+				*/
+				
+			//	System.out.print("\r"+cpt+" / "+size);
+				cpt++;
+//				addPoint(e.getStartPoint());
+//				addPoint(e.getEndPoint());
+//				addEdge(e);
+				addLevelEdge(e);
+			}
+//			//TODO finir removeFlatTriangles
+//			for(MyTriangle aTriangle:checkTriangles)
+//			{
+//				fip flap
+//			}
+			
+			System.out.println(trianglesQuadTree.size());
+
+			if(verbose)
+				System.out.println("Remove flat triangles. Done.\n");
+		}
+	}
+	
+//	/**
+//	 * Remove the flat triangles and their neighbors.
+//	 * @param aTriangle
+//	 * @return 
+//	 * @throws DelaunayError 
+//	 */
+//	private ArrayList<MyEdge> findAndChangeFlatTriangle(MyTriangle aTriangle) throws DelaunayError
+//	{
+//		LinkedList<MyTriangle> flatTriangles = new LinkedList<MyTriangle>();
+//		flatTriangles.add(aTriangle);
+//		ListIterator<MyTriangle> flatTrianglesIt=flatTriangles.listIterator();
+//
+//		MyTriangle aFlatTriangle;
+//		MyTriangle unknowTriangle;
+//		MyEdge aEdge;
+//		
+//		ArrayList<MyEdge> skeletonEdges = new ArrayList<MyEdge>();
+//		
+//		aTriangle.setMarked(0, true);
+//		while (flatTrianglesIt.hasNext()) { // process flat triangles and their neighbors.
+//			aFlatTriangle = flatTrianglesIt.next();
+//			
+//			
+//			
+//			for(int i=0; i<3;i++)// for all edges of triangle
+//			{
+//				aEdge= aFlatTriangle.getEdge(i);
+//				if(!aEdge.isLevelEdge())// if aEdge is a level edge, do not thing
+//				{
+//					skeletonEdges.add(aEdge);
+//					
+//					unknowTriangle = aEdge.getLeft();
+//					if(aFlatTriangle.equals(unknowTriangle))
+//						unknowTriangle = aEdge.getRight();
+//					
+//					if(unknowTriangle!=null && !unknowTriangle.isMarked(0))
+//					{
+//						aFlatTriangle.setMarked(0, true);
+//						
+//						if(unknowTriangle.isFlatSlope())
+//						{
+//							// a flat triangle
+//							flatTrianglesIt.add(unknowTriangle);
+//							flatTrianglesIt.previous();
+//						}
+////						else
+////						{
+////							// not a flat triangle
+////							//TODO
+////						}
+//					}
+//				}
+//			}
+//			
+//		}
+//
+//
+//		
+//		//TODO use 
+////		for(MyPoint aPoint:skeletonPoints)
+////		{
+////			aPoint.setZ(aPoint.getZ()+1);//FIXME
+////			addPoint(aPoint);
+////		
+////		}
+//		// for adding point of skeleton
+//		
+//		return skeletonEdges;
+//	}
+	
+	
 	/**
 	 * Remove a triangle from the Mesh.
 	 * 
@@ -3558,15 +3779,16 @@ public class MyMesh {
 			
 			// First - check if every point belongs to at least one edge
 						
-			int cpt=0;
+			
 			
 			ArrayList<MyEdge> edges= edgesQuadTree.getAll();
-			
+			int cpt=0, edgesSize=edges.size();
+			MyEdge anEdge;
+			boolean found;
 			for (MyPoint aPoint : pointsQuadTree.getAll()) {
-				ListIterator<MyEdge> iterEdge =edges.listIterator();
-				boolean found = false;
-				while ((iterEdge.hasNext()) && (!found)) {
-					MyEdge anEdge = iterEdge.next();
+				found = false;
+				for(int i=0;i<edgesSize && !found;i++ ){
+					anEdge = edges.get(i);
 					if (anEdge.getStartPoint() == aPoint)
 						found = true;
 					else if (anEdge.getEndPoint() == aPoint)
@@ -4003,6 +4225,7 @@ public class MyMesh {
 				}
 				ligne = in.readLine();
 			}
+			in.close();
 		} catch (IOException e) {
 		}
 	}
@@ -4077,9 +4300,9 @@ public class MyMesh {
 				ArrayList<MyEdge> edges=edgesQuadTree.getAll();
 				ArrayList<MyTriangle> triangles=trianglesQuadTree.getAll();
 				
-				SetAllGIDs(points);
-				SetAllGIDs(triangles);
-				SetAllGIDs(edges);//FIXME use or not?
+//				setAllGIDs(points);
+//				setAllGIDs(triangles);
+//				setAllGIDs(edges);//TODO check me use or not?
 				
 				
 				writer.write("#VRML V2.0 utf8\n");
@@ -4358,7 +4581,7 @@ public class MyMesh {
 	 * 
 	 * @param elements
 	 */
-	protected void SetAllGIDs(ArrayList<? extends MyElement> elements) {
+	protected void setAllGIDs(ArrayList<? extends MyElement> elements) {
 		// set a GID to every element
 		int maxGID = 0;
 		for (Object anObject : elements) {

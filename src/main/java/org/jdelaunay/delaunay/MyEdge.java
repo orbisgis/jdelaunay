@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-27
+ * @revision 2010-10-04
  * @version 1.2
  */
 
@@ -19,6 +19,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 public class MyEdge extends MyElement {
 	private MyPoint startPoint, endPoint;
 	private MyTriangle left, right;
+	private MyBox aBox;
 
 	/**
 	 * byte number  | function :
@@ -36,7 +37,7 @@ public class MyEdge extends MyElement {
 	static final int FLATSLOPE = 0;
 
 	/**
-	 * Initialize data
+	 * Initialize data.
 	 */
 	private void init() {
 		this.startPoint = null;
@@ -44,10 +45,18 @@ public class MyEdge extends MyElement {
 		this.left = null;
 		this.right = null;
 		this.indicator = 0;
+//		aBox=null;
+	}
+	
+	private void updateBox()
+	{
+		aBox=new MyBox();
+		aBox.alterBox( this.startPoint);
+		aBox.alterBox( this.endPoint);
 	}
 
 	/**
-	 * Generate a new edge
+	 * Generate a new edge.
 	 */
 	public MyEdge() {
 		super();
@@ -55,7 +64,7 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
-	 * Generate an edge from two points
+	 * Generate an edge from two points.
 	 *
 	 * @param startPoint
 	 * @param endPoint
@@ -65,10 +74,11 @@ public class MyEdge extends MyElement {
 		init();
 		this.startPoint = startPoint;
 		this.endPoint = endPoint;
+//		updateBox();
 	}
 
 	/**
-	 * Generate an edge from another edge
+	 * Generate an edge from another edge.
 	 *
 	 * @param ed
 	 */
@@ -81,11 +91,12 @@ public class MyEdge extends MyElement {
 		this.right = ed.right;
 		this.indicator = ed.indicator;
 		this.property = ed.property;
+//		updateBox();
 	}
 
 	/**
 	 * @param i
-	 * @return
+	 * @return If i==0, return startPoint else return endPoint.
 	 */
 	public MyPoint point(int i) {
 		if (i == 0)
@@ -95,123 +106,115 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
-	 * Returned edge left triangle
-	 *
-	 * @return leftTriangle
+	 * @return Triangle at the left of edge.
 	 */
 	public MyTriangle getLeft() {
 		return this.left;
 	}
 
 	/**
-	 * Returned edge right triangle
-	 *
-	 * @return rightTriangle
+	 * @return Triangle at the right of edge.
 	 */
 	public MyTriangle getRight() {
 		return this.right;
 	}
 
 	/**
-	 * set edge left triangle
-	 *
-	 * @return leftTriangle
+	 * Set Triangle at left of edge.
+	 * 
+	 * @param aTriangle A triangle at left of edge.
 	 */
 	public void setLeft(MyTriangle aTriangle) {
 		this.left=aTriangle;
 	}
 
 	/**
-	 * set edge right triangle
-	 *
-	 * @return rightTriangle
+	 * Set Triangle at right of edge.
+	 * 
+	 * @param aTriangle A triangle at right of edge.
 	 */
 	public void setRight(MyTriangle aTriangle) {
 		this.right=aTriangle;
 	}
 	
 	/**
-	 * Returned edge start point
-	 *
-	 * @return end
+	 * @return start point of edge.
 	 */
 	public MyPoint getStart() {
 		return this.startPoint;
 	}
-
+	
 	/**
-	 * Returned edge end point
-	 *
-	 * @return end
-	 */
-	public MyPoint getEnd() {
-		return this.endPoint;
-	}
-
-	/**
-	 * Returned edge start point
-	 *
-	 * @return end
+	 * @return start point of edge.
 	 */
 	public MyPoint getStartPoint() {
 		return this.startPoint;
 	}
 
 	/**
-	 * Returned edge end point
-	 *
-	 * @return end
+	 * @return end point of edge.
+	 */
+	public MyPoint getEnd() {
+		return this.endPoint;
+	}
+
+	/**
+	 * @return end point of edge.
 	 */
 	public MyPoint getEndPoint() {
 		return this.endPoint;
 	}
 
 	/**
-	 * Set edge start point
+	 * Set edge start point.
 	 *
-	 * @param p
+	 * @param p Start point.
 	 */
 	public void setStart(MyPoint p) {
 		if(isUseByPolygon())
 			p.setUseByPolygon(true);
 		
 		this.startPoint = p;
+		updateBox();
 	}
 
 	/**
-	 * Set edge end point
+	 * Set edge start point.
 	 *
-	 * @param p
-	 */
-	public void setEnd(MyPoint p) {
-		if(isUseByPolygon())
-			p.setUseByPolygon(true);
-		
-		this.endPoint = p;
-	}
-
-	/**
-	 * Set edge start point
-	 *
-	 * @param p
+	 * @param p Start point.
 	 */
 	public void setStartPoint(MyPoint p) {
 		if(isUseByPolygon())
 			p.setUseByPolygon(true);
 		
 		this.startPoint = p;
+		updateBox();
+	}
+	
+	/**
+	 * Set edge end point.
+	 *
+	 * @param p End point.
+	 */
+	public void setEnd(MyPoint p) {
+		if(isUseByPolygon())
+			p.setUseByPolygon(true);
+		
+		this.endPoint = p;
+		updateBox();
 	}
 
 	/**
-	 * Set edge end point
+	 * Set edge end point.
 	 *
-	 * @param p
+	 * @param p End point.
 	 */
 	public void setEndPoint(MyPoint p) {
 		if(isUseByPolygon())
 			p.setUseByPolygon(true);
 		
 		this.endPoint = p;
+		updateBox();
 	}
 
 	/**
@@ -372,7 +375,8 @@ public class MyEdge extends MyElement {
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
 	 */
 	public MyBox getBoundingBox() {
-		MyBox aBox = new MyBox();
+		
+		MyBox aBox=new MyBox();
 		aBox.alterBox( this.startPoint);
 		aBox.alterBox( this.endPoint);
 		
@@ -821,9 +825,9 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
-	 * Get the barycenter of the triangle
+	 * Get the barycenter of the triangle.
 	 *
-	 * @return isFlat
+	 * @return barycenter point.
 	 * @throws DelaunayError 
 	 */
 	public MyPoint getBarycenter() throws DelaunayError {
@@ -896,42 +900,10 @@ public class MyEdge extends MyElement {
 					scaleY);
 		}
 	}
-/*
-	public void setSlopeInDegree(double slopeInDegree) {
-		this.slopeInDegree = slopeInDegree;
 
-	}
-
-	public double getSlopeInDegree() {
-		return slopeInDegree;
-	}
-
-	public void setSlope(Coordinate get3DVector) {
-		this.get3DVector = get3DVector;
-
-	}
-
-	public Coordinate getSlope() {
-		if (pente == null) {
-			Coordinate d = new Coordinate();
-			Geometry g = this.geom;
-			d.getX() = g.getCoordinates()[1].getX() - g.getCoordinates()[0].getX();
-			d.getY() = g.getCoordinates()[1].getY() - g.getCoordinates()[0].getY();
-			d.getZ() = g.getCoordinates()[1].getZ() - g.getCoordinates()[0].getZ();
-			double norme = Math.sqrt(d.getX() * d.getX() + d.getY() * d.getY() + d.getZ() * d.getZ());
-			// normage du vecteur
-			if (norme > 0) {
-				d.getX() = d.getX() / norme;
-				d.getY() = d.getY() / norme;
-				d.getZ() = d.getZ() / norme;
-			}
-			pente = d;
-		}
-		return pente;
-		return get3DVector;
-
-	}
-*/
+	/**
+	 * @return gradient
+	 */
 	public int getGradient() {
 		int gradient;
 		if (getStart().getZ() > getEnd().getZ()) {
@@ -943,7 +915,11 @@ public class MyEdge extends MyElement {
 		}
 		return gradient;
 	}
-
+	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString()
 	{
 		return "Edge ["+startPoint+", "+endPoint+"]";

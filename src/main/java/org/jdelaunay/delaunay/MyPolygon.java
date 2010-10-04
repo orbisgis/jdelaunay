@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Erwan BOCHER, Adelin PIAU
  * @date 2010-05-20
- * @revision 2010-07-22
+ * @revision 2010-10-04
  * @version 2.2
  */
 
@@ -130,10 +130,16 @@ public class MyPolygon extends MyElement {
 			// add edges to the edge list
 			// each point is created one
 			int nbPoints = polygon.getNumPoints();
+			
+			if(Double.isNaN(polygon.getCoordinates()[0].z))
+				polygon.getCoordinates()[0].z=0;
 			MyPoint lastPoint = new MyPoint(polygon.getCoordinates()[0]);
+
 			MyPoint aPoint;
 			MyEdge aEdge;
 			for (int i = 1; i < nbPoints; i++) {
+				if(Double.isNaN(polygon.getCoordinates()[i].z))
+					polygon.getCoordinates()[i].z=0;
 				aPoint = new MyPoint(polygon.getCoordinates()[i]);
 				aEdge=new MyEdge(lastPoint, aPoint);
 				aEdge.setUseByPolygon(true);

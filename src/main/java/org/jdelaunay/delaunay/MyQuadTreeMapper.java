@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-10-04
  * @version 1.3
  */
 
@@ -16,7 +16,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	private MyBox myBoundingBox;
 	private boolean usable;
 	private MyQuadTree<T> myQuadTree;
-	private int maxLevel=20;//FIXME maxLevel=5 or 7 or ... ?
+	private int maxLevel=20;//FIXME maxLevel=5 or 7 or 20 or ... ?
 	private int quadtreeSize;
 	
 	/**
