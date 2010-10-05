@@ -527,57 +527,56 @@ public class MyQuadTree<T extends MyElement> {
 	 * @return The element that contain anElement.
 	 * @throws DelaunayError 
 	 */
-	protected <E extends MyElement> T searchInWhichElementItIs(E anElement, MyBox boundingBox) throws DelaunayError {
-		T  foudElement = null;
+	protected <E extends MyElement> ArrayList<T> searchInWhichElementItIs(E anElement, MyBox boundingBox) throws DelaunayError {
+		ArrayList<T>  foudElement = new ArrayList<T>();
 		
 		// test root list
 		ListIterator<T> iterList = theList[0].listIterator();
-		while ((iterList.hasNext()) && foudElement==null) {
+		while (iterList.hasNext()) {
 			T searchedElement = iterList.next();
 			
 			if(anElement.getBoundingBox().minx>searchedElement.getBoundingBox().maxx)
 				break;
 			
 			if(searchedElement.contains(anElement.getBoundingBox().getMiddle()))
-				foudElement=searchedElement;
+				foudElement.add(searchedElement);
 		}
 		
-		for(int i=1;i<6 && foudElement==null;i++)	//TODO optimize me
+		for(int i=1;i<6;i++)	//TODO optimize me
 		{
 			if(isIntersectSectorList(i, anElement.getBoundingBox(), boundingBox))
 			{
 				iterList = theList[i].listIterator();
-				while ((iterList.hasNext()) && foudElement==null) {
+				while (iterList.hasNext()) {
 					T searchedElement = iterList.next();
 					
 					if(anElement.getBoundingBox().minx>searchedElement.getBoundingBox().maxx)
 						break;
 					
 					if(searchedElement.contains(anElement.getBoundingBox().getMiddle()))
-						foudElement=searchedElement;
+						foudElement.add(searchedElement);
 				}
 			}
 		}
 		
-		if(foudElement==null)
-		{
-			// test bounding box of the each subarea and search inside if it is in the box
-			int i = 0;
-			MyBox testBox;
-			while ((i < 4)) {
-				if (theQuadTree[i] != null) {
-					testBox = getSectorNode(i, boundingBox);
-					
-					if(anElement.getBoundingBox().minx <= testBox.maxx && anElement.getBoundingBox().maxx >= testBox.minx
-						&& anElement.getBoundingBox().miny <= testBox.maxy && anElement.getBoundingBox().maxy >= testBox.miny)
-					{
-						foudElement=theQuadTree[i].searchInWhichElementItIs(anElement,testBox);
-					}
+	
+		// test bounding box of the each subarea and search inside if it is in the box
+		int i = 0;
+		MyBox testBox;
+		while ((i < 4)) {
+			if (theQuadTree[i] != null) {
+				testBox = getSectorNode(i, boundingBox);
+				
+				if(anElement.getBoundingBox().minx <= testBox.maxx && anElement.getBoundingBox().maxx >= testBox.minx
+					&& anElement.getBoundingBox().miny <= testBox.maxy && anElement.getBoundingBox().maxy >= testBox.miny)
+				{
+					foudElement.addAll(theQuadTree[i].searchInWhichElementItIs(anElement,testBox));
 				}
-				i++;
 			}
+			i++;
 		}
-		return foudElement;
+		
+	return foudElement;
 	}
 
 

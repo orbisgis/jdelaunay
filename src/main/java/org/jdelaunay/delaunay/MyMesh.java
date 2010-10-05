@@ -1084,18 +1084,22 @@ public class MyMesh {
 				else
 				{
 					//Search if aPoint is on an Edge.
-					MyEdge anEdge=edgesQuadTree.searchInWhichElementItIs(aPoint);
-
-					if(anEdge!=null)
+					ArrayList<MyEdge> possibleEdge = edgesQuadTree.searchInWhichElementItIs(aPoint);
+					
+					if(!possibleEdge.isEmpty())
 					{
-						//add point on edge
-						if(!aPoint.isZUse())
-							aPoint.setZ(anEdge.getZOnEdge(aPoint));
-						
 						point_GID++;
 						aPoint.setGID(point_GID);
 						pointsQuadTree.add(aPoint);
-						addPointOnEdge(aPoint, anEdge);
+						
+						//add point on edge
+						for(MyEdge anEdge:possibleEdge)
+						{
+							if(!aPoint.isZUse())
+								aPoint.setZ(anEdge.getZOnEdge(aPoint));
+
+							addPointOnEdge(aPoint, anEdge);//TODO check me if it good
+						}
 					}
 					else
 					{

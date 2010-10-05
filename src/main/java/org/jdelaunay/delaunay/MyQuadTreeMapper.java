@@ -318,12 +318,13 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @return The element that contain anElement.
 	 * @throws DelaunayError 
 	 */
-	public <E extends MyElement> T searchInWhichElementItIs(E anElement) throws DelaunayError {
+	public <E extends MyElement> ArrayList<T> searchInWhichElementItIs(E anElement) throws DelaunayError {
 		if (this.usable) {
 		return myQuadTree.searchInWhichElementItIs(anElement, myBoundingBox);
 		}
 		return null;
 	}
+
 	
 	/**
 	 * Remove element.
