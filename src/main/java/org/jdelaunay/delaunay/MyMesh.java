@@ -1126,10 +1126,8 @@ public class MyMesh {
 	 */
 	private void addPointOnEdge(MyPoint aPoint, MyEdge anEdge)
 	{
-		
-		point_GID++;
-		aPoint.setGID(point_GID);
-		pointsQuadTree.add(aPoint);
+
+		addPointToQuadTree(aPoint);
 		
 		MyEdge newEdge1=null;
 		MyEdge newEdge2=null;
@@ -1147,15 +1145,13 @@ public class MyMesh {
 					
 					newEdge1= new MyEdge(anEdge.getStartPoint(), aPoint);
 					anEdge4=anEdge.getLeft().getEdgeFromPoints(anEdge.getStartPoint(), anEdge.getLeft().getPoint(j));
-					
-	
-					
+				
 					tmp1=anEdge4.getRight();
 
 					tmp2=anEdge4.getLeft();
-					
+	
 					triangle1=new MyTriangle(newEdge1, anEdge4, newEdge3);
-					
+
 					if(anEdge4.isRight(aPoint))//FIXME setRight / setLeft not very good!
 					{
 						anEdge4.setRight(triangle1);
@@ -1187,28 +1183,24 @@ public class MyMesh {
 					}
 					
 
-					triangle_GID++;
-					triangle1.setGID(triangle_GID);
-					trianglesQuadTree.add(triangle1);
-
-					triangle_GID++;
-					triangle2.setGID(triangle_GID);
-					trianglesQuadTree.add(triangle2);
+					addTriangleToQuadTree(triangle1);
+					addTriangleToQuadTree(triangle2);
 					
 					if(anEdge.isUseByPolygon())
 					{
 						newEdge3.setUseByPolygon(true);
 					}
 
-					edge_GID++;
-					newEdge3.setGID(edge_GID);
-					edgesQuadTree.add(newEdge3);
+
+					addEdgeToQuadTree(newEdge3);
 					
 					j=3;
 				}
 			}
 			trianglesQuadTree.remove(anEdge.getLeft());
 		}
+		
+	
 		
 		// Make new triangle at right of edge.
 		if(anEdge.getRight()!=null)
@@ -1226,16 +1218,15 @@ public class MyMesh {
 					
 					newEdge3=new MyEdge(anEdge.getRight().getPoint(j),aPoint);
 					
-					newEdge1= new MyEdge(anEdge.getStartPoint(), aPoint);
+
 					anEdge4=anEdge.getRight().getEdgeFromPoints(anEdge.getStartPoint(), anEdge.getRight().getPoint(j));
 					
 
 					tmp1=anEdge4.getRight();
-
 					tmp2=anEdge4.getLeft();
 					
 					triangle1=new MyTriangle(newEdge1, anEdge4, newEdge3);
-					
+	
 					if(anEdge4.isRight(aPoint))//FIXME setRight / setLeft not very good!
 					{
 						anEdge4.setRight(triangle1);
@@ -1247,7 +1238,6 @@ public class MyMesh {
 						anEdge4.setLeft(triangle1);
 					}
 	
-					newEdge2= new MyEdge(aPoint,anEdge.getEndPoint());
 					anEdge5=anEdge.getRight().getEdgeFromPoints(anEdge.getEndPoint(), anEdge.getRight().getPoint(j));
 					
 					
@@ -1268,23 +1258,17 @@ public class MyMesh {
 					}
 					
 
-					triangle_GID++;
-					triangle1.setGID(triangle_GID);
-					trianglesQuadTree.add(triangle1);
-
-					triangle_GID++;
-					triangle2.setGID(triangle_GID);
-					trianglesQuadTree.add(triangle2);
-					
+					addTriangleToQuadTree(triangle1);
+					addTriangleToQuadTree(triangle2);					
 					
 					if(anEdge.isUseByPolygon())
 					{
 						newEdge3.setUseByPolygon(true);
 					}
 
-					edge_GID++;
-					newEdge3.setGID(edge_GID);
-					edgesQuadTree.add(newEdge3);
+
+					addEdgeToQuadTree(newEdge3);
+
 					j=3;
 					
 				}
@@ -1299,14 +1283,9 @@ public class MyMesh {
 			newEdge2.setUseByPolygon(true);
 		}
 		
-			
-		edge_GID++;
-		newEdge1.setGID(edge_GID);
-		edgesQuadTree.add(newEdge1);
-		
-		edge_GID++;
-		newEdge2.setGID(edge_GID);
-		edgesQuadTree.add(newEdge2);
+
+		addEdgeToQuadTree(newEdge1);
+		addEdgeToQuadTree(newEdge2);
 
 		edgesQuadTree.remove(anEdge);
 		anEdge=null;
@@ -1754,6 +1733,49 @@ public class MyMesh {
 			processEdges(theList);
 		}
 	}
+	
+	/**
+	 * Add an edge into the quadtree.
+	 * @param anEdge
+	 */
+	private void addEdgeToQuadTree(MyEdge anEdge){
+		
+		MyEdge e2=edgesQuadTree.get(anEdge);
+		if(e2!=null)
+		{
+			e2.setIndicator(e2.getIndicator()+anEdge.getIndicator());
+			anEdge=e2;
+		}
+		else
+		{			
+			edge_GID++;
+			anEdge.setGID(edge_GID);
+			edgesQuadTree.add(anEdge);
+		}
+	}
+	
+
+	/**
+	 * Add a triangle into the quadtree.
+	 * @param aTriangle
+	 */
+	private void addTriangleToQuadTree(MyTriangle aTriangle){
+		triangle_GID++;
+		aTriangle.setGID(triangle_GID);
+		trianglesQuadTree.add(aTriangle);
+	}
+	
+	/**
+	 * Add a point into the quadtree.
+	 * @param aPoint
+	 */
+	private void addPointToQuadTree(MyPoint aPoint){
+		point_GID++;
+		aPoint.setGID(point_GID);
+		pointsQuadTree.add(aPoint);
+
+	}
+	
 	
 	/**
 	 * Add a polygon to the Mesh

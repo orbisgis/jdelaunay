@@ -13,10 +13,16 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serializable;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyEdge extends MyElement {
+public class MyEdge extends MyElement implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private MyPoint startPoint, endPoint;
 	private MyTriangle left, right;
 	private MyBox aBox;
@@ -245,6 +251,23 @@ public class MyEdge extends MyElement {
 		return Math.sqrt(getSquared3DLength());
 	}
 
+	@Override
+	public int getIndicator() {
+		return indicator;
+	}
+	
+	@Override
+	public int setIndicator(int indicator) {
+		this.indicator=indicator;
+		return 0;
+	}
+	
+	@Override
+	public void removeIndicator() {
+		indicator = 0;
+	}
+
+	
 	/**
 	 * get the value of a specific bit
 	 * @param byteNumber
@@ -387,10 +410,11 @@ public class MyEdge extends MyElement {
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
 	public boolean contains(MyPoint aPoint) {
-		if (intersects(aPoint, aPoint) > 0)
-			return true;
-		else
-			return false;
+		return contains(aPoint.getCoordinate());
+//		if (intersects(aPoint, aPoint) > 0)
+//			return true;
+//		else
+//			return false;
 	}
 	
 	@Override
@@ -412,8 +436,11 @@ public class MyEdge extends MyElement {
 	 *
 	 * @param p1
 	 * @param p2
-	 * @return intersection 0 = no intersection 1 = intersects 2 = co-linear 3 =
-	 *         intersects at the extremity
+	 * @return intersection :<br/>
+	 * 			0 = no intersection<br/>
+	 * 			1 = intersects<br/>
+	 * 			2 = co-linear<br/>
+	 * 			3 = intersects at the extremity
 	 */
 	public int intersects(MyPoint p1, MyPoint p2) {
 		int result = 0;
@@ -444,16 +471,16 @@ public class MyEdge extends MyElement {
 					&& (t2 <= 1 + epsilon))
 				if (((-epsilon <= t1) && (t1 <= epsilon))
 						|| ((1 - epsilon <= t1) && (t1 <= 1 + epsilon)))
-					result = 3;
+					result = 3;//intersects at the extremity
 				else
-					result = 1;
+					result = 1;//intersects
 
 		} else {
 			// Check if p3 is between p1 and p2
-			if (Math.abs(p2.getX() - p1.getX()) > epsilon)
-				t1 = (p3.getX() - p1.getX()) / (p2.getX() - p1.getX());
+			if (Math.abs(a1) > epsilon)
+				t1 = (c1) / (a1);
 			else
-				t1 = (p3.getY() - p1.getY()) / (p2.getY() - p1.getY());
+				t1 = (c2) / (a2);
 
 			if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 				// Check if p4 is between p1 and p2
@@ -471,15 +498,31 @@ public class MyEdge extends MyElement {
 
 					if ((-epsilon > t1) || (t1 > 1 + epsilon))
 						// we do not check for p2 because it is now impossible
-						result = 0;
+						result = 0;//no intersection
 					else
-						result = 2;
+					{
+						result = 2;//co-linear
+					}
 				} else
-					result = 2;
+				{
+					result = 2;//co-linear
+				}
 
 			} else
-				result = 2;
+			{
+				result = 2;//co-linear
+			}
+			
+			if(result==2)//FIXME intersects : co-linear and intersects
+			{
+					if(isOnEdge(p1) || isOnEdge(p2) || new MyEdge(p1, p2).isOnEdge(p3) || new MyEdge(p1, p2).isOnEdge(p4))
+					{
+						result=1;//co-linear and intersects
+					}
+					
+			}
 		}
+		
 		return result;
 	}
 
@@ -725,6 +768,39 @@ public class MyEdge extends MyElement {
 
 		return isColinear;
 	}
+	
+	
+	
+	/**
+	 * Check if two edges have the same points.
+	 * @param anEdge
+	 * @return True if points are the same.
+	 */
+	public boolean haveSamePoint(MyEdge anEdge)
+	{
+		return ( getStartPoint().getCoordinate().equals(anEdge.getStartPoint().getCoordinate()) &&
+				 getEndPoint().getCoordinate().equals(anEdge.getEndPoint().getCoordinate())
+				)
+				||
+				( getStartPoint().getCoordinate().equals(anEdge.getEndPoint().getCoordinate()) &&
+				 getEndPoint().getCoordinate().equals(anEdge.getStartPoint().getCoordinate()) );
+	}
+	
+	
+	/**
+	 * Check if two edges have the same points.
+	 * @param anEdge
+	 * @return True if points are the same.
+	 */
+	public boolean haveSamePoint(MyPoint p1, MyPoint p2)
+	{
+		return ( getStartPoint().getCoordinate().equals(p1.getCoordinate()) &&
+				 getEndPoint().getCoordinate().equals(p2.getCoordinate())
+				)
+				||
+				( getStartPoint().getCoordinate().equals(p2.getCoordinate()) &&
+				 getEndPoint().getCoordinate().equals(p1.getCoordinate()) );
+	}
 
 	/**
 	 * check if the point is one of the extremities of the edge (on the
@@ -774,10 +850,11 @@ public class MyEdge extends MyElement {
 	}
 
 	
+
 	/**
 	 * Check if the point p is on edge.
 	 * @param p
-	 * @return
+	 * @return True if the point is on edge.
 	 */
 	public boolean isOnEdge(MyPoint p) {
 		MyPoint p1 = this.startPoint;
@@ -787,13 +864,21 @@ public class MyEdge extends MyElement {
 		double vx = p.getX() - p1.getX();
 		double vy = p.getY() - p1.getY();
 		double res = ux * vy - uy * vx;
+		
 		return 	res <= MyTools.epsilon && res >= - MyTools.epsilon/* p is on p1, p2 line */ 
-		&&(ux>=0?(p1.getX()<=p.getX() && p.getX()<= p2.getX()):(p2.getX()<=p.getX() && p.getX()<= p1.getX())) /* px is in [p1x, p2x]*/
-		&&(uy>=0?(p1.getY()<=p.getY() && p.getY()<= p2.getY()):(p2.getY()<=p.getY() && p.getY()<= p1.getY()));/* py is in [p1y, p2y]*/
+		&&															/* px is in [p1x, p2x]*/
+			(ux==0? 													/*p2x == p1x ?*/
+				(p1.getX()==p.getX())									/* p2x == p1x == px ?*/
+				:(ux>0? 												/*p2x > p1x ?*/
+						(p1.getX()<p.getX() && p.getX()< p2.getX())		/* p2x > px > p1x ?*/
+						:(p2.getX()<p.getX() && p.getX()< p1.getX())))	/* p2x < px < p1x ?*/
+		&&  														/* py is in [p1y, p2y]*/
+			(uy==0? 													/* p2y == p1y ?*/
+				(p1.getY()==p.getY())									/* p2y == p1y == py ?*/
+				:(uy>0? 												/* p2y > p1y ?*/
+						(p1.getY()<p.getY() && p.getY()< p2.getY())		/* p2y > py > p1y ?*/
+						:(p2.getY()<p.getY() && p.getY()< p1.getY()))); /* p2y < py < p1y ?*/
 	}
-	
-	
-	
 	
 	
 	/**
@@ -922,6 +1007,7 @@ public class MyEdge extends MyElement {
 	 */
 	public String toString()
 	{
-		return "Edge ["+startPoint+", "+endPoint+"]";
+		return "Edge "+gid+" ["+startPoint+", "+endPoint+"]";
 	}
+	
 }
