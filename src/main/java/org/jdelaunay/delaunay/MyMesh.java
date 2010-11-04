@@ -126,9 +126,9 @@ public class MyMesh {
 	
 	public void init(MyBox boundingBox) throws DelaunayError
 	{
-		setPoints(boundingBox.getPoints());
-		edgesQuadTree=new MyQuadTreeMapper<MyEdge>(getBoundingBox());
-		trianglesQuadTree=new MyQuadTreeMapper<MyTriangle>(getBoundingBox());
+		pointsQuadTree=new MyQuadTreeMapper<MyPoint>(boundingBox);
+		edgesQuadTree=new MyQuadTreeMapper<MyEdge>(boundingBox);
+		trianglesQuadTree=new MyQuadTreeMapper<MyTriangle>(boundingBox);
 	}
 
 	/**
@@ -583,18 +583,10 @@ public class MyMesh {
 		MyPoint aPoint3 = new MyPoint(theBox.maxx, theBox.maxy, 0);
 		MyPoint aPoint4 = new MyPoint(theBox.maxx, theBox.miny, 0);
 
-		point_GID++;
-		aPoint1.setGID(point_GID);
-		pointsQuadTree.add(aPoint1);
-		point_GID++;
-		aPoint2.setGID(point_GID);
-		pointsQuadTree.add(aPoint2);
-		point_GID++;
-		aPoint3.setGID(point_GID);
-		pointsQuadTree.add(aPoint3);
-		point_GID++;
-		aPoint4.setGID(point_GID);
-		pointsQuadTree.add(aPoint4);
+		addPointToQuadTree(aPoint1);
+		addPointToQuadTree(aPoint2);
+		addPointToQuadTree(aPoint3);
+		addPointToQuadTree(aPoint4);
 		
 		// Generate lines, taking into account the fact there are points with
 		// the same x and y
@@ -657,18 +649,12 @@ public class MyMesh {
 		else {
 			if (pointsQuadTree.search(aPoint1)==null)
 			{	
-
-				point_GID++;
-				aPoint1.setGID(point_GID);
-				pointsQuadTree.add(aPoint1);
+				addPointToQuadTree(aPoint1);
 			}
 
 			if (pointsQuadTree.search(aPoint2)==null)
 			{	
-
-				point_GID++;
-				aPoint2.setGID(point_GID);
-				pointsQuadTree.add(aPoint2);
+				addPointToQuadTree(aPoint2);
 			}
 			MyEdge anEdge = new MyEdge(aPoint1, aPoint2);
 			constraintsEdges.add(anEdge);
@@ -803,9 +789,7 @@ public class MyMesh {
 						}
 						else
 						{	
-							point_GID++;
-							aPoint2.setGID(point_GID);
-							pointsQuadTree.add(aPoint2);
+							addPointToQuadTree(aPoint2);
 						}
 					}
 				}
@@ -859,23 +843,12 @@ public class MyMesh {
 			}
 
 
-			edge_GID++;
-			e1.setGID(edge_GID);
-			edgesQuadTree.add(e1);
-			
-			edge_GID++;
-			e2.setGID(edge_GID);
-			edgesQuadTree.add(e2);
-			
-			edge_GID++;
-			e3.setGID(edge_GID);
-			edgesQuadTree.add(e3);
-
+			addEdgeToQuadTree(e1);
+			addEdgeToQuadTree(e2);
+			addEdgeToQuadTree(e3);
 
 			aTriangle = new MyTriangle(e1, e2, e3);
-			triangle_GID++;
-			aTriangle.setGID(triangle_GID);
-			trianglesQuadTree.add(aTriangle);
+			addTriangleToQuadTree(aTriangle);
 
 			// Then process the other points - order don't care
 			boundaryEdges.add(e1);
@@ -997,9 +970,7 @@ public class MyMesh {
 			// add point in the triangle
 			if (pointsQuadTree.search(aPoint)==null)
 			{	
-				point_GID++;
-				aPoint.setGID(point_GID);
-				pointsQuadTree.add(aPoint);
+				addPointToQuadTree(aPoint);
 			}
 			addPointInsideTriangle(aTriangle, aPoint);
 
@@ -1088,9 +1059,7 @@ public class MyMesh {
 					
 					if(!possibleEdge.isEmpty())
 					{
-						point_GID++;
-						aPoint.setGID(point_GID);
-						pointsQuadTree.add(aPoint);
+						addPointToQuadTree(aPoint);
 						
 						//add point on edge
 						for(MyEdge anEdge:possibleEdge)
@@ -1106,9 +1075,8 @@ public class MyMesh {
 						// the point is outside the mesh
 						// The boundary edge list is ok
 						// We insert the point in the mesh
-						point_GID++;
-						aPoint.setGID(point_GID);
-						pointsQuadTree.add(aPoint);
+						addPointToQuadTree(aPoint);
+						
 						myInsertPoint(aPoint);
 					}
 				}
@@ -1336,9 +1304,7 @@ public class MyMesh {
 	 */
 	private void addPointInsideTriangle(MyTriangle aTriangle, MyPoint aPoint) {
 		
-		point_GID++;
-		aPoint.setGID(point_GID);
-		pointsQuadTree.add(aPoint);
+		addPointToQuadTree(aPoint);
 		
 		// Save current edges
 		MyEdge oldEdge[] = new MyEdge[3];
@@ -1364,9 +1330,7 @@ public class MyMesh {
 		anEdge[1] = new MyEdge(aPoint, firstPoint);
 		anEdge[2] = new MyEdge(aPoint, alterPoint);
 		for (int i = 0; i < 3; i++) {
-			edge_GID++;
-			anEdge[i].setGID(edge_GID);
-			edgesQuadTree.add(anEdge[i]);
+			addEdgeToQuadTree(anEdge[i]);
 		}
 
 		// set edges
@@ -1459,13 +1423,8 @@ public class MyMesh {
 			}
 		
 		
-		triangle_GID++;
-		aTriangle1.setGID(triangle_GID);
-		trianglesQuadTree.add(aTriangle1);
-
-		triangle_GID++;
-		aTriangle2.setGID(triangle_GID);
-		trianglesQuadTree.add(aTriangle2);
+		addTriangleToQuadTree(aTriangle1);
+		addTriangleToQuadTree(aTriangle2);
 	}
 
 	/**
@@ -1647,16 +1606,13 @@ public class MyMesh {
 			// --------------------------------------------------
 			// Add elements to the lists
 			// add point to the list
-			point_GID++;
-			aPoint.setGID(point_GID);
-			pointsQuadTree.add(aPoint);
+			addPointToQuadTree(aPoint);
+			
 			// add the 3 new edges to the list
 			newEdges[2] = remainEdge;
 			for (int k = 0; k < 3; k++) {
 				if (newEdges[k] != null) {
-					edge_GID++;
-					newEdges[k].setGID(edge_GID);
-					edgesQuadTree.add(newEdges[k]);//FIXME too slow
+					addEdgeToQuadTree(newEdges[k]);
 					if (!isMeshComputed())
 						if (!badEdgesQueueList.contains(newEdges[k]))
 							badEdgesQueueList.add(newEdges[k]);
@@ -1667,9 +1623,7 @@ public class MyMesh {
 			for (int k = 0; k < 2; k++) {
 				if (new_triangleList[k] != null)
 				{	
-					triangle_GID++;
-					new_triangleList[k].setGID(triangle_GID);
-					trianglesQuadTree.add(new_triangleList[k]);
+					addTriangleToQuadTree(new_triangleList[k]);
 				}
 			}
 
@@ -1770,10 +1724,18 @@ public class MyMesh {
 	 * @param aPoint
 	 */
 	private void addPointToQuadTree(MyPoint aPoint){
-		point_GID++;
-		aPoint.setGID(point_GID);
-		pointsQuadTree.add(aPoint);
-
+		MyPoint aPoint2=pointsQuadTree.get(aPoint);
+		if(aPoint2!=null)
+		{
+			aPoint2.setIndicator(aPoint2.getIndicator()+aPoint.getIndicator());
+			aPoint=aPoint2;
+		}
+		else
+		{	
+			point_GID++;
+			aPoint.setGID(point_GID);
+			pointsQuadTree.add(aPoint);
+		}
 	}
 	
 	
@@ -2139,10 +2101,7 @@ public class MyMesh {
 		for (MyEdge anEdge : constraintsEdges) {
 			if (anEdge.isOutsideMesh()) {
 				anEdge.setLocked(true);
-//				edges.add(anEdge);//edges
-				edge_GID++;
-				anEdge.setGID(edge_GID);
-				edgesQuadTree.add(anEdge);
+				addEdgeToQuadTree(anEdge);
 			} else {
 				// To be connected
 				remainEdges.add(anEdge);
@@ -2788,9 +2747,7 @@ public class MyMesh {
 				anEdge1 = MyTools.checkTwoPointsEdge(p2, aPoint, newEdges);
 				if (anEdge1 == null) {
 					anEdge1 = new MyEdge(p2, aPoint);
-					edge_GID++;
-					anEdge1.setGID(edge_GID);
-					edgesQuadTree.add(anEdge1);
+					addEdgeToQuadTree(anEdge1);
 					newEdges.add(anEdge1);
 				} else {
 					// second use of the edge => remove it from the list
@@ -2805,9 +2762,7 @@ public class MyMesh {
 				if (anEdge2 == null) {
 
 					anEdge2 = new MyEdge(aPoint, p1);
-					edge_GID++;
-					anEdge2.setGID(edge_GID);
-					edgesQuadTree.add(anEdge2);
+					addEdgeToQuadTree(anEdge2);
 					newEdges.add(anEdge2);
 					
 				} else {
@@ -2820,9 +2775,7 @@ public class MyMesh {
 				// first
 				MyTriangle aTriangle = new MyTriangle(anEdge, anEdge1, anEdge2);
 				aTriangle.setProperty(property);
-				triangle_GID++;
-				aTriangle.setGID(triangle_GID);
-				trianglesQuadTree.add(aTriangle);
+				addTriangleToQuadTree(aTriangle);
 
 				// We say we founded a first triangle
 				if (foundTriangle == null)
@@ -3681,9 +3634,7 @@ public class MyMesh {
 			refTriangle.setProperty(aPolygon.getProperty());
 			aPolygon.setRefTriangle(refTriangle);
 
-			triangle_GID++;
-			refTriangle.setGID(triangle_GID);
-			trianglesQuadTree.add(refTriangle);
+			addTriangleToQuadTree(refTriangle);
 			
 			// flip-flop on a list of points
 			boolean ended = false;
@@ -4212,9 +4163,7 @@ public class MyMesh {
 					}
 					if (i >= 3)
 					{
-						point_GID++;
-						aPoint.setGID(point_GID);
-						pointsQuadTree.add(aPoint);
+						addPointToQuadTree(aPoint);
 					}
 					else
 						step++;
