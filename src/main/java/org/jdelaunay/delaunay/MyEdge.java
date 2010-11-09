@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-10-04
+ * @revision 2010-11-08
  * @version 1.2
  */
 
@@ -513,7 +513,7 @@ public class MyEdge extends MyElement implements Serializable {
 				result = 2;//co-linear
 			}
 			
-			if(result==2)//FIXME intersects : co-linear and intersects
+			if(result==2)
 			{
 					if(isOnEdge(p1) || isOnEdge(p2) || new MyEdge(p1, p2).isOnEdge(p3) || new MyEdge(p1, p2).isOnEdge(p4))
 					{

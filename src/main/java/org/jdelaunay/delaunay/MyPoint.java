@@ -5,16 +5,22 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-27
+ * @revision 2010-11-08
  * @version 2.1
  */
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyPoint extends MyElement  {
+public class MyPoint extends MyElement  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Coordinate coord;
 	
 	/**
@@ -132,6 +138,21 @@ public class MyPoint extends MyElement  {
 	}
 
 
+	@Override
+	public int getIndicator() {
+		return indicator;
+	}
+	
+	@Override
+	public int setIndicator(int indicator) {
+		this.indicator=indicator;
+		return 0;
+	}
+	
+	@Override
+	public void removeIndicator() {
+		indicator = 0;
+	}
 	
 	/**
 	 * get the value of a specific bit

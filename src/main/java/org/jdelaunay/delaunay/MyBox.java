@@ -1,5 +1,6 @@
 package org.jdelaunay.delaunay;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -9,11 +10,15 @@ import com.vividsolutions.jts.geom.Coordinate;
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-11-08
  * @version 1.1
  */
 
-public class MyBox {
+public class MyBox implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5019273961990097490L;
 	protected double minx, maxx;
 	protected double miny, maxy;
 	protected double minz, maxz;

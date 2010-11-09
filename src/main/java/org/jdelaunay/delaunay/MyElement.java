@@ -1,5 +1,7 @@
 package org.jdelaunay.delaunay;
 
+import java.io.Serializable;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 
@@ -8,11 +10,15 @@ import com.vividsolutions.jts.geom.Coordinate;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-07-22
+ * @revision 2010-11-08
  * @version 2.0
  */
 
-public abstract class MyElement {
+public abstract class MyElement  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5437683478248244942L;
 	protected int gid;
 	protected int property;
 
@@ -152,6 +158,24 @@ public abstract class MyElement {
 	public abstract boolean contains(Coordinate c) throws DelaunayError;
 	
 	/**
+	 * @return Get all markers in indicator.
+	 */
+	public abstract int getIndicator();
+	
+	/**
+	 * Change all marker.
+	 * Use only to transfer all indicators of an element to a second element!
+	 * @param indicator A new indicator.
+	 * @return
+	 */
+	public abstract int setIndicator(int indicator);
+	
+	/**
+	 *  Remove all indicator.
+	 */
+	public abstract void removeIndicator();
+	
+	/**
 	 * check if it is use by a polygon
 	 * @return useByPolygon
 	 */
@@ -162,4 +186,8 @@ public abstract class MyElement {
 	 * @param useByPolygon
 	 */
 	public abstract void setUseByPolygon(boolean useByPolygon);
+	
+	
+	
+
 }

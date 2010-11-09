@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Erwan BOCHER, Adelin PIAU
  * @date 2010-05-20
- * @revision 2010-10-04
+ * @revision 2010-11-08
  * @version 2.2
  */
 
@@ -17,6 +17,10 @@ import com.vividsolutions.jts.geom.Polygon;
 
 public class MyPolygon extends MyElement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Polygon polygon;
 	private ArrayList<MyEdge> edges;
 	private MyTriangle refTriangle;
@@ -269,11 +273,49 @@ public class MyPolygon extends MyElement {
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
 	public boolean contains(MyPoint aPoint) { //FIXME make better code
-		return polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
+		boolean intersect=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
+		for(int i=0;i<edges.size() && !intersect;i++ )
+		{
+			intersect=edges.get(i).isInside(aPoint);
+		}	
+		return intersect;
 	}
 	
-	public boolean contains(Coordinate coordinate) {  //FIXME make better code
-		return polygon.contains(new GeometryFactory().createPoint(coordinate));
+	public boolean contains(MyEdge anEdge) throws DelaunayError { //FIXME make better code
+		MyPoint aPoint = anEdge.getBarycenter();
+		boolean intersectPolygon=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
+		boolean edgeColinear=false, intersectEdge=false;
+		for(int i=0;i<edges.size();i++ )
+		{
+			if(edges.get(i).haveSamePoint(anEdge))
+				edgeColinear=true;
+			else if(edges.get(i).intersects(anEdge.getStartPoint(), anEdge.getEndPoint())==1)
+				intersectEdge=true;
+		}
+		return (intersectPolygon && !intersectEdge) || (!intersectPolygon && edgeColinear && !intersectEdge);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.jdelaunay.delaunay.MyElement#contains(com.vividsolutions.jts.geom.Coordinate)
+	 */
+	public boolean contains(Coordinate coordinate) throws DelaunayError {  //FIXME make better code
+		boolean intersect=polygon.contains(new GeometryFactory().createPoint(coordinate));
+		for(int i=0;i<edges.size() && !intersect;i++ )
+		{
+			intersect=edges.get(i).isInside(new MyPoint(coordinate));
+		}
+		return intersect;
+	}
+	
+	public boolean isIntersect(MyEdge anEdge)
+	{
+		boolean intersect=false;
+		for(int i=0;i<edges.size() && !intersect;i++ )
+		{
+			intersect=edges.get(i).intersects(anEdge.getStartPoint(),anEdge.getEndPoint()) == 1;
+		}
+			
+		return intersect;
 	}
 
 	@Override
@@ -285,4 +327,20 @@ public class MyPolygon extends MyElement {
 	public void setUseByPolygon(boolean useByPolygon) {
 	}
 
+	@Override
+	public void removeIndicator() {
+	}
+
+	@Override
+	public int getIndicator() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int setIndicator(int indicator) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
 }

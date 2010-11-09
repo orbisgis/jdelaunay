@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-10-04
+ * @revision 2010-11-08
  * @version 1.3
  */
 
@@ -218,6 +218,18 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	
 	
 	/**
+	 * Return an element if it is contains in the tree.
+	 * @param element
+	 * @return null if not found.
+	 */
+	public T get(T element) {
+		if (this.usable) {
+			return myQuadTree.get(element, myBoundingBox);
+		}
+		return null;
+	}
+	
+	/**
 	 * Remove data from the QuadTree
 	 */
 	protected void removeData() {
@@ -284,6 +296,17 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	
 	
 	/**
+	 * @param anEdge
+	 * @return True is an intersection exist between an other edge.
+	 */
+	public boolean isIntersect(MyEdge anEdge) {
+		if (this.usable) {
+			return myQuadTree.isIntersect(anEdge, anEdge.getBoundingBox(), myBoundingBox);
+		}
+		return false;
+	}
+	
+	/**
 	 * Search all elements inside or on the area searchBoundingBox.
 	 * @param searchBoundingBox Area of search.
 	 * @return All elements inside or on the area searchBoundingBox.
@@ -318,7 +341,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @return The element that contain anElement.
 	 * @throws DelaunayError 
 	 */
-	public <E extends MyElement> ArrayList<T> searchInWhichElementItIs(E anElement) throws DelaunayError {
+	public <E extends MyElement> T searchInWhichElementItIs(E anElement) throws DelaunayError {
 		if (this.usable) {
 		return myQuadTree.searchInWhichElementItIs(anElement, myBoundingBox);
 		}
@@ -343,8 +366,9 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * Remove all elements strictly inside the polygon's area.
 	 * @param aPolygon Area of search.
 	 * @return All elements in the quadtree with out elements strictly inside the area searchBoundingBox.
+	 * @throws DelaunayError 
 	 */
-	public void removeAllStric(MyPolygon aPolygon) {
+	public void removeAllStric(MyPolygon aPolygon) throws DelaunayError {
 		if (this.usable) {
 			quadtreeSize -= myQuadTree.removeAllStric(aPolygon, myBoundingBox);
 		}

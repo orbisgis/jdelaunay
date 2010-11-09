@@ -5,18 +5,27 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12
- * @revision 2010-10-04
+ * @revision 2010-11-08
  * @version 2.1
  */
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyTriangle extends MyElement {
+public class MyTriangle extends MyElement implements Serializable{
+
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected MyEdge[] edges;
 
 	private double x_center, y_center;
@@ -154,6 +163,23 @@ public class MyTriangle extends MyElement {
 	public Coordinate getCircumCenter() {
 		return new Coordinate(this.x_center, this.y_center, 0.0);
 	}
+	
+	@Override
+	public int getIndicator() {
+		return indicator;
+	}
+	
+	@Override
+	public int setIndicator(int indicator) {
+		this.indicator=indicator;
+		return 0;
+	}
+	
+	@Override
+	public void removeIndicator() {
+		indicator = 0;
+	}
+	
 	
 	/**
 	 * get the value of a specific bit
@@ -782,7 +808,7 @@ public class MyTriangle extends MyElement {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "Triangle : ["+getPoint(0).toString()+", "+getPoint(1).toString()+", "+getPoint(2).toString()+"]";
+		return "Triangle "+gid+": ["+getPoint(0).toString()+", "+getPoint(1).toString()+", "+getPoint(2).toString()+"]";
 	}
 
 	/**
@@ -850,9 +876,9 @@ public class MyTriangle extends MyElement {
 		double r = Math.sqrt(radius);
 		g.setColor(Color.red);
 		g.drawOval((int) (x_center) + decalageX, decalageY - (int) (y_center),
-				1, 1);
+				1, 1);//FIXME not good position
 		g.drawOval((int) (x_center - r) + decalageX, decalageY
-				- (int) (y_center + r), (int) r * 2, (int) r * 2);
+				- (int) (y_center + r), (int) r * 2, (int) r * 2);//FIXME not good position
 	}
 
 	@Override
@@ -864,6 +890,8 @@ public class MyTriangle extends MyElement {
 	public void setUseByPolygon(boolean useByPolygon) {
 		setBit(4, useByPolygon);
 	}
+
+
 	
 	
 //	public  boolean getPenteVersEdge(MyEdge myEdge) {
