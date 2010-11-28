@@ -557,8 +557,9 @@ public class MyMesh {
 	public MyPoint getPoint(double x, double y, double z) throws DelaunayError {
 		MyPoint aPoint = searchPoint(x, y, z);
 
-		if (aPoint == null)
+		if (aPoint == null){
 			aPoint = new MyPoint(x, y, z);
+                }
 
 		return aPoint;
 	}
@@ -739,8 +740,9 @@ public class MyMesh {
 			for (int i = 0; i < _NbEdges; i++) {
 				int start = (int) Math.round(Math.random() * NbPoints);
 				int end = (int) Math.round(Math.random() * NbPoints);
-				while (end == start)
+				while (end == start){
 					end = (int) Math.round(Math.random() * NbPoints);
+                                }
 				MyEdge anEdge = new MyEdge(points.get(start), points.get(end));
 				anEdge.setGID(i);
 				anEdge.setLocked(true);
@@ -785,14 +787,16 @@ public class MyMesh {
 			LinkedList<MyPoint> badPointList = new LinkedList<MyPoint>();
 			
 			// sort points
-			if (verbose)
+			if (verbose){
 				System.out.println("Sorting points");
+                        }
 			ListIterator<MyPoint> iterPoint =	sortAndSimplify( pointsQuadTree.getAll()).listIterator();
 
 			
 			// we build a first triangle with the 3 first points we find
-			if (verbose)
+			if (verbose){
 				System.out.println("Processing triangularization");
+                        }
 			MyTriangle aTriangle;
 			MyPoint p1, p2, p3;
 			MyEdge e1, e2, e3;
@@ -800,25 +804,29 @@ public class MyMesh {
 
 			
 			p1 = iterPoint.next();
-			while (p1.isLocked())
+			while (p1.isLocked()){
 				p1 = iterPoint.next();
+                        }
 	
 			p2 = iterPoint.next();
-			while (p2.isLocked())
+			while (p2.isLocked()){
 				p2 = iterPoint.next();
+                        }
 			e1 = new MyEdge(p1, p2);
 	
 			// The 3 points MUST NOT be colinear
 			p3 = iterPoint.next();
-			while (p3.isLocked())
+			while (p3.isLocked()){
 				p3 = iterPoint.next();
+                        }
 				
 			while ((e1.isColinear2D(p3)) && (iterPoint.hasNext())) {
 				badPointList.add(p3);
 					
 				p3 = iterPoint.next();
-				while (p3.isLocked())
+				while (p3.isLocked()){
 					p3 = iterPoint.next();
+                                }
 			}
 		
 			// The triangle's edges MUST be in the right direction
@@ -874,11 +882,12 @@ public class MyMesh {
 					}
 				LastTestedPoint = aPoint;
 				
-				if (aPoint!= null)
+				if (aPoint!= null){
 					if (!aPoint.isLocked()) {
 						if (myInsertPoint(aPoint) == null)
 							badPointList.addFirst(aPoint);
 					}
+                                }
 
 			}
 
@@ -886,8 +895,9 @@ public class MyMesh {
 			meshComputed = true;
 			
 			// Add the edges in the edges array
-			if (verbose)
+			if (verbose){
 				System.out.println("Adding edges");
+                        }
 			processEdges(constraintsEdges);
 			
 		
@@ -895,8 +905,9 @@ public class MyMesh {
 			
 			if(polygons.size()>0)
 			{
-				if (verbose)
+				if (verbose){
 					System.out.println("Processing edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
+                                }
 				processPolygons();
 			}
 			
@@ -938,13 +949,15 @@ public class MyMesh {
 			LinkedList<MyPoint> badPointList = new LinkedList<MyPoint>();
 			
 			// sort points
-			if (verbose)
+			if (verbose){
 				System.out.println("Sorting points");
+                        }
 			ListIterator<MyPoint> iterPoint =	sortAndSimplify( todoPoints).listIterator();
 
 			// we build a first triangle with the 3 first points we find
-			if (verbose)
+			if (verbose){
 				System.out.println("Processing triangularization");
+                        }
 			MyTriangle aTriangle;
 			MyPoint p1, p2, p3;
 			MyEdge e1, e2, e3;
@@ -998,8 +1011,9 @@ public class MyMesh {
 					iterPoint.remove();
 				}
 				
-				while (iterPoint.hasPrevious())
+				while (iterPoint.hasPrevious()){
 					iterPoint.previous();
+                                }
 					
 
 			
@@ -1060,12 +1074,13 @@ public class MyMesh {
 					}
 				LastTestedPoint = aPoint;
 				
-				if (aPoint!= null)
+				if (aPoint!= null){
 					if (!aPoint.isLocked()) {
 //						if (myInsertPoint_2(aPoint, areaOfProcess.getProperty()) == null)
 						if (myInsertPoint(aPoint) == null)
 							badPointList.addFirst(aPoint);
 					}
+                                }
 
 			}
 			
@@ -1074,8 +1089,9 @@ public class MyMesh {
 			meshComputed = true;
 			
 			// Add the edges in the edges array
-			if (verbose)
+			if (verbose){
 				System.out.println("Adding edges");
+                        }
 			processEdges(constraintsEdges);				
 	}
 	
@@ -1570,7 +1586,7 @@ public class MyMesh {
 		aTriangle3.recomputeCenter();
 
 		// Add edges to the bad edges list
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			for (int i = 0; i < 3; i++) {
 				if (!badEdgesQueueList.contains(aTriangle1.edges[i]))
 					badEdgesQueueList.add(aTriangle1.edges[i]);
@@ -1579,7 +1595,7 @@ public class MyMesh {
 				if (!badEdgesQueueList.contains(aTriangle3.edges[i]))
 					badEdgesQueueList.add(aTriangle3.edges[i]);
 			}
-		
+                }
 		addTriangleToQuadTree(aTriangle1);
 		addTriangleToQuadTree(aTriangle2);
 	}
@@ -1770,9 +1786,11 @@ public class MyMesh {
 			for (int k = 0; k < 3; k++) {
 				if (newEdges[k] != null) {
 					addEdgeToQuadTree(newEdges[k]);
-					if (!isMeshComputed())
-						if (!badEdgesQueueList.contains(newEdges[k]))
+					if (!isMeshComputed()){
+						if (!badEdgesQueueList.contains(newEdges[k])){
 							badEdgesQueueList.add(newEdges[k]);
+                                                }
+                                        }
 				}
 
 			}
@@ -1785,10 +1803,12 @@ public class MyMesh {
 			}
 
 			for (int k = 0; k < 2; k++) {
-				if (triangleList[k] != null)
+				if (triangleList[k] != null){
 					impactedTriangles.add(triangleList[k]);
-				if (new_triangleList[k] != null)
+                                }
+				if (new_triangleList[k] != null){
 					impactedTriangles.add(new_triangleList[k]);
+                                }
 			}
 
 		}
@@ -1804,14 +1824,18 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addEdge(MyPoint p1, MyPoint p2) throws DelaunayError {
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else if (p1.squareDistance(p2) < tolarence)
+                }
+		else if (p1.squareDistance(p2) < tolarence){
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
-		else if (pointsQuadTree.search(p1)==null)
+                }
+		else if (pointsQuadTree.search(p1)==null){
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
-		else if (pointsQuadTree.search(p2)==null)
+                }
+		else if (pointsQuadTree.search(p2)==null){
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
+                }
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
 			ArrayList<MyEdge> theList = new ArrayList<MyEdge>();
@@ -1829,14 +1853,18 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void addEdge(MyEdge anEdge) throws DelaunayError {
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
-		else if (anEdge.getStartPoint().squareDistance(anEdge.getEndPoint()) < tolarence)
+                }
+		else if (anEdge.getStartPoint().squareDistance(anEdge.getEndPoint()) < tolarence){
 			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
-		else if (!pointsQuadTree.contains(anEdge.getStartPoint()))
+                }
+		else if (!pointsQuadTree.contains(anEdge.getStartPoint())){
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
-		else if (!pointsQuadTree.contains(anEdge.getEndPoint()))
+                }
+		else if (!pointsQuadTree.contains(anEdge.getEndPoint())){
 			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
+                }
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
 			ArrayList<MyEdge> theList = new ArrayList<MyEdge>();
@@ -2142,8 +2170,9 @@ public class MyMesh {
 		}
 		else
 		{
-			if (verbose)
+			if (verbose){
 				System.out.println("Adding level edge");
+                        }
 		
 			addPoint(anEdge.getStartPoint());
 			addPoint(anEdge.getEndPoint());
@@ -2221,8 +2250,9 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void refineMesh() throws DelaunayError {
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+                }
 		else {
 			// check all triangle to save all the ones with a bad area criteria
 			LinkedList<MyTriangle> badTrianglesList = new LinkedList<MyTriangle>();
@@ -2328,8 +2358,9 @@ public class MyMesh {
 		for(int i=0;i<polySize;i++)
 		{	
 			MyPolygon aPolygon=polygons.get(i);
-			if(verbose)
+			if(verbose){
 				System.out.println("Process of polygon "+i+" /  "+polySize);
+                        }
 			processOnePolygon(aPolygon);
 		}
 	}
@@ -2451,20 +2482,23 @@ public class MyMesh {
 		
 		// Process unconnected edges
 		ArrayList<MyEdge> remain0 = processEdges_Step0(constraintsEdges);
-		if (verbose)
+		if (verbose){
 			System.out.println("Edges left after initial phase : "
 					+ remain0.size());
+                }
 		
 		// Process exact existing edges
 		ArrayList<MyEdge> remain1 = processEdges_Step1(remain0);
-		if (verbose)
+		if (verbose){
 			System.out.println("Edges left after phase 1 : " + remain1.size());
+                }
 
 		// next try
 		remain2.addAll(processEdges_Step2(remain1));
 		
-		if (verbose)
+		if (verbose){
 			System.out.println("Edges left after phase 2 : " + remain2.size());
+                }
 		
 		// Process remaining edges
 		int nbEdges4 = remain2.size();
@@ -2817,21 +2851,21 @@ public class MyMesh {
 		MyEdge currentEdge = null;
 		ArrayList<MyEdge> possibleEdges =null;
 		int iter = 0;
-		int maxIter = constraintsEdges.size();
+		int maxIterations = constraintsEdges.size();
 		ArrayList<MyEdge> edgesReturn = new ArrayList<MyEdge>();
 		
-		if (verbose)
-			System.out.println("Processing mesh intersection for " + maxIter
+		if (verbose){
+			System.out.println("Processing mesh intersection for " + maxIterations
 					+ " edges");
-
+                }
 		// While there is still an edge to process
 		ListIterator<MyEdge> iterEdge = constraintsEdges.listIterator();
 		while (iterEdge.hasNext()) {//FIXME Processing edge very too slow!
 			
 			iter++;
-			if (verbose)
-				System.out.println("Processing edge " + iter + " / " + maxIter);
-
+			if (verbose){
+				System.out.println("Processing edge " + iter + " / " + maxIterations);
+                        }
 			// Get first edge then remove it from the list
 			currentEdge = iterEdge.next();
 
@@ -3781,18 +3815,20 @@ public class MyMesh {
 								addEdge = aTriangle1.edges[j];
 								if ((addEdge.getLeft() != null)
 										&& (addEdge.getRight() != null)) {
-									if (addEdge != anEdge)
-										if (!badEdgesQueueList
-												.contains(addEdge))
+									if (addEdge != anEdge){
+										if (!badEdgesQueueList.contains(addEdge)){
 											badEdgesQueueList.add(addEdge);
+                                                                                }
+                                                                        }
 								}	
 								addEdge = aTriangle2.edges[j];
 								if ((addEdge.getLeft() != null)
 										&& (addEdge.getRight() != null)) {
-									if (addEdge != anEdge)
-										if (!badEdgesQueueList
-												.contains(addEdge))
+									if (addEdge != anEdge){
+										if (!badEdgesQueueList.contains(addEdge)){
 											badEdgesQueueList.add(addEdge);
+                                                                                }
+                                                                        }
 								}
 							}
 						}
@@ -3800,8 +3836,9 @@ public class MyMesh {
 				}
 			}
 		} else
-			while (!badEdgesQueueList.isEmpty())
+			while (!badEdgesQueueList.isEmpty()){
 				badEdgesQueueList.removeFirst();
+                        }
 	}
 
 	/**
@@ -3965,8 +4002,9 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void removeFlatTriangles() throws DelaunayError {// old
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+                }
 		else {
 			// Check triangles to be removed
 			int maxGID = 0;
@@ -4094,15 +4132,16 @@ public class MyMesh {
 					badTrianglesList.remove(aTriangle);
 				}
 
-				if (verbose)
+				if (verbose){
 					System.out.println("Remove " + nbDone
 							+ " flat triangles / " + badTrianglesList.size());
+                                }
 			}
-			if (verbose)
+			if (verbose){
 				if (!badTrianglesList.isEmpty())
 					System.out.println("Remain : " + badTrianglesList.size()
 							+ " flat triangles");
-
+                        }
 		}
 	}
 
@@ -4114,15 +4153,14 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void removeFlatTriangles_Test() throws DelaunayError {//it's a test for a new version of removeFlatTriangles
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+                }
 		else {
 			
-			if(verbose)
+			if(verbose){
 				System.out.println("Remove flat triangles...\n\n");
-			
-
-			
+                        }			
 
 			MyEdge anEdge;
 			MyPoint aPoint;
@@ -4244,8 +4282,9 @@ public class MyMesh {
 //			}
 
 
-			if(verbose)
+			if(verbose){
 				System.out.println("Remove flat triangles. Done.\n");
+                        }
 		}
 	}
 	
@@ -4326,8 +4365,9 @@ public class MyMesh {
 	 * @param aTriangle
 	 */
 	public void removeTriangle(MyTriangle aTriangle) throws DelaunayError {
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+                }
 		else {
 			// get longest edge
 			MyEdge longest = aTriangle.edges[0];
@@ -4369,8 +4409,9 @@ public class MyMesh {
 		
 		ArrayList<MyPoint> pointOfPolygon = new ArrayList<MyPoint>();
 		
-		if(verbose)
+		if(verbose){
 			System.out.println("Search and remove triangles inside polygon.");
+                }
 		
 		// Search and remove triangles who are inside the polygon.
 		while (triangleOfPolygonIt.hasNext()) {
@@ -4446,13 +4487,15 @@ public class MyMesh {
 
 			
 			// sort points
-			if (verbose)
+			if (verbose){
 				System.out.println("Sorting points");
+                        }
 			ListIterator<MyPoint> iterPoint =sortAndSimplify(somePoint).listIterator();				
 
 			// we build a first triangle with the 3 first points we find
-			if (verbose)
+			if (verbose){
 				System.out.println("Processing triangularization");
+                        }
 			MyTriangle aTriangle;
 			MyPoint p1, p2, p3;
 			MyEdge e1, e2, e3;
@@ -4505,10 +4548,9 @@ public class MyMesh {
 				iterPoint.remove();
 			}
 			
-			while (iterPoint.hasPrevious())
+			while (iterPoint.hasPrevious()){
 				iterPoint.previous();
-		
-
+                        }
 			
 			// The triangle's edges MUST be in the right direction
 			if (e1.isLeft(p3)) {
@@ -4561,11 +4603,12 @@ public class MyMesh {
 						aPoint = null;
 					}
 				LastTestedPoint = aPoint;
-				if (aPoint!= null)
+				if (aPoint!= null){
 					if (!aPoint.isLocked()) {
 						if (myInsertPointForPolygon(aPoint, aPolygon) == null)
 							badPointList.addFirst(aPoint);
 					}
+                                }
 
 			}
 			
@@ -4578,8 +4621,9 @@ public class MyMesh {
 //			processEdges(constraintsEdges);
 			
 		}
-		else
+		else {
 			System.err.println("Error in processSomePoints()");
+                }
 	}
 	
 	
@@ -4652,12 +4696,14 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	public void checkTriangularization() throws DelaunayError {
-		if (!isMeshComputed())
+		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+                }
 		else {
 
-			if(verbose)
+			if(verbose){
 				System.out.println("First - check if every point belongs to at least one edge");
+                        }
 			
 			// First - check if every point belongs to at least one edge
 						
@@ -4692,8 +4738,9 @@ public class MyMesh {
 			}
 			else
 			{
-				if(verbose)
+				if(verbose){
 					System.out.println("Second - check topology");
+                                }
 				
 				// Second - check topology
 				for (MyTriangle aTriangle : trianglesQuadTree.getAll()) {
@@ -4705,8 +4752,9 @@ public class MyMesh {
 				//When we have polygons, delaunay can't be good because polygon add constraint to the mesh.
 				if(polygons.isEmpty()) 
 				{
-					if(verbose)
+					if(verbose){
 						System.out.println("Third - check delaunay");
+                                                }
 					
 					// Third - check delaunay
 					for (MyTriangle aTriangle : trianglesQuadTree.getAll()) {
@@ -4719,13 +4767,15 @@ public class MyMesh {
 									
 					}
 				}
-				else if(verbose)
+				else if(verbose){
 					System.out.println("Skip check of Delaunay because mesh contains polygons.");
+                                }
 			}
 		}
 		
-		if(verbose)
+		if(verbose){
 			System.out.println("Checking triangularization done.");
+                }
 	}
 
 	/**
@@ -4984,11 +5034,13 @@ public class MyMesh {
 				writer.write("\t\t\t<X>" + aPoint.getX() + "</X>\n");
 				writer.write("\t\t\t<Y>" + aPoint.getY() + "</Y>\n");
 				writer.write("\t\t\t<Z>" + aPoint.getZ() + "</Z>\n");
-				if (aPoint.getProperty() == 0)
+				if (aPoint.getProperty() == 0){
 					writer.write("\t\t\t<Type />\n");
-				else
+                                }
+				else{
 					writer.write("\t\t\t<Type>" + aPoint.getProperty()
 							+ "</Type>\n");
+                                }
 				writer.write("\t\t</Point>\n");
 			}
 			writer.write("\t</Points>\n");
@@ -5002,21 +5054,27 @@ public class MyMesh {
 						+ "</Start>\n");
 				writer.write("\t\t\t<End>" + anEdge.getEndPoint().getGid()
 						+ "</End>\n");
-				if (anEdge.getProperty() == 0)
+				if (anEdge.getProperty() == 0){
 					writer.write("\t\t\t<Type />\n");
-				else
+                                }
+				else{
 					writer.write("\t\t\t<Type>" + anEdge.getProperty()
 							+ "</Type>\n");
-				if (anEdge.getLeft() == null)
+                                }
+				if (anEdge.getLeft() == null){
 					writer.write("\t\t\t<Left>-1</Left>\n");
-				else
+                                }
+				else{
 					writer.write("\t\t\t<Left>" + anEdge.getLeft().getGid()
 							+ "</Left>\n");
-				if (anEdge.getRight() == null)
+                                }
+				if (anEdge.getRight() == null){
 					writer.write("\t\t\t<Right>-1</Right>\n");
-				else
+                                }
+				else{
 					writer.write("\t\t\t<Right>" + anEdge.getRight().getGid()
 							+ "</Right>\n");
+                                }
 				writer.write("\t\t</Segment>\n");
 			}
 			writer.write("\t</Edges>\n");
@@ -5027,9 +5085,10 @@ public class MyMesh {
 			for (MyTriangle aTriangle : trianglesQuadTree.getAll()) {
 				writer.write("\t\t<Triangle id=\"" + aTriangle.getGid()
 						+ "\">\n");
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 3; i++){
 					writer.write("\t\t\t<Edge>" + aTriangle.edges[i].getGid()
 							+ "</Edge>\n");
+                                }
 				writer.write("\t\t</Triangle>\n");
 			}
 			writer.write("\t</Triangles>\n");
@@ -5299,10 +5358,12 @@ public class MyMesh {
 					}
 
 					double distance = xmax - xmin;
-					if (distance < ymax - ymin)
+					if (distance < ymax - ymin){
 						distance = ymax - ymin;
-					if (distance < zmax - zmin)
+                                        }
+					if (distance < zmax - zmin){
 						distance = zmax - zmin;
+                                        }
 
 					dx = (xmax + xmin) / 2;
 					dy = (ymax + ymin) / 2;
@@ -5317,8 +5378,9 @@ public class MyMesh {
 						writer.write(" " + (aPoint.getX() - dx) + " "
 								+ (aPoint.getY() - dy) + " "
 								+ (aPoint.getZ() - dz) + "\n");
-						if (maxGid < aPoint.gid)
+						if (maxGid < aPoint.gid){
 							maxGid = aPoint.gid;
+                                                }
 					}
 
 					// add points for walls
@@ -5328,10 +5390,12 @@ public class MyMesh {
 							writer.write("#wall points\n");
 							for (int j = 0; j < 2; j++) {
 								MyPoint aPoint;
-								if (j == 0)
+								if (j == 0){
 									aPoint = anEdge.getStartPoint();
-								else
+                                                                }
+								else{
 									aPoint = anEdge.getEndPoint();
+                                                                }
 								if (!addPoint.containsKey(aPoint)) {
 									maxGid++;
 									MyPoint aPoint2 = new MyPoint(aPoint);
@@ -5357,13 +5421,14 @@ public class MyMesh {
 					writer.write("coordIndex [\n");
 					for (MyTriangle aTriangle : triangles) {
 						writer.write("#triangle " + (aTriangle.gid - 1) + "\n");
-						for (int i = 0; i < 3; i++)
-							writer
-									.write((aTriangle.getPoint(i).gid - 1)
+						for (int i = 0; i < 3; i++){
+							writer.write((aTriangle.getPoint(i).gid - 1)
 											+ "\t");
+                                                }
 						writer.write("-1\n");
-						if (maxGid < aTriangle.gid)
+						if (maxGid < aTriangle.gid){
 							maxGid = aTriangle.gid;
+                                                }
 					}
 
 					// add walls
@@ -5480,8 +5545,9 @@ public class MyMesh {
 				c /= vLen;
 			}
 			double Angle = Math.asin(vLen);
-			if (Math.abs(uy - Math.cos(Angle)) < 0.1)
+			if (Math.abs(uy - Math.cos(Angle)) < 0.1){
 				Angle = -Angle;
+                        }
 
 			writer.write("Transform {\n");
 			writer.write("translation " + (x - dx) + " " + (y - dy) + " "
@@ -5523,8 +5589,9 @@ public class MyMesh {
 		int maxGID = 0;
 		for (Object anObject : elements) {
 			int value = ((MyElement) anObject).getGid();
-			if (value > maxGID)
+			if (value > maxGID){
 				maxGID = value;
+                        }
 		}
 
 		for (Object anObject : elements) {
