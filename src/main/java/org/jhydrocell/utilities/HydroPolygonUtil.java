@@ -158,21 +158,21 @@ public class HydroPolygonUtil {
 			return res; // e n'appartient pas au triangle
 
 		Coordinate C = p.getCoordinates()[i];
-		Coordinate AB = MathUtil.DifferenceVectoriel(B, A);
-		Coordinate AC = MathUtil.DifferenceVectoriel(C, A);
+		Coordinate AB = MathUtil.differenceVectoriel(B, A);
+		Coordinate AC = MathUtil.differenceVectoriel(C, A);
 		// orientation CCW
-		if (MathUtil.ProduitVectoriel(AB, AC).z < 0) {
+		if (MathUtil.produitVectoriel(AB, AC).z < 0) {
 			// echange A et B
 			Coordinate D = A;
 			A = B;
 			B = D;
-			AB = MathUtil.DifferenceVectoriel(B, A);
-			AC = MathUtil.DifferenceVectoriel(C, A);
+			AB = MathUtil.differenceVectoriel(B, A);
+			AC = MathUtil.differenceVectoriel(C, A);
 		}
 		// test d'intersection entre AB et P
 		Coordinate P = this.get3DVector();
 
-		res = MathUtil.ProduitVectoriel(AB, P).z < 0;
+		res = MathUtil.produitVectoriel(AB, P).z < 0;
 
 		return res;
 	}
@@ -230,7 +230,7 @@ public class HydroPolygonUtil {
 
 		// Coordinate AB = MathUtil.DifferenceVectoriel(B, A);
 		Coordinate P = this.get3DVector();
-		I = MathUtil.CalculIntersection(e.getStartPoint().getCoordinate(),
+		I = MathUtil.calculIntersection(e.getStartPoint().getCoordinate(),
 				eVector, p, P);
 		Assert.isTrue(I != null,
 				"Intersection detectee mais non verifiee par calcul");

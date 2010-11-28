@@ -92,7 +92,7 @@ public class MyHydroNetwork {
 					if (pointeVersEdge) {
 						rightTtoEdge = true;
 					} else if (hydroPolygonUtil.getSlope() > 0) {
-						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
+						if (MathUtil.isColinear(hydroLineUtil.get3DVector(),
 								hydroPolygonUtil.get3DVector())) {
 							rightTColinear = true;
 						}
@@ -114,7 +114,7 @@ public class MyHydroNetwork {
 					if (pointeVersEdge) {
 						leftTtoEdge = true;
 					} else if (hydroPolygonUtil.getSlope() > 0) {
-						if (MathUtil.IsColinear(hydroLineUtil.get3DVector(),
+						if (MathUtil.isColinear(hydroLineUtil.get3DVector(),
 								hydroPolygonUtil.get3DVector())) {
 							leftTColinear = true;
 						}

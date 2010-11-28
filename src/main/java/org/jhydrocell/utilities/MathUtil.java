@@ -1,26 +1,26 @@
 /* Ce package est inclus dans la distribution logicielle FlowTIN.
- * Il permet de charger et de travailler sur un r�seau de triangles irr�guliers (TIN), construit � partir
+ * Il permet de charger et de travailler sur un réseau de triangles irréguliers (TIN), construit à partir
  * de l'application TopoTIN.
  *
- * Ce package a �t� developp� par Olivier Bedel dans le cadre de la th�se de doctorat en g�ographie
- * d'Erwan Bocher, intitul�e : Impacts des activit�s humaines sur le parcours des �coulements de surface dans un bassin versant bocager :
- * essai de mod�lisation spatiale.  Application au Bassin versant du Jaudy-Guindy-Bizien.
+ * Ce package a été développé par Olivier Bedel dans le cadre de la thèse de doctorat en géographie
+ * d'Erwan Bocher, intitulée : Impacts des activités humaines sur le parcours des écoulements de surface dans un bassin versant bocager :
+ * essai de modélisation spatiale.  Application au Bassin versant du Jaudy-Guindy-Bizien.
  *
- *  Le manuscrit est disponible en t�l�chargement sur le site th�se en ligne du CNRS.
- *
- *
- * Cette th�se a b�n�fici� du soutien financier : de l�Union europ�enne, du Conseil R�gional de Bretagne, de l�Agence de l�eau Loire-Bretagne,
- * du Conseil G�n�ral des C�tes-d�Armor et du Bassin versant du Jaudy-Guindy-Bizien[2] par l�interm�diaire du Syndicat intercommunal d�adduction d�eau du Tr�gor, ma�tre d�ouvrage.
- * Elle a �t� r�alis�e � l�Universit� de Rennes 2 Haute-Bretagne au Laboratoire RESO UMR ESO CNRS 6590 en partenariat avec le Laboratoire COSTEL UMR LETG 6554.
+ *  Le manuscrit est disponible en tééléchargement sur le site thèse en ligne du CNRS.
  *
  *
- * Created on 25 ao�t 2004
+ * Cette thèse a bénéficié du soutien financier : de l'Union européenne, du Conseil Régional de Bretagne, de l'Agence de l'eau Loire-Bretagne,
+ * du Conseil Général des Côtes-d'Armor et du Bassin versant du Jaudy-Guindy-Bizien[2] par l'intermédiaire du Syndicat intercommunal d'adduction d�eau du Tr�gor, ma�tre d�ouvrage.
+ * Elle a été réalisée à l'Université de Rennes 2 Haute-Bretagne au Laboratoire RESO UMR ESO CNRS 6590 en partenariat avec le Laboratoire COSTEL UMR LETG 6554.
+ *
+ *
+ * Created on 25 août 2004
  *
  * Olivier BEDEL et Erwan Bocher
  * Bassin Versant du Jaudy-Guindy-Bizien,
- * Laboratoire RESO UMR ESO 6590 CNRS, Universit� de Rennes 2
+ * Laboratoire RESO UMR ESO 6590 CNRS, Université de Rennes 2
  *
- * Ce programme est distribu� sous la licence logiciel libre du CNRS CeCILL.
+ * Ce programme est distribué sous la licence logiciel libre du CNRS CeCILL.
  * Pour utiliser ce programme ou le modifier vous devez accepter pleinement et respecter les conditions de cette licence.
  * 
  * 
@@ -44,7 +44,7 @@ public class MathUtil {
 		return v3;
 	}
 
-	public static Coordinate ProduitVectoriel(Coordinate v1, Coordinate v2) {
+	public static Coordinate produitVectoriel(Coordinate v1, Coordinate v2) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = v1.y * v2.z - v1.z * v2.y;
 		v3.y = v1.z * v2.x - v1.x * v2.z;
@@ -52,7 +52,7 @@ public class MathUtil {
 		return v3;
 	}
 
-	public static boolean IsColinear(Coordinate v1, Coordinate v2) {
+	public static boolean isColinear(Coordinate v1, Coordinate v2) {
 		double res = 0;
 		res += Math.abs(v1.y * v2.z - v1.z * v2.y);
 		res += Math.abs(v1.z * v2.x - v1.x * v2.z);
@@ -64,7 +64,7 @@ public class MathUtil {
 			return false;
 	}
 
-	public static Coordinate DifferenceVectoriel(Coordinate v1, Coordinate v2) {
+	public static Coordinate differenceVectoriel(Coordinate v1, Coordinate v2) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = v1.x - v2.x;
 		v3.y = v1.y - v2.y;
@@ -72,7 +72,7 @@ public class MathUtil {
 		return v3;
 	}
 
-	public static Coordinate SommeVectoriel(Coordinate v1, Coordinate v2) {
+	public static Coordinate sommeVectoriel(Coordinate v1, Coordinate v2) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = v1.x + v2.x;
 		v3.y = v1.y + v2.y;
@@ -80,13 +80,13 @@ public class MathUtil {
 		return v3;
 	}
 
-	public static double ProduitScalaire(Coordinate v1, Coordinate v2) {
+	public static double produitScalaire(Coordinate v1, Coordinate v2) {
 		double p;
 		p = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 		return p;
 	}
 
-	public static Coordinate Produit(Coordinate v1, double k) {
+	public static Coordinate produit(Coordinate v1, double k) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = k * v1.x;
 		v3.y = k * v1.y;
@@ -94,7 +94,7 @@ public class MathUtil {
 		return v3;
 	}
 
-	public static int Sign(double d) {
+	public static int sign(double d) {
 		if (d > 0)
 			return 1;
 		else if (d < 0)
@@ -103,27 +103,27 @@ public class MathUtil {
 			return 0;
 	}
 
-	public static double Min(double d1, double d2) {
+	public static double min(double d1, double d2) {
 		if (d1 < d2)
 			return d1;
 		else
 			return d2;
 	}
 
-	public static double Max(double d1, double d2) {
+	public static double max(double d1, double d2) {
 		if (d1 > d2)
 			return d1;
 		else
 			return d2;
 	}
 
-	public static double Norme(Coordinate v) {
+	public static double norme(Coordinate v) {
 		return Double.isNaN(v.z) ? Math.sqrt(v.x * v.x + v.y * v.y) : Math
 				.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
 
-	public static Coordinate NormeVectoriel(Coordinate v) {
-		double norme = Norme(v);
+	public static Coordinate normeVectoriel(Coordinate v) {
+		double norme = norme(v);
 		Coordinate vNorme = (Coordinate) v.clone();
 		if (norme != 0.0)
 			vNorme = new Coordinate(v.x / norme, v.y / norme, v.z / norme);
@@ -145,7 +145,7 @@ public class MathUtil {
 	 *         droites sont parrallèles
 	 */
 
-	public static Coordinate CalculIntersection(Coordinate p1, Coordinate v1,
+	public static Coordinate calculIntersection(Coordinate p1, Coordinate v1,
 			Coordinate p2, Coordinate v2) {
 		double delta;
 		double k;
