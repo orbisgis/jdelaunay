@@ -35,12 +35,14 @@ public class MyQuadTree<T extends MyElement> {
 	 */
 	private void init() {
 		this.theQuadTree = new MyQuadTree[4];
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++){
 			theQuadTree[i] = null;
+                }
 
 		theList = new LinkedList[6];
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 6; i++){
 			theList[i] = new LinkedList<T>();
+                }
 	}
 
 	/**
@@ -63,8 +65,9 @@ public class MyQuadTree<T extends MyElement> {
 		init();
 		level=maxLevel;
 		System.out.println("bip");
-		for(T element:elements)
+		for(T element:elements){
 			add(element, element.getBoundingBox(), boundingBox, maxLevel);
+                }
 	}
 	
 	
@@ -307,9 +310,8 @@ public class MyQuadTree<T extends MyElement> {
 	private void add(T element, MyBox boundingBox)//FIXME too slow
 	{
 		int i, sector =getSectorList(element.getBoundingBox(), boundingBox);
-		for(i=0;
-				i<theList[sector].size() 
-				&& ( theList[sector].get(i).getBoundingBox().maxx > element.getBoundingBox().maxx  
+		for(i=0;i<theList[sector].size()
+                        && ( theList[sector].get(i).getBoundingBox().maxx > element.getBoundingBox().maxx
 				);i++
 			);
 

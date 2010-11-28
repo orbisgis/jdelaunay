@@ -207,8 +207,9 @@ public class MyMesh {
 	 * @param point
 	 */
 	public void setPoints(ArrayList<MyPoint> point) {
-		for(MyPoint p:point)
+		for(MyPoint p:point){
 			p.setGID(++point_GID);
+                }
 		
 		this.pointsQuadTree = new MyQuadTreeMapper<MyPoint>(point);
 		
@@ -222,8 +223,9 @@ public class MyMesh {
 	 * @param point
 	 */
 	public void setPoints(LinkedList<MyPoint> point) {
-		for(MyPoint p:point)
+		for(MyPoint p:point){
 			p.setGID(++point_GID);
+                }
 		this.pointsQuadTree = new MyQuadTreeMapper<MyPoint>(point);
 		
 		edgesQuadTree.setBox(pointsQuadTree.getBox());
@@ -236,8 +238,9 @@ public class MyMesh {
 	 * @param point
 	 */
 	public void setPointsRef(ArrayList<MyPoint> point) {
-		for(MyPoint p:point)
+		for(MyPoint p:point){
 			p.setGID(++point_GID);
+                }
 		
 		this.pointsQuadTree = new MyQuadTreeMapper<MyPoint>(point);
 		
@@ -261,8 +264,9 @@ public class MyMesh {
 	 */
 	public void setConstraintEdges(ArrayList<MyEdge> edges) {
 		this.constraintsEdges = new ArrayList<MyEdge>();
-		for (MyEdge anEdge : edges)
+		for (MyEdge anEdge : edges){
 			this.constraintsEdges.add(anEdge);
+                }
 	}
 
 	/**
@@ -281,8 +285,9 @@ public class MyMesh {
 	 */
 	public void setConstraintEdges(LinkedList<MyEdge> edges) {
 		this.constraintsEdges = new ArrayList<MyEdge>();
-		for (MyEdge anEdge : edges)
+		for (MyEdge anEdge : edges){
 			this.constraintsEdges.add(anEdge);
+                }
 	}
 
 	/**
@@ -3393,15 +3398,17 @@ public class MyMesh {
 		
 		
 		// remove old edges
-		for (MyEdge anEdge : oldEdges)
+		for (MyEdge anEdge : oldEdges){
 			boundaryEdges.remove(anEdge);
+                }
 
 		// add the newEdges to the boundary list
-		for (MyEdge anEdge : newEdges)
+		for (MyEdge anEdge : newEdges){
 			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
 			{
 				boundaryEdges.add(anEdge);
 			}
+                }
 
 	
 		// Process badTriangleQueueList
@@ -3675,14 +3682,16 @@ public class MyMesh {
 			
 
 		// remove old edges
-		for (MyEdge anEdge : oldEdges)
+		for (MyEdge anEdge : oldEdges){
 			boundaryEdges.remove(anEdge);
+                }
 
 		// add the newEdges to the boundary list
-		for (MyEdge anEdge : newEdges)
-			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
+		for (MyEdge anEdge : newEdges){
+			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null)){
 				boundaryEdges.add(anEdge);
-
+                        }
+                }
 	
 		// Process badTriangleQueueList
 		processBadEdges();
@@ -3845,8 +3854,9 @@ public class MyMesh {
 	 * Check mesh topology
 	 */
 	public void checkTopology() {
-		for (MyTriangle aTestTriangle : trianglesQuadTree.getAll())
+		for (MyTriangle aTestTriangle : trianglesQuadTree.getAll()){
 			aTestTriangle.checkTopology();
+                }
 	}
 
 	/**
@@ -4851,7 +4861,7 @@ public class MyMesh {
 	public boolean checkNoDuplicateEdge(ArrayList<MyEdge> edgeList)
 	{
 		boolean ok=true;
-		for(int i=0; i<edgeList.size();i++)
+		for(int i=0; i<edgeList.size();i++){
 			for(int j=i+1; j<edgeList.size();j++)
 			{
 				if( (
@@ -4868,6 +4878,7 @@ public class MyMesh {
 					ok=false;
 				}
 			}
+                }
 		
 		return ok;
 	}
@@ -4881,7 +4892,7 @@ public class MyMesh {
 	public boolean checkEdgeNoIntersection(ArrayList<MyEdge> edgeList)
 	{
 		boolean ok=true;
-		for(int i=0; i<edgeList.size();i++)
+		for(int i=0; i<edgeList.size();i++){
 			for(int j=i+1; j<edgeList.size();j++)
 			{
 				if( edgeList.get(i).intersects(edgeList.get(j).getStartPoint(), edgeList.get(j).getEndPoint())==1)
@@ -4890,6 +4901,7 @@ public class MyMesh {
 					ok=false;
 				}
 			}
+                }
 		return ok;
 	}
 

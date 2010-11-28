@@ -165,8 +165,9 @@ public class MyPolygon extends MyElement {
 	 */
 	public void setUsePolygonZ(boolean usePolygonZ) {
 		this.usePolygonZ = usePolygonZ;
-		for(MyEdge aEdge:edges)
+		for(MyEdge aEdge:edges){
 			aEdge.setUseZ(usePolygonZ);
+                }
 	}
 
 	
