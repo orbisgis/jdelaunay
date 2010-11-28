@@ -28,11 +28,11 @@ public class MyTools {
 	 * Quick sort a MyElement array ordered according to the GID
 	 * 
 	 * @param points
-	 * @param min_index
-	 * @param max_index
+	 * @param minIndex
+	 * @param maxIndex
 	 */
 	protected static void quickSortGID(ArrayList<? extends MyElement> elements,
-			int min_index, int max_index) {
+			int minIndex, int maxIndex) {
 		int i, j;
 		int enreg_ref;
 		double cle_ref;
@@ -40,16 +40,16 @@ public class MyTools {
 		MyElement anElement;
 		int valGid = -1;
 
-		i = min_index;
-		j = max_index;
-		enreg_ref = (max_index + min_index) / 2;
+		i = minIndex;
+		j = maxIndex;
+		enreg_ref = (maxIndex + minIndex) / 2;
 		anElement = (MyElement)elements.get(enreg_ref);
 		cle_ref = anElement.getGid();
 		do {
 			// first : increasing index
 			found = false;
 			while (!found) {
-				if (i >= max_index)
+				if (i >= maxIndex)
 					found = true;
 				else {
 					anElement = (MyElement)elements.get(i);
@@ -63,7 +63,7 @@ public class MyTools {
 			// second : decreasing index
 			found = false;
 			while (!found) {
-				if (min_index >= j)
+				if (minIndex >= j)
 					found = true;
 				else {
 					anElement = (MyElement)elements.get(j);
@@ -85,13 +85,13 @@ public class MyTools {
 		} while (i <= j);
 
 		// Recurrent calls
-		if (min_index < j) {
+		if (minIndex < j) {
 			// if left side is not empty
-			quickSortGID(elements, min_index, j);
+			quickSortGID(elements, minIndex, j);
 		}
-		if (max_index > i) {
+		if (maxIndex > i) {
 			// if right side is not empty
-			quickSortGID(elements, i, max_index);
+			quickSortGID(elements, i, maxIndex);
 		}
 	}
 
@@ -100,20 +100,20 @@ public class MyTools {
 	 * Quick sort on points Ordered according to x and y
 	 * 
 	 * @param points
-	 * @param min_index
-	 * @param max_index
+	 * @param minIndex
+	 * @param maxIndex
 	 */
 	public static void quickSort_Points(ArrayList<MyPoint> points,
-			int min_index, int max_index) {
+			int minIndex, int maxIndex) {
 		int i, j;
 		int enreg_ref;
 		double cle_ref1, cle_ref2;
 		boolean found;
 		MyPoint aPoint;
 
-		i = min_index;
-		j = max_index;
-		enreg_ref = (max_index + min_index) / 2;
+		i = minIndex;
+		j = maxIndex;
+		enreg_ref = (maxIndex + minIndex) / 2;
 		aPoint = points.get(enreg_ref);
 		cle_ref1 = aPoint.getX();
 		cle_ref2 = aPoint.getY();
@@ -121,7 +121,7 @@ public class MyTools {
 			// first : increasing index
 			found = false;
 			while (!found) {
-				if (i >= max_index)
+				if (i >= maxIndex)
 					found = true;
 				else {
 					aPoint = points.get(i);
@@ -137,7 +137,7 @@ public class MyTools {
 			// second : decreasing index
 			found = false;
 			while (!found) {
-				if (min_index >= j)
+				if (minIndex >= j)
 					found = true;
 				else {
 					aPoint = points.get(j);
@@ -161,13 +161,13 @@ public class MyTools {
 		} while (i <= j);
 
 		// Recurrent calls
-		if (min_index < j) {
+		if (minIndex < j) {
 			// if left side is not empty
-			quickSort_Points(points, min_index, j);
+			quickSort_Points(points, minIndex, j);
 		}
-		if (max_index > i) {
+		if (maxIndex > i) {
 			// if right side is not empty
-			quickSort_Points(points, i, max_index);
+			quickSort_Points(points, i, maxIndex);
 		}
 	}
 
@@ -184,11 +184,11 @@ public class MyTools {
 	 * Quick sort on points Ordered according to minimum X, Y of both
 	 * extremities
 	 *
-	 * @param min_index
-	 * @param max_index
+	 * @param minIndex
+	 * @param maxIndex
 	 */
-	protected static void quickSort_Edges(ArrayList<MyEdge> edges, int min_index,
-			int max_index, boolean switchPoints) {
+	protected static void quickSort_Edges(ArrayList<MyEdge> edges, int minIndex,
+			int maxIndex, boolean switchPoints) {
 		int i, j;
 		int enreg_ref;
 		double cle_ref1, cle_ref2, cle_ref3, cle_ref4;
@@ -196,9 +196,9 @@ public class MyTools {
 		double x;
 		boolean found;
 
-		i = min_index;
-		j = max_index;
-		enreg_ref = (max_index + min_index) / 2;
+		i = minIndex;
+		j = maxIndex;
+		enreg_ref = (maxIndex + minIndex) / 2;
 		MyEdge anEdge = edges.get(enreg_ref);
 		cle_ref1 = anEdge.getStartPoint().getX();
 		cle_ref2 = anEdge.getStartPoint().getY();
@@ -230,7 +230,7 @@ public class MyTools {
 			// first : increasing index
 			found = false;
 			while (!found) {
-				if (i >= max_index)
+				if (i >= maxIndex)
 					found = true;
 				else {
 					anEdge = edges.get(i);
@@ -285,7 +285,7 @@ public class MyTools {
 			// second : decreasing index
 			found = false;
 			while (!found) {
-				if (min_index >= j)
+				if (minIndex >= j)
 					found = true;
 				else {
 					anEdge = edges.get(j);
@@ -348,13 +348,13 @@ public class MyTools {
 		} while (i <= j);
 
 		// Recurrent calls
-		if (min_index < j) {
+		if (minIndex < j) {
 			// if left side is not empty
-			quickSort_Edges(edges, min_index, j, switchPoints);
+			quickSort_Edges(edges, minIndex, j, switchPoints);
 		}
-		if (max_index > i) {
+		if (maxIndex > i) {
 			// if right side is not empty
-			quickSort_Edges(edges, i, max_index, switchPoints);
+			quickSort_Edges(edges, i, maxIndex, switchPoints);
 		}
 	}
 

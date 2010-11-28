@@ -37,9 +37,9 @@ public class DelaunayError extends Throwable {
 		code = DelaunayError_internalError;
 	}
 
-	public DelaunayError(int ErrorCode) {
+	public DelaunayError(int errorCode) {
 		super();
-		code = ErrorCode;
+		code = errorCode;
 	}
 
 	/*

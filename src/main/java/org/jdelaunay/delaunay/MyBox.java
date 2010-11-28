@@ -29,7 +29,12 @@ public class MyBox implements Serializable {
 	 *  initialization method
 	 */
 	public void init() {
-		minx = maxx = miny = maxy = minz = maxz = 0.0;
+		minx = 0.0;
+                maxx = 0.0;
+                miny = 0.0;
+                maxy = 0.0;
+                minz = 0.0;
+                maxz = 0.0;
 		empty = true;
 		middle=new Coordinate(0, 0, 0);
 	}
@@ -43,18 +48,18 @@ public class MyBox implements Serializable {
 
 	/**
 	 * set a box according to coordinates
-	 * @param _minx
-	 * @param _maxx
-	 * @param _miny
-	 * @param _maxy
-	 * @param _minz
-	 * @param _maxz
+	 * @param pminx
+	 * @param pmaxx
+	 * @param pminy
+	 * @param pmaxy
+	 * @param pminz
+	 * @param pmaxz
 	 */
-	public MyBox(double _minx, double _maxx, double _miny, double _maxy,
-			double _minz, double _maxz) {
+	public MyBox(double pminx, double pmaxx, double pminy, double pmaxy,
+			double pminz, double pmaxz) {
 		init();
 
-		setBox(_minx, _maxx, _miny, _maxy, _minz, _maxz);
+		setBox(pminx, pmaxx, pminy, pmaxy, pminz, pmaxz);
 	}
 
 	/**
@@ -70,21 +75,21 @@ public class MyBox implements Serializable {
 	/**
 	 * set box coordinates
 	 * 
-	 * @param _minx
-	 * @param _maxx
-	 * @param _miny
-	 * @param _maxy
-	 * @param _minz
-	 * @param _maxz
+	 * @param pminx
+	 * @param pmaxx
+	 * @param pminy
+	 * @param pmaxy
+	 * @param pminz
+	 * @param pmaxz
 	 */
-	public void setBox(double _minx, double _maxx, double _miny, double _maxy,
-			double _minz, double _maxz) {
-		minx = _minx;
-		maxx = _maxx;
-		miny = _miny;
-		maxy = _maxy;
-		minz = _minz;
-		maxz = _maxz;
+	public void setBox(double pminx, double pmaxx, double pminy, double pmaxy,
+			double pminz, double pmaxz) {
+		minx = pminx;
+		maxx = pmaxx;
+		miny = pminy;
+		maxy = pmaxy;
+		minz = pminz;
+		maxz = pmaxz;
 		empty = false;
 		updateMiddle();
 	}
@@ -153,6 +158,7 @@ public class MyBox implements Serializable {
 		return middle;
 	}
 	
+        @Override
 	public String toString()
 	{
 		return "min x["+minx+"] y["+miny+"] z["+minz+"] | max x["+maxx+"] y["+maxy+"] z["+maxz+"]";

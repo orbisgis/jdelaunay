@@ -73,11 +73,11 @@ public class MyPolygon extends MyElement {
 	 * Generate a polygon with property.
 	 * 
 	 * @param polygon
-	 * @param _property
+	 * @param property
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int _property) throws DelaunayError {
-		super(_property);
+	public MyPolygon(Polygon polygon, int property) throws DelaunayError {
+		super(property);
 		this.usePolygonZ=false;
 		this.isEmpty=false;
 		init(polygon);
@@ -87,12 +87,12 @@ public class MyPolygon extends MyElement {
 	 * Generate a polygon with property.
 	 * 
 	 * @param polygon
-	 * @param _property
+	 * @param property
 	 * @param True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ) throws DelaunayError {
-		super(_property);
+	public MyPolygon(Polygon polygon, int property, boolean usePolygonZ) throws DelaunayError {
+		super(property);
 		this.usePolygonZ=usePolygonZ;
 		this.isEmpty=false;
 		init(polygon);
@@ -102,13 +102,13 @@ public class MyPolygon extends MyElement {
 	 * Generate a polygon with property.
 	 * 
 	 * @param polygon
-	 * @param _property
+	 * @param property
 	 * @param usePolygonZ True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
 	 * @param isEmpty True, if we remove triangle who are inside the polygon.
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int _property, boolean usePolygonZ, boolean isEmpty) throws DelaunayError {
-		super(_property);
+	public MyPolygon(Polygon polygon, int property, boolean usePolygonZ, boolean isEmpty) throws DelaunayError {
+		super(property);
 		this.usePolygonZ=usePolygonZ;
 		this.isEmpty=isEmpty;
 		init(polygon);
