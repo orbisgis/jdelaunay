@@ -5022,7 +5022,7 @@ public class MyMesh {
 	 * Save the Mesh elements in a XML file
 	 */
 	public void saveMeshXML() {
-		Writer writer;
+		Writer writer=null;
 		try {
 			writer = new FileWriter("Mesh.xml");
 			writer.write("<Mesh>\n");
@@ -5096,6 +5096,14 @@ public class MyMesh {
 			writer.write("</Mesh>\n");
 			writer.close();
 		} catch (IOException e) {
+                        if(writer!=null){
+                                System.err.println("A problem occured while using the stream : "+e);
+                                try{
+                                        writer.close();
+                                } catch (IOException e1){
+                                        System.err.println("unable to close steam properly : "+e1);
+                                }
+                        }
 		}
 	}
 
@@ -5112,7 +5120,7 @@ public class MyMesh {
 	 * @param path
 	 */
 	public void saveMesh(String path) {
-		Writer writer;
+		Writer writer=null;
 		try {
 			writer = new FileWriter(path);
 			for (MyPoint aPoint : pointsQuadTree.getAll()) {
@@ -5133,6 +5141,14 @@ public class MyMesh {
 
 			writer.close();
 		} catch (IOException e) {
+                        if(writer!=null){
+                                System.err.println("A problem occured while using the stream : "+e);
+                                try{
+                                        writer.close();
+                                } catch (IOException e1){
+                                        System.err.println("unable to close steam properly : "+e1);
+                                }
+                        }
 		}
 	}
 
@@ -5149,7 +5165,7 @@ public class MyMesh {
 	 * @throws DelaunayError 
 	 */
 	public void readMesh(String path) throws DelaunayError {
-		Reader reader;
+		Reader reader=null;
 		try {
 			String delimiteurs = "\t";
 			reader = new FileReader(path);
@@ -5223,6 +5239,14 @@ public class MyMesh {
 			}
 			in.close();
 		} catch (IOException e) {
+                        if(reader!=null){
+                                System.err.println("A problem occured while using the stream : "+e);
+                                try{
+                                        reader.close();
+                                } catch (IOException e1){
+                                        System.err.println("unable to close steam properly : "+e1);
+                                }
+                        }
 		}
 	}
 
@@ -5232,8 +5256,9 @@ public class MyMesh {
 	 * @param path
 	 */
 	public void saveMeshUTF(String path) {
+                DataOutputStream output=null;
 		try {
-			DataOutputStream output = new DataOutputStream(
+			output = new DataOutputStream(
 					new FileOutputStream(path));
 			int NbTriangles = getNbTriangles();
 
@@ -5261,6 +5286,14 @@ public class MyMesh {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+                        if(output!=null){
+                                System.err.println("A problem occured while using the stream : "+e);
+                                try{
+                                        output.close();
+                                } catch (IOException e1){
+                                        System.err.println("unable to close steam properly : "+e1);
+                                }
+                        }
 		}
 	}
 
@@ -5513,6 +5546,14 @@ public class MyMesh {
 				writer.write("} # end viewpoint\n");
 				writer.write("\n");
 			} catch (IOException e) {
+                                if(writer!=null){
+                                        System.err.println("A problem occured while using the stream : "+e);
+                                        try{
+                                                writer.close();
+                                        } catch (IOException e1){
+                                                System.err.println("unable to close steam properly : "+e1);
+                                        }
+                                }
 			}
 	}
 
@@ -5574,6 +5615,14 @@ public class MyMesh {
 			writer.write("] # end chilren\n");
 			writer.write("} # end Transform\n");
 		} catch (IOException e) {
+                        if(writer!=null){
+                                System.err.println("A problem occured while using the stream : "+e);
+                                try{
+                                        writer.close();
+                                } catch (IOException e1){
+                                        System.err.println("unable to close steam properly : "+e1);
+                                }
+                        }
 		}
 
 	}
