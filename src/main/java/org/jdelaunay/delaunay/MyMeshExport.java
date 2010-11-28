@@ -17,12 +17,7 @@ import org.gdms.data.values.ValueFactory;
 import org.gdms.driver.DriverException;
 import org.gdms.driver.ObjectDriver;
 import org.gdms.driver.driverManager.DriverLoadException;
-import org.gdms.sql.strategies.DiskBufferDriver;
 import org.grap.utilities.EnvelopeUtil;
-import org.jdelaunay.delaunay.MyEdge;
-import org.jdelaunay.delaunay.MyMesh;
-import org.jdelaunay.delaunay.MyPoint;
-import org.jdelaunay.delaunay.MyTriangle;
 import org.jhydrocell.utilities.HydroTriangleUtil;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -32,6 +27,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
+import org.gdms.driver.DiskBufferDriver;
 
 /**
  * postprocessing Package.
