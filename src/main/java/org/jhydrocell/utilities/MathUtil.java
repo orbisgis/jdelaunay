@@ -57,11 +57,12 @@ public class MathUtil {
 		res += Math.abs(v1.y * v2.z - v1.z * v2.y);
 		res += Math.abs(v1.z * v2.x - v1.x * v2.z);
 		res += Math.abs(v1.x * v2.y - v1.y * v2.x);
-		if (res < EPSILON)
+		if (res < EPSILON) {
 			return true;
-
-		else
+		}
+		else {
 			return false;
+		}
 	}
 
 	public static Coordinate differenceVectoriel(Coordinate v1, Coordinate v2) {
@@ -95,26 +96,33 @@ public class MathUtil {
 	}
 
 	public static int sign(double d) {
-		if (d > 0)
+		if (d > 0) {
 			return 1;
-		else if (d < 0)
+		}
+		else if (d < 0) {
 			return -1;
-		else
+		}
+		else {
 			return 0;
+		}
 	}
 
 	public static double min(double d1, double d2) {
-		if (d1 < d2)
+		if (d1 < d2) {
 			return d1;
-		else
+		}
+		else {
 			return d2;
+		}
 	}
 
 	public static double max(double d1, double d2) {
-		if (d1 > d2)
+		if (d1 > d2) {
 			return d1;
-		else
+		}
+		else {
 			return d2;
+		}
 	}
 
 	public static double norme(Coordinate v) {
@@ -125,8 +133,9 @@ public class MathUtil {
 	public static Coordinate normeVectoriel(Coordinate v) {
 		double norme = norme(v);
 		Coordinate vNorme = (Coordinate) v.clone();
-		if (norme != 0.0)
+		if (norme != 0.0) {
 			vNorme = new Coordinate(v.x / norme, v.y / norme, v.z / norme);
+		}
 		return vNorme;
 	}
 
@@ -176,8 +185,9 @@ public class MathUtil {
 	public static double round_double(double v, int p) {
 		double vRounded = v;
 		double m = 1.0;
-		for (int i = 0; i < p; i++)
+		for (int i = 0; i < p; i++) {
 			m = m * 10.0;
+		}
 		vRounded = Math.rint(v * m) / m;
 
 		return vRounded;
@@ -209,10 +219,12 @@ public class MathUtil {
 
 	            if ((-EPSILON <= t1) && (t1 <= 1 + EPSILON)) {
 	                // it intersects
-	                if (t1 <= EPSILON)
-	                    intersection = p1;
-	                else if (t1 >= 1 - EPSILON)
-	                    intersection = p2;
+	                if (t1 <= EPSILON) {
+					intersection = p1;
+				}
+	                else if (t1 >= 1 - EPSILON) {
+					intersection = p2;
+				}
 	                else {
 	                    // x = x2 t1 + (1 - t1) x1
 	                    // y = y2 t1 + (1 - t1) y1
@@ -224,12 +236,15 @@ public class MathUtil {
 	                    intersection = new Coordinate(x, y, z);
 
 	                    // Last verification
-	                    if (p1.distance(intersection) < EPSILON)
-	                        intersection = p1;
-	                    else if (p2.distance(intersection) < EPSILON)
-	                        intersection = p2;
-	                    else if (p3.distance(intersection) < EPSILON)
-	                        intersection = p3;
+	                    if (p1.distance(intersection) < EPSILON) {
+						intersection = p1;
+					}
+	                    else if (p2.distance(intersection) < EPSILON) {
+						intersection = p2;
+					}
+	                    else if (p3.distance(intersection) < EPSILON) {
+						intersection = p3;
+					}
 	                }
 	            }
 	        }

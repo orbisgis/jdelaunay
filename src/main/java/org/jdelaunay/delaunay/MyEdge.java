@@ -127,10 +127,12 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @return If i==0, return startPoint else return endPoint.
 	 */
 	public MyPoint point(int i) {
-		if (i == 0)
+		if (i == 0) {
 			return this.startPoint;
-		else
+		}
+		else {
 			return this.endPoint;
+		}
 	}
 
 	/**
@@ -199,8 +201,9 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @param p Start point.
 	 */
 	public void setStart(MyPoint p) {
-		if(isUseByPolygon())
+		if(isUseByPolygon()) {
 			p.setUseByPolygon(true);
+		}
 		
 		this.startPoint = p;
 		updateBox();
@@ -212,8 +215,9 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @param p Start point.
 	 */
 	public void setStartPoint(MyPoint p) {
-		if(isUseByPolygon())
+		if(isUseByPolygon()) {
 			p.setUseByPolygon(true);
+		}
 		
 		this.startPoint = p;
 		updateBox();
@@ -225,8 +229,9 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @param p End point.
 	 */
 	public void setEnd(MyPoint p) {
-		if(isUseByPolygon())
+		if(isUseByPolygon()) {
 			p.setUseByPolygon(true);
+		}
 		
 		this.endPoint = p;
 		updateBox();
@@ -238,8 +243,9 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @param p End point.
 	 */
 	public void setEndPoint(MyPoint p) {
-		if(isUseByPolygon())
+		if(isUseByPolygon()) {
 			p.setUseByPolygon(true);
+		}
 		
 		this.endPoint = p;
 		updateBox();
@@ -336,10 +342,12 @@ public class MyEdge extends MyElement implements Serializable {
 	 */
 	private void setBit(int byteNumber, boolean value) {
 		int test = (1 << byteNumber);
-		if (value)
+		if (value) {
 			this.indicator = (this.indicator | test);
-		else
+		}
+		else {
 			this.indicator = (this.indicator | test) - test;
+		}
 		
 		startPoint.setMarkedByEdge(byteNumber, value);
 		endPoint.setMarkedByEdge(byteNumber, value);
@@ -524,37 +532,44 @@ public class MyEdge extends MyElement implements Serializable {
 			t2 = (a1 * c2 - a2 * c1) / d;
 
 			if ((-epsilon <= t1) && (t1 <= 1 + epsilon) && (-epsilon <= t2)
-					&& (t2 <= 1 + epsilon))
-				if (((-epsilon <= t1) && (t1 <= epsilon))
-						|| ((1 - epsilon <= t1) && (t1 <= 1 + epsilon)))
-					result = 3;//intersects at the extremity
-				else
-					result = 1;//intersects
+					&& (t2 <= 1 + epsilon)) {
+				if (((-epsilon <= t1) && (t1 <= epsilon)) || ((1 - epsilon <= t1) && (t1 <= 1 + epsilon))) {
+					result = 3;
+				} else {
+					result = 1;
+				}
+			}//intersects
 
 		} else {
 			// Check if p3 is between p1 and p2
-			if (Math.abs(a1) > epsilon)
+			if (Math.abs(a1) > epsilon) {
 				t1 = (c1) / (a1);
-			else
+			}
+			else {
 				t1 = (c2) / (a2);
+			}
 
 			if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 				// Check if p4 is between p1 and p2
-				if (Math.abs(p2.getX() - p1.getX()) > epsilon)
+				if (Math.abs(p2.getX() - p1.getX()) > epsilon) {
 					t1 = (p4.getX() - p1.getX()) / (p2.getX() - p1.getX());
-				else
+				}
+				else {
 					t1 = (p4.getY() - p1.getY()) / (p2.getY() - p1.getY());
+				}
 
 				if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 					// Check if p1 is between p3 and p4
-					if (Math.abs(p4.getX() - p3.getX()) > epsilon)
+					if (Math.abs(p4.getX() - p3.getX()) > epsilon) {
 						t1 = (p1.getX() - p3.getX()) / (p4.getX() - p3.getX());
-					else
+					}
+					else {
 						t1 = (p1.getY() - p3.getY()) / (p4.getY() - p3.getY());
+					}
 
-					if ((-epsilon > t1) || (t1 > 1 + epsilon))
-						// we do not check for p2 because it is now impossible
-						result = 0;//no intersection
+					if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
+						result = 0;
+					}//no intersection
 					else
 					{
 						result = 2;//co-linear
@@ -633,14 +648,18 @@ public class MyEdge extends MyElement implements Serializable {
 			if ((-epsilon <= t1) && (t1 <= 1 + epsilon) && (-epsilon <= t2)
 					&& (t2 <= 1 + epsilon)) {
 				// it intersects
-				if (t2 <= epsilon)
+				if (t2 <= epsilon) {
 					intersection = p3;
-				else if (t2 >= 1 - epsilon)
+				}
+				else if (t2 >= 1 - epsilon) {
 					intersection = p4;
-				else if (t1 <= epsilon)
+				}
+				else if (t1 <= epsilon) {
 					intersection = p1;
-				else if (t1 >= 1 - epsilon)
+				}
+				else if (t1 >= 1 - epsilon) {
 					intersection = p2;
+				}
 				else {
 					// x = x2 t1 + (1 - t1) x1
 					// y = y2 t1 + (1 - t1) y1
@@ -663,14 +682,18 @@ public class MyEdge extends MyElement implements Serializable {
 					intersection = new MyPoint(x, y, z);
 
 					// Last verification
-					if (p1.squareDistance_2D(intersection) < epsilon)
+					if (p1.squareDistance_2D(intersection) < epsilon) {
 						intersection = p1;
-					else if (p2.squareDistance_2D(intersection) < epsilon)
+					}
+					else if (p2.squareDistance_2D(intersection) < epsilon) {
 						intersection = p2;
-					else if (p3.squareDistance_2D(intersection) < epsilon)
+					}
+					else if (p3.squareDistance_2D(intersection) < epsilon) {
 						intersection = p3;
-					else if (p4.squareDistance_2D(intersection) < epsilon)
+					}
+					else if (p4.squareDistance_2D(intersection) < epsilon) {
 						intersection = p4;
+					}
 				}
 			}
 		}
@@ -749,9 +772,9 @@ public class MyEdge extends MyElement implements Serializable {
 				if (Math.abs(a2) > epsilon) {
 					t2 = c2 / a2;
 					if ((-epsilon < t2) && (t2 < 1 + epsilon)
-							&& (Math.abs(t1 - t2) < epsilon))
-						// same t value => ok
+							&& (Math.abs(t1 - t2) < epsilon)) {
 						isInside = true;
+					}
 				} else if (Math.abs(c2) < epsilon) {
 					// p1.getY(), p2.getY() and p.getY() are the same
 					isInside = true;
@@ -761,8 +784,9 @@ public class MyEdge extends MyElement implements Serializable {
 			// p1.getX(), p2.getX() and p.getX() are the same
 			if (Math.abs(a2) > epsilon) {
 				t2 = c2 / a2;
-				if ((-epsilon < t2) && (t2 < 1 + epsilon))
+				if ((-epsilon < t2) && (t2 < 1 + epsilon)) {
 					isInside = true;
+				}
 			} else if (Math.abs(c2) < epsilon) {
 				// p1.getY(), p2.getY() and p.getY() are also the same
 				isInside = true;
@@ -791,8 +815,9 @@ public class MyEdge extends MyElement implements Serializable {
 		double c2 = p.getY() - p1.getY();
 		double epsilon = MyTools.epsilon;
 		double t = a1*c2 - a2*c1;
-		if (Math.abs(t) < epsilon)
+		if (Math.abs(t) < epsilon) {
 			isColinear2D = true;
+		}
 		
 		return isColinear2D;
 	}
@@ -819,8 +844,9 @@ public class MyEdge extends MyElement implements Serializable {
 		double t1 = a1*c2 - a2*c1;
 		double t2 = a1*c3 - a3*c1;
 		double t3 = a3*c2 - a2*c3;
-		if ((Math.abs(t1) < epsilon) && (Math.abs(t2) < epsilon) && (Math.abs(t3) < epsilon))
+		if ((Math.abs(t1) < epsilon) && (Math.abs(t2) < epsilon) && (Math.abs(t3) < epsilon)) {
 			isColinear = true;
+		}
 
 		return isColinear;
 	}
@@ -866,10 +892,12 @@ public class MyEdge extends MyElement implements Serializable {
 	public boolean isExtremity(MyPoint p) {
 		boolean isExtremity = false;
 
-		if (this.startPoint.squareDistance_2D(p) < MyTools.epsilon)
+		if (this.startPoint.squareDistance_2D(p) < MyTools.epsilon) {
 			isExtremity = true;
-		else if (this.endPoint.squareDistance_2D(p) < MyTools.epsilon)
+		}
+		else if (this.endPoint.squareDistance_2D(p) < MyTools.epsilon) {
 			isExtremity = true;
+		}
 		return isExtremity;
 	}
 
@@ -972,8 +1000,9 @@ public class MyEdge extends MyElement implements Serializable {
 	 */
 	public boolean isFlatSlope() {
 		boolean isFlat = true;
-		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > MyTools.epsilon)
+		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > MyTools.epsilon) {
 			isFlat = false;
+		}
 		return isFlat;
 	}
 
@@ -1004,10 +1033,12 @@ public class MyEdge extends MyElement implements Serializable {
 
 		int v1 = p1.hashCode();
 		int v2 = p2.hashCode();
-		if (v1 < v2)
+		if (v1 < v2) {
 			hashValue = v1;
-		else
+		}
+		else {
 			hashValue = v2;
+		}
 
 		return hashValue;
 	}
@@ -1026,8 +1057,9 @@ public class MyEdge extends MyElement implements Serializable {
 			g.setColor(Color.CYAN);
 		} else if (isOutsideMesh()) {
 			g.setColor(Color.pink);
-		} else
+		} else {
 			g.setColor(Color.black);
+		}
 	}
 
 	/**

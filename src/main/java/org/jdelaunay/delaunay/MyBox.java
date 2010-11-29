@@ -121,18 +121,24 @@ public class MyBox implements Serializable {
 			empty = false;
 		}
 		else {
-			if (minx > x)
+			if (minx > x) {
 				minx = x;
-			else if (maxx < x)
+			}
+			else if (maxx < x) {
 				maxx = x;
-			if (miny > y)
+			}
+			if (miny > y) {
 				miny = y;
-			else if (maxy < y)
+			}
+			else if (maxy < y) {
 				maxy = y;
-			if (minz > z)
+			}
+			if (minz > z) {
 				minz = z;
-			else if (maxz < z)
+			}
+			else if (maxz < z) {
 				maxz = z;
+			}
 		}
 		updateMiddle();
 	}

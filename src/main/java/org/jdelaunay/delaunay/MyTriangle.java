@@ -109,14 +109,17 @@ public class MyTriangle extends MyElement implements Serializable{
 	 */
 	public MyPoint getPoint(int i) {
 		MyPoint p;
-		if (i==0)
+		if (i==0) {
 			p = edges[0].getStartPoint();
-		else if (i==1)
+		}
+		else if (i==1) {
 			p = edges[0].getEndPoint();
+		}
 		else {
 			p = edges[1].getStartPoint();
-			if ((p==edges[0].getStartPoint()) || (p==edges[0].getEndPoint()))
+			if ((p==edges[0].getStartPoint()) || (p==edges[0].getEndPoint())) {
 				p = edges[1].getEndPoint();
+			}
 		}
 		return p;
 	}
@@ -129,10 +132,12 @@ public class MyTriangle extends MyElement implements Serializable{
 	 * @return anEdge
 	 */
 	public MyEdge getEdge(int i) {
-		if ((0<=i) && (i<=2))
+		if ((0<=i) && (i<=2)) {
 			return edges[i];
-		else
+		}
+		else {
 			return null;
+		}
 	}
 
 	/**
@@ -142,8 +147,9 @@ public class MyTriangle extends MyElement implements Serializable{
 	 * @param anEdge
 	 */
 	public void setEdge(int i, MyEdge anEdge) {
-		if ((0<=i) && (i<=2))
+		if ((0<=i) && (i<=2)) {
 			edges[i] = anEdge;
+		}
 	}
 
 	/**
@@ -197,10 +203,12 @@ public class MyTriangle extends MyElement implements Serializable{
 	 */
 	private void setBit(int byteNumber, boolean value) {
 		int test = (1 << byteNumber);
-		if (value)
+		if (value) {
 			this.indicator = (this.indicator | test);
-		else
+		}
+		else {
 			this.indicator = (this.indicator | test) - test;
+		}
 	}
 	
 	/**
@@ -224,6 +232,7 @@ public class MyTriangle extends MyElement implements Serializable{
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
 	 */
+	@Override
 	public MyBox getBoundingBox() {
 		MyBox aBox = new MyBox();
 
@@ -231,8 +240,9 @@ public class MyTriangle extends MyElement implements Serializable{
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2))
+		if ((p3==p1)||(p3==p2)) {
 			p3 = edges[1].getEndPoint();
+		}
 		aBox.alterBox( p1);
 		aBox.alterBox( p2);
 		aBox.alterBox( p3);
@@ -243,6 +253,7 @@ public class MyTriangle extends MyElement implements Serializable{
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
+	@Override
 	public boolean contains(MyPoint aPoint) {
 		return isInside(aPoint);
 	}
@@ -260,8 +271,9 @@ public class MyTriangle extends MyElement implements Serializable{
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2))
+		if ((p3==p1)||(p3==p2)) {
 			p3 = edges[1].getEndPoint();
+		}
 
 		double p1Sq = p1.getX() * p1.getX() + p1.getY() * p1.getY();
 		double p2Sq = p2.getX() * p2.getX() + p2.getY() * p2.getY();
@@ -305,15 +317,17 @@ public class MyTriangle extends MyElement implements Serializable{
 			// Start point should be start
 			MyPoint aPoint = this.getAlterPoint(edges[i]);
 			if (edges[i].isLeft(aPoint)) {
-				if (edges[i].getLeft() == null)
-					edges[i].setLeft( this );
+				if (edges[i].getLeft() == null) {
+					edges[i].setLeft(this);
+				}
 				else {
 					edges[i].setRight( this );
 				}
 			}
 			else {
-				if (edges[i].getRight() == null)
-					edges[i].setRight( this );
+				if (edges[i].getRight() == null) {
+					edges[i].setRight(this);
+				}
 				else {
 					edges[i].setLeft( this );
 				}
@@ -336,12 +350,12 @@ public class MyTriangle extends MyElement implements Serializable{
 		double ux = aPoint.getX() - x_center;
 		double uy = aPoint.getY() - y_center;
 		double distance = ux * ux + uy * uy;
-		if (distance < radius - MyTools.epsilon2)
-			// in the circle
+		if (distance < radius - MyTools.epsilon2) {
 			returnedValue = 1;
-		else if (distance < radius + MyTools.epsilon2)
-			// on the circle
+		}
+		else if (distance < radius + MyTools.epsilon2) {
 			returnedValue = 2;
+		}
 
 		return returnedValue;
 	}
@@ -360,11 +374,13 @@ public class MyTriangle extends MyElement implements Serializable{
 			MyEdge theEdge = edges[k];
 
 			if (theEdge.getLeft() == this) {
-				if (theEdge.isRight(aPoint))
+				if (theEdge.isRight(aPoint)) {
 					isInside = false;
+				}
 			} else {
-				if (theEdge.isLeft(aPoint))
+				if (theEdge.isLeft(aPoint)) {
 					isInside = false;
+				}
 			}
 			k++;
 		}
@@ -385,8 +401,9 @@ public class MyTriangle extends MyElement implements Serializable{
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2))
+		if ((p3==p1)||(p3==p2)) {
 			p3 = edges[1].getEndPoint();
+		}
 
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
@@ -423,11 +440,13 @@ public class MyTriangle extends MyElement implements Serializable{
 		for (int i=0; i<3; i++) {
 			MyEdge anEdge = edges[i];
 			MyTriangle aTriangle = null;
-			if (anEdge != null)
-				if (anEdge.getLeft() == this)
+			if (anEdge != null) {
+				if (anEdge.getLeft() == this) {
 					aTriangle = anEdge.getRight();
-				else
+				} else {
 					aTriangle = anEdge.getLeft();
+				}
+			}
 			if (aTriangle != null) {
 				weight += 1.0;
 				ZValue += aTriangle.interpolateZ(aPoint);
@@ -449,8 +468,9 @@ public class MyTriangle extends MyElement implements Serializable{
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2))
+		if ((p3==p1)||(p3==p2)) {
 			p3 = edges[1].getEndPoint();
+		}
 
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
@@ -497,8 +517,9 @@ public class MyTriangle extends MyElement implements Serializable{
 					* (180d / Math.PI);
 			if (angle < minAngle) {
 				minAngle = angle;
-				if (minAngle < tolarance)
+				if (minAngle < tolarance) {
 					returndeValue = k;
+				}
 			}
 		}
 		return returndeValue;
@@ -550,11 +571,13 @@ public class MyTriangle extends MyElement implements Serializable{
 		while ((i < 3) && (correct)) {
 			int foundEdge = 0;
 			for (j = 0; j < 3; j++) {
-				if (edges[i] == edges[j])
+				if (edges[i] == edges[j]) {
 					foundEdge++;
+				}
 			}
-			if (foundEdge != 1)
+			if (foundEdge != 1) {
 				correct = false;
+			}
 			i++;
 		}
 
@@ -562,13 +585,16 @@ public class MyTriangle extends MyElement implements Serializable{
 		i = 0;
 		while ((i < 3) && (correct)) {
 			int foundEdge = 0;
-			if (edges[i].getLeft() == this)
+			if (edges[i].getLeft() == this) {
 				foundEdge++;
-			if (edges[i].getRight() == this)
+			}
+			if (edges[i].getRight() == this) {
 				foundEdge++;
+			}
 
-			if (foundEdge != 1)
+			if (foundEdge != 1) {
 				correct = false;
+			}
 			i++;
 		}
 
@@ -578,19 +604,24 @@ public class MyTriangle extends MyElement implements Serializable{
 		while ((i < 3) && (correct)) {
 			MyEdge anEdge = edges[i];
 			for (j = 0; j < 2; j++) {
-				if (j == 0)
+				if (j == 0) {
 					aPoint = anEdge.getStartPoint();
-				else
+				}
+				else {
 					aPoint = anEdge.getEndPoint();
+				}
 				int foundPoint = 0;
 				for (k = 0; k < 3; k++) {
-					if (edges[k].getStartPoint() == aPoint)
+					if (edges[k].getStartPoint() == aPoint) {
 						foundPoint++;
-					if (edges[k].getEndPoint() == aPoint)
+					}
+					if (edges[k].getEndPoint() == aPoint) {
 						foundPoint++;
+					}
 				}
-				if (foundPoint != 2)
+				if (foundPoint != 2) {
 					correct = false;
+				}
 			}
 			i++;
 		}
@@ -614,8 +645,9 @@ public class MyTriangle extends MyElement implements Serializable{
 				// Check if it is one of the points of the triangle
 				if ((aPoint != getPoint(0))
 						&& (aPoint != getPoint(1))
-						&& (aPoint != getPoint(2)))
+						&& (aPoint != getPoint(2))) {
 					correct = false;
+				}
 			}
 		}
 
@@ -632,10 +664,12 @@ public class MyTriangle extends MyElement implements Serializable{
 		boolean isFlat = true;
 		int i = 0;
 		while ((i < 3) && (isFlat)) {
-			if (!edges[i].isFlatSlope())
+			if (!edges[i].isFlatSlope()) {
 				isFlat = false;
-			else
+			}
+			else {
 				i++;
+			}
 		}
 		return isFlat;
 	}
@@ -667,8 +701,9 @@ public class MyTriangle extends MyElement implements Serializable{
 		if (p1 == edges[0].getStartPoint()) {
 			if (p2 == edges[0].getEndPoint()) {
 				alterPoint = edges[1].getStartPoint();
-				if ((alterPoint== p1) || (alterPoint==p2))
+				if ((alterPoint== p1) || (alterPoint==p2)) {
 					alterPoint = edges[1].getEndPoint();
+				}
 			}
 			else {
 				alterPoint = edges[0].getEndPoint();
@@ -677,15 +712,17 @@ public class MyTriangle extends MyElement implements Serializable{
 		else if (p2 == edges[0].getStartPoint()) {
 			if (p1 == edges[0].getEndPoint()) {
 				alterPoint = edges[1].getStartPoint();
-				if ((alterPoint== p1) || (alterPoint==p2))
+				if ((alterPoint== p1) || (alterPoint==p2)) {
 					alterPoint = edges[1].getEndPoint();
+				}
 			}
 			else {
 				alterPoint = edges[0].getEndPoint();
 			}
 		}
-		else
+		else {
 			alterPoint = edges[0].getStartPoint();
+		}
 
 		return alterPoint;
 	}
@@ -703,12 +740,15 @@ public class MyTriangle extends MyElement implements Serializable{
 			MyEdge testEdge = edges[i];
 			test1 = testEdge.getStartPoint();
 			test2 = testEdge.getEndPoint();
-			if ((test1 == p1) && (test2 == p2))
+			if ((test1 == p1) && (test2 == p2)) {
 				alterEdge = testEdge;
-			else if ((test1 == p2) && (test2 == p1))
+			}
+			else if ((test1 == p2) && (test2 == p1)) {
 				alterEdge = testEdge;
-			else
+			}
+			else {
 				i++;
+			}
 		}
 
 		return alterEdge;
@@ -727,12 +767,15 @@ public class MyTriangle extends MyElement implements Serializable{
 			MyEdge testEdge = edges[i];
 			test1 = testEdge.getStartPoint();
 			test2 = testEdge.getEndPoint();
-			if ((test1 == p1) && (test2 == p2))
+			if ((test1 == p1) && (test2 == p2)) {
 				edgePosition = i;
-			else if ((test1 == p2) && (test2 == p1))
+			}
+			else if ((test1 == p2) && (test2 == p1)) {
 				edgePosition = i;
-			else
+			}
+			else {
 				i++;
+			}
 		}
 
 		return edgePosition;
@@ -746,16 +789,20 @@ public class MyTriangle extends MyElement implements Serializable{
 	public boolean belongsTo(MyPoint aPoint) {
 		boolean belongs = false;
 		MyEdge anEdge = this.getEdge(0);
-		if (anEdge.getStartPoint() == aPoint)
+		if (anEdge.getStartPoint() == aPoint) {
 			belongs = true;
-		else if (anEdge.getEndPoint() == aPoint)
+		}
+		else if (anEdge.getEndPoint() == aPoint) {
 			belongs = true;
+		}
 		else {
 			anEdge = this.getEdge(1);
-			if (anEdge.getStartPoint() == aPoint)
+			if (anEdge.getStartPoint() == aPoint) {
 				belongs = true;
-			else if (anEdge.getEndPoint() == aPoint)
+			}
+			else if (anEdge.getEndPoint() == aPoint) {
 				belongs = true;
+			}
 		}
 
 		return belongs;
@@ -769,16 +816,20 @@ public class MyTriangle extends MyElement implements Serializable{
 	public boolean isClosedFromPoints(MyPoint aPoint) {
 		boolean closedTo = false;
 		MyEdge anEdge = this.getEdge(0);
-		if (anEdge.getStartPoint() == aPoint)
+		if (anEdge.getStartPoint() == aPoint) {
 			closedTo = true;
-		else if (anEdge.getEndPoint() == aPoint)
+		}
+		else if (anEdge.getEndPoint() == aPoint) {
 			closedTo = true;
+		}
 		else {
 			anEdge = this.getEdge(1);
-			if (anEdge.getStartPoint() == aPoint)
+			if (anEdge.getStartPoint() == aPoint) {
 				closedTo = true;
-			else if (anEdge.getEndPoint() == aPoint)
+			}
+			else if (anEdge.getEndPoint() == aPoint) {
 				closedTo = true;
+			}
 		}
 
 		return closedTo;
@@ -812,6 +863,7 @@ public class MyTriangle extends MyElement implements Serializable{
 	 *
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return "Triangle "+gid+": ["+getPoint(0).toString()+", "+getPoint(1).toString()+", "+getPoint(2).toString()+"]";
 	}
@@ -822,12 +874,15 @@ public class MyTriangle extends MyElement implements Serializable{
 	 * @param g
 	 */
 	protected void setColor(Graphics g) {
-		if(property>0)
+		if(property>0) {
 			g.setColor(new Color(property));
-		else if (isFlatSlope())
+		}
+		else if (isFlatSlope()) {
 			g.setColor(Color.green);
-		else
+		}
+		else {
 			g.setColor(Color.yellow);
+		}
 	}
 
 	/**

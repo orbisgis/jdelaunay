@@ -83,16 +83,19 @@ public class HydroPolygonUtil {
 			// on en deduit le vecteur de ligne de niveau
 			// Coordinate l = new Coordinate(n.y , -n.x, 0);
 			// on ne traite pas les cas degeneres
-			if (n.x == 0 && n.y == 0)
+			if (n.x == 0 && n.y == 0) {
 				pente = new Coordinate(0, 0, 0);
+			}
 			else {
-				if (n.x == 0)
+				if (n.x == 0) {
 					pente = new Coordinate(0, 1, -n.y / n.z);
-				else if (n.y == 0)
+				}
+				else if (n.y == 0) {
 					pente = new Coordinate(1, 0, -n.x / n.z);
-				else
-					pente = new Coordinate(n.x / n.y, 1, -1 / n.z
-							* (n.x * n.x / n.y + n.y));
+				}
+				else {
+					pente = new Coordinate(n.x / n.y, 1, -1 / n.z * (n.x * n.x / n.y + n.y));
+				}
 				// on choisit le sens descendant
 				if (pente.z > 0) {
 					pente.x = -pente.x;
@@ -121,10 +124,11 @@ public class HydroPolygonUtil {
 		if (valeurPente == -1.0) {
 			double d = 0.0;
 			Coordinate p = get3DVector();
-			if (p != null)
+			if (p != null){
 				// calcul de la distance horizontale
 				// separant les 2 extremites du vecteur pente
 				d = Math.sqrt(p.x * p.x + p.y * p.y);
+			}
 			valeurPente = d == 0.0 ? 0.0 : p.z / d;
 		}
 
@@ -151,11 +155,13 @@ public class HydroPolygonUtil {
 		Coordinate B = pt2.getCoordinate();
 		int i = 0;
 		while (!(i == 4 || (!p.getCoordinates()[i].equals3D(A) && !p
-				.getCoordinates()[i].equals3D(B))))
+				.getCoordinates()[i].equals3D(B)))) {
 			i++;
+		}
 		// Assert.isTrue(i!=4,"edge n'appartenant pas au triangle");
-		if (i == 4)
-			return res; // e n'appartient pas au triangle
+		if (i == 4) {
+			return res;
+		} // e n'appartient pas au triangle
 
 		Coordinate C = p.getCoordinates()[i];
 		Coordinate AB = MathUtil.differenceVectoriel(B, A);
@@ -201,10 +207,12 @@ public class HydroPolygonUtil {
 		if (orientationPente == -1.) {
 			Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
 			Coordinate c2 = this.get3DVector();
-			if (c2 == null)
+			if (c2 == null) {
 				c2 = new Coordinate(0.0, 0.0, 0.0);
-			if (c2.z > 0.0)
+			}
+			if (c2.z > 0.0) {
 				c2.setCoordinate(new Coordinate(-c2.x, -c2.y, -c2.z));
+			}
 			// l'ordre des coordonnees correspond a l'orientation de l'arc
 			// "sommet haut vers sommet bas"
 			double angleAxeX_rad = Angle.angle(c1, c2);

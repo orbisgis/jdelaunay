@@ -121,8 +121,9 @@ public class MyPolygon extends MyElement {
 	 * @throws DelaunayError 
 	 */
 	private void init(Polygon polygon) throws DelaunayError {
-		if (polygon.isEmpty())
+		if (polygon.isEmpty()) {
 			throw new IllegalArgumentException("Polygon is empty");
+		}
 		else {
 			this.polygon = polygon;
 			
@@ -135,15 +136,17 @@ public class MyPolygon extends MyElement {
 			// each point is created one
 			int nbPoints = polygon.getNumPoints();
 			
-			if(Double.isNaN(polygon.getCoordinates()[0].z))
-				polygon.getCoordinates()[0].z=0;
+			if(Double.isNaN(polygon.getCoordinates()[0].z)) {
+				polygon.getCoordinates()[0].z = 0;
+			}
 			MyPoint lastPoint = new MyPoint(polygon.getCoordinates()[0]);
 
 			MyPoint aPoint;
 			MyEdge aEdge;
 			for (int i = 1; i < nbPoints; i++) {
-				if(Double.isNaN(polygon.getCoordinates()[i].z))
-					polygon.getCoordinates()[i].z=0;
+				if(Double.isNaN(polygon.getCoordinates()[i].z)) {
+					polygon.getCoordinates()[i].z = 0;
+				}
 				aPoint = new MyPoint(polygon.getCoordinates()[i]);
 				aEdge=new MyEdge(lastPoint, aPoint);
 				aEdge.setUseByPolygon(true);
@@ -290,10 +293,12 @@ public class MyPolygon extends MyElement {
 		boolean edgeColinear=false, intersectEdge=false;
 		for(int i=0;i<edges.size();i++ )
 		{
-			if(edges.get(i).haveSamePoint(anEdge))
-				edgeColinear=true;
-			else if(edges.get(i).intersects(anEdge.getStartPoint(), anEdge.getEndPoint())==1)
-				intersectEdge=true;
+			if(edges.get(i).haveSamePoint(anEdge)) {
+				edgeColinear = true;
+			}
+			else if(edges.get(i).intersects(anEdge.getStartPoint(), anEdge.getEndPoint())==1) {
+				intersectEdge = true;
+			}
 		}
 		return (intersectPolygon && !intersectEdge) || (!intersectPolygon && edgeColinear && !intersectEdge);
 	}
@@ -301,6 +306,7 @@ public class MyPolygon extends MyElement {
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#contains(com.vividsolutions.jts.geom.Coordinate)
 	 */
+	@Override
 	public boolean contains(Coordinate coordinate) throws DelaunayError {  //FIXME make better code
 		boolean intersect=polygon.contains(new GeometryFactory().createPoint(coordinate));
 		for(int i=0;i<edges.size() && !intersect;i++ )

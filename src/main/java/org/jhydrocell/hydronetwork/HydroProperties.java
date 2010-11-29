@@ -49,8 +49,9 @@ public class HydroProperties {
 			
 			if ((aType & property) != 0) {
 				// Property is valid
-				if (! returned.equals(""))
+				if (! returned.equals("")) {
 					returned += ",";
+				}
 				returned += propertyToString(property);
 			}
 		}
@@ -121,13 +122,16 @@ public class HydroProperties {
 		boolean found = false;
 		while ((i < 64) && (!found)) {
 			res = 1 << i;
-			if (propertyToString(res).equals(aType))
+			if (propertyToString(res).equals(aType)) {
 				found = true;
-			else
-				i ++;
+			}
+			else {
+				i++;
+			}
 		}
-		if (!found)
+		if (!found) {
 			res = 0;
+		}
 		return res;
 	}
 

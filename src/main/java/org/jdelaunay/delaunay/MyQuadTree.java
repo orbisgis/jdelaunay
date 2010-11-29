@@ -185,31 +185,36 @@ public class MyQuadTree<T extends MyElement> {
 		
 		switch (sector) {
 			case 1:// left
-				if(elementBoundingBox.minx<=boundingBox.minx+width/3)
-					intersect =true;
+				if(elementBoundingBox.minx<=boundingBox.minx+width/3) {
+			intersect = true;
+		}
 				break;
 				
 			case 2:// middle top
 				if(elementBoundingBox.minx<boundingBox.minx+width*2/3 && elementBoundingBox.maxx>boundingBox.minx+width/3
-						&& elementBoundingBox.maxy>=boundingBox.miny+height*2/3)
-					intersect =true;
+						&& elementBoundingBox.maxy>=boundingBox.miny+height*2/3) {
+			intersect = true;
+		}
 				break;
 
 			case 3:// middle
 				if(elementBoundingBox.minx<boundingBox.minx+width*2/3 && elementBoundingBox.maxx>boundingBox.minx+width/3
-						&& elementBoundingBox.maxy>boundingBox.miny+height/3 && elementBoundingBox.miny<boundingBox.miny+height*2/3)
-					intersect =true;
+						&& elementBoundingBox.maxy>boundingBox.miny+height/3 && elementBoundingBox.miny<boundingBox.miny+height*2/3) {
+			intersect = true;
+		}
 				break;
 				
 			case 4:// middle bottom
 				if(elementBoundingBox.minx<boundingBox.minx+width*2/3 && elementBoundingBox.maxx>boundingBox.minx+width/3
-						&& elementBoundingBox.miny<=boundingBox.miny+height/3)
-					intersect =true;
+						&& elementBoundingBox.miny<=boundingBox.miny+height/3) {
+			intersect = true;
+		}
 				break;
 				
 			case 5:// right
-				if(elementBoundingBox.maxx>=boundingBox.minx+width*2/3)
-					intersect =true;
+				if(elementBoundingBox.maxx>=boundingBox.minx+width*2/3) {
+			intersect = true;
+		}
 				break;
 		}
 		return intersect;
@@ -242,14 +247,17 @@ public class MyQuadTree<T extends MyElement> {
 
 		
 		// Insert it or go further
-		if( indexIntersect == -1)
+		if( indexIntersect == -1) {
 			add(element, boundingBox);
-		else if (maxLevel-1<=0)
+		}
+		else if (maxLevel-1<=0) {
 			add(element, boundingBox);
+		}
 		else
 		{	
-			if(theQuadTree[indexIntersect]==null)
-				theQuadTree[indexIntersect]=new MyQuadTree<T>(maxLevel-1);
+			if(theQuadTree[indexIntersect]==null) {
+				theQuadTree[indexIntersect] = new MyQuadTree<T>(maxLevel - 1);
+			}
 			theQuadTree[indexIntersect].add(element, theBox, saveBox, maxLevel-1);
 		}
 	}
@@ -292,11 +300,13 @@ public class MyQuadTree<T extends MyElement> {
 				theQuadTree[indexIntersect]=new MyQuadTree<T>(level-1);
 				theQuadTree[indexIntersect].add(element, theBox, saveBox);
 			}
-			else
+			else {
 				add(element, boundingBox);
+			}
 		}
-		else
+		else {
 			theQuadTree[indexIntersect].add(element, theBox, saveBox);
+		}
 	}
 
 
@@ -380,8 +390,9 @@ public class MyQuadTree<T extends MyElement> {
 								((MyEdge) element).getEndPoint().getCoordinate().equals(((MyEdge) searchedElement).getEndPoint().getCoordinate()) )
 						||( ((MyEdge) element).getStartPoint().getCoordinate().equals(((MyEdge) searchedElement).getEndPoint().getCoordinate()) &&
 								((MyEdge) element).getEndPoint().getCoordinate().equals(((MyEdge) searchedElement).getStartPoint().getCoordinate()) )
-				)
-					found=searchedElement;
+				) {
+					found = searchedElement;
+				}
 			}
 			else if(element instanceof MyPoint && searchedElement instanceof MyPoint)
 			{
@@ -389,12 +400,14 @@ public class MyQuadTree<T extends MyElement> {
 					&& ((MyPoint) element).getY()== ((MyPoint) searchedElement).getY() 		/* check Y */
 					&& (((MyPoint) element).isZUse()?
 							((MyPoint) element).getZ()==((MyPoint) searchedElement).getZ()	/* check Z if element.isZUse()==true */
-							:true))
-					found=searchedElement;
+							:true)) {
+					found = searchedElement;
+				}
 			}
 			else
-				if(element.equals(searchedElement))
-					found=searchedElement;
+				if(element.equals(searchedElement)) {
+				found = searchedElement;
+			}
 		}
 
 		
@@ -437,8 +450,9 @@ public class MyQuadTree<T extends MyElement> {
 			while ((iterList.hasNext()) && (anElement == null)) {
 				T searchedElement = iterList.next();
 			
-				if(aPoint.getBoundingBox().minx>searchedElement.getBoundingBox().maxx)
-					break;
+				if(aPoint.getBoundingBox().minx>searchedElement.getBoundingBox().maxx) {
+				break;
+			}
 				
 				double a,b;
 				if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint"))
@@ -601,11 +615,13 @@ public class MyQuadTree<T extends MyElement> {
 		while (iterList.hasNext() && foudElement==null) {
 			T searchedElement = iterList.next();
 			
-			if(anElement.getBoundingBox().minx>searchedElement.getBoundingBox().maxx)
+			if(anElement.getBoundingBox().minx>searchedElement.getBoundingBox().maxx) {
 				break;
+			}
 			
-			if(searchedElement.contains(anElement.getBoundingBox().getMiddle()))
-				foudElement=searchedElement;
+			if(searchedElement.contains(anElement.getBoundingBox().getMiddle())) {
+				foudElement = searchedElement;
+			}
 		}
 		
 		for(int i=1;i<6;i++)	//TODO optimize me
@@ -616,11 +632,13 @@ public class MyQuadTree<T extends MyElement> {
 				while (iterList.hasNext() && foudElement==null) {
 					T searchedElement = iterList.next();
 					
-					if(anElement.getBoundingBox().minx>searchedElement.getBoundingBox().maxx)
+					if(anElement.getBoundingBox().minx>searchedElement.getBoundingBox().maxx) {
 						break;
+					}
 					
-					if(searchedElement.contains(anElement.getBoundingBox().getMiddle()))
-						foudElement=searchedElement;
+					if(searchedElement.contains(anElement.getBoundingBox().getMiddle())) {
+						foudElement = searchedElement;
+					}
 				}
 			}
 		}
@@ -663,15 +681,17 @@ public class MyQuadTree<T extends MyElement> {
 		while ((iterList.hasNext())) {
 			MyEdge searchedElement =  iterList.next();
 
-			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
+			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 				break;
+			}
 
 			if(searchBoundingBox.minx<=searchedElement.getBoundingBox().maxx &&
 					searchBoundingBox.miny<=searchedElement.getBoundingBox().maxy &&
 					searchBoundingBox.maxy>=searchedElement.getBoundingBox().miny)
 			{	intersect = anEdge.intersects(searchedElement.getStartPoint(), searchedElement.getEndPoint());
-				if(0< intersect)
+				if(0< intersect) {
 					allElements.add(new Object[]{searchedElement, intersect});
+				}
 			}
 		}
 		
@@ -683,15 +703,17 @@ public class MyQuadTree<T extends MyElement> {
 				while ((iterList.hasNext())) {
 					MyEdge searchedElement =  iterList.next();
 	
-					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
+					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 						break;
+					}
 					
 					if(searchBoundingBox.minx<=searchedElement.getBoundingBox().maxx &&
 							searchBoundingBox.miny<=searchedElement.getBoundingBox().maxy &&
 							searchBoundingBox.maxy>=searchedElement.getBoundingBox().miny)
 					{	intersect = anEdge.intersects(searchedElement.getStartPoint(), searchedElement.getEndPoint());
-						if(0< intersect)
+						if(0< intersect) {
 							allElements.add(new Object[]{searchedElement, intersect});
+						}
 					}
 				}
 			}
@@ -727,8 +749,9 @@ public class MyQuadTree<T extends MyElement> {
 		while ((iterList.hasNext()) && !isIntersect) {
 			MyEdge searchedElement =  iterList.next();
 
-			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
+			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 				break;
+			}
 
 			isIntersect = 1==anEdge.intersects(searchedElement.getStartPoint(), searchedElement.getEndPoint());
 		}
@@ -741,8 +764,9 @@ public class MyQuadTree<T extends MyElement> {
 				while ((iterList.hasNext()) && !isIntersect) {
 					MyEdge searchedElement =  iterList.next();
 	
-					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
+					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 						break;
+					}
 					
 					isIntersect = 1==anEdge.intersects(searchedElement.getStartPoint(), searchedElement.getEndPoint());					
 				}
@@ -786,8 +810,9 @@ public class MyQuadTree<T extends MyElement> {
 					b.maxy>=searchBoundingBox.miny &&
 					b.minx<=searchBoundingBox.maxx &&
 					b.miny<=searchBoundingBox.maxy
-				)
+				) {
 				allElements.add(searchedElement);
+			}
 			
 		}
 		
@@ -805,8 +830,9 @@ public class MyQuadTree<T extends MyElement> {
 							b.maxy>=searchBoundingBox.miny &&
 							b.minx<=searchBoundingBox.maxx &&
 							b.miny<=searchBoundingBox.maxy
-						)
+						) {
 						allElements.add(searchedElement);
+					}
 				}
 			}
 		}
@@ -851,8 +877,9 @@ public class MyQuadTree<T extends MyElement> {
 
 			MyBox b=searchedElement.getBoundingBox();
 			
-			if(searchBoundingBox.minx>b.maxx)
+			if(searchBoundingBox.minx>b.maxx) {
 				break;
+			}
 			
 
 				if(		b.minx> searchBoundingBox.minx &&
@@ -877,8 +904,9 @@ public class MyQuadTree<T extends MyElement> {
 		
 					MyBox b=searchedElement.getBoundingBox();
 					
-					if(searchBoundingBox.minx>b.maxx)
+					if(searchBoundingBox.minx>b.maxx) {
 						break;
+					}
 					
 		
 						if(		b.minx> searchBoundingBox.minx &&
@@ -951,8 +979,9 @@ public class MyQuadTree<T extends MyElement> {
 		while ((iterList.hasNext())) {
 			T searchedElement = iterList.next();
 			
-			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
+			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 				break;
+			}
 			
 			if(!searchedElement.isUseByPolygon() && aPolygon.contains(searchedElement.getBoundingBox().getMiddle()))
 			{	
@@ -969,8 +998,9 @@ public class MyQuadTree<T extends MyElement> {
 				while ((iterList.hasNext())) {
 					
 					T searchedElement = iterList.next();
-					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx)
+					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 						break;
+					}
 					
 
 					if(!searchedElement.isUseByPolygon() && aPolygon.contains(searchedElement.getBoundingBox().getMiddle()))
@@ -1004,8 +1034,9 @@ public class MyQuadTree<T extends MyElement> {
 							&& theQuadTree[i].theQuadTree[1]==null
 							&& theQuadTree[i].theQuadTree[2]==null
 							&& theQuadTree[i].theQuadTree[3]==null
-							)
-						theQuadTree[i]=null;
+							) {
+						theQuadTree[i] = null;
+					}
 				}
 
 
@@ -1033,8 +1064,9 @@ public class MyQuadTree<T extends MyElement> {
 				while ((iterList.hasNext())) {
 					T searchedElement = iterList.next();
 					
-					if(element.getBoundingBox().minx>searchedElement.getBoundingBox().maxx)
-						break;
+					if(element.getBoundingBox().minx>searchedElement.getBoundingBox().maxx) {
+					break;
+				}
 					
 					if(searchedElement==element)
 					{

@@ -43,8 +43,9 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * @throws DelaunayError If x, y or z is not set.
 	 */
 	private void init(double x, double y, double z) throws DelaunayError {
-		if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z))
+		if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
 			throw new DelaunayError(DelaunayError.DelaunayError_errorPointxyz);
+		}
 		
 		this.coord = new Coordinate(x,y,z);
 		this.indicator = 0;
@@ -170,10 +171,12 @@ public class MyPoint extends MyElement  implements Serializable{
 	 */
 	private void setBit(int byteNumber, boolean value) {
 		int test = (1 << byteNumber);
-		if (value)
+		if (value) {
 			this.indicator = (this.indicator | test);
-		else
+		}
+		else {
 			this.indicator = (this.indicator | test) - test;
+		}
 	}
 	
 	/**
@@ -242,6 +245,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * check if point is use by a polygon.
 	 * @return useByPolygon
 	 */
+	@Override
 	public boolean isUseByPolygon(){
 		return testBit(4);
 	}
@@ -250,6 +254,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * set if point is use by a polygon.
 	 * @param useByPolygon
 	 */
+	@Override
 	public void setUseByPolygon(boolean useByPolygon){
 		setBit(4, useByPolygon);
 	}
@@ -295,18 +300,22 @@ public class MyPoint extends MyElement  implements Serializable{
 	 */
 	@Override
 	public boolean contains(MyPoint aPoint) {
-		if (squareDistance(aPoint) < MyTools.epsilon2)
+		if (squareDistance(aPoint) < MyTools.epsilon2) {
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
 	
 	@Override
 	public boolean contains(Coordinate c) {
-		if (squareDistance(c.x, c.y, c.z) < MyTools.epsilon2)
+		if (squareDistance(c.x, c.y, c.z) < MyTools.epsilon2) {
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
 	
 	/**

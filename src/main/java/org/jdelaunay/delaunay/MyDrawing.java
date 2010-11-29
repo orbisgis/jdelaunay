@@ -28,9 +28,11 @@ public class MyDrawing extends JFrame {
                 this.myMesh = myMesh;
         }
 
+	@Override
         public void paint(Graphics g) {
-                if (myMesh != null)
-                        myMesh.displayObject(g);
+                if (myMesh != null) {
+			myMesh.displayObject(g);
+		}
         }
 
         public void refresh() {

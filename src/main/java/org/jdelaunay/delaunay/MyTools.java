@@ -49,29 +49,35 @@ public class MyTools {
 			// first : increasing index
 			found = false;
 			while (!found) {
-				if (i >= maxIndex)
+				if (i >= maxIndex) {
 					found = true;
+				}
 				else {
 					anElement = (MyElement)elements.get(i);
 					valGid = anElement.getGid();
-					if (valGid > cle_ref)
+					if (valGid > cle_ref) {
 						found = true;
-					else
+					}
+					else {
 						i++;
+					}
 				}
 			}
 			// second : decreasing index
 			found = false;
 			while (!found) {
-				if (minIndex >= j)
+				if (minIndex >= j) {
 					found = true;
+				}
 				else {
 					anElement = (MyElement)elements.get(j);
 					valGid = anElement.getGid();
-					if (valGid <= cle_ref)
+					if (valGid <= cle_ref) {
 						found = true;
-					else
+					}
+					else {
 						j--;
+					}
 				}
 			}
 			// exchange values
@@ -121,33 +127,41 @@ public class MyTools {
 			// first : increasing index
 			found = false;
 			while (!found) {
-				if (i >= maxIndex)
+				if (i >= maxIndex) {
 					found = true;
+				}
 				else {
 					aPoint = points.get(i);
-					if (aPoint.getX() > cle_ref1)
+					if (aPoint.getX() > cle_ref1) {
 						found = true;
+					}
 					else if ((aPoint.getX() == cle_ref1)
-							&& (aPoint.getY() >= cle_ref2))
+							&& (aPoint.getY() >= cle_ref2)) {
 						found = true;
-					else
+					}
+					else {
 						i++;
+					}
 				}
 			}
 			// second : decreasing index
 			found = false;
 			while (!found) {
-				if (minIndex >= j)
+				if (minIndex >= j) {
 					found = true;
+				}
 				else {
 					aPoint = points.get(j);
-					if (aPoint.getX() < cle_ref1)
+					if (aPoint.getX() < cle_ref1) {
 						found = true;
+					}
 					else if ((aPoint.getX() == cle_ref1)
-							&& (aPoint.getY() <= cle_ref2))
+							&& (aPoint.getY() <= cle_ref2)) {
 						found = true;
-					else
+					}
+					else {
 						j--;
+					}
 				}
 			}
 			// exchange values
@@ -230,8 +244,9 @@ public class MyTools {
 			// first : increasing index
 			found = false;
 			while (!found) {
-				if (i >= maxIndex)
+				if (i >= maxIndex) {
 					found = true;
+				}
 				else {
 					anEdge = edges.get(i);
 					cle1 = anEdge.getStartPoint().getX();
@@ -261,32 +276,42 @@ public class MyTools {
 						cle2 = x;
 					}
 
-					if (cle1 > cle_ref1)
+					if (cle1 > cle_ref1) {
 						found = true;
-					else if (cle1 < cle_ref1)
+					}
+					else if (cle1 < cle_ref1) {
 						i++;
-					else if (cle2 > cle_ref2)
+					}
+					else if (cle2 > cle_ref2) {
 						found = true;
-					else if (cle2 < cle_ref2)
+					}
+					else if (cle2 < cle_ref2) {
 						i++;
-					else if (cle3 > cle_ref3)
+					}
+					else if (cle3 > cle_ref3) {
 						found = true;
-					else if (cle3 < cle_ref3)
+					}
+					else if (cle3 < cle_ref3) {
 						i++;
-					else if (cle4 > cle_ref4)
+					}
+					else if (cle4 > cle_ref4) {
 						found = true;
-					else if (cle4 < cle_ref4)
+					}
+					else if (cle4 < cle_ref4) {
 						i++;
-					else
+					}
+					else {
 						found = true;
+					}
 				}
 			}
 
 			// second : decreasing index
 			found = false;
 			while (!found) {
-				if (minIndex >= j)
+				if (minIndex >= j) {
 					found = true;
+				}
 				else {
 					anEdge = edges.get(j);
 					cle1 = anEdge.getStartPoint().getX();
@@ -316,24 +341,33 @@ public class MyTools {
 						cle2 = x;
 					}
 
-					if (cle1 < cle_ref1)
+					if (cle1 < cle_ref1) {
 						found = true;
-					else if (cle1 > cle_ref1)
+					}
+					else if (cle1 > cle_ref1) {
 						j--;
-					else if (cle2 < cle_ref2)
+					}
+					else if (cle2 < cle_ref2) {
 						found = true;
-					else if (cle2 > cle_ref2)
+					}
+					else if (cle2 > cle_ref2) {
 						j--;
-					else if (cle3 < cle_ref3)
+					}
+					else if (cle3 < cle_ref3) {
 						found = true;
-					else if (cle3 > cle_ref3)
+					}
+					else if (cle3 > cle_ref3) {
 						j--;
-					else if (cle4 < cle_ref4)
+					}
+					else if (cle4 < cle_ref4) {
 						found = true;
-					else if (cle4 > cle_ref4)
+					}
+					else if (cle4 > cle_ref4) {
 						j--;
-					else
+					}
+					else {
 						found = true;
+					}
 				}
 			}
 
@@ -396,8 +430,9 @@ public class MyTools {
 			test1 = anEdge.getStartPoint();
 			test2 = anEdge.getEndPoint();
 			if (((test1 == p1) && (test2 == p2))
-					|| ((test1 == p2) && (test2 == p1)))
+					|| ((test1 == p2) && (test2 == p1))) {
 				theEdge = anEdge;
+			}
 		}
 		return theEdge;
 	}
