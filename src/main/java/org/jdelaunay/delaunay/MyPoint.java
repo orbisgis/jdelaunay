@@ -282,6 +282,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
 	 */
+	@Override
 	public MyBox getBoundingBox() {
 		MyBox aBox = new MyBox();
 		aBox.alterBox( this);
@@ -292,6 +293,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
+	@Override
 	public boolean contains(MyPoint aPoint) {
 		if (squareDistance(aPoint) < MyTools.epsilon2)
 			return true;
@@ -379,8 +381,8 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * @param tolarence
 	 * @return closedTo
 	 */
-	protected boolean closedTo(MyPoint aPoint, double tolarence) {
-		return (squareDistance(aPoint) < tolarence*tolarence);
+	protected boolean closedTo(MyPoint aPoint, double tolerence) {
+		return (squareDistance(aPoint) < tolerence*tolerence);
 	}
 
 	/*
@@ -388,10 +390,62 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return "Point "+gid+" [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
 	}
 
+	/**
+	 * We override the equals method, as two points can be said equal when their
+	 * coordinate are exactly the same
+	 * @param y
+	 * @return
+	 */
+	@Override
+	public boolean equals(Object p){
+		if(p instanceof MyPoint){
+			MyPoint y = (MyPoint) p;
+			if(y==null){
+				return false;
+			} else {
+				return coord.equals3D(y.getCoordinate());
+			}
+		}else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 67 * hash + (this.coord != null ? this.coord.hashCode() : 0);
+		return hash;
+	}
+
+	/**
+	 * Check if this==y, considering only the first two coordinates.
+	 * @param y
+	 * @return
+	 */
+	public boolean equals2D(MyPoint y){
+		if(y==null){
+			return false;
+		} else {
+			return coord.equals2D(y.getCoordinate());
+		}
+	}
+
+	/**
+	 * Compare this and p in two dimensions.
+	 * @param y
+	 * @return
+	 *	-1 : if this.x < p.x || (this.x == p.x && this.y < p.y)
+	 *	0 : if this.x == p.x && this.y == p.y
+	 *	1 otherwise.
+	 */
+	public int compareTo2D(MyPoint p){
+		return coord.compareTo(p.getCoordinate());
+	}
 	/**
 	 * Set the point color for the JFrame panel
 	 * 

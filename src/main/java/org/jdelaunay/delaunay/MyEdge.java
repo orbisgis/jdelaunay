@@ -28,7 +28,7 @@ public class MyEdge extends MyElement implements Serializable {
 	private MyBox aBox;
 
 	/**
-	 * byte number  | function :
+	 * bit number  | function :
 	 * 1			| isOutsideMesh / setOutsideMesh
 	 * 2			| isLocked / setLocked
 	 * 3			| isLevelEdge / setLevelEdge
@@ -75,11 +75,11 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @param startPoint
 	 * @param endPoint
 	 */
-	public MyEdge(MyPoint startPoint, MyPoint endPoint) {
+	public MyEdge(MyPoint start, MyPoint end) {
 		super();
 		init();
-		this.startPoint = startPoint;
-		this.endPoint = endPoint;
+		this.startPoint = start;
+		this.endPoint = end;
 //		updateBox();
 	}
 
@@ -98,6 +98,28 @@ public class MyEdge extends MyElement implements Serializable {
 		this.indicator = ed.indicator;
 		this.property = ed.property;
 //		updateBox();
+	}
+
+	/**
+	 * Create a new edge given the coordinates of its two extremities
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param u
+	 * @param v
+	 * @param w
+	 */
+	public MyEdge(double x, double y , double z, double u, double v, double w){
+		super();
+		init();
+		try{
+			MyPoint p1 = new MyPoint(x,y,z);
+			MyPoint p2 = new MyPoint(u,v,w);
+			this.startPoint = p1;
+			this.endPoint = p2;
+		}catch (DelaunayError d){
+			System.out.println("A problem occured while building the points "+d.getMessage());
+		}
 	}
 
 	/**
@@ -221,6 +243,36 @@ public class MyEdge extends MyElement implements Serializable {
 		
 		this.endPoint = p;
 		updateBox();
+	}
+
+	/**
+	 * Get the point of this edge that is on the left from the other. 
+	 * We use the order relation defined in MyPoint.
+	 * @return
+	 */
+	public MyPoint getPointLeft(){
+		int c = endPoint.compareTo2D(startPoint);
+		switch(c){
+			case -1:
+				return endPoint;
+			default: 
+				return startPoint;
+		}
+	}
+
+	/**
+	 * Get the point of this edge that is on the left from the other.
+	 * We use the order relation defined in MyPoint.
+	 * @return
+	 */
+	public MyPoint getPointRight(){
+		int c = endPoint.compareTo2D(startPoint);
+		switch(c){
+			case 1:
+				return endPoint;
+			default:
+				return startPoint;
+		}
 	}
 
 	/**
@@ -364,6 +416,7 @@ public class MyEdge extends MyElement implements Serializable {
 	 * check if edge is use by a polygon
 	 * @return useByPolygon
 	 */
+	@Override
 	public boolean isUseByPolygon(){
 		return testBit(4);
 	}
@@ -372,6 +425,7 @@ public class MyEdge extends MyElement implements Serializable {
 	 * set if edge is use by a polygon.
 	 * @param useByPolygon
 	 */
+	@Override
 	public void setUseByPolygon(boolean useByPolygon){
 		setBit(4, useByPolygon);
 	}
@@ -397,18 +451,20 @@ public class MyEdge extends MyElement implements Serializable {
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
 	 */
+	@Override
 	public MyBox getBoundingBox() {
 		
-		MyBox aBox=new MyBox();
-		aBox.alterBox( this.startPoint);
-		aBox.alterBox( this.endPoint);
+		MyBox box=new MyBox();
+		box.alterBox( this.startPoint);
+		box.alterBox( this.endPoint);
 		
-		return aBox;
+		return box;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
+	@Override
 	public boolean contains(MyPoint aPoint) {
 		return contains(aPoint.getCoordinate());
 //		if (intersects(aPoint, aPoint) > 0)
@@ -778,12 +834,10 @@ public class MyEdge extends MyElement implements Serializable {
 	 */
 	public boolean haveSamePoint(MyEdge anEdge)
 	{
-		return ( getStartPoint().getCoordinate().equals(anEdge.getStartPoint().getCoordinate()) &&
-				 getEndPoint().getCoordinate().equals(anEdge.getEndPoint().getCoordinate())
-				)
-				||
-				( getStartPoint().getCoordinate().equals(anEdge.getEndPoint().getCoordinate()) &&
-				 getEndPoint().getCoordinate().equals(anEdge.getStartPoint().getCoordinate()) );
+		return ( getStartPoint().equals(anEdge.getStartPoint()) &&
+				 getEndPoint().equals(anEdge.getEndPoint()))
+				|| ( getStartPoint().equals(anEdge.getEndPoint()) &&
+				 getEndPoint().equals(anEdge.getStartPoint()) );
 	}
 	
 	
@@ -879,8 +933,22 @@ public class MyEdge extends MyElement implements Serializable {
 						(p1.getY()<p.getY() && p.getY()< p2.getY())		/* p2y > py > p1y ?*/
 						:(p2.getY()<p.getY() && p.getY()< p1.getY()))); /* p2y < py < p1y ?*/
 	}
-	
-	
+
+	public MyPoint getPointFromItsX(double x) throws DelaunayError{
+		double deltaX = (startPoint.getX() - endPoint.getX());
+		double deltaY = (startPoint.getY() - endPoint.getY());
+		double dX = (deltaX < 0 ? -deltaX : deltaX);
+		double p = (x-startPoint.getX())/(endPoint.getX() - startPoint.getX());
+		if(dX < MyTools.epsilon ){
+			//the edge is vertical
+			return endPoint;
+		} else {
+			double y = startPoint.getY()+p*(endPoint.getY()-startPoint.getY());
+			double z = startPoint.getZ()+p*(endPoint.getZ()-startPoint.getZ());
+			return new MyPoint(x,y,z);
+		}
+	}
+
 	/**
 	 * Swap the 2 points of the edge
 	 * also swap connected triangles
@@ -928,6 +996,7 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @param p
 	 * @return
 	 */
+	@Override
 	public int hashCode() {
 		MyPoint p1 = this.startPoint;
 		MyPoint p2 = this.endPoint;
@@ -987,6 +1056,28 @@ public class MyEdge extends MyElement implements Serializable {
 	}
 
 	/**
+	 * This method will be used to "order" the edges using the following strategy.
+	 * If we note leftP and rightP the leftmost and rightmost point of this
+	 * this < edge if this.leftP < edge.leftP or (this.leftP == edge.leftP and this.rightP < edge.rightP)
+	 * this == edge if this.leftP == edge.leftP and this.rightP == edge.rightP
+	 * this > edge otherwise.
+	 * @param edge
+	 * @return
+	 */
+	public int sortLeftRight(MyEdge edge){
+		MyPoint p1 = getPointLeft();
+		MyPoint p2 = edge.getPointLeft();
+		int c = p1.compareTo2D(p2);
+		if(c==0){
+			p1 = getPointRight();
+			p2 = edge.getPointRight();
+			c = p1.compareTo2D(p2);
+
+		}
+		return c;
+	}
+
+	/**
 	 * @return gradient
 	 */
 	public int getGradient() {
@@ -1005,6 +1096,7 @@ public class MyEdge extends MyElement implements Serializable {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString()
 	{
 		return "Edge "+gid+" ["+startPoint+", "+endPoint+"]";

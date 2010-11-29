@@ -652,8 +652,13 @@ public class MyTriangle extends MyElement implements Serializable{
 	}
 
 	/**
-	 * Get the point of the triangle that is not one of the 2 points
+	 * Get the point of the triangle that is not one of the 2 points given
+	 * in argument.
+	 * If one of these argument is not part of this triangle, this method will
+	 * return null.
 	 *
+	 * @param p1
+	 * @param p2
 	 * @return alterPoint
 	 */
 	protected MyPoint getAlterPoint(MyPoint p1, MyPoint p2) {

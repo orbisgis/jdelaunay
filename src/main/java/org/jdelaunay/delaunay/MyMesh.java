@@ -57,20 +57,34 @@ public class MyMesh {
 	// Parameters
 	private boolean meshComputed;
 	private double precision;
+	//Min distance between two points
 	private double tolarence;
+	//Min and Max area of the triangles. The goal of this variable is to improve the
+	//quality of the mesh. It's not really use yet, because there is a problem linked to
+	//the point removal.
 	private double minArea, maxArea;
+	//Minimum angle
 	private double minAngle;
+	//Choose a refinement method.
 	private int refinement;
+	//
 	private boolean verbose;
+	//
 	private boolean displayCircles;
+	//Temporal computations
 	private long duration;
+	//Retrieve the timer for time computation
 	private long startComputation;
 	private MyDrawing affiche;
+	//
 	private boolean usePolygonZ;
 //	private boolean isBoundingBoxInit;
 
+	//The two following linsts are used only during computation.
 	// Working index vector
+	//
 	private LinkedList<MyEdge> badEdgesQueueList;
+	//boundaryEdges contains the Envelope of the CURRENT geometry.
 	private LinkedList<MyEdge> boundaryEdges;
 
 	// constants
@@ -258,7 +272,9 @@ public class MyMesh {
 	}
 
 	/**
-	 * Set the edges as the edges of the ArrayList
+	 * Use the edges of this array list to build the list of constraint edges.
+	 * Note that we do a deep copy here. A change in edges will not be written
+	 * int the constraints list.
 	 * 
 	 * @param edges
 	 */
@@ -279,7 +295,9 @@ public class MyMesh {
 	}
 
 	/**
-	 * Set the edges as the edges of the LinkedList
+	 * Use the edges of this Linked list to build the list of constraint edges.
+	 * Note that we do a deep copy here. A change in edges will not be written
+	 * int the constraints list.
 	 * 
 	 * @param edges
 	 */
@@ -300,8 +318,8 @@ public class MyMesh {
 	}
 
 	/**
-	 * Set the edges as the LinkedList
-	 * 
+	 * Set constraint edges list using the array list given in argument
+	 * This copy is a shallow copy. Use with care.
 	 * @param edges
 	 */
 	public void setConstraintEdgesRef(ArrayList<MyEdge> edges) {
@@ -319,7 +337,7 @@ public class MyMesh {
 
 	/**
 	 * Get the complementary edges structure This structure memorize the edges
-	 * that have to be added to the triangularization
+	 * that have to be added to the triangulation
 	 * 
 	 * @return edges
 	 */
@@ -759,7 +777,7 @@ public class MyMesh {
 	// ------------------------------------------------------------------------------------------
 	/**
 	 * Generate the Delaunay's triangularization with a flip-flop algorithm.
-	 * Mesh must have been set. Triangularization can only be done once.
+	 * Mesh must have been set. Triangulation can only be done once.
 	 * Otherwise call reprocessDelaunay
 	 * 
 	 * @throws DelaunayError
@@ -1822,7 +1840,7 @@ public class MyMesh {
 
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
-	 * triangularization has not been done, it generates an error.
+	 * triangulation has not been done, it generates an error.
 	 * 
 	 * @param p1
 	 * @param p2
@@ -1852,7 +1870,7 @@ public class MyMesh {
 
 	/**
 	 * Add a new edge to the current triangularization. If Delaunay
-	 * triangularization has not been done, it generates an error.
+	 * triangulation has not been done, it generates an error.
 	 * 
 	 * @param anEdge
 	 * @throws DelaunayError
@@ -3055,7 +3073,7 @@ public class MyMesh {
 		if (NbPoints > 0)
 			MyTools.quickSort_Points(points);
 
-		// Remove same points double precision2 = precision precision;
+		// Remove same points double precision2 = precision * precision;
 		MyPoint current;
 		boolean found = false;
 		int index;
@@ -3142,7 +3160,7 @@ public class MyMesh {
 	 * @throws DelaunayError 
 	 */
 	private MyTriangle myInsertPoint(MyPoint aPoint) throws DelaunayError {
-		return myInsertPoint(aPoint, 0);
+		return insertPoint(aPoint, 0);
 	}
 	
 	
@@ -3297,7 +3315,7 @@ public class MyMesh {
 	 * @param property Property for the new triangle.
 	 * @throws DelaunayError 
 	 */
-	private MyTriangle myInsertPoint(MyPoint aPoint, int property) throws DelaunayError {//test
+	private MyTriangle insertPoint(MyPoint aPoint, int property) throws DelaunayError {//test
 		MyTriangle foundTriangle = null;
 		// We build triangles with all boundary edges for which the point is on
 		// the left

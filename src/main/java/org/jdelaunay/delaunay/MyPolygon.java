@@ -258,6 +258,7 @@ public class MyPolygon extends MyElement {
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
 	 */
+	@Override
 	public MyBox getBoundingBox() {
 		MyBox aBox = new MyBox();
 
@@ -273,6 +274,7 @@ public class MyPolygon extends MyElement {
 	/* (non-Javadoc)
 	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
 	 */
+	@Override
 	public boolean contains(MyPoint aPoint) { //FIXME make better code
 		boolean intersect=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 		for(int i=0;i<edges.size() && !intersect;i++ )
