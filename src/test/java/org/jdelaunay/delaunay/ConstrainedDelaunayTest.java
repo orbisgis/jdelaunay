@@ -1,7 +1,6 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ConstrainedDelaunayTest extends BaseTest {
@@ -214,21 +213,37 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		list.add(new MyEdge(2,0,0,15,1,1));
 		list.add(new MyEdge(2,0,0,14,1,1));
 		list.add(new MyEdge(2,0,0,10,1,1));
-		ArrayList<MyEdge> sorted = mesh.sortEdgesLeft(list);
+		List<MyEdge> sorted = mesh.sortEdgesLeft(list);
 		MyEdge e1 ;
 		MyEdge e2= sorted.get(0);
-		System.out.println(e2);
 		for(int i=1; i<sorted.size(); i++){
 			e1=e2;
 			e2=sorted.get(i);
 			int c=e1.getPointLeft().compareTo2D(e2.getPointLeft());
 			assertTrue(c<=0);
-			System.out.println(e2);
 		}
 		assertTrue(sorted.size()==14);
+		//We do the same thing but with random edges.
+		List<MyEdge> random = getRandomEdges(1000);
+		sorted = mesh.sortEdgesLeft(random);
+		e2= sorted.get(0);
+		for(int i=1; i<sorted.size(); i++){
+			e1=e2;
+			e2=sorted.get(i);
+			int c=e1.getPointLeft().compareTo2D(e2.getPointLeft());
+			if(c>0){
+				System.out.println(e1+" ------- "+e2);
+			}
+			assertTrue(c<=0);
+		}
 	}
 
-		public void testSortEdgeVertically() throws DelaunayError{
+	/**
+	 * This test checks that edges are actually vertically sorted when using
+	 * the sortEdgesVertically method.
+	 * @throws DelaunayError
+	 */
+	public void testSortEdgeVertically() throws DelaunayError{
 		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		list.add(new MyEdge(0,0,0,10,4,1));
@@ -248,11 +263,12 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		list.add(new MyEdge(2,0,0,14,1,1));
 		list.add(new MyEdge(2,0,0,10,1,1));
 		list.add(new MyEdge(8,-4,0,8,50,1));
-		ArrayList<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
+		//We sort our edges (left-right), as we don't want to keep duplicates.
+		List<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
+		//We sort the edges vertically
 		List<MyEdge> sorted=mesh.sortEdgesVertically(sortedLeft, 8);
 		MyEdge e1 ;
 		MyEdge e2= sorted.get(0);
-		System.out.println(e2);
 		double d1, d2;
 		for(int i=1; i<sorted.size(); i++){
 			e1=e2;
@@ -260,18 +276,45 @@ public class ConstrainedDelaunayTest extends BaseTest {
 			d1=e1.getPointFromItsX(8).getY();
 			d2=e2.getPointFromItsX(8).getY();
 			assertTrue(d1<=d2);
-			System.out.println(d1+"   "+d2);
 		}
 	}
 
+	/**
+	 * We check that event points can be added efficiently from secant edges
+	 *
+	 */
+	public void testAddIntersectionPoints() throws DelaunayError{
+		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		ArrayList<MyPoint> events = new ArrayList<MyPoint>();
+		//We first check with only two edges which intersect in three
+		//dimensions
+		list.add(new MyEdge(0,0,0,5,5,5));
+		list.add(new MyEdge(0,5,0,5,0,5));
+		mesh.addPointsFromNeighbourEdges(list, events);
+		assertTrue(events.size()==1);
+		MyPoint inter = events.get(0);
+		assertTrue(inter.equals2D(new MyPoint(2.5,2.5,0)));
+		assertTrue(inter.equals(new MyPoint(2.5,2.5,2.5)));
+		//We check with two edges which intersect in only two dimensions
+		list = new ArrayList<MyEdge>();
+		events = new ArrayList<MyPoint>();
+		list.add(new MyEdge(0,0,0,5,5,5));
+		list.add(new MyEdge(0,5,0,5,0,0));
+		mesh.addPointsFromNeighbourEdges(list, events);
+		assertTrue(events.size()==1);
+		inter = events.get(0);
+		assertTrue(inter.equals2D(new MyPoint(2.5,2.5,0)));
+		assertTrue(inter.equals(new MyPoint(2.5,2.5,2.5)));
+	}
 	/**
 	 * This test checks that edges and their points are properly added to the mesh
 	 */
 	public void testAddConstraintEdge(){
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		try{
-			mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,3,0)));
-			mesh.addConstraintEdge(new MyEdge(new MyPoint(3,3,0), new MyPoint(5,3,0)));
+			mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(3,3,0)));
+			mesh.addConstraintEdge(new MyEdge(new MyPoint(2,3,0), new MyPoint(5,3,0)));
 
 			//We check that the points are in the points list
 			ArrayList<MyPoint> list = mesh.getPoints();
@@ -281,8 +324,8 @@ public class ConstrainedDelaunayTest extends BaseTest {
 			assertTrue(list.get(3).equals2D(new MyPoint(5,3,0)));
 
 			//We check that the edges are in the list
-			MyEdge m1 = new MyEdge(new MyPoint(0,0,0), new MyPoint(2,3,0));
-			MyEdge m2 = new MyEdge(new MyPoint(3,3,0), new MyPoint(5,3,0));
+			MyEdge m1 = new MyEdge(new MyPoint(0,0,0), new MyPoint(3,3,0));
+			MyEdge m2 = new MyEdge(new MyPoint(2,3,0), new MyPoint(5,3,0));
 
 			ArrayList<MyEdge> listConst = mesh.getConstraintEdges();
 			assertTrue(listConst.get(0).haveSamePoint(m1));
@@ -291,5 +334,26 @@ public class ConstrainedDelaunayTest extends BaseTest {
 			System.out.println(d.getMessage());
 		}
 
+	}
+
+
+	/**
+	 * Method used to create random a list of random edge.
+	 * @param number
+	 * @return
+	 */
+	private List<MyEdge> getRandomEdges(int number){
+		ArrayList<MyEdge> retList = new ArrayList<MyEdge>();
+		int num = (number < 0 ? -number : number);
+		for(int i=0; i<num; i++){
+			double d1 = Math.random()*100;
+			double d2 = Math.random()*100;
+			double d3 = Math.random()*100;
+			double d4 = Math.random()*100;
+			double d5 = Math.random()*100;
+			double d6 = Math.random()*100;
+			retList.add(new MyEdge(d1, d2, d3, d4, d5, d6));
+		}
+		return retList;
 	}
 }

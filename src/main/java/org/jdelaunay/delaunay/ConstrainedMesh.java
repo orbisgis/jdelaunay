@@ -101,11 +101,18 @@ public class ConstrainedMesh {
 		}
 	}
 
+	/**
+	 * Add an edge to the list of constraint edges.
+	 * @param e
+	 *	the edge we want to add
+	 */
 	public void addConstraintEdge(MyEdge e) {
 		if (constraintEdges == null) {
 			constraintEdges = new ArrayList<MyEdge>();
 		}
 		addEdgeToLeftSortedList(constraintEdges, e);
+		addPoint(e.getStart());
+		addPoint(e.getEnd());
 	}
 
 	/**
@@ -113,7 +120,7 @@ public class ConstrainedMesh {
 	 * of the edges.
 	 * @return
 	 */
-	public ArrayList<MyEdge> sortEdgesLeft(ArrayList<MyEdge> inputList) {
+	public List<MyEdge> sortEdgesLeft(List<MyEdge> inputList) {
 		ArrayList<MyEdge> outputList = new ArrayList<MyEdge>();
 		for (MyEdge e : inputList) {
 			addEdgeToLeftSortedList(outputList, e);
@@ -369,14 +376,7 @@ public class ConstrainedMesh {
 		}
 		return -1;
 	}
-
-//	public boolean listContainsPoint(MyPoint point){
-//		int p = points.size()/2;
-//		int q=-1;
-//		while(q!=p){
-//			q=p;
-//		}
-//	}
+	
 	public void forceConstraintIntegrity() {
 	}
 
@@ -387,7 +387,7 @@ public class ConstrainedMesh {
 	 * @param edgeList
 	 * @param x
 	 */
-	public List<MyEdge> sortEdgesVertically(ArrayList<MyEdge> edgeList, double abs) throws DelaunayError {
+	public List<MyEdge> sortEdgesVertically(List<MyEdge> edgeList, double abs) throws DelaunayError {
 		int s = edgeList.size();
 		int i = 0;
 		int c = 0;
@@ -410,5 +410,31 @@ public class ConstrainedMesh {
 			}
 		}
 		return edgeList;
+	}
+
+	/**
+	 * This method simply travels the list given in argument. If edges edgelist.get(i)
+	 * and edgeList.get(i+1) intersect, then we add the intersection point in
+	 * the eventList.
+	 * @param edgeList
+	 */
+	public void addPointsFromNeighbourEdges(List<MyEdge> edgeList, List<MyPoint> eventList) throws DelaunayError{
+		MyEdge e1;
+		MyEdge e2;
+		MyPoint inter=null;
+		//we check that our paremeters are not null, and that our edge list contains
+		//at least two edges, because they couldn't be intersections otherwise.
+		if(edgeList == null || eventList == null || edgeList.size()<2){
+			return;
+		} else {
+			for(int i=0; i<edgeList.size()-1;i++){
+				e1=edgeList.get(i);
+				e2=edgeList.get(i+1);
+				inter = e1.getIntersection(e2);
+				if(inter != null){
+					eventList.add(inter);
+				}
+			}
+		}
 	}
 }

@@ -23,7 +23,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
@@ -5583,7 +5582,7 @@ public class MyMesh {
 							maxGid = aPoint.gid;
 						}
 					}
-					Hashtable<MyPoint, MyPoint> addPoint = new Hashtable<MyPoint, MyPoint>();
+					HashMap<MyPoint, MyPoint> addPoint = new HashMap<MyPoint, MyPoint>();
 					for (MyEdge anEdge : edges) {
 						if (anEdge.getProperty() == 1) {
 							writer.write("#wall points\n");

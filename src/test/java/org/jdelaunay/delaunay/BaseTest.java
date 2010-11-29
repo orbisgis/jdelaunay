@@ -98,10 +98,9 @@ public class BaseTest extends TestCase {
 			myTriangle = iterTriangle.next();
 			for (int i=0; i<3; i++) {
 				for (int j=0; j<3; j++) {
-					if (j != i)
-						if (myTriangle.getEdge(i) == myTriangle.getEdge(j)) {
+					if (j != i && myTriangle.getEdge(i) == myTriangle.getEdge(j)) {
 							correct = false;
-						}
+					}
 				}
 			}
 			assertTrue(correct);
