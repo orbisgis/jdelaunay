@@ -1,23 +1,8 @@
 package org.jdelaunay.delaunay;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.StringTokenizer;
+import java.util.List;
 
 /**
  *
@@ -153,7 +138,6 @@ public class ConstrainedMesh {
 		}
 		MyEdge temp = sorted.get(0);
 		MyPoint left = edge.getPointLeft();
-		MyPoint right;
 		int s = sorted.size();
 		if (left.compareTo2D(temp.getPointLeft()) == -1 || left.compareTo2D(temp.getPointLeft()) == 0) {
 			//left is on the left of the first edge in the list, we put it there
@@ -295,21 +279,27 @@ public class ConstrainedMesh {
 			while (ret != p) {
 				delta = (delta / 2 > 0 ? delta / 2 : 1);
 				c = point.compareTo2D(points.get(p));
-				if (c == -1) {
+				switch(c){
+					case -1:
 					//point < points.get(p)
 					//We must move left
-					c = point.compareTo2D(points.get(p - 1));
-					if (c == -1) {
-						p = p - delta;
-					} else if (c == 0) {
-						p = -1;
-					} else {
-						ret = p;
-					}
-				} else if (c == 0) {
-					p = -1;
-				} else {
-					p = p + delta;
+						c = point.compareTo2D(points.get(p - 1));
+						switch(c){
+							case -1:
+								p = p - delta;
+								break;
+							case 0:
+								p = -1;
+								break;
+							default:
+								ret = p;
+						}
+						break;
+					case 0:
+						p=-1;
+						break;
+					default:
+						p=p+delta;
 				}
 			}
 			if (p != -1) {
@@ -342,37 +332,40 @@ public class ConstrainedMesh {
 		int i = points.size() / 2;
 		while (delta > 0) {
 			c = p.compareTo2D(points.get(i));
-			if (c == -1) {
-				//p is on the left of points(i)...
-				if (i == 0) {
-					return -1;
-				}
-				c = p.compareTo2D(points.get(i - 1));
-				if (c == 1) {//...and on the right of points(i-1), so it's no in the list
-					return -1;
-				} else if (c == 0) {
-					return i - 1;
-				} else {//...and on the left of points(i-1), we continue
-					delta = delta / 2;
-					i = i - delta;
-				}
-			} else if (c == 0) {
-				return i;
-			} else {
-				//p is on the right of points(i)
-				if (i == points.size() - 1) {
-					return -1;
-				}
-				c = p.compareTo2D(points.get(i + 1));
-				if (c == -1) {//...and on the left of points(i-1), so it's no in the list
-					return -1;
-				} else if (c == 0) {
-					return i + 1;
-				} else {//...and on the right of points(i-1), we continue
-					delta = delta / 2;
-					i = i + delta;
-				}
-			}
+			switch(c){
+				case -1://p is on the left of points(i)...
+					if(i==0){
+						return -1;
+					}
+					c = p.compareTo2D(points.get(i - 1));
+					switch(c){
+						case 1://...and on the right of points(i-1), so it's no in the list
+							return -1;
+						case 0:
+							return i - 1;
+						default://...and on the left of points(i-1), we continue
+							delta = delta / 2;
+							i = i - delta;
+					}
+					break;
+				case 0:
+					return i;
+				case 1://p is on the right of points(i)
+					if (i == points.size() - 1) {
+						return -1;
+					}
+					c = p.compareTo2D(points.get(i + 1));
+					switch(c){
+						case -1://...and on the left of points(i-1), so it's no in the list
+							return -1;
+						case 0:
+							return i+1;
+						default://...and on the right of points(i-1), we continue
+							delta = delta / 2;
+							i = i + delta;
+					}
+
+			}			
 		}
 		return -1;
 	}
@@ -391,9 +384,31 @@ public class ConstrainedMesh {
 	 * This method will sort the edges contained in the ArrayList list by considering
 	 * their intersection point with the line of equation x=a, where a is given
 	 * in parameter.
-	 * @param list
+	 * @param edgeList
 	 * @param x
 	 */
-	private void sortEdgesVertically(ArrayList list, double a) {
+	public List<MyEdge> sortEdgesVertically(ArrayList<MyEdge> edgeList, double abs) throws DelaunayError {
+		int s = edgeList.size();
+		int i = 0;
+		int c = 0;
+		MyEdge e1;
+		MyEdge e2;
+		MyPoint interE1;
+		MyPoint interE2;
+		while(i<s-1){
+			e1 = edgeList.get(i);
+			e2 = edgeList.get(i+1);
+			interE1 = e1.getPointFromItsX(abs);
+			interE2 = e2.getPointFromItsX(abs);
+			c=interE1.compareTo2D(interE2);
+			if(c==1){
+				edgeList.set(i,e2);
+				edgeList.set(i+1, e1);
+				i=0;
+			} else {
+				i++;
+			}
+		}
+		return edgeList;
 	}
 }

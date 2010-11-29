@@ -2,6 +2,7 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class ConstrainedDelaunayTest extends BaseTest {
 
@@ -225,6 +226,42 @@ public class ConstrainedDelaunayTest extends BaseTest {
 			System.out.println(e2);
 		}
 		assertTrue(sorted.size()==14);
+	}
+
+		public void testSortEdgeVertically() throws DelaunayError{
+		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		list.add(new MyEdge(0,0,0,10,4,1));
+		list.add(new MyEdge(0.5,0,0,10,1,1));
+		list.add(new MyEdge(0,0.5,0,10,1,1));
+		list.add(new MyEdge(1,2,0,10,10,1));
+		list.add(new MyEdge(5,0,0,10,1,1));
+		list.add(new MyEdge(0,4,0,10,6,1));
+		list.add(new MyEdge(3,0,0,10,1,1));
+		list.add(new MyEdge(2,0,0,10,1,1));
+		list.add(new MyEdge(7,0,0,10,8,1));
+		list.add(new MyEdge(15,2,0,6,1,1));
+		list.add(new MyEdge(2,0,0,10,1,1));
+		list.add(new MyEdge(2,0,0,11,1,1));
+		list.add(new MyEdge(2,0,0,8,1,1));
+		list.add(new MyEdge(2,0,0,15,1,1));
+		list.add(new MyEdge(2,0,0,14,1,1));
+		list.add(new MyEdge(2,0,0,10,1,1));
+		list.add(new MyEdge(8,-4,0,8,50,1));
+		ArrayList<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
+		List<MyEdge> sorted=mesh.sortEdgesVertically(sortedLeft, 8);
+		MyEdge e1 ;
+		MyEdge e2= sorted.get(0);
+		System.out.println(e2);
+		double d1, d2;
+		for(int i=1; i<sorted.size(); i++){
+			e1=e2;
+			e2=sorted.get(i);
+			d1=e1.getPointFromItsX(8).getY();
+			d2=e2.getPointFromItsX(8).getY();
+			assertTrue(d1<=d2);
+			System.out.println(d1+"   "+d2);
+		}
 	}
 
 	/**
