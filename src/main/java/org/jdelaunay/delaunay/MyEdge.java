@@ -670,12 +670,10 @@ public class MyEdge extends MyElement implements Serializable {
 					
 
 					double z=0;
-					if(useCoordZOfp1p2)
-					{
+					if(useCoordZOfp1p2) {
 						// Average of p1 and p2 Z. Don't care of p3 and p4 Z.
 						z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
-					}else
-					{
+					} else {
 						// Average of p1, p2, p3 and p4 Z.
 						z= p4.getZ() * t2 + (1 - t2) * p3.getZ();
 					}
@@ -962,14 +960,25 @@ public class MyEdge extends MyElement implements Serializable {
 						:(p2.getY()<p.getY() && p.getY()< p1.getY()))); /* p2y < py < p1y ?*/
 	}
 
+	/**
+	 * This method retrieves
+	 * @param x
+	 * @return
+	 * @throws DelaunayError
+	 */
 	public MyPoint getPointFromItsX(double x) throws DelaunayError{
 		double deltaX = (startPoint.getX() - endPoint.getX());
-		double deltaY = (startPoint.getY() - endPoint.getY());
 		double dX = (deltaX < 0 ? -deltaX : deltaX);
 		double p = (x-startPoint.getX())/(endPoint.getX() - startPoint.getX());
 		if(dX < MyTools.epsilon ){
 			//the edge is vertical
-			return endPoint;
+			double delta = startPoint.getX() - x;
+			dX=((delta<0) ? -delta : delta);
+			if(x==startPoint.getX()){//x is the absciss of every points in this edge
+				return endPoint;
+			} else {//There is not any point of absciss X on this edge.
+				return null;
+			}
 		} else {
 			double y = startPoint.getY()+p*(endPoint.getY()-startPoint.getY());
 			double z = startPoint.getZ()+p*(endPoint.getZ()-startPoint.getZ());
