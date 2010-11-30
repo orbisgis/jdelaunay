@@ -644,7 +644,8 @@ public class MyEdge extends MyElement implements Serializable {
 	
 	/**
 	 * intersects two edges returns null if there is no intersection
-	 *
+	 * if the two edgse are colinear, returns the minimum intersection point,
+         * if such a point exists.
 	 * @param p1
 	 * @param p2
 	 * @param useCoordZOfp1p2 If true, the coordinate of intersection get in Z the average of p1 and p2 Z. Don't care of p3 and, p4 Z.
@@ -726,9 +727,51 @@ public class MyEdge extends MyElement implements Serializable {
 					}
 				}
 			}
-		}
+		} else { //d==0 : the two edges are colinear
+                        intersection=getIntersectionColinear(new MyEdge(p1, p2));
+                }
 		return intersection;
 	}
+
+        /**
+         * Compute the intersection between this and edge, which is supposed to
+         * be colinear to this. You must ensure this property before using this method,
+         * which is consquently not really safe... (and that's why it's not part of
+         * the public API ;-)
+         * As the two edges are colinear, they can have an infinity of intersection
+         * points. Consequently, we just return the lowest of this points, as
+         * defined by the compareTo2D method.
+         * @param edge
+         * @return
+         */
+        private MyPoint getIntersectionColinear(MyEdge edge){
+                MyPoint tempP1 = this.getPointLeft();//the minimum point of this
+                MyPoint tempP2 = edge.getPointLeft();//the minimum point of the other edge
+                MyPoint ret = null;
+                int compare = tempP1.compareTo2D(tempP2);
+                switch(compare){
+                        case -1:
+                                tempP1 = this.getPointRight();//the greatest point from this
+                                compare = tempP1.compareTo2D(tempP2);
+                                switch(compare){
+                                        case -1:
+                                                return null;
+                                        default:
+                                                return tempP2;
+                                }
+                        case 1:
+                                tempP2 = edge.getPointRight();//the greatest point from edge.
+                                compare = tempP1.compareTo2D(tempP2);
+                                switch(compare){
+                                        case 1:
+                                                return null;
+                                        default:
+                                                return tempP1;
+                                }
+                        default:
+                                return tempP2;
+                }
+        }
 
 	/**
 	 * intersects two edges returns null if there is no intersection

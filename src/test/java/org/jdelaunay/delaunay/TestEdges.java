@@ -32,23 +32,35 @@ public class TestEdges extends BaseTest {
 	/**
 	 * This test checks the results returned by the method intersects of the class
 	 * MyEdge.
+         * The method also checks that the intersection points are well computed.
 	 */
-	public void testEdgesIntersection(){
+	public void testEdgesIntersection() throws DelaunayError{
 		MyEdge e1 = new MyEdge(4,4,0,8,8,0);
 		MyEdge e2 = new MyEdge(8,4,0,4,8,0);
+                MyPoint intersection;
 		assertTrue(e1.intersects(e2)==1);
+                intersection = e1.getIntersection(e2);
+                assertTrue(intersection.equals2D(new MyPoint(6,6,0)));
 		e2 = new MyEdge(4,4,0,2,2,0);
 		assertTrue(e1.intersects(e2)==3);
+                intersection = e1.getIntersection(e2);
+                assertTrue(intersection.equals2D(new MyPoint(4,4,0)));
 		e2 = new MyEdge(4,4,0,20,20,0);
 		assertTrue(e1.intersects(e2)==1);
+                intersection = e1.getIntersection(e2);
+                assertTrue(intersection.equals2D(new MyPoint(4,4,0)));
 		e2 = new MyEdge(10,10,0,6,6,0);
 		assertTrue(e1.intersects(e2)==1);
+                intersection = e1.getIntersection(e2);
+                assertTrue(intersection.equals2D(new MyPoint(6,6,0)));
 		e2 = new MyEdge(6,4,0,10,8,0);
 		assertTrue(e1.intersects(e2)==2);
 		e2 = new MyEdge(0,0,0,1,-4,0);
 		assertTrue(e1.intersects(e2)==0);
 		e2 = new MyEdge(8,8,0,1,-4,0);
 		assertTrue(e1.intersects(e2)==3);
+                intersection = e1.getIntersection(e2);
+                assertTrue(intersection.equals2D(new MyPoint(8,8,0)));
                 //some tests for vertical edges
 		e1 = new MyEdge(4,4,0,4,8,0);
 		e2 = new MyEdge(4,4,0,4,2,0);
@@ -88,5 +100,5 @@ public class TestEdges extends BaseTest {
 		e2 = new MyEdge(4,3,0,8,3,0);
 		assertTrue(e1.intersects(e2)==2);
 	}
-
+        
 }

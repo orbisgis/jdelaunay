@@ -418,6 +418,10 @@ public class ConstrainedMesh {
 		constraintEdges = new ArrayList<MyEdge>();
 		//The absciss where we search the intersections
 		double abs;
+                //Used in the for loop...
+                int i; //our index
+                MyEdge e1, e2; //the edges that will be compared in the for loop
+                int intersect;
 		while (!eventPoints.isEmpty()) {
 			//We retrieve the event about to be processed.
 			currentEvent = eventPoints.get(0);
@@ -433,12 +437,17 @@ public class ConstrainedMesh {
 				//The edge has been added in the buffer, we can remove it.
 				edgeMemory.remove(0);
 			}
+                        //we search for intersections only if we have at least two edges...
+                        if(edgeBuffer.size()>1){
+                                e2=edgeBuffer.get(0);
+                                for (i=1; i<edgeBuffer.size();i++) {
+                                        //We walk through our buffer
+                                        e1=e2;
+                                        e2=edgeBuffer.get(i);
+                                        intersect = e1.intersects(e2);
 
-
-			for (MyEdge tempEdge : edgeBuffer) {
-				//We walk through our buffer
-				
-			}
+                                }
+                        }
 		}
 	}
 
