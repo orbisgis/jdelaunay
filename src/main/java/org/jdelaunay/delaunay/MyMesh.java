@@ -87,13 +87,13 @@ public class MyMesh {
 	private LinkedList<MyEdge> boundaryEdges;
 
 	// constants
-	public static final double epsilon = 0.00001;
-	public static final int maxIter = 5;
+	public static final double EPSILON = 0.00001;
+	public static final int MAX_ITER = 5;
 
-	public static final int refinement_maxArea = 1;
-	public static final int refinement_minAngle = 2;
-	public static final int refinement_softInterpolate = 4;
-	public static final int refinement_obtuseAngle = 8;
+	public static final int REFINEMENT_MAX_AREA = 1;
+	public static final int REFINEMENT_MIN_ANGLE = 2;
+	public static final int REFINEMENT_SOFT_INTERPOLATE = 4;
+	public static final int REFINEMENT_OBTUSE_ANGLE = 8;
 
 	/**
 	 * Create an empty Mesh. Allocate data structures
@@ -555,7 +555,7 @@ public class MyMesh {
 	 * @throws DelaunayError
 	 */
 	protected MyPoint searchPoint(double x, double y, double z) throws DelaunayError {
-		return pointsQuadTree.search(new MyPoint(x, y,z), epsilon);
+		return pointsQuadTree.search(new MyPoint(x, y,z), EPSILON);
 	}
 
 //	/**
@@ -676,7 +676,7 @@ public class MyMesh {
 	public void createEdge(MyPoint aPoint1, MyPoint aPoint2)
 			throws DelaunayError {
 		if (isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_Generated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
 		}
 		else {
 			if (pointsQuadTree.search(aPoint1)==null)
@@ -701,7 +701,7 @@ public class MyMesh {
 	 */
 	public void createEdge(MyEdge anEdge) throws DelaunayError {
 		if (isMeshComputed()) {
-			throw new DelaunayError(DelaunayError.DelaunayError_Generated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
 		}
 		else if (!constraintsEdges.contains(anEdge)) {
 			MyPoint aPoint1 = anEdge.getStartPoint();
@@ -785,10 +785,10 @@ public class MyMesh {
 	 */
 	public void processDelaunay() throws DelaunayError {
 		if (isMeshComputed()) {
-			throw new DelaunayError(DelaunayError.DelaunayError_Generated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
 		}
 		else if (getNbPoints() < 3) {
-			throw new DelaunayError(DelaunayError.DelaunayError_notEnoughPointsFound);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
 		}
 		else {
 			boolean startedLocaly = false;
@@ -1151,7 +1151,7 @@ public class MyMesh {
 	public void addPoint(MyTriangle aTriangle, MyPoint aPoint)
 			throws DelaunayError {
 		if (!aTriangle.isInside(aPoint)) {
-			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_OUTSIDE_TRIANGLE);
 		}
 		else {
 			// add point in the triangle
@@ -1175,7 +1175,7 @@ public class MyMesh {
 	 */
 	public void addPoint(MyEdge anEdge, MyPoint aPoint) throws DelaunayError {
 		if (!anEdge.isInside(aPoint)) {
-			throw new DelaunayError(DelaunayError.DelaunayError_outsideTriangle);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_OUTSIDE_TRIANGLE);
 		}
 		else {
 			// Add point
@@ -1890,16 +1890,16 @@ public class MyMesh {
 	 */
 	public void addEdge(MyPoint p1, MyPoint p2) throws DelaunayError {
 		if (!isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }
 		else if (p1.squareDistance(p2) < tolarence){
-			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_PROXIMITY);
                 }
 		else if (pointsQuadTree.search(p1)==null){
-			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_POINT_NOT_FOUND);
                 }
 		else if (pointsQuadTree.search(p2)==null){
-			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_POINT_NOT_FOUND);
                 }
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
@@ -1919,16 +1919,16 @@ public class MyMesh {
 	 */
 	public void addEdge(MyEdge anEdge) throws DelaunayError {
 		if (!isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }
 		else if (anEdge.getStartPoint().squareDistance(anEdge.getEndPoint()) < tolarence){
-			throw new DelaunayError(DelaunayError.DelaunayError_proximity);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_PROXIMITY);
                 }
 		else if (!pointsQuadTree.contains(anEdge.getStartPoint())){
-			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_POINT_NOT_FOUND);
                 }
 		else if (!pointsQuadTree.contains(anEdge.getEndPoint())){
-			throw new DelaunayError(DelaunayError.DelaunayError_pointNotFound);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_POINT_NOT_FOUND);
                 }
 		else {
 			badEdgesQueueList = new LinkedList<MyEdge>();
@@ -2319,21 +2319,21 @@ public class MyMesh {
 	 */
 	public void refineMesh() throws DelaunayError {
 		if (!isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }
 		else {
 			// check all triangle to save all the ones with a bad area criteria
 			LinkedList<MyTriangle> badTrianglesList = new LinkedList<MyTriangle>();
 			LinkedList<MyPoint> barycenter = new LinkedList<MyPoint>();
 
-			boolean softInterpolate = ((refinement & refinement_softInterpolate) != 0);
+			boolean softInterpolate = ((refinement & REFINEMENT_SOFT_INTERPOLATE) != 0);
 			int iterDone = 0;
 			int nbDone = 0;
 			do {
 				iterDone++;
 				nbDone = 0;
 
-				if ((refinement & refinement_maxArea) != 0) {
+				if ((refinement & REFINEMENT_MAX_AREA) != 0) {
 					// Look for triangles with large area
 					// Generate barycenter for each bad triangle
 					for (MyTriangle aTriangle : trianglesQuadTree.getAll()) {
@@ -2365,7 +2365,7 @@ public class MyMesh {
 					}
 				}
 
-				if ((refinement & refinement_minAngle) != 0) {
+				if ((refinement & REFINEMENT_MIN_ANGLE) != 0) {
 					// Look for triangles with a very small angle
 					for (MyTriangle aTriangle : trianglesQuadTree.getAll()) {	
 						if (aTriangle.badAngle(minAngle) >= 0) {
@@ -2398,7 +2398,7 @@ public class MyMesh {
 					}
 				}
 
-				if ((refinement & refinement_obtuseAngle) != 0) {
+				if ((refinement & REFINEMENT_OBTUSE_ANGLE) != 0) {
 					// Look for triangles with an obtuse angle
 					for (MyTriangle aTriangle : trianglesQuadTree.getAll()) {
 						if (aTriangle.getMaxAmgle() >= 90) {
@@ -4134,7 +4134,7 @@ public class MyMesh {
 	 */
 	public void removeFlatTriangles() throws DelaunayError {// old
 		if (!isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }
 		else {
 			// Check triangles to be removed
@@ -4293,7 +4293,7 @@ public class MyMesh {
 	 */
 	public void removeFlatTriangles_Test() throws DelaunayError {//it's a test for a new version of removeFlatTriangles
 		if (!isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }
 		else {
 			
@@ -4510,7 +4510,7 @@ public class MyMesh {
 	 */
 	public void removeTriangle(MyTriangle aTriangle) throws DelaunayError {
 		if (!isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }
 		else {
 			// get longest edge
@@ -4847,7 +4847,7 @@ public class MyMesh {
 	 */
 	public void checkTriangularization() throws DelaunayError {
 		if (!isMeshComputed()){
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }
 		else {
 
@@ -4897,7 +4897,7 @@ public class MyMesh {
 				// Second - check topology
 				for (MyTriangle aTriangle : trianglesQuadTree.getAll()) {
 					if (!aTriangle.checkTopology()) {
-						throw new DelaunayError(DelaunayError.DelaunayError_incorrectTopology);
+						throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_INCORRECT_TOPOLOGY);
 					}
 				}
 	

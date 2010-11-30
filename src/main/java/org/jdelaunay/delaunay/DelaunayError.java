@@ -15,31 +15,31 @@ public class DelaunayError extends Throwable {
 	private static int code;
 
 	// error codes
-	public final static int DelaunayError_noError = 0;
-	public final static int DelaunayError_noMesh = 100;
-	public final static int DelaunayError_notGenerated = 101;
-	public final static int DelaunayError_Generated = 102;
-	public final static int DelaunayError_notEnoughPointsFound = 103;
-	public final static int DelaunayError_proximity = 104;
-	public final static int DelaunayError_pointNotFound = 105;
+	public final static int DELAUNAY_ERROR_NO_ERROR = 0;
+	public final static int DELAUNAY_ERROR_NO_MESH = 100;
+	public final static int DELAUNAY_ERROR_NOT_GENERATED = 101;
+	public final static int DELAUNAY_ERROR_GENERATED = 102;
+	public final static int DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND = 103;
+	public final static int DELAUNAY_ERROR_PROXIMITY = 104;
+	public final static int DELAUNAY_ERROR_POINT_NOT_FOUND = 105;
 	
-	public final static int DelaunayError_nonInsertedPoint = 200;
-	public final static int DelaunayError_incorrectTopology = 201;
-	public final static int DelaunayError_outsideTriangle = 202;
+	public final static int DELAUNAY_ERROR_NON_INSERTED_POINT = 200;
+	public final static int DELAUNAY_ERROR_INCORRECT_TOPOLOGY = 201;
+	public final static int DELAUNAY_ERROR_OUTSIDE_TRIANGLE = 202;
 	
-	public final static int DelaunayError_errorPointxyz = 300;
+	public final static int DELAUNAY_ERROR_ERROR_POINT_XYZ = 300;
 	
-	public final static int DelaunayError_invalidCall = 998;
-	public final static int DelaunayError_internalError = 999;
+	public final static int DELAUNAY_ERROR_INVALID_CALL = 998;
+	public final static int DELAUNAY_ERROR_INTERNAL_ERROR = 999;
 
 	public DelaunayError() {
 		super();
-		code = DelaunayError_internalError;
+		code = DELAUNAY_ERROR_INTERNAL_ERROR;
 	}
 
 	public DelaunayError(String s){
 		super(s);
-		code = DelaunayError_internalError;
+		code = DELAUNAY_ERROR_INTERNAL_ERROR;
 	}
 
 	public DelaunayError(int errorCode) {
@@ -55,33 +55,33 @@ public class DelaunayError extends Throwable {
 	@Override
 	public String getMessage() {
 		switch (code) {
-		case DelaunayError_noError:
+		case DELAUNAY_ERROR_NO_ERROR:
 			return "no error";
-		case DelaunayError_noMesh:
+		case DELAUNAY_ERROR_NO_MESH:
 			return "no mesh found to start process";
-		case DelaunayError_Generated:
+		case DELAUNAY_ERROR_GENERATED:
 			return "triangulation has already been processed";
-		case DelaunayError_notGenerated:
+		case DELAUNAY_ERROR_NOT_GENERATED:
 			return "triangulation has not yet been processed";
-		case DelaunayError_notEnoughPointsFound:
+		case DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND:
 			return "not enough points found to triangularize";
-		case DelaunayError_proximity :
+		case DELAUNAY_ERROR_PROXIMITY :
 			return "distance between the two points is too small";
-		case DelaunayError_pointNotFound :
+		case DELAUNAY_ERROR_POINT_NOT_FOUND :
 			return "point not found";
-		case DelaunayError_nonInsertedPoint:
+		case DELAUNAY_ERROR_NON_INSERTED_POINT:
 			return "one point is not inserted in the triangularization";
-		case DelaunayError_incorrectTopology:
+		case DELAUNAY_ERROR_INCORRECT_TOPOLOGY:
 			return "Incorrect topology";
-		case DelaunayError_outsideTriangle:
+		case DELAUNAY_ERROR_OUTSIDE_TRIANGLE:
 			return "point is outside the triangle";
 		
-		case DelaunayError_errorPointxyz:
+		case DELAUNAY_ERROR_ERROR_POINT_XYZ:
 			return "point should have X, Y and Z coordinates";
 			
-		case DelaunayError_invalidCall:
+		case DELAUNAY_ERROR_INVALID_CALL:
 			return "Invalid function call";
-		case DelaunayError_internalError:
+		case DELAUNAY_ERROR_INTERNAL_ERROR:
 			return "internal error, please call support";
 			
 		default:

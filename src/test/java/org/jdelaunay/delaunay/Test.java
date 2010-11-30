@@ -37,8 +37,8 @@ public class Test {
 		
 		aMesh.processDelaunay();
 		
-		aMesh.addRefinment(MyMesh.refinement_maxArea);
-		aMesh.addRefinment(MyMesh.refinement_softInterpolate);
+		aMesh.addRefinment(MyMesh.REFINEMENT_MAX_AREA);
+		aMesh.addRefinment(MyMesh.REFINEMENT_SOFT_INTERPOLATE);
 		aMesh.refineMesh();
 		
 		MyDrawing aff2 = new MyDrawing();

@@ -27,12 +27,12 @@ public class ConstrainedMesh {
 	//boundaryEdges contains the Envelope of the CURRENT geometry.
 	private LinkedList<MyEdge> boundaryEdges;
 	// constants
-	public static final double epsilon = 0.00001;
-	public static final int maxIter = 5;
-	public static final int refinement_maxArea = 1;
-	public static final int refinement_minAngle = 2;
-	public static final int refinement_softInterpolate = 4;
-	public static final int refinement_obtuseAngle = 8;
+	public static final double EPSILON = 0.00001;
+	public static final int MAXITER = 5;
+	public static final int REFINEMENT_MAX_AREA = 1;
+	public static final int REFINEMENT_MIN_ANGLE = 2;
+	public static final int REFINEMENT_SOFT_INTERPOLATE = 4;
+	public static final int REFINEMENT_OBTUSE_ANGLE = 8;
 
 	public ConstrainedMesh() {
 		triangleList = new ArrayList<MyTriangle>();

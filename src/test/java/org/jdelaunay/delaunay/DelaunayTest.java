@@ -39,7 +39,7 @@ public class DelaunayTest extends BaseTest {
 		aMesh.processDelaunay();
 		aMesh.setMinArea(1000);
 		assertTrue(aMesh.getMinArea() == 1000);
-		aMesh.setRefinment(aMesh.refinement_maxArea);
+		aMesh.setRefinment(aMesh.REFINEMENT_MAX_AREA);
 
 		aMesh.refineMesh();
 

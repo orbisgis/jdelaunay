@@ -208,7 +208,7 @@ public class TestDelaunay extends BaseTest {
 		aMesh.setMaxArea(1000);
 		assertTrue(aMesh.getMaxArea() == 1000);
 		
-		aMesh.setRefinment(MyMesh.refinement_maxArea);
+		aMesh.setRefinment(MyMesh.REFINEMENT_MAX_AREA);
 		aMesh.refineMesh();
 //		show(aMesh);
 

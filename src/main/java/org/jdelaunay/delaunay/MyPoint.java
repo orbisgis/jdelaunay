@@ -44,7 +44,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	 */
 	private void init(double x, double y, double z) throws DelaunayError {
 		if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
-			throw new DelaunayError(DelaunayError.DelaunayError_errorPointxyz);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
 		}
 		
 		this.coord = new Coordinate(x,y,z);

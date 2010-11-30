@@ -63,10 +63,10 @@ public class MyHydroNetwork {
 	 */
 	public void morphologicalQualification() throws DelaunayError {
 		if (theMesh == null) {
-			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NO_MESH);
 		}
 		else if (!theMesh.isMeshComputed()) {
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
 		}
 		else {
 
@@ -228,10 +228,10 @@ public class MyHydroNetwork {
 
 	public void talwegBuilder() throws DelaunayError {
 		if (theMesh == null) {
-			throw new DelaunayError(DelaunayError.DelaunayError_noMesh);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NO_MESH);
 		}
 		else if (!theMesh.isMeshComputed()) {
-			throw new DelaunayError(DelaunayError.DelaunayError_notGenerated);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
 		}
 		else {
 			/**
