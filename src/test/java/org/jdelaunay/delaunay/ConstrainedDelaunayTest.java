@@ -280,6 +280,56 @@ public class ConstrainedDelaunayTest extends BaseTest {
 	}
 
 	/**
+	 * We want to check that we correctly insert new edges in an already
+	 * "vertically sorted" list.
+	 * @throws DelaunayError
+	 */
+	public void testInsertEdgeVertically() throws DelaunayError{
+		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		list.add(new MyEdge(0,0,0,10,4,1));
+		list.add(new MyEdge(0.5,0,0,10,1,1));
+		list.add(new MyEdge(0,0.5,0,10,1,1));
+		list.add(new MyEdge(1,2,0,10,10,1));
+		list.add(new MyEdge(5,0,0,10,1,1));
+		list.add(new MyEdge(0,4,0,10,6,1));
+		list.add(new MyEdge(3,0,0,10,1,1));
+		list.add(new MyEdge(2,0,0,10,1,1));
+		list.add(new MyEdge(7,0,0,10,8,1));
+		list.add(new MyEdge(15,2,0,6,1,1));
+		list.add(new MyEdge(2,0,0,10,1,1));
+		list.add(new MyEdge(2,0,0,11,1,1));
+		list.add(new MyEdge(2,0,0,8,1,1));
+		list.add(new MyEdge(2,0,0,15,1,1));
+		list.add(new MyEdge(2,0,0,14,1,1));
+		list.add(new MyEdge(2,0,0,10,1,1));
+		list.add(new MyEdge(8,-4,0,8,50,1));
+		//We sort our edges (left-right), as we don't want to keep duplicates.
+		List<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
+		//We sort the edges vertically
+		List<MyEdge> sorted=mesh.sortEdgesVertically(sortedLeft, 8);
+		System.out.println(sorted.size() + " elements in sorted");
+		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,1,1), sorted, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,6,1), sorted, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(5,2,0,12,7,1), sorted, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(5,0,0,19,5,1), sorted, 8);
+		//We add vertical edges to be sure they are well processed
+		mesh.insertEdgeVerticalList(new MyEdge(8,0,0,8,9,1), sorted, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(8,7,0,8,3,1), sorted, 8);
+		System.out.println(sorted.size() + " elements in sorted");
+		MyEdge e1 ;
+		MyEdge e2= sorted.get(0);
+		double d1, d2;
+		for(int i=1; i<sorted.size(); i++){
+			e1=e2;
+			e2=sorted.get(i);
+			d1=e1.getPointFromItsX(8).getY();
+			d2=e2.getPointFromItsX(8).getY();
+			System.out.println(d1+" -------- "+ d2);
+			assertTrue(d1<=d2);
+		}
+	}
+	/**
 	 * We check that event points can be added efficiently from secant edges
 	 *
 	 */

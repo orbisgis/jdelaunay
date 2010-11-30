@@ -253,7 +253,9 @@ public class MyEdge extends MyElement implements Serializable {
 
 	/**
 	 * Get the point of this edge that is on the left from the other. 
-	 * We use the order relation defined in MyPoint.
+	 * We use the order relation defined in MyPoint. Consequently, with a vertical
+	 * edge, this method return the minimum point, (so the one with the lowest
+	 * y).
 	 * @return
 	 */
 	public MyPoint getPointLeft(){
@@ -961,28 +963,43 @@ public class MyEdge extends MyElement implements Serializable {
 	}
 
 	/**
-	 * This method retrieves
-	 * @param x
+	 * Returns true if the two points of this edge have the same x coordinate.
+	 * @return
+	 */
+	public boolean  isVertical(){
+		double dx = (startPoint.getX() - endPoint.getX());
+		double delta = (dx<0 ? -dx : dx);
+		return (delta < MyTools.epsilon ? true : false);
+	}
+
+	/**
+	 * This method retrieves the point that would stand on the line defined by
+	 * this edge, and whose absciss is abs.
+	 * if this is a vertical edge, the method returns :
+	 *	the minimum point if this edge stand on the line x=abs
+	 *	null otherwise
+	 * @param abs
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public MyPoint getPointFromItsX(double x) throws DelaunayError{
+	public MyPoint getPointFromItsX(double abs) throws DelaunayError{
 		double deltaX = (startPoint.getX() - endPoint.getX());
 		double dX = (deltaX < 0 ? -deltaX : deltaX);
-		double p = (x-startPoint.getX())/(endPoint.getX() - startPoint.getX());
+		double p = (abs-startPoint.getX())/(endPoint.getX() - startPoint.getX());
 		if(dX < MyTools.epsilon ){
 			//the edge is vertical
-			double delta = startPoint.getX() - x;
+			double delta = startPoint.getX() - abs;
 			dX=((delta<0) ? -delta : delta);
-			if(x==startPoint.getX()){//x is the absciss of every points in this edge
-				return endPoint;
+			if(abs==startPoint.getX()){//x is the absciss of every points in this edge
+				//We return the minimum point.
+				return ((endPoint.compareTo2D(startPoint) == -1) ? endPoint : startPoint);
 			} else {//There is not any point of absciss X on this edge.
 				return null;
 			}
 		} else {
 			double y = startPoint.getY()+p*(endPoint.getY()-startPoint.getY());
 			double z = startPoint.getZ()+p*(endPoint.getZ()-startPoint.getZ());
-			return new MyPoint(x,y,z);
+			return new MyPoint(abs,y,z);
 		}
 	}
 
@@ -1118,6 +1135,41 @@ public class MyEdge extends MyElement implements Serializable {
 		return c;
 	}
 
+	/**
+	 * Sort two edges (this and edge, indeed), and sort them according to their intersection point
+	 * with the line l of equation x=abs.
+	 * if p1 (p2) is the intersection between l and the line defined by this (edge),
+	 * this method returns :
+	 *  * -1 if p1 < p2 or ( p1 == p2 and this is "under" edge)
+	 *  * 0 if p1 == p2 and (this and edge are colinear)
+	 *  * 1 if p1 > p2 or (p1 == p2 and edge is under this)
+	 * @param edge
+	 * @return
+	 */
+	public int verticalSort(MyEdge edge, double abs) throws DelaunayError{
+		MyPoint pThis = this.getPointFromItsX(abs);
+		MyPoint pEdge = edge.getPointFromItsX(abs);
+		if (pThis == null || pEdge ==null){
+			throw new DelaunayError("You shouldn't try to sort vertical edges where x != abs !!!!");
+		}
+		int c = pThis.compareTo2D(pEdge);
+		if(c==0){
+			if(this.isVertical() && edge.isVertical()){
+				return this.getPointLeft().compareTo2D(edge.getPointLeft());
+			} else if(this.isVertical()){
+				c = this.getPointLeft().compareTo2D(pEdge);
+				return (c <=0 ? -1 : 1);
+			} else if(edge.isVertical()){
+				c = pThis.compareTo2D(edge.getPointLeft());
+				return(c < 0 ? -1 : 1 );
+			} else {
+				pThis = this.getPointFromItsX(abs+1);
+				pEdge = edge.getPointFromItsX(abs+1);
+				c = pThis.compareTo2D(pEdge);
+			}
+		}
+		return c;
+	}
 	/**
 	 * @return gradient
 	 */

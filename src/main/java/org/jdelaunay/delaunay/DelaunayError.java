@@ -37,6 +37,11 @@ public class DelaunayError extends Throwable {
 		code = DelaunayError_internalError;
 	}
 
+	public DelaunayError(String s){
+		super(s);
+		code = DelaunayError_internalError;
+	}
+
 	public DelaunayError(int errorCode) {
 		super();
 		code = errorCode;

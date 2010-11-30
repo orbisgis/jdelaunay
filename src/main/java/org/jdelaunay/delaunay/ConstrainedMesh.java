@@ -165,36 +165,36 @@ public class ConstrainedMesh {
 		while (next) {
 			other = sorted.get(i);
 			c = edge.sortLeftRight(other);
-			switch(c){
+			switch (c) {
 				case -1:
-					other = sorted.get(i-1);
+					other = sorted.get(i - 1);
 					c = edge.sortLeftRight(other);
-					switch(c){
+					switch (c) {
 						case -1:
-							delta = (delta / 2 >0 ? delta/2 : 1);
-							i= i - delta;
+							delta = (delta / 2 > 0 ? delta / 2 : 1);
+							i = i - delta;
 							break;
 						case 0:
 							return;
 						case 1:
-							sorted.add(i,edge);
+							sorted.add(i, edge);
 							return;
 					}
 					break;
 				case 0:
 					return;
 				case 1:
-					other = sorted.get(i-1);
+					other = sorted.get(i - 1);
 					c = edge.sortLeftRight(other);
-					switch(c){
+					switch (c) {
 						case -1:
-							sorted.add(i+1, edge);
+							sorted.add(i + 1, edge);
 							return;
 						case 0:
 							return;
 						default:
-							delta = (delta / 2 >0 ? delta/2 : 1);
-							i=i+delta;
+							delta = (delta / 2 > 0 ? delta / 2 : 1);
+							i = i + delta;
 							break;
 					}
 			}
@@ -265,33 +265,47 @@ public class ConstrainedMesh {
 		this.points = points;
 	}
 
+	/**
+	 * Add a new point in the list that will be used to perform the triangulation.
+	 * The list of points is supposed to be sorted.
+	 * @param point
+	 */
 	public void addPoint(MyPoint point) {
-		int s = points.size();
+		addPointToSortedList(point, points);
+	}
+
+	/**
+	 * Add a new point in a sorted list.
+	 * @param point
+	 * @param sortedList
+	 */
+	private void addPointToSortedList(MyPoint point, List<MyPoint> sortedList) {
+		int s = sortedList.size();
 		if (s == 0) {
-			points.add(point);
+			sortedList.add(point);
 		} else {
 			int p = s / 2;
 			int delta = s / 2;
 			int ret = -1;
 			int c;
 			//If the point is inferior to the first element of te list, we place it at the beginning
-			if (point.compareTo2D(points.get(0)) == -1) {
+			if (point.compareTo2D(sortedList.get(0)) == -1) {
 				p = 0;
 				ret = 0;
 				//If the point is superior to the last element of the list, we place it at the end
-			} else if (point.compareTo2D(points.get(s - 1)) == 1) {
+			} else if (point.compareTo2D(sortedList.get(s - 1)) == 1) {
 				p = s;
 				ret = s;
 			}
 			while (ret != p) {
 				delta = (delta / 2 > 0 ? delta / 2 : 1);
-				c = point.compareTo2D(points.get(p));
-				switch(c){
+				c = point.compareTo2D(sortedList.get(p));
+				switch (c) {
 					case -1:
-					//point < points.get(p)
-					//We must move left
-						c = point.compareTo2D(points.get(p - 1));
-						switch(c){
+						//point < points.get(p)
+						//We must move left
+						c = point.compareTo2D(sortedList.get(p - 1));
+						switch (c) {
 							case -1:
 								p = p - delta;
 								break;
@@ -303,14 +317,14 @@ public class ConstrainedMesh {
 						}
 						break;
 					case 0:
-						p=-1;
+						p = -1;
 						break;
 					default:
-						p=p+delta;
+						p = p + delta;
 				}
 			}
 			if (p != -1) {
-				points.add(p, point);
+				sortedList.add(p, point);
 			}
 		}
 	}
@@ -339,13 +353,13 @@ public class ConstrainedMesh {
 		int i = points.size() / 2;
 		while (delta > 0) {
 			c = p.compareTo2D(points.get(i));
-			switch(c){
+			switch (c) {
 				case -1://p is on the left of points(i)...
-					if(i==0){
+					if (i == 0) {
 						return -1;
 					}
 					c = p.compareTo2D(points.get(i - 1));
-					switch(c){
+					switch (c) {
 						case 1://...and on the right of points(i-1), so it's no in the list
 							return -1;
 						case 0:
@@ -362,22 +376,58 @@ public class ConstrainedMesh {
 						return -1;
 					}
 					c = p.compareTo2D(points.get(i + 1));
-					switch(c){
+					switch (c) {
 						case -1://...and on the left of points(i-1), so it's no in the list
 							return -1;
 						case 0:
-							return i+1;
+							return i + 1;
 						default://...and on the right of points(i-1), we continue
 							delta = delta / 2;
 							i = i + delta;
 					}
 
-			}			
+			}
 		}
 		return -1;
 	}
-	
+
+	/**
+	 * This method will force the integrity of the constraints used to compute
+	 * the delaunay triangulation. After execution :
+	 *  * duplicates are removed
+	 *  * intersection points are added to the mesh points
+	 *  * secant edges are split
+	 */
 	public void forceConstraintIntegrity() {
+		//The event points are the extremities and intersections of the
+		//constraint edges. This list is created empty, and filled to stay
+		//sorted.
+		ArrayList<MyPoint> eventPoints = new ArrayList<MyPoint>();
+		//We fill the list.
+		for (MyEdge edge : constraintEdges) {
+			addPointToSortedList(edge.getStart(), eventPoints);
+			addPointToSortedList(edge.getEnd(), eventPoints);
+		}
+		//we are about to perform the sweepline algorithm
+		MyPoint currentEvent = null;
+		//edgeBuffer will contain the edges sorted vertically
+		ArrayList<MyEdge> edgeBuffer = new ArrayList<MyEdge>();
+		//We keep a shallow copy of constraintEdges...
+		ArrayList<MyEdge> edgeMemory = constraintEdges;
+		//...and we empty it
+		constraintEdges = new ArrayList<MyEdge>();
+		while (!eventPoints.isEmpty()) {
+			//We retrieve the event about to be processed.
+			currentEvent = eventPoints.get(0);
+			if (currentEvent.equals(edgeMemory.get(0).getPointLeft())) {
+				//We've found an edge in our memory that should be added to the buffer.
+			}
+
+
+			for (MyEdge tempEdge : edgeBuffer) {
+				//We walk through our buffer
+			}
+		}
 	}
 
 	/**
@@ -393,18 +443,14 @@ public class ConstrainedMesh {
 		int c = 0;
 		MyEdge e1;
 		MyEdge e2;
-		MyPoint interE1;
-		MyPoint interE2;
-		while(i<s-1){
+		while (i < s - 1) {
 			e1 = edgeList.get(i);
-			e2 = edgeList.get(i+1);
-			interE1 = e1.getPointFromItsX(abs);
-			interE2 = e2.getPointFromItsX(abs);
-			c=interE1.compareTo2D(interE2);
-			if(c==1){
-				edgeList.set(i,e2);
-				edgeList.set(i+1, e1);
-				i=0;
+			e2 = edgeList.get(i + 1);
+			c = e1.verticalSort(e2,abs);
+			if (c == 1) {
+				edgeList.set(i, e2);
+				edgeList.set(i + 1, e1);
+				i = 0;
 			} else {
 				i++;
 			}
@@ -413,25 +459,87 @@ public class ConstrainedMesh {
 	}
 
 	/**
+	 * This method will insert a new Edge in a vertically sorted list, as described in
+	 * sortEdgesVertically.
+	 * Be careful when using this method. In fact, you must use the same absciss
+	 * here that the one which has been used when sorting the list.
+	 * @param edge
+	 * @param edgeList
+	 */
+	public void insertEdgeVerticalList(MyEdge edge, List<MyEdge> edgeList, double abs) throws DelaunayError {
+		if (edgeList == null || edgeList.isEmpty()) {
+			edgeList.add(edge);
+		}
+		int s = edgeList.size();
+		int compare = edge.verticalSort(edgeList.get(0), abs);
+		if (compare == -1) {
+			edgeList.add(0, edge);
+			return;
+		}
+		compare = edge.verticalSort(edgeList.get(s-1), abs);
+		if (compare == 1) {
+			edgeList.add(s, edge);
+			return;
+		}
+		int delta = s / 2;
+		int i = s / 2;
+		while (delta > 0) {
+			compare = edge.verticalSort(edgeList.get(i), abs);
+			switch(compare){
+				case -1:
+					compare = edge.verticalSort(edgeList.get(i-1), abs);
+					switch(compare){
+						case -1:
+							delta = delta / 2;
+							i=i-delta;
+							break;
+						default:
+							edgeList.add(i, edge);
+							return;
+
+					}
+					break;
+				case 0:
+					edgeList.add(i+1, edge);
+					return;
+				case 1:
+					compare = edge.verticalSort(edgeList.get(i+1), abs);
+					switch(compare){
+						case 1:
+							delta = delta / 2;
+							i=i+delta;
+							break;
+						default:
+							edgeList.add(i+1, edge);
+							return;
+
+					}
+					break;
+			}
+		}
+
+	}
+
+	/**
 	 * This method simply travels the list given in argument. If edges edgelist.get(i)
 	 * and edgeList.get(i+1) intersect, then we add the intersection point in
 	 * the eventList.
 	 * @param edgeList
 	 */
-	public void addPointsFromNeighbourEdges(List<MyEdge> edgeList, List<MyPoint> eventList) throws DelaunayError{
+	public void addPointsFromNeighbourEdges(List<MyEdge> edgeList, List<MyPoint> eventList) throws DelaunayError {
 		MyEdge e1;
 		MyEdge e2;
-		MyPoint inter=null;
+		MyPoint inter = null;
 		//we check that our paremeters are not null, and that our edge list contains
 		//at least two edges, because they couldn't be intersections otherwise.
-		if(edgeList == null || eventList == null || edgeList.size()<2){
+		if (edgeList == null || eventList == null || edgeList.size() < 2) {
 			return;
 		} else {
-			for(int i=0; i<edgeList.size()-1;i++){
-				e1=edgeList.get(i);
-				e2=edgeList.get(i+1);
+			for (int i = 0; i < edgeList.size() - 1; i++) {
+				e1 = edgeList.get(i);
+				e2 = edgeList.get(i + 1);
 				inter = e1.getIntersection(e2);
-				if(inter != null){
+				if (inter != null) {
 					eventList.add(inter);
 				}
 			}
