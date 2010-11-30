@@ -39,12 +39,17 @@ public class TestEdges extends BaseTest {
 		assertTrue(e1.intersects(e2)==1);
 		e2 = new MyEdge(4,4,0,2,2,0);
 		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(4,4,0,20,20,0);
+		assertTrue(e1.intersects(e2)==1);
 		e2 = new MyEdge(10,10,0,6,6,0);
 		assertTrue(e1.intersects(e2)==1);
 		e2 = new MyEdge(6,4,0,10,8,0);
 		assertTrue(e1.intersects(e2)==2);
 		e2 = new MyEdge(0,0,0,1,-4,0);
 		assertTrue(e1.intersects(e2)==0);
+		e2 = new MyEdge(8,8,0,1,-4,0);
+		assertTrue(e1.intersects(e2)==3);
+                //some tests for vertical edges
 		e1 = new MyEdge(4,4,0,4,8,0);
 		e2 = new MyEdge(4,4,0,4,2,0);
 		assertTrue(e1.intersects(e2)==3);
@@ -58,6 +63,30 @@ public class TestEdges extends BaseTest {
 		assertTrue(e1.intersects(e2)==2);
 		e2 = new MyEdge(9,9,0,10,10,0);
 		assertTrue(e1.intersects(e2)==0);
+		e2 = new MyEdge(4,0,0,4,10,0);
+		assertTrue(e1.intersects(e2)==1);
+		e2 = new MyEdge(4,8,0,10,12,0);
+		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(9,9,0,10,10,0);
+		assertTrue(e1.intersects(e2)==0);
+                //tests for horizontal edges
+		e1 = new MyEdge(4,4,0,8,4,0);
+		e2 = new MyEdge(4,4,0,4,2,0);
+		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(5,3,0,5,8,0);
+		assertTrue(e1.intersects(e2)==1);
+		e2 = new MyEdge(8,4,0,0,4,0);
+		assertTrue(e1.intersects(e2)==1);
+		e2 = new MyEdge(8,4,0,10,4,0);
+		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(9,4,0,10,4,0);
+		assertTrue(e1.intersects(e2)==0);
+		e2 = new MyEdge(4,4,0,8,7,0);
+		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(4,3,0,8,5,0);
+		assertTrue(e1.intersects(e2)==1);
+		e2 = new MyEdge(4,3,0,8,3,0);
+		assertTrue(e1.intersects(e2)==2);
 	}
 
 }

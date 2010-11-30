@@ -517,8 +517,8 @@ public class MyEdge extends MyElement implements Serializable {
 	 * @param p2 the end point of the other edge
 	 * @return intersection :<br/>
 	 * 			0 = no intersection<br/>
-	 * 			1 = intersects<br/>
-	 * 			2 = co-linear<br/>
+	 * 			1 = intersect<br/>
+	 * 			2 = co-linear and don't intersect<br/>
 	 * 			3 = intersects at the extremity
 	 */
 	public int intersects(MyPoint p1, MyPoint p2) {
@@ -560,7 +560,7 @@ public class MyEdge extends MyElement implements Serializable {
 			if (Math.abs(deltaXO) > epsilon) {
 				t1 = (c1) / (deltaXO);
 			}
-			else {
+			else { 
 				t1 = (c2) / (deltaYO);
 			}
 
@@ -584,6 +584,11 @@ public class MyEdge extends MyElement implements Serializable {
 
 					if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
 						result = 0;
+                                                if(this.isVertical()){
+                                                        if(Math.abs(deltaXO)<epsilon){
+                                                                result = 2;
+                                                        }
+                                                }
 					}//no intersection
 					else
 					{
@@ -604,8 +609,7 @@ public class MyEdge extends MyElement implements Serializable {
 					if(isOnEdge(p1) || isOnEdge(p2) || new MyEdge(p1, p2).isOnEdge(p3) || new MyEdge(p1, p2).isOnEdge(p4))
 					{
 						result=1;//co-linear and intersects
-					}
-					if((p3.compareTo2D(p4)==1)
+					} else if((p3.compareTo2D(p4)==1)
 						&&(p1.equals2D(p3) && p2.compareTo2D(p3)==1)
 						||p2.equals2D(p3) && p1.compareTo2D(p3)==1
 						||p2.equals2D(p4) && p1.compareTo2D(p4)==-1
