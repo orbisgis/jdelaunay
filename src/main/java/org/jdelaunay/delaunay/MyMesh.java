@@ -798,13 +798,13 @@ public class MyMesh {
 			}
 			
 			
-			if(showDebug)
-			{	
-				// show a windows with the triangulation in progress
-				aff2 = new MyDrawing();
-				aff2.add(this);
-				this.setAffiche(aff2);
-			}
+//			if(showDebug)
+//			{
+//				// show a windows with the triangulation in progress
+//				aff2 = new MyDrawing();
+//				aff2.add(this);
+//				this.setAffiche(aff2);
+//			}
 				
 			// general data structures
 			badEdgesQueueList = new LinkedList<MyEdge>();
@@ -3779,9 +3779,9 @@ public class MyMesh {
 				if(showDebug)//TODO remove me debug
 				{
 					
-					MyDrawing aff2 = new MyDrawing();
-					aff2.add(this);
-					this.setAffiche(aff2);
+//					MyDrawing aff2 = new MyDrawing();
+//					aff2.add(this);
+//					this.setAffiche(aff2);
 					System.out.println("end\n\nPush Enter to continue...");
 					try {
 						int a =System.in.read();
