@@ -44,9 +44,9 @@ public class DelaunayForHydroTest extends BaseTest {
 			}
 		}
 		assertTrue(nbFlat == 0);
-		MyDrawing aff2 = new MyDrawing();
-		aff2.add(aMesh);
-		aMesh.setAffiche(aff2);
+//		MyDrawing aff2 = new MyDrawing();
+//		aff2.add(aMesh);
+//		aMesh.setAffiche(aff2);
 	}
 
 	public void testEdgesMorphologicalClassification() throws DelaunayError {
@@ -71,8 +71,8 @@ public class DelaunayForHydroTest extends BaseTest {
 		}
 		
 		
-		MyDrawing aff2 = new MyDrawing();
-		aff2.add(aMesh);
-		aMesh.setAffiche(aff2);
+//		MyDrawing aff2 = new MyDrawing();
+//		aff2.add(aMesh);
+//		aMesh.setAffiche(aff2);
 	}
 }

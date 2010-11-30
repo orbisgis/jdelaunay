@@ -46,6 +46,7 @@ public class Test {
 		aMesh.setAffiche(aff2);
 
 		aMesh.VRMLexport();
+		System.out.println("I'm in your main !");
 		// aMesh.saveMesh();
 	}
 }

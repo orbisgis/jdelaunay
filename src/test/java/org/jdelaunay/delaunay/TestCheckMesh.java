@@ -58,7 +58,7 @@ public class TestCheckMesh  extends BaseTest {
 
 		aMesh.addPolygon(aPolygon);
 		
-		show(aMesh);
+//		show(aMesh);
 
 		System.out.println("Second check");
 		aMesh.checkTriangularization();
@@ -102,7 +102,7 @@ public class TestCheckMesh  extends BaseTest {
 			aPolygon.setEmpty(true);
 			aMesh.addPolygon(aPolygon);
 	
-			show(aMesh);
+//			show(aMesh);
 			
 			System.out.println("Second check");
 			aMesh.checkTriangularization();
@@ -152,7 +152,7 @@ public class TestCheckMesh  extends BaseTest {
 		
 		aMesh.addLevelEdge(new MyEdge(new MyPoint(3, 5, 5),new MyPoint(10, 5, 5)));
 		
-		show(aMesh);
+//		show(aMesh);
 //		System.out.println("end\n\nPush Enter to finish...");
 //		System.in.read();	
 		
@@ -194,7 +194,7 @@ public class TestCheckMesh  extends BaseTest {
 		aMesh.addLevelEdge(new MyEdge(new MyPoint(3, 5, 5),new MyPoint(10, 5, 5)));
 		aMesh.processDelaunay();
 		
-		show(aMesh);
+//		show(aMesh);
 		
 
 		aMesh.checkTriangularization();
@@ -278,7 +278,7 @@ public class TestCheckMesh  extends BaseTest {
 		
 		aMesh.processDelaunay();
 		aMesh.removeFlatTriangles();
-		show(aMesh);
+//		show(aMesh);
 		
 
 		
@@ -324,7 +324,7 @@ public class TestCheckMesh  extends BaseTest {
 		
 		aMesh.addPolygon(aPolygon);
 
-		show(aMesh);
+//		show(aMesh);
 		
 		System.out.println("Second check");
 		aMesh.checkTriangularization();
@@ -385,7 +385,7 @@ public class TestCheckMesh  extends BaseTest {
 		aMesh.removeFlatTriangles();
 		
 		
-		show(aMesh);
+//		show(aMesh);
 		
 		System.out.println("Second check");
 		aMesh.checkTriangularization();
@@ -444,7 +444,7 @@ public class TestCheckMesh  extends BaseTest {
 //		aMesh.addPolygon(aPolygon);
 	
 		
-		show(aMesh);
+//		show(aMesh);
 		
 //		System.out.println("end\n\nPush Enter to finish...");
 //		System.in.read();
@@ -497,7 +497,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(false);
 		aMesh.addPolygon(aPolygon);
 		
-		show(aMesh);
+//		show(aMesh);
 		
 		System.out.println("Second check");
 		aMesh.checkTriangularization();
@@ -536,7 +536,7 @@ public class TestCheckMesh  extends BaseTest {
 		aMesh.processDelaunay();
 		
 		
-		show(aMesh);
+//		show(aMesh);
 		
 		aMesh.checkTriangularization();
 		
@@ -597,7 +597,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
-		show(aMesh);
+//		show(aMesh);
 		
 		System.out.println("Second check");
 		aMesh.checkTriangularization();
@@ -653,7 +653,7 @@ public class TestCheckMesh  extends BaseTest {
 		aMesh.showDebug=true;
 		aMesh.processDelaunay();
 		
-		show(aMesh);
+//		show(aMesh);
 		
 		aMesh.checkTriangularization();
 		
@@ -713,7 +713,7 @@ public class TestCheckMesh  extends BaseTest {
 		aMesh.addPolygon(aPolygon);
 		
 		
-		show(aMesh);
+//		show(aMesh);
 		
 		System.out.println("Second check");
 		aMesh.checkTriangularization();
@@ -779,7 +779,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setEmpty(false);
 		aMesh.addBridge(aPolygon);
 		
-		show(aMesh);
+//		show(aMesh);
 		
 		System.out.println(aMesh.getPoints());
 		System.out.println(aMesh.getEdges());
@@ -932,7 +932,7 @@ public class TestCheckMesh  extends BaseTest {
 		
 		aMesh.processDelaunay();
 		
-		show(aMesh);	
+//		show(aMesh);
 		
 		System.out.println("check 1");
 		aMesh.checkTriangularization();
@@ -981,7 +981,7 @@ public class TestCheckMesh  extends BaseTest {
 
 		
 		
-		show(aMesh);	
+//		show(aMesh);
 		
 //		System.out.println("end\n\nPush Enter to finish...");
 //		System.in.read();
@@ -1034,7 +1034,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
-		show(aMesh);	
+//		show(aMesh);
 		
 		
 		System.out.println("check");
@@ -1240,7 +1240,7 @@ public class TestCheckMesh  extends BaseTest {
 		aMesh.showDebug=true;
 		aMesh.processDelaunay();
 	
-		show(aMesh);	
+//		show(aMesh);
 //		System.out.println("end\n\nPush Enter to finish...");
 //		System.in.read();
 		
@@ -1496,7 +1496,7 @@ public class TestCheckMesh  extends BaseTest {
 //		aPolygon.setUsePolygonZ(true);
 //		aMesh.addPolygon(aPolygon);
 	
-		show(aMesh);	
+//		show(aMesh);
 		
 //		System.out.println("check all");
 //		checkMeshTopo(aMesh);
@@ -1617,7 +1617,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 	
-		show(aMesh);	
+//		show(aMesh);
 		
 //		System.out.println("check all");
 //		checkMeshTopo(aMesh);
@@ -1665,7 +1665,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
-		show(aMesh);	
+//		show(aMesh);
 		
 		
 //		System.out.println("check");
@@ -1716,7 +1716,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
-		show(aMesh);	
+//		show(aMesh);
 		
 		
 //		System.out.println("check");
@@ -1765,7 +1765,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
-		show(aMesh);	
+//		show(aMesh);
 		
 		
 //		System.out.println("check");
@@ -1798,8 +1798,9 @@ public class TestCheckMesh  extends BaseTest {
 		listePoints.add(new MyPoint(46, 1, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(MyPoint p:listePoints) {
 			abox.alterBox(p);
+		}
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
 		
@@ -1814,7 +1815,7 @@ public class TestCheckMesh  extends BaseTest {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
-		show(aMesh);	
+//		show(aMesh);
 		
 		
 		System.out.println("check");
@@ -1837,7 +1838,7 @@ public class TestCheckMesh  extends BaseTest {
 	public void test_pause() throws IOException
 	{
 		System.out.println("end\n\nPush Enter to finish...");
-		System.in.read();
+//		System.in.read();
 	}
 	
 	
@@ -1872,24 +1873,19 @@ public class TestCheckMesh  extends BaseTest {
 	public static boolean checkNoDuplicateEdge(ArrayList<MyEdge> edgeList)
 	{
 		boolean ok=true;
-		for(int i=0; i<edgeList.size();i++)
-			for(int j=i+1; j<edgeList.size();j++)
-			{
-				if( (
-						edgeList.get(i).getStartPoint().equals(edgeList.get(j).getStartPoint()) &&
-					    edgeList.get(i).getEndPoint().equals(edgeList.get(j).getEndPoint())
-					 ) ||
-					 (
-						edgeList.get(i).getStartPoint().equals(edgeList.get(j).getEndPoint()) &&
-						edgeList.get(i).getEndPoint().equals(edgeList.get(j).getStartPoint())	 
-					 )
-				)
-				{
-					System.err.println("Duplicate edge : "+edgeList.get(i)+" "+edgeList.get(i).getIndicator()+" == "+edgeList.get(j)+" "+edgeList.get(j).getIndicator());
-					ok=false;
+		for(int i=0; i<edgeList.size();i++) {
+			for (int j = i + 1; j < edgeList.size(); j++) {
+				if ((edgeList.get(i).getStartPoint().equals(edgeList.get(j).getStartPoint()) &&
+					edgeList.get(i).getEndPoint().equals(edgeList.get(j).getEndPoint())) ||
+					(edgeList.get(i).getStartPoint().equals(edgeList.get(j).getEndPoint()) &&
+					edgeList.get(i).getEndPoint().equals(edgeList.get(j).getStartPoint()))) {
+					System.err.println("Duplicate edge : " + edgeList.get(i) + " " +
+						edgeList.get(i).getIndicator() + " == " +
+						edgeList.get(j) + " " + edgeList.get(j).getIndicator());
+					ok = false;
 				}
 			}
-		
+		}
 		return ok;
 	}
 	
@@ -1905,10 +1901,12 @@ public class TestCheckMesh  extends BaseTest {
 				
 				for(int i=0; i<triangles.size() && !(findleft && findright); i++)
 				{
-					if(anEdge.getLeft()!=null && triangles.get(i).getGID()==anEdge.getLeft().getGID())
-						findleft=true;
-					if(anEdge.getRight()!=null && triangles.get(i).getGID()==anEdge.getRight().getGID())
-						findright=true;
+					if(anEdge.getLeft()!=null && triangles.get(i).getGID()==anEdge.getLeft().getGID()) {
+					findleft = true;
+				}
+					if(anEdge.getRight()!=null && triangles.get(i).getGID()==anEdge.getRight().getGID()) {
+					findright = true;
+				}
 				}
 			
 				if(!findleft)
@@ -1931,15 +1929,14 @@ public class TestCheckMesh  extends BaseTest {
 	public static boolean checkEdgeNoIntersection(ArrayList<MyEdge> edgeList)
 	{
 		boolean ok=true;
-		for(int i=0; i<edgeList.size();i++)
-			for(int j=i+1; j<edgeList.size();j++)
-			{
-				if( edgeList.get(i).intersects(edgeList.get(j).getStartPoint(), edgeList.get(j).getEndPoint())==1)
-				{
-					System.err.println("Intersection between "+edgeList.get(i)+" and "+edgeList.get(j));
-					ok=false;
+		for(int i=0; i<edgeList.size();i++) {
+			for (int j = i + 1; j < edgeList.size(); j++) {
+				if (edgeList.get(i).intersects(edgeList.get(j).getStartPoint(), edgeList.get(j).getEndPoint()) == 1) {
+					System.err.println("Intersection between " + edgeList.get(i) + " and " + edgeList.get(j));
+					ok = false;
 				}
 			}
+		}
 
 		return ok;
 	}
@@ -1972,8 +1969,9 @@ public class TestCheckMesh  extends BaseTest {
 //		assertEquals("Same number of edge", edgeListRef.size(), edgeListToCheck.size());
 //		assertEquals("Same number of triangle", tiangleListRef.size(), triangleListToCheck.size());
 		
-		if(pointListRef.size()!= pointListToCheck.size())
-			System.err.println("Not same number of points! Reference list : "+pointListRef.size()+" "+(pointListRef.size()>pointListToCheck.size()?">":"<")+" new list : "+pointListToCheck.size());
+		if(pointListRef.size()!= pointListToCheck.size()) {
+			System.err.println("Not same number of points! Reference list : " + pointListRef.size() + " " + (pointListRef.size() > pointListToCheck.size() ? ">" : "<") + " new list : " + pointListToCheck.size());
+		}
 			
 		boolean find, meshIsGood=true;
 		int i;
@@ -2004,8 +2002,9 @@ public class TestCheckMesh  extends BaseTest {
 		if(!pointListToCheck.isEmpty())
 		{
 			meshIsGood=false;
-			for(MyPoint aPoint:pointListToCheck)
-				System.err.println("Not fond in reference! : "+aPoint+" "+aPoint.getIndicator()+" | "+(aPoint.isUseByLevelEdge()?"lvl":"")+"  "+(aPoint.isUseByPolygon()?"poly":""));
+			for(MyPoint aPoint:pointListToCheck) {
+				System.err.println("Not fond in reference! : " + aPoint + " " + aPoint.getIndicator() + " | " + (aPoint.isUseByLevelEdge() ? "lvl" : "") + "  " + (aPoint.isUseByPolygon() ? "poly" : ""));
+			}
 		}
 		
 		assertTrue("Mesh isn't good! Some points are wrong.", meshIsGood);
@@ -2017,8 +2016,9 @@ public class TestCheckMesh  extends BaseTest {
 		// 		checking edges
 		//
 		
-		if(edgeListRef.size() != edgeListToCheck.size())
-			System.err.println("Not same number of edges! Reference list : "+edgeListRef.size()+" "+(edgeListRef.size()>edgeListToCheck.size()?">":"<")+" new list : "+edgeListToCheck.size());
+		if(edgeListRef.size() != edgeListToCheck.size()) {
+			System.err.println("Not same number of edges! Reference list : " + edgeListRef.size() + " " + (edgeListRef.size() > edgeListToCheck.size() ? ">" : "<") + " new list : " + edgeListToCheck.size());
+		}
 
 		
 		for(MyEdge anEdge: edgeListRef)
@@ -2054,8 +2054,9 @@ public class TestCheckMesh  extends BaseTest {
 		if(!edgeListToCheck.isEmpty())
 		{
 			meshIsGood=false;
-			for(MyEdge anEdge:edgeListToCheck)
-				System.err.println("Not fond in reference! : "+anEdge+" "+anEdge.getIndicator()+" | "+(anEdge.isLevelEdge()?"lvl":"")+"  "+(anEdge.isUseByPolygon()?"poly":""));
+			for(MyEdge anEdge:edgeListToCheck) {
+				System.err.println("Not fond in reference! : " + anEdge + " " + anEdge.getIndicator() + " | " + (anEdge.isLevelEdge() ? "lvl" : "") + "  " + (anEdge.isUseByPolygon() ? "poly" : ""));
+			}
 		}
 		
 		assertTrue("Mesh isn't good! Some edges are wrong.", meshIsGood);

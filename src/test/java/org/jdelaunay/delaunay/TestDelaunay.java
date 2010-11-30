@@ -13,7 +13,7 @@ public class TestDelaunay extends BaseTest {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setMax(1300, 700);
-		aMesh.setRandomPoints(1000000);
+		aMesh.setRandomPoints(10000);
 		
 		long start = System.currentTimeMillis();
 		
@@ -22,7 +22,7 @@ public class TestDelaunay extends BaseTest {
 		long end = System.currentTimeMillis();
 		System.out.println("Duration " + (end-start)+"ms");
 		
-		show(aMesh);
+//		show(aMesh);
 		System.out.println();
 		assertTrue(true);
 		System.out.println("end");
@@ -40,7 +40,7 @@ public class TestDelaunay extends BaseTest {
 
 		aMesh.processDelaunay();
 
-		show(aMesh);
+//		show(aMesh);
 		System.out.println();
 		assertTrue(true);
 	}
@@ -210,7 +210,7 @@ public class TestDelaunay extends BaseTest {
 		
 		aMesh.setRefinment(MyMesh.refinement_maxArea);
 		aMesh.refineMesh();
-		show(aMesh);
+//		show(aMesh);
 
 		for (MyTriangle myTriangle : aMesh.getTriangles()) {
 			if (myTriangle.computeArea() > 1000) {

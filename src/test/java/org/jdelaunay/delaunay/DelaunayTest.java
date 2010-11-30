@@ -13,7 +13,7 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setRandomPoints(5000);
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		show(aMesh);
+//		show(aMesh);
 
 	}
 
@@ -25,7 +25,7 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setPoints(getPoints());
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		show(aMesh);
+//		show(aMesh);
 		System.out.println();
 
 	}
@@ -43,7 +43,7 @@ public class DelaunayTest extends BaseTest {
 
 		aMesh.refineMesh();
 
-		show(aMesh);
+//		show(aMesh);
 		
 		ArrayList<MyTriangle> triangles = aMesh.getTriangles();
 
@@ -81,7 +81,7 @@ public class DelaunayTest extends BaseTest {
 		aMesh.setPoints(pts);
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
-		show(aMesh);
+//		show(aMesh);
 		assertTrue(aMesh.getNbPoints() == pts.size() - 1);
 
 	}

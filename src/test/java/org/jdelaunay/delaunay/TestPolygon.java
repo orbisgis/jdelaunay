@@ -23,7 +23,7 @@ public class TestPolygon  extends BaseTest  {
 		
 		aMesh.addPolygon(aPolygon);
 		
-		show(aMesh);
+//		show(aMesh);
 		System.out.println(aMesh.setPropertyToTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle()));
 		System.out.println("fin 01");
 		aMesh.checkTriangularization();
@@ -46,7 +46,7 @@ public class TestPolygon  extends BaseTest  {
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
-		show(aMesh);
+//		show(aMesh);
 		System.out.println(aMesh.setPropertyToTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle()));
 		System.out.println("fin 01");
 		aMesh.checkTriangularization();
@@ -68,7 +68,7 @@ public class TestPolygon  extends BaseTest  {
 		aPolygon.setEmpty(true);
 		aMesh.addPolygon(aPolygon);
 		
-		show(aMesh);
+//		show(aMesh);
 		System.out.println("fin 01bis");
 		aMesh.checkTriangularization();
 	}
@@ -90,7 +90,7 @@ public class TestPolygon  extends BaseTest  {
 		aMesh.addPolygon(aPolygon);
 		aMesh.processDelaunay();
 		
-		show(aMesh);
+//		show(aMesh);
 		aMesh.checkTriangularization();
 	}
 	
@@ -111,7 +111,7 @@ public class TestPolygon  extends BaseTest  {
 		aMesh.processDelaunay();
 		aMesh.removeTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle());
 		
-		show(aMesh);
+//		show(aMesh);
 		aMesh.checkTriangularization();
 	}
 	
@@ -135,7 +135,7 @@ public class TestPolygon  extends BaseTest  {
 
 		aMesh.processDelaunay();
 		
-		show(aMesh);
+//		show(aMesh);
 		System.out.println(aMesh.setPropertyToTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle()));
 		System.out.println("end");
 		aMesh.checkTriangularization();
@@ -166,7 +166,7 @@ public class TestPolygon  extends BaseTest  {
 
 		aMesh.processDelaunay();
 		
-		show(aMesh);
+//		show(aMesh);
 		aMesh.VRMLexport();
 		System.out.println("end");
 		aMesh.checkTriangularization();
@@ -196,11 +196,11 @@ public class TestPolygon  extends BaseTest  {
 		aMesh.addPolygon(aPolygon2);
 		aMesh.addPolygon(aPolygon);
 		aMesh.addPolygon(aPolygon3);
-	aMesh.addPolygon(aPolygon4);	
+		aMesh.addPolygon(aPolygon4);
 
 		aMesh.processDelaunay();
 		
-		show(aMesh);
+//		show(aMesh);
 		System.out.println("end");
 		aMesh.checkTriangularization();
 	}
@@ -234,7 +234,7 @@ public class TestPolygon  extends BaseTest  {
 		aMesh.processDelaunay();
 		aMesh.addPolygon(aPolygon4);
 		
-		show(aMesh);
+//		show(aMesh);
 		System.out.println("end");
 		aMesh.checkTriangularization();
 	}
@@ -274,7 +274,7 @@ public class TestPolygon  extends BaseTest  {
 		aMesh.processDelaunay();
 
 		
-		show(aMesh);
+//		show(aMesh);
 //		aMesh.VRMLexport("testPolygon_07-2.wrl");
 			aMesh.saveMeshXML();
 		System.out.println("end");

@@ -32,7 +32,7 @@ public class TestQuadTree extends BaseTest  {
 				aMesh.addPolygon(aPolygon2);
 		
 		
-		show(aMesh);
+//		show(aMesh);
 //		System.out.println("points :\n"+aMesh.points+"\n");
 //		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));//new MyBox(0, 130, 0, 30, 0, 40)
 //		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
@@ -66,7 +66,7 @@ public class TestQuadTree extends BaseTest  {
 		aMesh.processDelaunay();
 
 
-		show(aMesh);
+//		show(aMesh);
 
 //		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
 //		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
@@ -99,7 +99,7 @@ public class TestQuadTree extends BaseTest  {
 
 		
 		
-		show(aMesh);
+//		show(aMesh);
 
 //		System.out.println("\npoint inside aPolygon's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon.getBoundingBox()));
 //		System.out.println("\npoint inside aPolygon2's bounding box :\n"+aMesh.quadTree.searchAllStric(aPolygon2.getBoundingBox()));
@@ -114,7 +114,7 @@ public class TestQuadTree extends BaseTest  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon,16750080);
+		MyPolygon secPolygon = new MyPolygon(polygon,16750080);
 		
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((100 20 60, 100 80 60, 180 80 60, 180 20 60, 100 20 60))");
@@ -156,12 +156,12 @@ public class TestQuadTree extends BaseTest  {
 
 	
 		
-		show(aMesh);
+//		show(aMesh);
 
 		end = System.currentTimeMillis();
 		System.out.println("Duration " + (end-start)+"ms soit "+((end-start)/60000)+"min");
 		aMesh.VRMLexport("testQuad.vrml");
-		System.in.read();
+//		System.in.read();
 		System.out.println("end 04\n");
 		
 		

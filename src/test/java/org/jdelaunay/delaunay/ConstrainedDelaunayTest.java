@@ -17,7 +17,7 @@ public class ConstrainedDelaunayTest extends BaseTest {
 
 		aMesh.processDelaunay();
 
-		show(aMesh);
+//		show(aMesh);
 		System.out.println();
 		assertTrue(true);
 	}
@@ -33,7 +33,7 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		
 		aMesh.processDelaunay();
 
-		show(aMesh);
+//		show(aMesh);
 		System.out.println();
 		assertTrue(true);
 	}
@@ -66,7 +66,7 @@ public class ConstrainedDelaunayTest extends BaseTest {
 
 		aMesh.processDelaunay();
 
-		show(aMesh);
+//		show(aMesh);
 		System.out.println();
 		assertTrue(true);
 	}
