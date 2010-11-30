@@ -40,16 +40,19 @@ public class TestHydroTriangleUtil {
 			Coordinate normale =HydroTriangleUtil.getNormal(triangle);
 			int coefAff=100;
 			String r="x:";
-			for(int j=0;j*j<(normale.x*coefAff * normale.x*coefAff);j++)
-				r+="_";
+			for(int j=0;j*j<(normale.x*coefAff * normale.x*coefAff);j++) {
+				r += "_";
+			}
 			System.out.println(r+" "+normale.x);
 			r="y:";
-			for(int j=0;j*j<(normale.y*coefAff * normale.y*coefAff);j++)
-				r+="_";
+			for(int j=0;j*j<(normale.y*coefAff * normale.y*coefAff);j++) {
+				r += "_";
+			}
 			System.out.println(r+" "+normale.y);
 			r="z:";
-			for(int j=0;j*j<(normale.z*coefAff * normale.z*coefAff);j++)
-				r+="_";
+			for(int j=0;j*j<(normale.z*coefAff * normale.z*coefAff);j++) {
+				r += "_";
+			}
 			System.out.println(r+" "+normale.z);
 //			System.out.println("\n");
 //			System.out.println("3DVector : "+h.get3DVector()+"\n");
