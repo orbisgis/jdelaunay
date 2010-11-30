@@ -266,13 +266,13 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		//We sort our edges (left-right), as we don't want to keep duplicates.
 		List<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
 		//We sort the edges vertically
-		List<MyEdge> sorted=mesh.sortEdgesVertically(sortedLeft, 8);
+		mesh.sortEdgesVertically(sortedLeft, 8);
 		MyEdge e1 ;
-		MyEdge e2= sorted.get(0);
+		MyEdge e2= sortedLeft.get(0);
 		double d1, d2;
-		for(int i=1; i<sorted.size(); i++){
+		for(int i=1; i<sortedLeft.size(); i++){
 			e1=e2;
-			e2=sorted.get(i);
+			e2=sortedLeft.get(i);
 			d1=e1.getPointFromItsX(8).getY();
 			d2=e2.getPointFromItsX(8).getY();
 			assertTrue(d1<=d2);
@@ -307,25 +307,25 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		//We sort our edges (left-right), as we don't want to keep duplicates.
 		List<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
 		//We sort the edges vertically
-		List<MyEdge> sorted=mesh.sortEdgesVertically(sortedLeft, 8);
-		System.out.println(sorted.size() + " elements in sorted");
-		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,1,1), sorted, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,6,1), sorted, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(5,2,0,12,7,1), sorted, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(5,0,0,19,5,1), sorted, 8);
+		mesh.sortEdgesVertically(sortedLeft, 8);
+		System.out.println(sortedLeft.size() + " elements in sorted");
+		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,1,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,6,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(5,2,0,12,7,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(5,0,0,19,5,1), sortedLeft, 8);
 		//We add vertical edges to be sure they are well processed
-		mesh.insertEdgeVerticalList(new MyEdge(8,0,0,8,9,1), sorted, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(8,7,0,8,3,1), sorted, 8);
-		System.out.println(sorted.size() + " elements in sorted");
+		mesh.insertEdgeVerticalList(new MyEdge(8,0,0,8,9,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new MyEdge(8,7,0,8,3,1), sortedLeft, 8);
+		System.out.println(sortedLeft.size() + " elements in sorted");
 		MyEdge e1 ;
-		MyEdge e2= sorted.get(0);
+		MyEdge e2= sortedLeft.get(0);
 		double d1, d2;
-		for(int i=1; i<sorted.size(); i++){
+		for(int i=1; i<sortedLeft.size(); i++){
 			e1=e2;
-			e2=sorted.get(i);
+			e2=sortedLeft.get(i);
 			d1=e1.getPointFromItsX(8).getY();
 			d2=e2.getPointFromItsX(8).getY();
-			System.out.println(d1+" -------- "+ d2);
+			System.out.println(e1+ " : "+d1+" -------- "+e2+ " : "+ d2);
 			assertTrue(d1<=d2);
 		}
 	}
@@ -386,6 +386,21 @@ public class ConstrainedDelaunayTest extends BaseTest {
 
 	}
 
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testProcessIntersections() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		//We first check that two edges intersect where they are supposed to...
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,2,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,0,0)));
+		List<MyEdge> edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==4);
+		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+	}
 
 	/**
 	 * Method used to create random a list of random edge.
@@ -405,5 +420,24 @@ public class ConstrainedDelaunayTest extends BaseTest {
 			retList.add(new MyEdge(d1, d2, d3, d4, d5, d6));
 		}
 		return retList;
+	}
+
+	/**
+	 * 
+	 * @param edgeList
+	 * @return
+	 */
+	private boolean sillyCheckIntersection(List<MyEdge> edgeList){
+		MyEdge e1;
+		MyEdge e2;
+		for(int i = 0; i < edgeList.size(); i++){
+			e1 = edgeList.get(i);
+			for (int j = 0; j < edgeList.size(); j++){
+				e2=edgeList.get(j);
+				e1.intersects(e2);
+			}
+		}
+
+		return false;
 	}
 }

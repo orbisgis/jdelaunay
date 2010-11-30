@@ -398,7 +398,7 @@ public class ConstrainedMesh {
 	 *  * intersection points are added to the mesh points
 	 *  * secant edges are split
 	 */
-	public void forceConstraintIntegrity() {
+	public void forceConstraintIntegrity() throws DelaunayError{
 		//The event points are the extremities and intersections of the
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
@@ -416,16 +416,28 @@ public class ConstrainedMesh {
 		ArrayList<MyEdge> edgeMemory = constraintEdges;
 		//...and we empty it
 		constraintEdges = new ArrayList<MyEdge>();
+		//The absciss where we search the intersections
+		double abs;
 		while (!eventPoints.isEmpty()) {
 			//We retrieve the event about to be processed.
 			currentEvent = eventPoints.get(0);
-			if (currentEvent.equals(edgeMemory.get(0).getPointLeft())) {
+			//We retrieve the absciss of the current event
+			abs = currentEvent.getX();
+			//We've reached a new event, we must be sure that our vertical
+			//list is still sorted.
+			sortEdgesVertically(edgeBuffer, abs);
+			//We add the edges that can be added from this event.
+			while (currentEvent.equals(edgeMemory.get(0).getPointLeft())) {
 				//We've found an edge in our memory that should be added to the buffer.
+				insertEdgeVerticalList(edgeMemory.get(0), edgeMemory, abs);
+				//The edge has been added in the buffer, we can remove it.
+				edgeMemory.remove(0);
 			}
 
 
 			for (MyEdge tempEdge : edgeBuffer) {
 				//We walk through our buffer
+				
 			}
 		}
 	}
@@ -437,7 +449,7 @@ public class ConstrainedMesh {
 	 * @param edgeList
 	 * @param x
 	 */
-	public List<MyEdge> sortEdgesVertically(List<MyEdge> edgeList, double abs) throws DelaunayError {
+	public void sortEdgesVertically(List<MyEdge> edgeList, double abs) throws DelaunayError {
 		int s = edgeList.size();
 		int i = 0;
 		int c = 0;
@@ -455,7 +467,6 @@ public class ConstrainedMesh {
 				i++;
 			}
 		}
-		return edgeList;
 	}
 
 	/**

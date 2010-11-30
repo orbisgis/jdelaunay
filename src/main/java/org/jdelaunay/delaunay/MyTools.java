@@ -6,8 +6,8 @@ import java.util.ListIterator;
 
 public class MyTools {
 
-	protected static final double epsilon = 0.0000001;
-	protected static final double epsilon2 = epsilon * epsilon;
+	protected static final double EPSILON = 0.0000001;
+	protected static final double EPSILON2 = EPSILON * EPSILON;
 
 	/**
 	 * swap two elements

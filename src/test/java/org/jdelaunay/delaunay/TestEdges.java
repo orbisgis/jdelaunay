@@ -29,4 +29,35 @@ public class TestEdges extends BaseTest {
 		}
 	}
 
+	/**
+	 * This test checks the results returned by the method intersects of the class
+	 * MyEdge.
+	 */
+	public void testEdgesIntersection(){
+		MyEdge e1 = new MyEdge(4,4,0,8,8,0);
+		MyEdge e2 = new MyEdge(8,4,0,4,8,0);
+		assertTrue(e1.intersects(e2)==1);
+		e2 = new MyEdge(4,4,0,2,2,0);
+		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(10,10,0,6,6,0);
+		assertTrue(e1.intersects(e2)==1);
+		e2 = new MyEdge(6,4,0,10,8,0);
+		assertTrue(e1.intersects(e2)==2);
+		e2 = new MyEdge(0,0,0,1,-4,0);
+		assertTrue(e1.intersects(e2)==0);
+		e1 = new MyEdge(4,4,0,4,8,0);
+		e2 = new MyEdge(4,4,0,4,2,0);
+		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(4,8,0,4,10,0);
+		assertTrue(e1.intersects(e2)==3);
+		e2 = new MyEdge(4,6,0,4,10,0);
+		assertTrue(e1.intersects(e2)==1);
+		e2 = new MyEdge(2,4,0,2,10,0);
+		assertTrue(e1.intersects(e2)==2);
+		e2 = new MyEdge(4,9,0,4,10,0);
+		assertTrue(e1.intersects(e2)==2);
+		e2 = new MyEdge(9,9,0,10,10,0);
+		assertTrue(e1.intersects(e2)==0);
+	}
+
 }

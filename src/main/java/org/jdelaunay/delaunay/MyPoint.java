@@ -300,7 +300,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	 */
 	@Override
 	public boolean contains(MyPoint aPoint) {
-		if (squareDistance(aPoint) < MyTools.epsilon2) {
+		if (squareDistance(aPoint) < MyTools.EPSILON2) {
 			return true;
 		}
 		else {
@@ -310,7 +310,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	
 	@Override
 	public boolean contains(Coordinate c) {
-		if (squareDistance(c.x, c.y, c.z) < MyTools.epsilon2) {
+		if (squareDistance(c.x, c.y, c.z) < MyTools.EPSILON2) {
 			return true;
 		}
 		else {

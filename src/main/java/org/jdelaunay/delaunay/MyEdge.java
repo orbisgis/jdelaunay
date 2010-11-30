@@ -492,16 +492,29 @@ public class MyEdge extends MyElement implements Serializable {
 		double vx = c.x - p1.getX();
 		double vy = c.y - p1.getY();
 		double res = ux * vy - uy * vx;
-		return 	res <= MyTools.epsilon && res >= - MyTools.epsilon/* p is on p1, p2 line */ 
+		return 	res <= MyTools.EPSILON && res >= - MyTools.EPSILON/* p is on p1, p2 line */
 		&&(ux>=0?(p1.getX()<=c.x && c.x<= p2.getX()):(p2.getX()<=c.x && c.x<= p1.getX())) /* px is in [p1x, p2x]*/
 		&&(uy>=0?(p1.getY()<=c.y && c.y<= p2.getY()):(p2.getY()<=c.y && c.y<= p1.getY()));/* py is in [p1y, p2y]*/
 	}
-	
+
 	/**
-	 * check if two edges intersects
+	 * Check if this and other intersect.
+	 * @param other
+	 * @return intersection :<br/>
+	 * 			0 = no intersection<br/>
+	 * 			1 = intersects<br/>
+	 * 			2 = co-linear<br/>
+	 * 			3 = intersects at the extremity
+	 */
+	public int intersects(MyEdge other){
+		return intersects(other.getStart(), other.getEnd());
+	}
+
+	/**
+	 * check if two edges intersect
 	 *
-	 * @param p1
-	 * @param p2
+	 * @param p1 the start point of the other edge
+	 * @param p2 the end point of the other edge
 	 * @return intersection :<br/>
 	 * 			0 = no intersection<br/>
 	 * 			1 = intersects<br/>
@@ -515,23 +528,23 @@ public class MyEdge extends MyElement implements Serializable {
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
 
-		double a1 = p2.getX() - p1.getX();
-		double b1 = p4.getX() - p3.getX();
+		double deltaXO = p2.getX() - p1.getX(); //the delta x of the other edge
+		double deltaXT = p4.getX() - p3.getX(); //the delta x of this edge
 		double c1 = p3.getX() - p1.getX();
-		double a2 = p2.getY() - p1.getY();
-		double b2 = p4.getY() - p3.getY();
+		double deltaYO = p2.getY() - p1.getY();//the delta y of the other edge
+		double deltaYT = p4.getY() - p3.getY();//the delta y of this edge
 		double c2 = p3.getY() - p1.getY();
 		double t1, t2;
-		double epsilon = MyTools.epsilon;
+		double epsilon = MyTools.EPSILON;
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
-		double d = b1 * a2 - b2 * a1;
+		double d = deltaXT * deltaYO - deltaYT * deltaXO;
 		if (d != 0) {
 			// t1 = ((y3 - y1) (x4 - x3) - (x3 - x1) (y4 - y3)) / d
 			// t2 = ((x2 - x1) (y3 - y1) - (y2 - y1) (x3 - x1)) / d
 
-			t1 = (c2 * b1 - c1 * b2) / d;
-			t2 = (a1 * c2 - a2 * c1) / d;
+			t1 = (c2 * deltaXT - c1 * deltaYT) / d;
+			t2 = (deltaXO * c2 - deltaYO * c1) / d;
 
 			if ((-epsilon <= t1) && (t1 <= 1 + epsilon) && (-epsilon <= t2)
 					&& (t2 <= 1 + epsilon)) {
@@ -544,11 +557,11 @@ public class MyEdge extends MyElement implements Serializable {
 
 		} else {
 			// Check if p3 is between p1 and p2
-			if (Math.abs(a1) > epsilon) {
-				t1 = (c1) / (a1);
+			if (Math.abs(deltaXO) > epsilon) {
+				t1 = (c1) / (deltaXO);
 			}
 			else {
-				t1 = (c2) / (a2);
+				t1 = (c2) / (deltaYO);
 			}
 
 			if ((-epsilon > t1) || (t1 > 1 + epsilon)) {
@@ -591,6 +604,19 @@ public class MyEdge extends MyElement implements Serializable {
 					if(isOnEdge(p1) || isOnEdge(p2) || new MyEdge(p1, p2).isOnEdge(p3) || new MyEdge(p1, p2).isOnEdge(p4))
 					{
 						result=1;//co-linear and intersects
+					}
+					if((p3.compareTo2D(p4)==1)
+						&&(p1.equals2D(p3) && p2.compareTo2D(p3)==1)
+						||p2.equals2D(p3) && p1.compareTo2D(p3)==1
+						||p2.equals2D(p4) && p1.compareTo2D(p4)==-1
+						||p1.equals2D(p4) && p2.compareTo2D(p4)==-1){
+						result=3;//colinear, and intersect at an extremity
+					} else if ((p3.compareTo2D(p4)==-1)
+						&& (p1.equals2D(p4) && p2.compareTo2D(p4)==1)
+						||p2.equals2D(p4) && p1.compareTo2D(p4)==1
+						||p2.equals2D(p3) && p1.compareTo2D(p3)==-1
+						||p1.equals2D(p3) && p2.compareTo2D(p3)==-1){
+						result=3;//colinear, and intersect at an extremity
 					}
 					
 			}
@@ -636,7 +662,7 @@ public class MyEdge extends MyElement implements Serializable {
 		double a2 = p2.getY() - p1.getY();
 		double b2 = p4.getY() - p3.getY();
 		double c2 = p3.getY() - p1.getY();
-		double epsilon = MyTools.epsilon;
+		double epsilon = MyTools.EPSILON;
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = b1 * a2 - b2 * a1;
@@ -763,7 +789,7 @@ public class MyEdge extends MyElement implements Serializable {
 		double c1 = p.getX() - p1.getX();
 		double a2 = p2.getY() - p1.getY();
 		double c2 = p.getY() - p1.getY();
-		double epsilon = MyTools.epsilon;
+		double epsilon = MyTools.EPSILON;
 
 		if (Math.abs(a1) > epsilon) {
 			t1 = c1 / a1;
@@ -813,7 +839,7 @@ public class MyEdge extends MyElement implements Serializable {
 		double c1 = p.getX() - p1.getX();
 		double a2 = p2.getY() - p1.getY();
 		double c2 = p.getY() - p1.getY();
-		double epsilon = MyTools.epsilon;
+		double epsilon = MyTools.EPSILON;
 		double t = a1*c2 - a2*c1;
 		if (Math.abs(t) < epsilon) {
 			isColinear2D = true;
@@ -840,7 +866,7 @@ public class MyEdge extends MyElement implements Serializable {
 		double c2 = p.getY() - p1.getY();
 		double a3 = p2.getZ() - p1.getZ();
 		double c3 = p.getZ() - p1.getZ();
-		double epsilon = MyTools.epsilon;
+		double epsilon = MyTools.EPSILON;
 		double t1 = a1*c2 - a2*c1;
 		double t2 = a1*c3 - a3*c1;
 		double t3 = a3*c2 - a2*c3;
@@ -892,10 +918,10 @@ public class MyEdge extends MyElement implements Serializable {
 	public boolean isExtremity(MyPoint p) {
 		boolean isExtremity = false;
 
-		if (this.startPoint.squareDistance_2D(p) < MyTools.epsilon) {
+		if (this.startPoint.squareDistance_2D(p) < MyTools.EPSILON) {
 			isExtremity = true;
 		}
-		else if (this.endPoint.squareDistance_2D(p) < MyTools.epsilon) {
+		else if (this.endPoint.squareDistance_2D(p) < MyTools.EPSILON) {
 			isExtremity = true;
 		}
 		return isExtremity;
@@ -947,7 +973,7 @@ public class MyEdge extends MyElement implements Serializable {
 		double vy = p.getY() - p1.getY();
 		double res = ux * vy - uy * vx;
 		
-		return 	res <= MyTools.epsilon && res >= - MyTools.epsilon/* p is on p1, p2 line */ 
+		return 	res <= MyTools.EPSILON && res >= - MyTools.EPSILON/* p is on p1, p2 line */
 		&&															/* px is in [p1x, p2x]*/
 			(ux==0? 													/*p2x == p1x ?*/
 				(p1.getX()==p.getX())									/* p2x == p1x == px ?*/
@@ -969,7 +995,7 @@ public class MyEdge extends MyElement implements Serializable {
 	public boolean  isVertical(){
 		double dx = (startPoint.getX() - endPoint.getX());
 		double delta = (dx<0 ? -dx : dx);
-		return (delta < MyTools.epsilon ? true : false);
+		return (delta < MyTools.EPSILON ? true : false);
 	}
 
 	/**
@@ -986,7 +1012,7 @@ public class MyEdge extends MyElement implements Serializable {
 		double deltaX = (startPoint.getX() - endPoint.getX());
 		double dX = (deltaX < 0 ? -deltaX : deltaX);
 		double p = (abs-startPoint.getX())/(endPoint.getX() - startPoint.getX());
-		if(dX < MyTools.epsilon ){
+		if(dX < MyTools.EPSILON ){
 			//the edge is vertical
 			double delta = startPoint.getX() - abs;
 			dX=((delta<0) ? -delta : delta);
@@ -1026,7 +1052,7 @@ public class MyEdge extends MyElement implements Serializable {
 	 */
 	public boolean isFlatSlope() {
 		boolean isFlat = true;
-		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > MyTools.epsilon) {
+		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > MyTools.EPSILON) {
 			isFlat = false;
 		}
 		return isFlat;

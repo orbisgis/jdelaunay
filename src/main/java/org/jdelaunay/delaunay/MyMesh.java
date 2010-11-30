@@ -4077,7 +4077,7 @@ public class MyMesh {
 			Factor.add(aFactor);
 
 			int iter = 20;
-			while ((Math.abs(middle.getZ() - basicZ) < MyTools.epsilon)
+			while ((Math.abs(middle.getZ() - basicZ) < MyTools.EPSILON)
 					&& (iter > 0)) {
 				// too flat, change altitudes
 				LinkedList<MyPoint> todo = new LinkedList<MyPoint>();

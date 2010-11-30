@@ -350,10 +350,10 @@ public class MyTriangle extends MyElement implements Serializable{
 		double ux = aPoint.getX() - x_center;
 		double uy = aPoint.getY() - y_center;
 		double distance = ux * ux + uy * uy;
-		if (distance < radius - MyTools.epsilon2) {
+		if (distance < radius - MyTools.EPSILON2) {
 			returnedValue = 1;
 		}
-		else if (distance < radius + MyTools.epsilon2) {
+		else if (distance < radius + MyTools.EPSILON2) {
 			returnedValue = 2;
 		}
 
@@ -417,7 +417,7 @@ public class MyTriangle extends MyElement implements Serializable{
 		double c = ux * vy - uy * vx;
 		double d = -a * p1.getX() - b * p1.getY() - c * p1.getZ();
 
-		if (Math.abs(c) > MyTools.epsilon) {
+		if (Math.abs(c) > MyTools.EPSILON) {
 			// Non vertical triangle
 			ZValue = (-a * aPoint.getX() - b * aPoint.getY() - d) / c;
 		}
