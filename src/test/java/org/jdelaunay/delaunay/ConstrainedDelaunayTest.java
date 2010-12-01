@@ -427,7 +427,7 @@ public class ConstrainedDelaunayTest extends BaseTest {
 	 * @param edgeList
 	 * @return
 	 */
-	private boolean sillyCheckIntersection(List<MyEdge> edgeList){
+	private boolean sillyCheckIntersection(List<MyEdge> edgeList) throws DelaunayError{
 		MyEdge e1;
 		MyEdge e2;
 		for(int i = 0; i < edgeList.size(); i++){

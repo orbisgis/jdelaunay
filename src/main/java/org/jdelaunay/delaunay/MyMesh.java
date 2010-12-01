@@ -2982,20 +2982,20 @@ public class MyMesh {
 				MyPoint p4 = anEdge.getEndPoint();
 
 				// possible intersection
-				MyPoint IntersectionPoint1 = null;
+				MyPoint intersectionPoint1 = null;
 				MyPoint IntersectionPoint2 = null;
 				MyEdge saveEdge = anEdge;
 
 				switch ((Integer)result.get(i)[1]) {
 				case 3:
 					// There is an intersection point
-					IntersectionPoint1 = anEdge.getIntersection(p1, p2, (p1.isZUse()|| p2.isZUse()));
+					intersectionPoint1 = (MyPoint) anEdge.getIntersection(p1, p2, (p1.isZUse()|| p2.isZUse()));
 					possibleEdges.add(anEdge);
 					saveEdge = null;
 					break;
 				case 1:
 					// There is an intersection point
-					IntersectionPoint1 = anEdge.getIntersection(p1, p2, (p1.isZUse()|| p2.isZUse()));
+					intersectionPoint1 = (MyPoint) anEdge.getIntersection(p1, p2, (p1.isZUse()|| p2.isZUse()));
 					break;
 				case 2:
 					// points are on the same line and intersects
@@ -3004,15 +3004,15 @@ public class MyMesh {
 					// participate
 					// to the mesh
 					// so, start and end MUST be inside p1-p2
-					IntersectionPoint1 = p3;
+					intersectionPoint1 = p3;
 					IntersectionPoint2 = p4;
 					possibleEdges.add(anEdge);
 					saveEdge = null;
 					break;
 				}
-				if (IntersectionPoint1 != null) {
-					if (!addedPoints.contains(IntersectionPoint1)) {
-						addedPoints.add(IntersectionPoint1);
+				if (intersectionPoint1 != null) {
+					if (!addedPoints.contains(intersectionPoint1)) {
+						addedPoints.add(intersectionPoint1);
 						IntersectedEdges.add(saveEdge);
 					}
 				}
@@ -5040,10 +5040,15 @@ public class MyMesh {
 		for(int i=0; i<edgeList.size();i++){
 			for(int j=i+1; j<edgeList.size();j++)
 			{
-				if( edgeList.get(i).intersects(edgeList.get(j).getStartPoint(), edgeList.get(j).getEndPoint())==1)
-				{
-					System.err.println("Intersection between "+edgeList.get(i)+" and "+edgeList.get(j));
-					ok=false;
+				try{
+					if( edgeList.get(i).intersects(edgeList.get(j).getStartPoint(), edgeList.get(j).getEndPoint())==1)
+					{
+						System.err.println("Intersection between "+edgeList.get(i)+" and "+edgeList.get(j));
+						ok=false;
+					}
+				} catch (DelaunayError d){
+					System.err.println("an error occured while computing an intersection\n"+
+						d.getMessage());
 				}
 			}
                 }

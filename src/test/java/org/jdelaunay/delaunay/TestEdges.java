@@ -37,66 +37,121 @@ public class TestEdges extends BaseTest {
 	public void testEdgesIntersection() throws DelaunayError{
 		MyEdge e1 = new MyEdge(4,4,0,8,8,0);
 		MyEdge e2 = new MyEdge(8,4,0,4,8,0);
-                MyPoint intersection;
+                MyElement intersection;
 		assertTrue(e1.intersects(e2)==1);
                 intersection = e1.getIntersection(e2);
-                assertTrue(intersection.equals2D(new MyPoint(6,6,0)));
+                assertTrue(intersection.equals(new MyPoint(6,6,0)));
+
+
 		e2 = new MyEdge(4,4,0,2,2,0);
 		assertTrue(e1.intersects(e2)==3);
                 intersection = e1.getIntersection(e2);
-                assertTrue(intersection.equals2D(new MyPoint(4,4,0)));
+                assertTrue(intersection.equals(new MyPoint(4,4,0)));
+
+
 		e2 = new MyEdge(4,4,0,20,20,0);
-		assertTrue(e1.intersects(e2)==1);
+		assertTrue(e1.intersects(e2)==4);
                 intersection = e1.getIntersection(e2);
-                assertTrue(intersection.equals2D(new MyPoint(4,4,0)));
+                assertTrue(intersection.equals(new MyEdge(4,4,0,8,8,0)));
+
+
 		e2 = new MyEdge(10,10,0,6,6,0);
-		assertTrue(e1.intersects(e2)==1);
+		assertTrue(e1.intersects(e2)==4);
                 intersection = e1.getIntersection(e2);
-                assertTrue(intersection.equals2D(new MyPoint(6,6,0)));
-		e2 = new MyEdge(6,4,0,10,8,0);
+                assertTrue(intersection.equals(new MyEdge(6,6,0,8,8,0)));
+
+
+		e2 = new MyEdge(6,4,0,10,8,0);		
 		assertTrue(e1.intersects(e2)==2);
+
+
 		e2 = new MyEdge(0,0,0,1,-4,0);
 		assertTrue(e1.intersects(e2)==0);
+		assertNull(e1.getIntersection(e2));
+
+
 		e2 = new MyEdge(8,8,0,1,-4,0);
 		assertTrue(e1.intersects(e2)==3);
                 intersection = e1.getIntersection(e2);
-                assertTrue(intersection.equals2D(new MyPoint(8,8,0)));
+                assertTrue(intersection.equals(new MyPoint(8,8,0)));
+
+
+		e2 = new MyEdge(6,6,0,1,-4,0);
+		assertTrue(e1.intersects(e2)==1);
+
                 //some tests for vertical edges
 		e1 = new MyEdge(4,4,0,4,8,0);
 		e2 = new MyEdge(4,4,0,4,2,0);
 		assertTrue(e1.intersects(e2)==3);
+		assertTrue(e1.getIntersection(e2).equals(new MyPoint(4,4,0)));
+
+
 		e2 = new MyEdge(4,8,0,4,10,0);
 		assertTrue(e1.intersects(e2)==3);
+
+
 		e2 = new MyEdge(4,6,0,4,10,0);
-		assertTrue(e1.intersects(e2)==1);
+		assertTrue(e1.intersects(e2)==4);
+		assertTrue(e1.getIntersection(e2).equals(new MyEdge(4,6,0,4,8,0)));
+
+
 		e2 = new MyEdge(2,4,0,2,10,0);
 		assertTrue(e1.intersects(e2)==2);
+		assertNull(e1.getIntersection(e2));
+
+
 		e2 = new MyEdge(4,9,0,4,10,0);
 		assertTrue(e1.intersects(e2)==2);
+
+
 		e2 = new MyEdge(9,9,0,10,10,0);
 		assertTrue(e1.intersects(e2)==0);
+		assertNull(e1.getIntersection(e2));
+
+
 		e2 = new MyEdge(4,0,0,4,10,0);
-		assertTrue(e1.intersects(e2)==1);
+		assertTrue(e1.intersects(e2)==4);
+		assertTrue(e1.getIntersection(e2).equals(new MyEdge(4,4,0,4,8,0)));
+
+
 		e2 = new MyEdge(4,8,0,10,12,0);
 		assertTrue(e1.intersects(e2)==3);
+
+
 		e2 = new MyEdge(9,9,0,10,10,0);
 		assertTrue(e1.intersects(e2)==0);
+
+
                 //tests for horizontal edges
 		e1 = new MyEdge(4,4,0,8,4,0);
 		e2 = new MyEdge(4,4,0,4,2,0);
 		assertTrue(e1.intersects(e2)==3);
+
+
 		e2 = new MyEdge(5,3,0,5,8,0);
 		assertTrue(e1.intersects(e2)==1);
-		e2 = new MyEdge(8,4,0,0,4,0);
-		assertTrue(e1.intersects(e2)==1);
+
+
+		e2 = new MyEdge(9,4,0,0,4,0);
+		assertTrue(e1.intersects(e2)==4);
+		assertTrue(e1.getIntersection(e2).equals(new MyEdge(4,4,0,8,4,0)));
+
 		e2 = new MyEdge(8,4,0,10,4,0);
 		assertTrue(e1.intersects(e2)==3);
+
+
 		e2 = new MyEdge(9,4,0,10,4,0);
-		assertTrue(e1.intersects(e2)==0);
+		assertTrue(e1.intersects(e2)==2);
+
+
 		e2 = new MyEdge(4,4,0,8,7,0);
 		assertTrue(e1.intersects(e2)==3);
+
+
 		e2 = new MyEdge(4,3,0,8,5,0);
 		assertTrue(e1.intersects(e2)==1);
+
+
 		e2 = new MyEdge(4,3,0,8,3,0);
 		assertTrue(e1.intersects(e2)==2);
 	}

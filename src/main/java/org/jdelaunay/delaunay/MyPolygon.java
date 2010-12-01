@@ -316,8 +316,7 @@ public class MyPolygon extends MyElement {
 		return intersect;
 	}
 	
-	public boolean isIntersect(MyEdge anEdge)
-	{
+	public boolean isIntersect(MyEdge anEdge) throws DelaunayError{
 		boolean intersect=false;
 		for(int i=0;i<edges.size() && !intersect;i++ )
 		{

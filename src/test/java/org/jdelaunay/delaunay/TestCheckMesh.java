@@ -1856,8 +1856,7 @@ public class TestCheckMesh  extends BaseTest {
 	 * Check if the topology of the mesh is good.
 	 * @param aMesh
 	 */
-	public static void checkMeshTopo(MyMesh aMesh)
-	{
+	public static void checkMeshTopo(MyMesh aMesh) throws DelaunayError{
 		assertTrue("Duplicate edges", checkNoDuplicateEdge(aMesh.getEdges()));
 		assertTrue("Triangle of edge not found", checkEdgeTriangleExiste(aMesh));
 		assertTrue("Edge intersection", checkEdgeNoIntersection(aMesh.getEdges()));
@@ -1926,8 +1925,7 @@ public class TestCheckMesh  extends BaseTest {
 	}
 
 	
-	public static boolean checkEdgeNoIntersection(ArrayList<MyEdge> edgeList)
-	{
+	public static boolean checkEdgeNoIntersection(ArrayList<MyEdge> edgeList) throws DelaunayError{
 		boolean ok=true;
 		for(int i=0; i<edgeList.size();i++) {
 			for (int j = i + 1; j < edgeList.size(); j++) {

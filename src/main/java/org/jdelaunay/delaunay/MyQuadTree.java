@@ -673,7 +673,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * Object[0] is an MyEdge<br/>
 	 * Object[1] is an Integer ( The result of anEdge.intersects(...) ).
 	 */
-	protected ArrayList<Object[]> searchIntersection(MyEdge anEdge, MyBox searchBoundingBox, MyBox boundingBox) {//TODO optimize me !!!
+	protected ArrayList<Object[]> searchIntersection(MyEdge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {//TODO optimize me !!!
 		ArrayList<Object[]>  allElements = new ArrayList<Object[]>();
 		int intersect=0;
 
@@ -687,8 +687,8 @@ public class MyQuadTree<T extends MyElement> {
 
 			if(searchBoundingBox.minx<=searchedElement.getBoundingBox().maxx &&
 					searchBoundingBox.miny<=searchedElement.getBoundingBox().maxy &&
-					searchBoundingBox.maxy>=searchedElement.getBoundingBox().miny)
-			{	intersect = anEdge.intersects(searchedElement.getStartPoint(), searchedElement.getEndPoint());
+					searchBoundingBox.maxy>=searchedElement.getBoundingBox().miny){
+				intersect = anEdge.intersects(searchedElement.getStartPoint(), searchedElement.getEndPoint());
 				if(0< intersect) {
 					allElements.add(new Object[]{searchedElement, intersect});
 				}
@@ -741,7 +741,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * @param boundingBox
 	 * @return True is an intersection exist between an other edge.
 	 */
-	protected boolean isIntersect(MyEdge anEdge, MyBox searchBoundingBox, MyBox boundingBox) {
+	protected boolean isIntersect(MyEdge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {
 		boolean isIntersect=false;
 //		int intersect=0;
 

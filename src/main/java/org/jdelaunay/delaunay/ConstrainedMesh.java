@@ -549,7 +549,7 @@ public class ConstrainedMesh {
 	public void addPointsFromNeighbourEdges(List<MyEdge> edgeList, List<MyPoint> eventList) throws DelaunayError {
 		MyEdge e1;
 		MyEdge e2;
-		MyPoint inter = null;
+		MyElement inter = null;
 		//we check that our paremeters are not null, and that our edge list contains
 		//at least two edges, because they couldn't be intersections otherwise.
 		if (edgeList == null || eventList == null || edgeList.size() < 2) {
@@ -560,7 +560,7 @@ public class ConstrainedMesh {
 				e2 = edgeList.get(i + 1);
 				inter = e1.getIntersection(e2);
 				if (inter != null) {
-					eventList.add(inter);
+//					eventList.add(inter);
 				}
 			}
 		}
