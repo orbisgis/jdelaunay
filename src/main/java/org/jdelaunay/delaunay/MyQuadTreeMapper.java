@@ -286,7 +286,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * Object[0] is an MyEdge<br/>
 	 * Object[1] is an Integer ( The result of anEdge.intersects(...) ).
 	 */
-	public ArrayList<Object[]> searchIntersection(MyEdge anEdge) {
+	public ArrayList<Object[]> searchIntersection(MyEdge anEdge) throws DelaunayError {
 		ArrayList<Object[]>  allElements = null;
 		if (this.usable) {
 			allElements = myQuadTree.searchIntersection(anEdge, anEdge.getBoundingBox(), myBoundingBox);
@@ -299,7 +299,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @param anEdge
 	 * @return True is an intersection exist between an other edge.
 	 */
-	public boolean isIntersect(MyEdge anEdge) {
+	public boolean isIntersect(MyEdge anEdge) throws DelaunayError {
 		if (this.usable) {
 			return myQuadTree.isIntersect(anEdge, anEdge.getBoundingBox(), myBoundingBox);
 		}
