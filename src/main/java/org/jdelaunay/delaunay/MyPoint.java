@@ -11,11 +11,10 @@ package org.jdelaunay.delaunay;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.io.Serializable;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyPoint extends MyElement  implements Serializable{
+public class MyPoint extends MyElement {
 	/**
 	 * 
 	 */
@@ -300,22 +299,12 @@ public class MyPoint extends MyElement  implements Serializable{
 	 */
 	@Override
 	public boolean contains(MyPoint aPoint) {
-		if (squareDistance(aPoint) < MyTools.EPSILON2) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return squareDistance(aPoint) < MyTools.EPSILON2;
 	}
 	
 	@Override
 	public boolean contains(Coordinate c) {
-		if (squareDistance(c.x, c.y, c.z) < MyTools.EPSILON2) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		return squareDistance(c.x, c.y, c.z) < MyTools.EPSILON2;
 	}
 	
 	/**
@@ -324,7 +313,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance_1D(MyPoint aPoint) {
+	protected double squareDistance1D(MyPoint aPoint) {
 		return (coord.x - aPoint.coord.x) * (coord.x - aPoint.coord.x);
 	}
 
@@ -334,7 +323,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance_2D(MyPoint aPoint) {
+	protected double squareDistance2D(MyPoint aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y);
 	}
 
@@ -345,7 +334,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	 * @param y
 	 * @return distance
 	 */
-	protected double squareDistance_2D(double x, double y) {
+	protected double squareDistance2D(double x, double y) {
 		return squareDistance(x, y);
 	}
 
@@ -414,11 +403,7 @@ public class MyPoint extends MyElement  implements Serializable{
 	public boolean equals(Object p){
 		if(p instanceof MyPoint){
 			MyPoint y = (MyPoint) p;
-			if(y==null){
-				return false;
-			} else {
 				return coord.equals3D(y.getCoordinate());
-			}
 		}else {
 			return false;
 		}

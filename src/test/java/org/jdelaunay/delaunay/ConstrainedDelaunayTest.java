@@ -308,7 +308,6 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		List<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
 		//We sort the edges vertically
 		mesh.sortEdgesVertically(sortedLeft, 8);
-		System.out.println(sortedLeft.size() + " elements in sorted");
 		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,1,1), sortedLeft, 8);
 		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,6,1), sortedLeft, 8);
 		mesh.insertEdgeVerticalList(new MyEdge(5,2,0,12,7,1), sortedLeft, 8);
@@ -316,7 +315,6 @@ public class ConstrainedDelaunayTest extends BaseTest {
 		//We add vertical edges to be sure they are well processed
 		mesh.insertEdgeVerticalList(new MyEdge(8,0,0,8,9,1), sortedLeft, 8);
 		mesh.insertEdgeVerticalList(new MyEdge(8,7,0,8,3,1), sortedLeft, 8);
-		System.out.println(sortedLeft.size() + " elements in sorted");
 		MyEdge e1 ;
 		MyEdge e2= sortedLeft.get(0);
 		double d1, d2;
@@ -325,7 +323,6 @@ public class ConstrainedDelaunayTest extends BaseTest {
 			e2=sortedLeft.get(i);
 			d1=e1.getPointFromItsX(8).getY();
 			d2=e2.getPointFromItsX(8).getY();
-			System.out.println(e1+ " : "+d1+" -------- "+e2+ " : "+ d2);
 			assertTrue(d1<=d2);
 		}
 	}

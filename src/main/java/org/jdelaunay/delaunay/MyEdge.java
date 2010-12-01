@@ -12,11 +12,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.Serializable;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyEdge extends MyElement implements Serializable {
+public class MyEdge extends MyElement {
 
 	/**
 	 * 
@@ -114,7 +113,7 @@ public class MyEdge extends MyElement implements Serializable {
 			this.startPoint = p1;
 			this.endPoint = p2;
 		} catch (DelaunayError d) {
-			System.out.println("A problem occured while building the points " + d.getMessage());
+			System.err.println("A problem occured while building the points " + d.getMessage());
 		}
 	}
 
@@ -282,7 +281,7 @@ public class MyEdge extends MyElement implements Serializable {
 	 * get squared 2D length
 	 */
 	protected double getSquared2DLength() {
-		return startPoint.squareDistance_2D(endPoint);
+		return startPoint.squareDistance2D(endPoint);
 	}
 
 	/**
@@ -482,9 +481,10 @@ public class MyEdge extends MyElement implements Serializable {
 		double vx = c.x - p1.getX();
 		double vy = c.y - p1.getY();
 		double res = ux * vy - uy * vx;
+		boolean px = (ux >= 0 ? (p1.getX() <= c.x && c.x <= p2.getX()) : (p2.getX() <= c.x && c.x <= p1.getX()));/* px is in [p1x, p2x]*/
+		boolean py = (uy >= 0 ? (p1.getY() <= c.y && c.y <= p2.getY()) : (p2.getY() <= c.y && c.y <= p1.getY()));/* py is in [p1y, p2y]*/
 		return res <= MyTools.EPSILON && res >= -MyTools.EPSILON/* p is on p1, p2 line */
-			&& (ux >= 0 ? (p1.getX() <= c.x && c.x <= p2.getX()) : (p2.getX() <= c.x && c.x <= p1.getX())) /* px is in [p1x, p2x]*/
-			&& (uy >= 0 ? (p1.getY() <= c.y && c.y <= p2.getY()) : (p2.getY() <= c.y && c.y <= p1.getY()));/* py is in [p1y, p2y]*/
+			&& px && py;
 	}
 
 	/**
@@ -540,17 +540,17 @@ public class MyEdge extends MyElement implements Serializable {
 			//intersection in one point,
 			//return 1 or 3
 			MyPoint interPoint = (MyPoint) inter;
-			if((interPoint.squareDistance_2D(p1)<MyTools.EPSILON2 ||
-				interPoint.squareDistance_2D(p2)<MyTools.EPSILON2)&&
-				(interPoint.squareDistance_2D(p3)<MyTools.EPSILON2||
-				interPoint.squareDistance_2D(p4)<MyTools.EPSILON2)){
+			if((interPoint.squareDistance2D(p1)<MyTools.EPSILON2 ||
+				interPoint.squareDistance2D(p2)<MyTools.EPSILON2)&&
+				(interPoint.squareDistance2D(p3)<MyTools.EPSILON2||
+				interPoint.squareDistance2D(p4)<MyTools.EPSILON2)){
 				//intersection at an extremity of each edge.
 				return 3;
 			} else {
 				return 1;
 			}
 			
-		} else if(inter instanceof MyElement){
+		} else if(inter instanceof MyEdge){
 			//intersection in more than
 			//one point, return 4
 			return 4;
@@ -668,13 +668,13 @@ public class MyEdge extends MyElement implements Serializable {
 					if (-epsilon < t14 && t14 < 1 + epsilon) {
 						intersection = new MyEdge(p3, p4);
 					} else {
-						if (p3.squareDistance_2D(p1) < MyTools.EPSILON2) {
+						if (p3.squareDistance2D(p1) < MyTools.EPSILON2) {
 							if (-epsilon < t22 && t22 < 1 + epsilon) {
 								intersection = new MyEdge(p1, p2);
 							} else {
 								intersection = p3;
 							}
-						} else if (p3.squareDistance_2D(p2) < MyTools.EPSILON2) {
+						} else if (p3.squareDistance2D(p2) < MyTools.EPSILON2) {
 							if (-epsilon < t21 && t22 < 1 + epsilon) {
 								intersection = new MyEdge(p1, p2);
 							} else {
@@ -688,13 +688,13 @@ public class MyEdge extends MyElement implements Serializable {
 						}
 					}
 				} else if (-epsilon < t14 && t14 < 1 + epsilon) {
-					if (p4.squareDistance_2D(p1) < MyTools.EPSILON2) {
+					if (p4.squareDistance2D(p1) < MyTools.EPSILON2) {
 						if (-epsilon < t22 && t22 < 1 + epsilon) {
 							intersection = new MyEdge(p1, p2);
 						} else {
 							intersection = p4;
 						}
-					} else if (p4.squareDistance_2D(p2) < MyTools.EPSILON2) {
+					} else if (p4.squareDistance2D(p2) < MyTools.EPSILON2) {
 						if (-epsilon < t21 && t22 < 1 + epsilon) {
 							intersection = new MyEdge(p1, p2);
 						} else {
@@ -896,9 +896,9 @@ public class MyEdge extends MyElement implements Serializable {
 	public boolean isExtremity(MyPoint p) {
 		boolean isExtremity = false;
 
-		if (this.startPoint.squareDistance_2D(p) < MyTools.EPSILON) {
+		if (this.startPoint.squareDistance2D(p) < MyTools.EPSILON) {
 			isExtremity = true;
-		} else if (this.endPoint.squareDistance_2D(p) < MyTools.EPSILON) {
+		} else if (this.endPoint.squareDistance2D(p) < MyTools.EPSILON) {
 			isExtremity = true;
 		}
 		return isExtremity;
@@ -948,19 +948,23 @@ public class MyEdge extends MyElement implements Serializable {
 		double vy = p.getY() - p1.getY();
 		double res = ux * vy - uy * vx;
 
-		return res <= MyTools.EPSILON && res >= -MyTools.EPSILON/* p is on p1, p2 line */
-
-			&& /* px is in [p1x, p2x]*/ (ux == 0
+		boolean b1 = /* px is in [p1x, p2x]*/ (ux == 0
 			? /*p2x == p1x ?*/ (p1.getX() == p.getX()) /* p2x == p1x == px ?*/
 			: (ux > 0
 			? /*p2x > p1x ?*/ (p1.getX() < p.getX() && p.getX() < p2.getX()) /* p2x > px > p1x ?*/
-			: (p2.getX() < p.getX() && p.getX() < p1.getX())))	/* p2x < px < p1x ?*/
+			: (p2.getX() < p.getX() && p.getX() < p1.getX())));
 
-			&& /* py is in [p1y, p2y]*/ (uy == 0
+		boolean b2 = /* py is in [p1y, p2y]*/ (uy == 0
 			? /* p2y == p1y ?*/ (p1.getY() == p.getY()) /* p2y == p1y == py ?*/
 			: (uy > 0
 			? /* p2y > p1y ?*/ (p1.getY() < p.getY() && p.getY() < p2.getY()) /* p2y > py > p1y ?*/
-			: (p2.getY() < p.getY() && p.getY() < p1.getY()))); /* p2y < py < p1y ?*/
+			: (p2.getY() < p.getY() && p.getY() < p1.getY())));
+
+		return res <= MyTools.EPSILON && res >= -MyTools.EPSILON/* p is on p1, p2 line */
+
+			&& b1	/* p2x < px < p1x ?*/
+
+			&& b2; /* p2y < py < p1y ?*/
 	}
 
 	/**

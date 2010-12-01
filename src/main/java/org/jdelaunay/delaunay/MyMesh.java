@@ -3165,12 +3165,12 @@ public class MyMesh {
 				found = false;
 				while ((!found) && (index < NbPoints)) {
 					MyPoint newPoint = points.get(index);
-					double dist = newPoint.squareDistance_1D(current);
+					double dist = newPoint.squareDistance1D(current);
 					if (dist > precision2) {
 						found = true;
 					}
 					else {
-						dist = newPoint.squareDistance_2D(current);
+						dist = newPoint.squareDistance2D(current);
 						if (dist < precision2) {
 							// newPoint is just near current => replace it
 							Replace.put(newPoint, current);
@@ -4014,7 +4014,7 @@ public class MyMesh {
 			MyPoint middle = anEdge.getBarycenter();
 
 			// Get distances to each points
-			double dist = middle.squareDistance_2D(alterPoint);
+			double dist = middle.squareDistance2D(alterPoint);
 			if (aFactor == 1) {
 				minLength = dist;
 				maxLength = dist;
@@ -4026,7 +4026,7 @@ public class MyMesh {
 				maxLength = dist;
 			}
 
-			dist = middle.squareDistance_2D(anEdge.getStartPoint());
+			dist = middle.squareDistance2D(anEdge.getStartPoint());
 			if (minLength > dist) {
 				minLength = dist;
 			}
@@ -4034,7 +4034,7 @@ public class MyMesh {
 				maxLength = dist;
 			}
 
-			dist = middle.squareDistance_2D(alterPoint0);
+			dist = middle.squareDistance2D(alterPoint0);
 			if (minLength > dist) {
 				minLength = dist;
 			}
@@ -4515,11 +4515,11 @@ public class MyMesh {
 		else {
 			// get longest edge
 			MyEdge longest = aTriangle.edges[0];
-			double maxLength = longest.getStartPoint().squareDistance_2D(
+			double maxLength = longest.getStartPoint().squareDistance2D(
 					longest.getEndPoint());
 			for (int i = 1; i < 3; i++) {
 				double length = aTriangle.edges[i].getStartPoint()
-						.squareDistance_2D(aTriangle.edges[i].getEndPoint());
+						.squareDistance2D(aTriangle.edges[i].getEndPoint());
 				if (length > maxLength) {
 					maxLength = length;
 					longest = aTriangle.edges[i];

@@ -21,9 +21,6 @@ public class TestDelaunay extends BaseTest {
 		
 		long end = System.currentTimeMillis();
 		System.out.println("Duration " + (end-start)+"ms");
-		
-//		show(aMesh);
-		System.out.println();
 		assertTrue(true);
 		System.out.println("end");
 	}

@@ -560,7 +560,11 @@ public class ConstrainedMesh {
 				e2 = edgeList.get(i + 1);
 				inter = e1.getIntersection(e2);
 				if (inter != null) {
-//					eventList.add(inter);
+					if(inter instanceof MyPoint){
+						eventList.add((MyPoint) inter);
+					} else {
+						eventList.add(((MyEdge) inter).getPointLeft());
+					}
 				}
 			}
 		}

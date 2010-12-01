@@ -77,7 +77,7 @@ public class MyTriangle extends MyElement implements Serializable{
 		
 		connectEdges();
 		recomputeCenter();
-		radius = e1.getStartPoint().squareDistance_2D(x_center, y_center);
+		radius = e1.getStartPoint().squareDistance2D(x_center, y_center);
 	}
 
 	/**
@@ -299,7 +299,7 @@ public class MyTriangle extends MyElement implements Serializable{
 			x_center = cx;
 			y_center = cy;
 
-			radius = p1.squareDistance_2D(x_center, y_center);
+			radius = p1.squareDistance2D(x_center, y_center);
 		} else {
 			x_center = 0.0;
 			y_center = 0.0;
