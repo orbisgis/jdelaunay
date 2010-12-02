@@ -1106,10 +1106,10 @@ public class MyMesh {
 					if (!aPoint.isLocked()) {
 //						if (myInsertPoint_2(aPoint, areaOfProcess.getProperty()) == null)
 						if (myInsertPoint(aPoint) == null) {
-						badPointList.addFirst(aPoint);
+							badPointList.addFirst(aPoint);
+						}
 					}
-					}
-                                }
+				}
 
 			}
 			

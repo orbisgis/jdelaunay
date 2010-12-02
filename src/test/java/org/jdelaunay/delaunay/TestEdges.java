@@ -155,5 +155,15 @@ public class TestEdges extends BaseUtility {
 		e2 = new MyEdge(4,3,0,8,3,0);
 		assertTrue(e1.intersects(e2)==2);
 	}
+
+	/**
+	 * This method check that the vertical sort defined in MyEdge works well
+	 */
+
+	public void testVerticalSort() throws DelaunayError{
+		MyEdge e1 = new MyEdge(0,0,0,2,2,2);
+		MyEdge e2 = new MyEdge(0,0,0,2,2,2);
+		assertTrue(e1.verticalSort(e2, 1)==0);
+	}
         
 }

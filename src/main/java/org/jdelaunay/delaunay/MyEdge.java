@@ -1175,19 +1175,8 @@ public class MyEdge extends MyElement {
 		}
 		int c = pThis.compareTo2D(pEdge);
 		if (c == 0) {
-			if (this.isVertical() && edge.isVertical()) {
-				return this.getPointLeft().compareTo2D(edge.getPointLeft());
-			} else if (this.isVertical()) {
-				c = this.getPointLeft().compareTo2D(pEdge);
-				return (c <= 0 ? -1 : 1);
-			} else if (edge.isVertical()) {
-				c = pThis.compareTo2D(edge.getPointLeft());
-				return (c < 0 ? -1 : 1);
-			} else {
-				pThis = this.getPointFromItsX(abs + 1);
-				pEdge = edge.getPointFromItsX(abs + 1);
-				c = pThis.compareTo2D(pEdge);
-			}
+			c = this.getPointRight().compareTo2D(edge.getPointRight());
+			return (c==0 ?this.getPointLeft().compareTo2D(edge.getPointLeft()) : c ) ;
 		}
 		return c;
 	}

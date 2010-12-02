@@ -286,7 +286,6 @@ public class MyTriangle extends MyElement implements Serializable{
 
 		double cp = ux * vy - uy * vx;
 		double cx, cy;
-		cx = cy = 0.0;
 
 		if (cp != 0) {
 			cx = (p1Sq * (p2.getY() - p3.getY()) + p2Sq * (p3.getY() - p1.getY()) + p3Sq

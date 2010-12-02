@@ -32,6 +32,8 @@ public class DelaunayError extends Throwable {
 	public final static int DELAUNAY_ERROR_INVALID_CALL = 998;
 	public final static int DELAUNAY_ERROR_INTERNAL_ERROR = 999;
 
+	private String message="";
+
 	public DelaunayError() {
 		super();
 		code = DELAUNAY_ERROR_INTERNAL_ERROR;
@@ -39,6 +41,7 @@ public class DelaunayError extends Throwable {
 
 	public DelaunayError(String s){
 		super(s);
+		message = s;
 		code = DELAUNAY_ERROR_INTERNAL_ERROR;
 	}
 
@@ -85,7 +88,7 @@ public class DelaunayError extends Throwable {
 			return "internal error, please call support";
 			
 		default:
-			return "";
+			return message;
 		}
 	}
 }
