@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class TestQuadTree extends BaseTest  {
+public class TestQuadTree extends BaseUtility  {
 	
 	public void testQuadTree_01() throws DelaunayError, IOException, ParseException {
 		

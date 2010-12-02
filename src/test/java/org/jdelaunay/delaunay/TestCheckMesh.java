@@ -17,7 +17,7 @@ import com.vividsolutions.jts.io.WKTReader;
  * @author Adelin PIAU
  * @date 2010-11-08
  */
-public class TestCheckMesh  extends BaseTest {
+public class TestCheckMesh  extends BaseUtility {
 
 	
 	public void test_01() throws DelaunayError, IOException, ParseException, ClassNotFoundException {

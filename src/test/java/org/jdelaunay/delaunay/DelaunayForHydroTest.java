@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.jhydrocell.hydronetwork.MyHydroNetwork;
 
 
-public class DelaunayForHydroTest extends BaseTest {
+public class DelaunayForHydroTest extends BaseUtility {
 
 	/**
 	 * After removing flat triangles the triangulation is not conform to the

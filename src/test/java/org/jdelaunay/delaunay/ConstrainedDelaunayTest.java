@@ -3,7 +3,7 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConstrainedDelaunayTest extends BaseTest {
+public class ConstrainedDelaunayTest extends BaseUtility {
 
 	public void testDelaunayRandomBreaklines() throws DelaunayError {
 

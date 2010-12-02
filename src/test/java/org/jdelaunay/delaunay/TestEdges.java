@@ -9,7 +9,7 @@ package org.jdelaunay.delaunay;
  *
  * @author alexis
  */
-public class TestEdges extends BaseTest {
+public class TestEdges extends BaseUtility {
 
 	/**
 	 * test that  getPointfromItsX retrieves the points of absciss X from the

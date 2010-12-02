@@ -3,7 +3,7 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class TestDelaunay extends BaseTest {
+public class TestDelaunay extends BaseUtility {
 	/**
 	 * Test random generation of points
 	 * @throws DelaunayError

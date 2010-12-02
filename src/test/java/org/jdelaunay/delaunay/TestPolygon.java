@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class TestPolygon  extends BaseTest  {
+public class TestPolygon  extends BaseUtility  {
 	
 	public void testPolygon_01() throws DelaunayError, IOException, ParseException {
 	

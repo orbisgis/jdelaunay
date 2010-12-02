@@ -3,7 +3,7 @@ package org.jdelaunay.delaunay;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class DelaunayTest extends BaseTest {
+public class DelaunayTest extends BaseUtility {
 
 	public void testDelaunayRandomPoints() throws DelaunayError {
 

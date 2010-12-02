@@ -5,7 +5,7 @@ import java.util.ListIterator;
 
 import junit.framework.TestCase;
 
-public class BaseTest extends TestCase {
+public class BaseUtility extends TestCase {
 
 	// ---------------------------------------------------------------------------
 	// Utilities
