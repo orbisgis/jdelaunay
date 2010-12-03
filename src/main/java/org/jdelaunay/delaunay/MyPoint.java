@@ -403,7 +403,8 @@ public class MyPoint extends MyElement {
 	public boolean equals(Object p){
 		if(p instanceof MyPoint){
 			MyPoint y = (MyPoint) p;
-				return coord.equals3D(y.getCoordinate());
+                        double dist = coord.distance(y.getCoordinate()) + (coord.z - y.getZ())*coord.z - y.getZ();
+			return dist<MyTools.EPSILON2;
 		}else {
 			return false;
 		}
@@ -425,7 +426,7 @@ public class MyPoint extends MyElement {
 		if(y==null){
 			return false;
 		} else {
-			return coord.equals2D(y.getCoordinate());
+                        return (coord.distance(y.getCoordinate())<MyTools.EPSILON);
 		}
 	}
 

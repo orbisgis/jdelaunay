@@ -468,34 +468,36 @@ public class ConstrainedMesh {
 						//the current event point. If it is, we must process the
 						//intersection.
 							if(newEvent.equals(currentEvent)){//We process the intersection.
-								if(!newEvent.equals(e2.getPointLeft())){
+								if(!newEvent.equals(e2.getPointLeft()) && !newEvent.equals(e2.getPointRight())){
 									inter2=new MyEdge(e2.getPointLeft(), newEvent);
 									addConstraintEdge(inter2);
 									edgeBuffer.remove(j);
-								}
+									inter4=new MyEdge(e2.getPointRight(), newEvent);
+									insertEdgeVerticalList(inter4, edgeBuffer, abs);
+								} else if(newEvent.equals(e2.getPointLeft())) {
+                                                                        addConstraintEdge(e2);
+                                                                        edgeBuffer.remove(j);
+                                                                }
 								j--;
-								if(!newEvent.equals(e1.getPointLeft())){
+								if(!newEvent.equals(e1.getPointLeft()) && !newEvent.equals(e1.getPointRight())){
 									inter1=new MyEdge (e1.getPointLeft(),newEvent);
 									addConstraintEdge(inter1);
 									edgeBuffer.remove(j);
-								}
-								if(!newEvent.equals(e1.getPointRight()) && !newEvent.equals(e1.getPointLeft())){
 									inter3=new MyEdge (e1.getPointRight(),newEvent);
 									insertEdgeVerticalList(inter3, edgeBuffer, abs);
-								}
-								if(!newEvent.equals(e2.getPointRight())&& !newEvent.equals(e2.getPointLeft())){
-									inter4=new MyEdge(e2.getPointRight(), newEvent);
-									insertEdgeVerticalList(inter4, edgeBuffer, abs);
-								}
+								} else if(newEvent.equals(e1.getPointLeft())) {
+                                                                        addConstraintEdge(e1);
+                                                                        edgeBuffer.remove(j);
+                                                                }
 							} else { // the intersection will be processed later.
 								addPointToSortedList(newEvent, eventPoints);
 							}
 						} else {
-							if(j>0 && e1.getPointRight().equals(currentEvent)){
+							if(e1.getPointRight().equals(currentEvent)){
 								addConstraintEdge(e1);
 								edgeBuffer.remove(j-1);
 							}
-							if(j==edgeMemory.size()-1 && e2.getPointRight().equals(currentEvent)){
+							if(e2.getPointRight().equals(currentEvent)){
 								addConstraintEdge(e2);
 								edgeBuffer.remove(j);
 							}
@@ -551,12 +553,12 @@ public class ConstrainedMesh {
 						}
 						
 					} else {//there is no intersection here, we check the
-						//lowest edge.
+						//highest edge.
 						if(e1.getPointRight().equals(currentEvent)){
 							addConstraintEdge(e1);
 							edgeBuffer.remove(j-1);
 						}
-						if(j==edgeMemory.size()-1 && e2.getPointRight().equals(currentEvent)){
+						if(e2.getPointRight().equals(currentEvent)){
 							addConstraintEdge(e2);
 							edgeBuffer.remove(j);
 						}
