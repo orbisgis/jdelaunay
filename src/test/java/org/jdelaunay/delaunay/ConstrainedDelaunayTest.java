@@ -444,11 +444,32 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,1,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
-		for(MyEdge ed : edgeList){
-			System.out.println(ed);
-		}
 		assertTrue(edgeList.size()==6);
 		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+                assertTrue(sillyCheckIntersection(edgeList));
+                MyEdge e1 = edgeList.get(0);
+                MyEdge e2;
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+
+
+                mesh = new ConstrainedMesh();
+                List<MyEdge> randomEdges = getRandomEdges(1000);
+                for(MyEdge edge : randomEdges){
+                        mesh.addConstraintEdge(edge);
+                }
+                mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+                e1 = edgeList.get(0);
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+                assertTrue(sillyCheckIntersection(edgeList));
 
 		
 	}
@@ -474,21 +495,33 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	}
 
 	/**
-	 * 
+	 * Returns false if there is an intersction (ie if the edges are invalid)
 	 * @param edgeList
 	 * @return
 	 */
 	private boolean sillyCheckIntersection(List<MyEdge> edgeList) throws DelaunayError{
 		MyEdge e1;
 		MyEdge e2;
+                boolean ret=true;
 		for(int i = 0; i < edgeList.size(); i++){
 			e1 = edgeList.get(i);
-			for (int j = 0; j < edgeList.size(); j++){
+			for (int j = i+1; j < edgeList.size(); j++){
 				e2=edgeList.get(j);
-				e1.intersects(e2);
-			}
-		}
+				int c = e1.intersects(e2);
+                                if((c==1 || c==4)&& !e1.equals(e2)){
+                                        System.out.println("intersection : "+e1.getIntersection(e2));
+                                        System.out.println(i+" e1 = "+e1);
+                                        System.out.println(j+" e2 = "+e2);
+                                        ret=false;
+                                        break;
+                                }
 
-		return false;
+			}
+                        if(!ret){
+                                break;
+                        }
+		}
+		return ret;
 	}
 }
+

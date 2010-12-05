@@ -494,7 +494,11 @@ public class MyEdge extends MyElement {
 	 * 			0 = no intersection<br/>
 	 * 			1 = intersects<br/>
 	 * 			2 = co-linear<br/>
-	 * 			3 = intersects at the extremity
+	 * 			3 = intersects at the extremity<br/>
+	 *			4 = intersect in more than one point<br/>
+	 * note that if on extremity of an edge lies inside the other edge, but
+	 * is not one of the extremities of the other edge, this method
+	 * returns 1
 	 */
 	public int intersects(MyEdge other) throws DelaunayError{
 		return intersects(other.getStart(), other.getEnd());
@@ -666,47 +670,66 @@ public class MyEdge extends MyElement {
 				}
 				if (-epsilon < t13 && t13 < 1 + epsilon) {
 					if (-epsilon < t14 && t14 < 1 + epsilon) {
+                                                //p3 and p4 are both on the edge [p1 p2]
 						intersection = new MyEdge(p3, p4);
 					} else {
+                                                //p4 is not on [p1 p2]
 						if (p3.squareDistance2D(p1) < MyTools.EPSILON2) {
+                                                        //p3 and p1 are equal
 							if (-epsilon < t22 && t22 < 1 + epsilon) {
+                                                                //p2 is on [p3 p4]
 								intersection = new MyEdge(p1, p2);
 							} else {
+                                                                //p2 is not on [p3 p4], and p3 is not on [p1 p2]
 								intersection = p3;
 							}
 						} else if (p3.squareDistance2D(p2) < MyTools.EPSILON2) {
-							if (-epsilon < t21 && t22 < 1 + epsilon) {
+                                                        //p3 and p2 are equals
+							if (-epsilon < t21 && t21 < 1 + epsilon) {
+                                                                //p1 is on [p3 p4]
 								intersection = new MyEdge(p1, p2);
 							} else {
+                                                                //p1 is not on [p3 p4], and p3 is not on [p1 p2]
 								intersection = p3;
 							}
 
 						} else if (-epsilon < t21 && t21 < 1 + epsilon) {
+                                                        //p1 is on [p3 p4]
 							intersection = new MyEdge(p1, p3);
 						} else {
 							intersection = new MyEdge(p2, p3);
 						}
 					}
 				} else if (-epsilon < t14 && t14 < 1 + epsilon) {
+                                //p3 is not on [p1 p2], but p4 is on it
 					if (p4.squareDistance2D(p1) < MyTools.EPSILON2) {
+                                                //p4 and p1 are equal
 						if (-epsilon < t22 && t22 < 1 + epsilon) {
+                                                        //p2 is on [p3 p4]
 							intersection = new MyEdge(p1, p2);
 						} else {
+                                                        //p2 is not on [p3 p4] and p3 is not on [p1 p2]
 							intersection = p4;
 						}
 					} else if (p4.squareDistance2D(p2) < MyTools.EPSILON2) {
-						if (-epsilon < t21 && t22 < 1 + epsilon) {
+                                                //p4 and p1 are equal
+						if (-epsilon < t21 && t21 < 1 + epsilon) {
+                                                        //p1  is on [p3 p4]
 							intersection = new MyEdge(p1, p2);
 						} else {
+                                                        //p1 is not on [p3 p4] and p3 is not on [p1 p2]
 							intersection = p4;
 						}
 
 					} else if (-epsilon < t21 && t21 < 1 + epsilon) {
+                                                //p1 is on [p3 p4]
 						intersection = new MyEdge(p1, p4);
 					} else {
 						intersection = new MyEdge(p2, p4);
 					}
 				} else if (epsilon < t21 && t21 < 1 - epsilon) {
+                                        //p1 is on [p3 p4]. As we've seen, nor p4 neither p3 are
+                                        // on [p1 p2], so we can conclude that the intersection is [p1 p2]
 					intersection = new MyEdge(p1, p2);
 				}
 
@@ -896,9 +919,9 @@ public class MyEdge extends MyElement {
 	public boolean isExtremity(MyPoint p) {
 		boolean isExtremity = false;
 
-		if (this.startPoint.squareDistance2D(p) < MyTools.EPSILON) {
+		if (this.startPoint.squareDistance2D(p) < MyTools.EPSILON2) {
 			isExtremity = true;
-		} else if (this.endPoint.squareDistance2D(p) < MyTools.EPSILON) {
+		} else if (this.endPoint.squareDistance2D(p) < MyTools.EPSILON2) {
 			isExtremity = true;
 		}
 		return isExtremity;
@@ -1135,7 +1158,7 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
-	 * This method will be used to "order" the edges using the following strategy.
+	 * This method will be used to sort the edges using the following strategy.
 	 * If we note leftP and rightP the leftmost and rightmost point of this
 	 * this < edge if this.leftP < edge.leftP or (this.leftP == edge.leftP and this.rightP < edge.rightP)
 	 * this == edge if this.leftP == edge.leftP and this.rightP == edge.rightP
@@ -1151,7 +1174,6 @@ public class MyEdge extends MyElement {
 			p1 = getPointRight();
 			p2 = edge.getPointRight();
 			c = p1.compareTo2D(p2);
-
 		}
 		return c;
 	}

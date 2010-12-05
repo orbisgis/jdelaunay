@@ -403,7 +403,8 @@ public class MyPoint extends MyElement {
 	public boolean equals(Object p){
 		if(p instanceof MyPoint){
 			MyPoint y = (MyPoint) p;
-                        double dist = coord.distance(y.getCoordinate()) + (coord.z - y.getZ())*coord.z - y.getZ();
+                        double dist = (getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY());
+                        dist = dist + (getZ() - y.getZ())*(getZ() - y.getZ());
 			return dist<MyTools.EPSILON2;
 		}else {
 			return false;
@@ -426,7 +427,7 @@ public class MyPoint extends MyElement {
 		if(y==null){
 			return false;
 		} else {
-                        return (coord.distance(y.getCoordinate())<MyTools.EPSILON);
+                        return ((getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY())<MyTools.EPSILON2);
 		}
 	}
 
@@ -439,7 +440,21 @@ public class MyPoint extends MyElement {
 	 *	1 otherwise.
 	 */
 	public int compareTo2D(MyPoint p){
-		return coord.compareTo(p.getCoordinate());
+                double dx = (getX() - p.getX());
+                if(dx*dx < MyTools.EPSILON2){
+                        double dy = (getY() - p.getY());
+                        if(dx+dy*dy<MyTools.EPSILON2){
+                                return 0;
+                        } else if(getY()<p.getY()){
+                                return -1;
+                        } else {
+                                return 1;
+                        }
+                } else if(getX()<p.getX()){
+                        return -1;
+                } else {
+                        return 1;
+                }
 	}
 	/**
 	 * Set the point color for the JFrame panel

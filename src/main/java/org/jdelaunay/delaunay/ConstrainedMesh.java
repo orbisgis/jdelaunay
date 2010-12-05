@@ -147,13 +147,15 @@ public class ConstrainedMesh {
 		MyEdge temp = sorted.get(0);
 		MyPoint left = edge.getPointLeft();
 		int s = sorted.size();
-		if (left.compareTo2D(temp.getPointLeft()) == -1 || left.compareTo2D(temp.getPointLeft()) == 0) {
+		if (left.compareTo2D(temp.getPointLeft()) == -1 || left.compareTo2D(temp.getPointLeft()) == 0
+                        && temp.getPointRight().compareTo2D(edge.getPointRight())==1 ) {
 			//left is on the left of the first edge in the list, we put it there
 			sorted.add(0, edge);
 			return;
 		}
 		temp = sorted.get(s - 1);
-		if (temp.getPointLeft().compareTo2D(left) == -1 || temp.getPointLeft().compareTo2D(left) == 0) {
+		if (temp.getPointLeft().compareTo2D(left) == -1 || (temp.getPointLeft().compareTo2D(left) == 0
+                        && temp.getPointRight().compareTo2D(edge.getPointRight())==-1 )) {
 			//left is on the right of the leftmost edge of the last element.
 			sorted.add(edge);
 			return;
@@ -185,7 +187,7 @@ public class ConstrainedMesh {
 				case 0:
 					return;
 				case 1:
-					other = sorted.get(i - 1);
+					other = sorted.get(i + 1);
 					c = edge.sortLeftRight(other);
 					switch (c) {
 						case -1:
@@ -432,8 +434,6 @@ public class ConstrainedMesh {
 		MyPoint leftMost = null;
 		MyPoint rightMost = null;
 		MyElement intersection = null;
-		boolean rme1 = false;
-		boolean rme2 = false;
 		while (i < eventPoints.size()) {
 			//We retrieve the event about to be processed.
 			currentEvent = eventPoints.get(i);
@@ -478,17 +478,17 @@ public class ConstrainedMesh {
                                                                         addConstraintEdge(e2);
                                                                         edgeBuffer.remove(j);
                                                                 }
-								j--;
 								if(!newEvent.equals(e1.getPointLeft()) && !newEvent.equals(e1.getPointRight())){
 									inter1=new MyEdge (e1.getPointLeft(),newEvent);
 									addConstraintEdge(inter1);
-									edgeBuffer.remove(j);
+									edgeBuffer.remove(j-1);
 									inter3=new MyEdge (e1.getPointRight(),newEvent);
 									insertEdgeVerticalList(inter3, edgeBuffer, abs);
 								} else if(newEvent.equals(e1.getPointLeft())) {
                                                                         addConstraintEdge(e1);
-                                                                        edgeBuffer.remove(j);
+                                                                        edgeBuffer.remove(j-1);
                                                                 }
+                                                                j--;
 							} else { // the intersection will be processed later.
 								addPointToSortedList(newEvent, eventPoints);
 							}
@@ -524,8 +524,8 @@ public class ConstrainedMesh {
 								//we remove the two edges we are analyzing,
 								//new edges will be inserted if necessary.
 								edgeBuffer.remove(j);
-								j--;
-								edgeBuffer.remove(j);
+								edgeBuffer.remove(j-1);
+                                                                j--;
 								if(leftMost.compareTo2D(newEvent)==-1){
 									inter1 = new MyEdge(leftMost, newEvent);
 								}
@@ -557,10 +557,12 @@ public class ConstrainedMesh {
 						if(e1.getPointRight().equals(currentEvent)){
 							addConstraintEdge(e1);
 							edgeBuffer.remove(j-1);
+                                                        j--;
 						}
 						if(e2.getPointRight().equals(currentEvent)){
 							addConstraintEdge(e2);
 							edgeBuffer.remove(j);
+                                                        j--;
 						}
 					}
 					j++;
