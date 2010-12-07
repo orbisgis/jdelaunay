@@ -38,6 +38,7 @@ public class TestEdges extends BaseUtility {
 		MyEdge e1 = new MyEdge(4,4,0,8,8,0);
 		MyEdge e2 = new MyEdge(8,4,0,4,8,0);
                 MyElement intersection;
+		int c = e1.intersects(e2);
 		assertTrue(e1.intersects(e2)==1);
                 intersection = e1.getIntersection(e2);
                 assertTrue(intersection.equals(new MyPoint(6,6,0)));
@@ -154,6 +155,19 @@ public class TestEdges extends BaseUtility {
 
 		e2 = new MyEdge(4,3,0,8,3,0);
 		assertTrue(e1.intersects(e2)==2);
+
+		e1 = new MyEdge(1.8074157402864,98.70155495362685,17.33208384927718,15.677161919360142,88.91946702159545,72.62346056964518);
+		e2 = new MyEdge(15.893774288391056,88.76669412916696,73.48698005614088,16.7142085041698,88.18805631290299,76.75761938242825);
+		double d1 = (88.91946702159545 - 98.70155495362685)/(15.677161919360142 - 1.8074157402864);
+		double d2 = (88.18805631290299 - 88.76669412916696)/(16.7142085041698 - 15.893774288391056);
+		System.out.println("d1 : "+d1);
+		System.out.println("d2 : "+d2);
+		MyElement haha = e1.getIntersection(e2);
+		System.out.println(haha);
+		System.out.println("e1 inter e2 : "+e1.intersects(e2));
+		System.out.println("e2 inter e1 : "+e2.intersects(e1));
+		assertTrue(e1.intersects(e2)==2);
+		assertTrue(e2.intersects(e1)==2);
 	}
 
 	/**

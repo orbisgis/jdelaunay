@@ -427,7 +427,7 @@ public class MyPoint extends MyElement {
 		if(y==null){
 			return false;
 		} else {
-                        return ((getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY())<MyTools.EPSILON2);
+                        return (((getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY()))<MyTools.EPSILON2);
 		}
 	}
 
@@ -441,9 +441,9 @@ public class MyPoint extends MyElement {
 	 */
 	public int compareTo2D(MyPoint p){
                 double dx = (getX() - p.getX());
-                if(dx*dx < MyTools.EPSILON2){
+                if(dx*dx*2 < MyTools.EPSILON2){
                         double dy = (getY() - p.getY());
-                        if(dx+dy*dy<MyTools.EPSILON2){
+                        if(dx*dx+dy*dy<MyTools.EPSILON2){
                                 return 0;
                         } else if(getY()<p.getY()){
                                 return -1;

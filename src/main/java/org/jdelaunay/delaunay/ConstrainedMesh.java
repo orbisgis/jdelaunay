@@ -3,7 +3,6 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  *
@@ -144,23 +143,24 @@ public class ConstrainedMesh {
 			sorted.add(edge);
 			return;
 		}
-		MyEdge temp = sorted.get(0);
-		MyPoint left = edge.getPointLeft();
-		int s = sorted.size();
-		if (left.compareTo2D(temp.getPointLeft()) == -1 || left.compareTo2D(temp.getPointLeft()) == 0
-                        && temp.getPointRight().compareTo2D(edge.getPointRight())==1 ) {
-			//left is on the left of the first edge in the list, we put it there
-			sorted.add(0, edge);
-			return;
-		}
-		temp = sorted.get(s - 1);
-		if (temp.getPointLeft().compareTo2D(left) == -1 || (temp.getPointLeft().compareTo2D(left) == 0
-                        && temp.getPointRight().compareTo2D(edge.getPointRight())==-1 )) {
-			//left is on the right of the leftmost edge of the last element.
-			sorted.add(edge);
-			return;
-		}
 		int c;
+		int s = sorted.size();
+		c = edge.sortLeftRight(sorted.get(0));
+		if (c < 1) {
+			//left is on the left of the first edge in the list, we put it there
+			if (c == -1) {
+				sorted.add(0, edge);
+			}
+			return;
+		}
+		c = edge.sortLeftRight(sorted.get(s - 1));
+		if (c > -1) {
+			//left is on the right of the leftmost edge of the last element.
+			if (c == 1) {
+				sorted.add(edge);
+			}
+			return;
+		}
 		int i = s / 2;
 		int delta = s / 2;
 		boolean next = true;
@@ -170,6 +170,7 @@ public class ConstrainedMesh {
 			c = edge.sortLeftRight(other);
 			switch (c) {
 				case -1:
+//					if(i-1>0){
 					other = sorted.get(i - 1);
 					c = edge.sortLeftRight(other);
 					switch (c) {
@@ -184,9 +185,14 @@ public class ConstrainedMesh {
 							return;
 					}
 					break;
+//					}else  {
+//						sorted.add(0, edge);
+//						return;
+//					}
 				case 0:
 					return;
 				case 1:
+//					if(i+1<s){
 					other = sorted.get(i + 1);
 					c = edge.sortLeftRight(other);
 					switch (c) {
@@ -200,6 +206,10 @@ public class ConstrainedMesh {
 							i = i + delta;
 							break;
 					}
+//					} else {
+//						sorted.add(i + 1, edge);
+//						return;
+//					}
 			}
 		}
 	}
@@ -401,7 +411,7 @@ public class ConstrainedMesh {
 	 *  * intersection points are added to the mesh points
 	 *  * secant edges are split
 	 */
-	public void forceConstraintIntegrity() throws DelaunayError{
+	public void forceConstraintIntegrity() throws DelaunayError {
 		//The event points are the extremities and intersections of the
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
@@ -421,19 +431,24 @@ public class ConstrainedMesh {
 		constraintEdges = new ArrayList<MyEdge>();
 		//The absciss where we search the intersections
 		double abs;
-                //Used in the  loop...
-		int i=0;//The first while
-		int j=0;//the inner while
-                MyEdge e1, e2; //the edges that will be compared in the for loop
-		MyEdge inter1=null;// the edges resulting of the intersection.
-		MyEdge inter2=null;
-		MyEdge inter3=null;
-		MyEdge inter4=null;
+		//Used in the  loop...
+		int i = 0;//The first while
+		int j = 0;//the inner while
+		MyEdge e1, e2; //the edges that will be compared in the for loop
+		MyEdge inter1 = null;// the edges resulting of the intersection.
+		MyEdge inter2 = null;
+		MyEdge inter3 = null;
+		MyEdge inter4 = null;
 		MyPoint newEvent = null;//the event that will be added to the eventList
 		MyEdge edgeEvent = null;//used when the intersection is an edge
 		MyPoint leftMost = null;
 		MyPoint rightMost = null;
 		MyElement intersection = null;
+		MyEdge currentMemEdge = null;
+		MyEdge rm;
+		int memoryPos = 0;
+		int rmCount;
+		int mem;
 		while (i < eventPoints.size()) {
 			//We retrieve the event about to be processed.
 			currentEvent = eventPoints.get(i);
@@ -442,132 +457,177 @@ public class ConstrainedMesh {
 			//We've reached a new event, we must be sure that our vertical
 			//list is still sorted.
 			sortEdgesVertically(edgeBuffer, abs);
-			//We add the edges that can be added from this event.
-			while (!edgeMemory.isEmpty() && currentEvent.equals(edgeMemory.get(0).getPointLeft())) {
-				//We've found an edge in our memory that should be added to the buffer.
-				insertEdgeVerticalList(edgeMemory.get(0), edgeBuffer, abs);
-				//The edge has been added in the buffer, we can remove it.
-				edgeMemory.remove(0);
+			if (currentMemEdge == null) {
+				currentMemEdge = edgeMemory.get(0);
 			}
-                        //we search for intersections only if we have at least two edges...
-                        if(edgeBuffer.size()>1){
-                                e2=edgeBuffer.get(0);
-				j=1;
-                                while(j < edgeBuffer.size()){
-                                        //We walk through our buffer
-                                        e1=edgeBuffer.get(j-1);
-                                        e2=edgeBuffer.get(j);
-                                        intersection = e1.getIntersection(e2);
-					if(intersection instanceof MyPoint){
+			//We add the edges that can be associated to this event.
+			for (; memoryPos < edgeMemory.size(); memoryPos++) {
+				//As you can see, the first argument of this for loop is not used.
+				//We want here to go straight forward in the list, but depending on the
+				//value of eventPoints.get(i)
+				currentMemEdge = edgeMemory.get(memoryPos);
+				if (currentEvent.equals2D(currentMemEdge.getPointLeft())) {
+					insertEdgeVerticalList(currentMemEdge, edgeBuffer, abs);
+				} else {
+					break;
+				}
+			}
+			//we search for intersections only if we have at least two edges...
+			if (edgeBuffer.size() > 1) {
+				e2 = edgeBuffer.get(0);
+				j = 1;
+				while (j < edgeBuffer.size()) {
+					//We walk through our buffer
+					j = j < 1 ? 1 : j;
+					e1 = edgeBuffer.get(j - 1);
+					e2 = edgeBuffer.get(j);
+					intersection = e1.getIntersection(e2);
+					rmCount = 0;
+					if (intersection instanceof MyPoint) {
 						//We have a single intersection point.
 						//We must check it's not at an extremity.
 						newEvent = (MyPoint) intersection;
-						if(!e1.isExtremity(newEvent) || !e2.isExtremity(newEvent)){
-						//We've found an intersection between two non-colinear edges
-						//We must check that this intersection point is not
-						//the current event point. If it is, we must process the
-						//intersection.
-							if(newEvent.equals(currentEvent)){//We process the intersection.
-								if(!newEvent.equals(e2.getPointLeft()) && !newEvent.equals(e2.getPointRight())){
-									inter2=new MyEdge(e2.getPointLeft(), newEvent);
+						if (!e1.isExtremity(newEvent) || !e2.isExtremity(newEvent)) {
+							//We've found an intersection between two non-colinear edges
+							//We must check that this intersection point is not
+							//the current event point. If it is, we must process the
+							//intersection.
+							if (newEvent.equals2D(currentEvent)) {//We process the intersection.
+								if (!newEvent.equals2D(e2.getPointLeft()) && !newEvent.equals2D(e2.getPointRight())) {
+									//newEvent lies on e2, and is not an extremity
+									inter2 = new MyEdge(e2.getPointLeft(), newEvent);
 									addConstraintEdge(inter2);
-									edgeBuffer.remove(j);
-									inter4=new MyEdge(e2.getPointRight(), newEvent);
+									rm = edgeBuffer.remove(j);
+									if (!rm.equals(e2)) {
+										throw new RuntimeException("problem while removing an edge");
+									}
+									inter4 = new MyEdge(e2.getPointRight(), newEvent);
 									insertEdgeVerticalList(inter4, edgeBuffer, abs);
-								} else if(newEvent.equals(e2.getPointLeft())) {
-                                                                        addConstraintEdge(e2);
-                                                                        edgeBuffer.remove(j);
-                                                                }
-								if(!newEvent.equals(e1.getPointLeft()) && !newEvent.equals(e1.getPointRight())){
-									inter1=new MyEdge (e1.getPointLeft(),newEvent);
+								} else if (newEvent.equals2D(e2.getPointRight())) {
+									addConstraintEdge(e2);
+									rm = edgeBuffer.remove(j);
+									if (!rm.equals(e2)) {
+										throw new RuntimeException("problem while removing an edge");
+									}
+									rmCount++;
+								}
+								if (!newEvent.equals2D(e1.getPointLeft()) && !newEvent.equals2D(e1.getPointRight())) {
+									inter1 = new MyEdge(e1.getPointLeft(), newEvent);
 									addConstraintEdge(inter1);
-									edgeBuffer.remove(j-1);
-									inter3=new MyEdge (e1.getPointRight(),newEvent);
+									rm = edgeBuffer.remove(j - 1);
+									if (!rm.equals(e1)) {
+										throw new RuntimeException("problem while removing an edge");
+									}
+									inter3 = new MyEdge(e1.getPointRight(), newEvent);
 									insertEdgeVerticalList(inter3, edgeBuffer, abs);
-								} else if(newEvent.equals(e1.getPointLeft())) {
-                                                                        addConstraintEdge(e1);
-                                                                        edgeBuffer.remove(j-1);
-                                                                }
-                                                                j--;
+								} else if (newEvent.equals2D(e1.getPointRight())) {
+									addConstraintEdge(e1);
+									rm = edgeBuffer.remove(j - 1);
+									if (!rm.equals(e1)) {
+										throw new RuntimeException("problem while removing an edge");
+									}
+									rmCount++;
+								}
+								j = (j - rmCount < 0 ? 0 : j - rmCount);
 							} else { // the intersection will be processed later.
 								addPointToSortedList(newEvent, eventPoints);
 							}
 						} else {
-							if(e1.getPointRight().equals(currentEvent)){
-								addConstraintEdge(e1);
-								edgeBuffer.remove(j-1);
-							}
-							if(e2.getPointRight().equals(currentEvent)){
+							//in this case, we have e1.isExtremity(newEvent) && e2.isExtremity(newEvent)
+							if (e2.getPointRight().equals2D(currentEvent)) {
 								addConstraintEdge(e2);
-								edgeBuffer.remove(j);
+								rm = edgeBuffer.remove(j);
+								if (!rm.equals(e2)) {
+									throw new RuntimeException("problem while removing an edge");
+								}
+								rmCount++;
 							}
+							if (e1.getPointRight().equals2D(currentEvent)) {
+								addConstraintEdge(e1);
+								rm = edgeBuffer.remove(j - 1);
+								if (!rm.equals(e1)) {
+									throw new RuntimeException("problem while removing an edge");
+								}
+								rmCount++;
+							}
+							j = (j - rmCount < 0 ? 0 : j - rmCount);
 						}
-					} else if (intersection instanceof MyEdge){
-					//The intersection is an edge. There are two possible cases :
-					//The left point of the intersection is at the extremity of e1 and e2 : we
-									//register the right point as an event
-					//The left point is the extremity of e1 OR (exclusive) of e2. It is an event,
-									//and certainly the current one.
+					} else if (intersection instanceof MyEdge) {
+						//The intersection is an edge. There are two possible cases :
+						//The left point of the intersection is at the extremity of e1 and e2 : we
+						//register the right point as an event
+						//The left point is the extremity of e1 OR (exclusive) of e2. It is an event,
+						//and certainly the current one.
 						edgeEvent = (MyEdge) intersection;
 						newEvent = edgeEvent.getPointLeft();
-						if(!(e1.isExtremity(newEvent) && e2.isExtremity(newEvent))){
-							addPointToSortedList(edgeEvent.getPointRight(), eventPoints);
-						} else {//the intersection point is inside one of the edges.
-							//We are supposed to be on it...
-							if(newEvent.equals(currentEvent)){
-								leftMost = (e1.getPointLeft().compareTo2D(e2.getPointLeft())<1 ?
-									e1.getPointLeft() :
-									e2.getPointLeft());
-								rightMost = (e1.getPointRight().compareTo2D(e2.getPointRight())<1 ?
-									e1.getPointRight() :
-									e2.getPointRight());
-								//we remove the two edges we are analyzing,
-								//new edges will be inserted if necessary.
-								edgeBuffer.remove(j);
-								edgeBuffer.remove(j-1);
-                                                                j--;
-								if(leftMost.compareTo2D(newEvent)==-1){
-									inter1 = new MyEdge(leftMost, newEvent);
-								}
-								inter2 = edgeEvent;
-								if(rightMost.compareTo2D(edgeEvent.getPointRight())==1){
-									inter3=new MyEdge(edgeEvent.getPointRight(), rightMost);
-								}
-								if(inter1!=null){
-									addConstraintEdge(inter1);
-								}
-								if(inter2.getPointRight().compareTo2D(currentEvent)==1){
-									//inter2 has to be processed for further intersections
-									insertEdgeVerticalList(inter2, edgeBuffer, abs);
-								} else {
-									//inter2 can't be implied in other intersections
-									addConstraintEdge(inter2);
-								}
-								if(inter3!=null){
-									//inter3 must be processed further.
-									insertEdgeVerticalList(inter2, edgeBuffer, abs);
-								}
-							} else {
-								throw new DelaunayError("We should already be on this event point");
+						//the intersection point is inside one of the edges.
+						//We are supposed to be on it..
+						//inter1 will be the lowest part of the intersection,
+						//inter2 the middle one and inter3 the highest.
+						if (newEvent.equals2D(currentEvent)) {
+							leftMost = (e1.getPointLeft().compareTo2D(e2.getPointLeft()) < 1
+								? e1.getPointLeft()
+								: e2.getPointLeft());
+							rightMost = (e1.getPointRight().compareTo2D(e2.getPointRight()) < 1
+								? e2.getPointRight()
+								: e1.getPointRight());
+							//we remove the two edges we are analyzing,
+							//new edges will be inserted if necessary.
+							rm = edgeBuffer.remove(j);
+							if (!rm.equals(e2)) {
+								throw new RuntimeException("problem while removing an edge");
 							}
+							rm = edgeBuffer.remove(j - 1);
+							if (!rm.equals(e1)) {
+								throw new RuntimeException("problem while removing an edge");
+							}
+							j--;
+							if (leftMost.compareTo2D(newEvent) == -1) {
+								inter1 = new MyEdge(leftMost, newEvent);
+							}
+							inter2 = edgeEvent;
+							if (rightMost.compareTo2D(edgeEvent.getPointRight()) == 1) {
+								inter3 = new MyEdge(edgeEvent.getPointRight(), rightMost);
+							}
+							if (inter1 != null) {
+								if (inter1.getPointRight().compareTo2D(currentEvent) == 1) {
+									addConstraintEdge(inter1);
+								} else {
+									mem = insertEdgeVerticalList(inter1, edgeBuffer, abs);
+									j = j <= mem ? j : mem;
+								}
+							}
+							if (inter2.getPointRight().compareTo2D(currentEvent) == 1) {
+								//inter2 has to be processed for further intersections
+								mem = insertEdgeVerticalList(inter2, edgeBuffer, abs);
+								j = j <= mem ? j : mem;
+
+							} else {
+								//inter2 can't be implied in other intersections
+								addConstraintEdge(inter2);
+							}
+							if (inter3 != null) {
+								//inter3 must be processed further.
+								mem = insertEdgeVerticalList(inter3, edgeBuffer, abs);
+								j = j <= mem ? j : mem;
+							}
+						} else {
+							throw new DelaunayError("We should already be on this event point");
 						}
-						
-					} else {//there is no intersection here, we check the
-						//highest edge.
-						if(e1.getPointRight().equals(currentEvent)){
+
+					} else {
+						if (e1.getPointRight().equals2D(currentEvent)) {
 							addConstraintEdge(e1);
-							edgeBuffer.remove(j-1);
-                                                        j--;
-						}
-						if(e2.getPointRight().equals(currentEvent)){
-							addConstraintEdge(e2);
-							edgeBuffer.remove(j);
-                                                        j--;
+							rm = edgeBuffer.remove(j - 1);
+							if (!rm.equals(e1)) {
+								throw new RuntimeException("problem while removing an edge");
+							}
+							j--;
 						}
 					}
 					j++;
-                                }
-                        } else if (edgeBuffer.size()==1 && edgeBuffer.get(0).getPointRight().equals(currentEvent)){
+				}
+			} else if (edgeBuffer.size() == 1 && edgeBuffer.get(0).getPointRight().equals2D(currentEvent)) {
 				addConstraintEdge(edgeBuffer.get(0));
 				edgeBuffer.remove(0);
 			}
@@ -577,7 +637,7 @@ public class ConstrainedMesh {
 
 	/**
 	 * This method will sort the edges contained in the ArrayList list by considering
-	 * their intersection point with the line of equation x=a, where a is given
+	 * their intersection point with the line of equation x=abs, where a is given
 	 * in parameter.
 	 * @param edgeList
 	 * @param x
@@ -591,11 +651,11 @@ public class ConstrainedMesh {
 		while (i < s - 1) {
 			e1 = edgeList.get(i);
 			e2 = edgeList.get(i + 1);
-			c = e1.verticalSort(e2,abs);
+			c = e1.verticalSort(e2, abs);
 			if (c == 1) {
 				edgeList.set(i, e2);
 				edgeList.set(i + 1, e1);
-				i = 0;
+				i = i - 1 < 0 ? 0 : i - 1;
 			} else {
 				i++;
 			}
@@ -610,7 +670,7 @@ public class ConstrainedMesh {
 	 * @param edge
 	 * @param edgeList
 	 */
-	public void insertEdgeVerticalList(MyEdge edge, List<MyEdge> edgeList, double abs) throws DelaunayError {
+	public int insertEdgeVerticalList(MyEdge edge, List<MyEdge> edgeList, double abs) throws DelaunayError {
 		if (edgeList == null || edgeList.isEmpty()) {
 			edgeList.add(edge);
 		}
@@ -618,81 +678,76 @@ public class ConstrainedMesh {
 		int compare = edge.verticalSort(edgeList.get(0), abs);
 		if (compare == -1) {
 			edgeList.add(0, edge);
-			return;
+			return 0;
 		}
-		compare = edge.verticalSort(edgeList.get(s-1), abs);
+		compare = edge.verticalSort(edgeList.get(s - 1), abs);
 		if (compare == 1) {
 			edgeList.add(s, edge);
-			return;
+			return s;
 		}
 		int delta = s / 2;
 		int i = s / 2;
-		boolean duplicate = false;
-		boolean stillVEquals;
-		MyEdge temp = null;
 		while (delta > 0) {
 			compare = edge.verticalSort(edgeList.get(i), abs);
-			switch(compare){
+			switch (compare) {
 				case -1:
-					compare = edge.verticalSort(edgeList.get(i-1), abs);
-					switch(compare){
+					compare = edge.verticalSort(edgeList.get(i - 1), abs);
+					switch (compare) {
 						case -1:
 							delta = delta / 2;
-							i=i-delta;
+							i = i - delta;
 							break;
 						case 1:
 							edgeList.add(i, edge);
-							return;
+							return i;
 						case 0:
-							return;
+							return i - 1;
 					}
 					break;
 				case 0:
-					return;
+					return i;
 				case 1:
-					compare = edge.verticalSort(edgeList.get(i+1), abs);
-					switch(compare){
+					compare = edge.verticalSort(edgeList.get(i + 1), abs);
+					switch (compare) {
 						case 1:
 							delta = delta / 2;
-							i=i+delta;
+							i = i + delta;
 							break;
 						case -1:
-							edgeList.add(i+1, edge);
-							return;
+							edgeList.add(i + 1, edge);
+							return i + 1;
 						case 0:
-							return;
+							return i + 1;
 
 					}
 					break;
 			}
 		}
-
+		return -1;
 	}
 
 	/**
-	 * this method will travel through a vertically sorted list to search for duplicates
-	 * Returns true if it finds one. You must give the index where the research begins.
-	 * Travel from end to beginning.
-	 * @param vSList
-	 * @param edge
-	 * @param index
-	 * @param abs
-	 * @return true if there is a copy of edge in vSList
+	 * Check if the list given in argument is vertically sorted or not.
+	 * @param edgeList
+	 * @return
 	 */
-//	private boolean checkForDuplicatePrevious(List<MyEdge> vSList, MyEdge edge, int index, double abs){
-//		if(index < 0 || index > vSList.size()){
-//			return false;
-//		} else {
-//			ListIterator<MyEdge> iter = vSList.listIterator(index);
-//			boolean ret = false;
-//			boolean stillEquals=true;
-//			MyEdge temp = null;
-//			while(!ret && iter.hasPrevious() && stillEquals){
-//				temp=iter.previous();
-//			}
-//			return ret;
-//		}
-//	}
+	public boolean isVerticallySorted(List<MyEdge> edgeList, double abs) {
+		MyEdge e1, e2;
+		e2 = edgeList.get(0);
+		for (int i = 1; i < edgeList.size(); i++) {
+			e1 = e2;
+			e2 = edgeList.get(i);
+			try {
+				if (e1.verticalSort(e2, abs) == 1) {
+					return false;
+				}
+			} catch (DelaunayError e) {
+				System.err.println(e.getCause());
+			}
+		}
+
+		return true;
+	}
 
 	/**
 	 * This method simply travels the list given in argument. If edges edgelist.get(i)
@@ -714,7 +769,7 @@ public class ConstrainedMesh {
 				e2 = edgeList.get(i + 1);
 				inter = e1.getIntersection(e2);
 				if (inter != null) {
-					if(inter instanceof MyPoint){
+					if (inter instanceof MyPoint) {
 						eventList.add((MyPoint) inter);
 					} else {
 						eventList.add(((MyEdge) inter).getPointLeft());

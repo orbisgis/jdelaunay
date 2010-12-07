@@ -585,10 +585,21 @@ public class MyEdge extends MyElement {
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public MyElement getIntersection(MyPoint p1, MyPoint p2, boolean useCoordZOfp1p2) throws DelaunayError {
+	public MyElement getIntersection(MyPoint point1, MyPoint point2, boolean useCoordZOfp1p2) throws DelaunayError {
 		MyElement intersection = null;
-		MyPoint p3 = this.startPoint;
-		MyPoint p4 = this.endPoint;
+		MyPoint p3 = getPointLeft();
+		MyPoint p4 = getPointRight();
+		MyPoint p1 = new MyPoint();
+		MyPoint p2 = new MyPoint();
+		switch(point1.compareTo2D(point2)){
+			case 1 :
+				p1=point2;
+				p2=point1;
+				break;
+			default:
+				p1=point1;
+				p2=point2;
+		}
 
 		// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 		// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
@@ -599,27 +610,26 @@ public class MyEdge extends MyElement {
 		double deltaYO = p2.getY() - p1.getY();
 		double deltaYT = p4.getY() - p3.getY();
 		double c2 = p3.getY() - p1.getY();
-		double epsilon = MyTools.EPSILON;
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = deltaXT * deltaYO - deltaYT * deltaXO;
-		if (d != 0) {
+		if (Math.abs(d) > MyTools.EPSILON) {
 			// t1 = ((y3 - y1) (x4 - x3) - (x3 - x1) (y4 - y3)) / d
 			// t2 = ((x2 - x1) (y3 - y1) - (y2 - y1) (x3 - x1)) / d
 
 			double t1 = (c2 * deltaXT - c1 * deltaYT) / d;
 			double t2 = (deltaXO * c2 - deltaYO * c1) / d;
 
-			if ((-epsilon <= t1) && (t1 <= 1 + epsilon) && (-epsilon <= t2)
-				&& (t2 <= 1 + epsilon)) {
+			if ((-MyTools.EPSILON <= t1) && (t1 <= 1 + MyTools.EPSILON) && (-MyTools.EPSILON <= t2)
+				&& (t2 <= 1 + MyTools.EPSILON)) {
 				// it intersects
-				if (t2 <= epsilon) {
+				if (t2 <= MyTools.EPSILON) {
 					intersection = p3;
-				} else if (t2 >= 1 - epsilon) {
+				} else if (t2 >= 1 - MyTools.EPSILON) {
 					intersection = p4;
-				} else if (t1 <= epsilon) {
+				} else if (t1 <= MyTools.EPSILON) {
 					intersection = p1;
-				} else if (t1 >= 1 - epsilon) {
+				} else if (t1 >= 1 - MyTools.EPSILON) {
 					intersection = p2;
 				} else {
 					// x = x2 t1 + (1 - t1) x1
@@ -649,34 +659,34 @@ public class MyEdge extends MyElement {
 			} else {
 				test = c1 / deltaXO - c2 / deltaYO;
 			}
-			if (Math.abs(test) > epsilon) {//the two supporting lines are different
+			if (Math.abs(test) > MyTools.EPSILON) {//the two supporting lines are different
 				intersection = null;
 			} else {//we have one supporting line
 				//t13 is the position of the point three on the edge 1->2
 				double t13, t14, t21, t22;
-				if (Math.abs(deltaXO) < epsilon) {
+				if (Math.abs(deltaXO) < MyTools.EPSILON) {
 					t13 = c2 / deltaYO;
 					t14 = (p4.getY() - p1.getY()) / (deltaYO);
 				} else {
 					t13 = c1 / deltaXO;
 					t14 = (p4.getX() - p1.getX()) / (deltaXO);
 				}
-				if (Math.abs(deltaXT) > epsilon) {
+				if (Math.abs(deltaXT) > MyTools.EPSILON) {
 					t21 = -c1 / deltaXT;
 					t22 = (p2.getX() - p3.getX()) / deltaXT;
 				} else {
 					t21 = -c2 / deltaYT;
 					t22 = (p2.getY() - p3.getY()) / (deltaYT);
 				}
-				if (-epsilon < t13 && t13 < 1 + epsilon) {
-					if (-epsilon < t14 && t14 < 1 + epsilon) {
+				if (-MyTools.EPSILON < t13 && t13 < 1 + MyTools.EPSILON) {
+					if (-MyTools.EPSILON < t14 && t14 < 1 + MyTools.EPSILON) {
                                                 //p3 and p4 are both on the edge [p1 p2]
 						intersection = new MyEdge(p3, p4);
 					} else {
                                                 //p4 is not on [p1 p2]
 						if (p3.squareDistance2D(p1) < MyTools.EPSILON2) {
                                                         //p3 and p1 are equal
-							if (-epsilon < t22 && t22 < 1 + epsilon) {
+							if (-MyTools.EPSILON < t22 && t22 < 1 + MyTools.EPSILON) {
                                                                 //p2 is on [p3 p4]
 								intersection = new MyEdge(p1, p2);
 							} else {
@@ -685,7 +695,7 @@ public class MyEdge extends MyElement {
 							}
 						} else if (p3.squareDistance2D(p2) < MyTools.EPSILON2) {
                                                         //p3 and p2 are equals
-							if (-epsilon < t21 && t21 < 1 + epsilon) {
+							if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
                                                                 //p1 is on [p3 p4]
 								intersection = new MyEdge(p1, p2);
 							} else {
@@ -693,18 +703,18 @@ public class MyEdge extends MyElement {
 								intersection = p3;
 							}
 
-						} else if (-epsilon < t21 && t21 < 1 + epsilon) {
+						} else if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
                                                         //p1 is on [p3 p4]
 							intersection = new MyEdge(p1, p3);
 						} else {
 							intersection = new MyEdge(p2, p3);
 						}
 					}
-				} else if (-epsilon < t14 && t14 < 1 + epsilon) {
+				} else if (-MyTools.EPSILON < t14 && t14 < 1 + MyTools.EPSILON) {
                                 //p3 is not on [p1 p2], but p4 is on it
 					if (p4.squareDistance2D(p1) < MyTools.EPSILON2) {
                                                 //p4 and p1 are equal
-						if (-epsilon < t22 && t22 < 1 + epsilon) {
+						if (-MyTools.EPSILON < t22 && t22 < 1 + MyTools.EPSILON) {
                                                         //p2 is on [p3 p4]
 							intersection = new MyEdge(p1, p2);
 						} else {
@@ -713,7 +723,7 @@ public class MyEdge extends MyElement {
 						}
 					} else if (p4.squareDistance2D(p2) < MyTools.EPSILON2) {
                                                 //p4 and p1 are equal
-						if (-epsilon < t21 && t21 < 1 + epsilon) {
+						if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
                                                         //p1  is on [p3 p4]
 							intersection = new MyEdge(p1, p2);
 						} else {
@@ -721,13 +731,13 @@ public class MyEdge extends MyElement {
 							intersection = p4;
 						}
 
-					} else if (-epsilon < t21 && t21 < 1 + epsilon) {
+					} else if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
                                                 //p1 is on [p3 p4]
 						intersection = new MyEdge(p1, p4);
 					} else {
 						intersection = new MyEdge(p2, p4);
 					}
-				} else if (epsilon < t21 && t21 < 1 - epsilon) {
+				} else if (MyTools.EPSILON < t21 && t21 < 1 - MyTools.EPSILON) {
                                         //p1 is on [p3 p4]. As we've seen, nor p4 neither p3 are
                                         // on [p1 p2], so we can conclude that the intersection is [p1 p2]
 					intersection = new MyEdge(p1, p2);
@@ -797,31 +807,30 @@ public class MyEdge extends MyElement {
 		double c1 = p.getX() - p1.getX();
 		double a2 = p2.getY() - p1.getY();
 		double c2 = p.getY() - p1.getY();
-		double epsilon = MyTools.EPSILON;
 
-		if (Math.abs(a1) > epsilon) {
+		if (Math.abs(a1) > MyTools.EPSILON) {
 			t1 = c1 / a1;
-			if ((-epsilon < t1) && (t1 < 1 + epsilon)) {
+			if ((-MyTools.EPSILON < t1) && (t1 < 1 + MyTools.EPSILON)) {
 				// p.getX() is between p1.getX() and p2.getX()
-				if (Math.abs(a2) > epsilon) {
+				if (Math.abs(a2) > MyTools.EPSILON) {
 					t2 = c2 / a2;
-					if ((-epsilon < t2) && (t2 < 1 + epsilon)
-						&& (Math.abs(t1 - t2) < epsilon)) {
+					if ((-MyTools.EPSILON < t2) && (t2 < 1 + MyTools.EPSILON)
+						&& (Math.abs(t1 - t2) < MyTools.EPSILON)) {
 						isInside = true;
 					}
-				} else if (Math.abs(c2) < epsilon) {
+				} else if (Math.abs(c2) < MyTools.EPSILON) {
 					// p1.getY(), p2.getY() and p.getY() are the same
 					isInside = true;
 				}
 			}
-		} else if (Math.abs(c1) < epsilon) {
+		} else if (Math.abs(c1) < MyTools.EPSILON) {
 			// p1.getX(), p2.getX() and p.getX() are the same
-			if (Math.abs(a2) > epsilon) {
+			if (Math.abs(a2) > MyTools.EPSILON) {
 				t2 = c2 / a2;
-				if ((-epsilon < t2) && (t2 < 1 + epsilon)) {
+				if ((-MyTools.EPSILON < t2) && (t2 < 1 + MyTools.EPSILON)) {
 					isInside = true;
 				}
-			} else if (Math.abs(c2) < epsilon) {
+			} else if (Math.abs(c2) < MyTools.EPSILON) {
 				// p1.getY(), p2.getY() and p.getY() are also the same
 				isInside = true;
 			}
@@ -847,9 +856,8 @@ public class MyEdge extends MyElement {
 		double c1 = p.getX() - p1.getX();
 		double a2 = p2.getY() - p1.getY();
 		double c2 = p.getY() - p1.getY();
-		double epsilon = MyTools.EPSILON;
 		double t = a1 * c2 - a2 * c1;
-		if (Math.abs(t) < epsilon) {
+		if (Math.abs(t) < MyTools.EPSILON2) {
 			isColinear2D = true;
 		}
 
@@ -874,11 +882,10 @@ public class MyEdge extends MyElement {
 		double c2 = p.getY() - p1.getY();
 		double a3 = p2.getZ() - p1.getZ();
 		double c3 = p.getZ() - p1.getZ();
-		double epsilon = MyTools.EPSILON;
 		double t1 = a1 * c2 - a2 * c1;
 		double t2 = a1 * c3 - a3 * c1;
 		double t3 = a3 * c2 - a2 * c3;
-		if ((Math.abs(t1) < epsilon) && (Math.abs(t2) < epsilon) && (Math.abs(t3) < epsilon)) {
+		if ((Math.abs(t1) < MyTools.EPSILON2) && (Math.abs(t2) < MyTools.EPSILON2) && (Math.abs(t3) < MyTools.EPSILON2)) {
 			isColinear = true;
 		}
 
@@ -917,14 +924,7 @@ public class MyEdge extends MyElement {
 	 * @return isInside
 	 */
 	public boolean isExtremity(MyPoint p) {
-		boolean isExtremity = false;
-
-		if (this.startPoint.squareDistance2D(p) < MyTools.EPSILON2) {
-			isExtremity = true;
-		} else if (this.endPoint.squareDistance2D(p) < MyTools.EPSILON2) {
-			isExtremity = true;
-		}
-		return isExtremity;
+		return (startPoint.equals2D(p) ) || (endPoint.equals2D(p) );
 	}
 
 	/**
@@ -983,7 +983,7 @@ public class MyEdge extends MyElement {
 			? /* p2y > p1y ?*/ (p1.getY() < p.getY() && p.getY() < p2.getY()) /* p2y > py > p1y ?*/
 			: (p2.getY() < p.getY() && p.getY() < p1.getY())));
 
-		return res <= MyTools.EPSILON && res >= -MyTools.EPSILON/* p is on p1, p2 line */
+		return res <= MyTools.EPSILON2 && res >= -MyTools.EPSILON2/* p is on p1, p2 line */
 
 			&& b1	/* p2x < px < p1x ?*/
 
@@ -997,7 +997,7 @@ public class MyEdge extends MyElement {
 	public boolean isVertical() {
 		double dx = (startPoint.getX() - endPoint.getX());
 		double delta = (dx < 0 ? -dx : dx);
-		return (delta < MyTools.EPSILON ? true : false);
+		return delta < MyTools.EPSILON;
 	}
 
 	/**
@@ -1197,8 +1197,25 @@ public class MyEdge extends MyElement {
 		}
 		int c = pThis.compareTo2D(pEdge);
 		if (c == 0) {
-			c = this.getPointRight().compareTo2D(edge.getPointRight());
-			return (c==0 ?this.getPointLeft().compareTo2D(edge.getPointLeft()) : c ) ;
+			if(this.isVertical()){
+				c = (this.getPointRight().compareTo2D(edge.getPointRight()));
+			} else if(edge.isVertical()){
+				c = edge.getPointRight().compareTo2D(this.getPointRight());
+			} else {
+				double deltaXT = getPointRight().getX()-getPointLeft().getX();
+				double deltaYT = getPointRight().getY()-getPointLeft().getY();
+				double deltaXO = edge.getPointRight().getX()-edge.getPointLeft().getX();
+				double deltaYO = edge.getPointRight().getY()-edge.getPointLeft().getY();
+				double cT = deltaYT / deltaXT;
+				double cO = deltaYO / deltaXO;
+				if(-MyTools.EPSILON < cT - cO && cT - cO < MyTools.EPSILON){
+					c =0;
+				} else if(cT < cO){
+					c = -1;
+				} else {
+					c=1;
+				}
+			}
 		}
 		return c;
 	}
