@@ -350,6 +350,35 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(sortedLeft.size()==9);
 
 	}
+
+	/**
+	 * Checks the efficiency of the vertical sorting algorithm with random sets of edges
+	 * @throws DelaunayError
+	 */
+	public void testVerticalSortRandom() throws DelaunayError{
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		List<MyEdge> constraints =  getRandomEdges(500);
+		mesh.sortEdgesVertically(constraints, 8);
+		MyEdge e1 = constraints.get(0);
+		MyEdge e2;
+		for(int i=1; i<constraints.size();i++){
+			e2=e1;
+			e1=constraints.get(i);
+			assertTrue(e2.verticalSort(e1, 8)<1);
+		}
+		List<MyEdge> toBeAdded = getRandomEdges(500);
+		for(MyEdge edge : toBeAdded){
+			mesh.insertEdgeVerticalList(edge, constraints, 8);
+			e1 = constraints.get(0);
+			for(int i=1; i<constraints.size();i++){
+				e2=e1;
+				e1=constraints.get(i);
+				assertTrue(e2.verticalSort(e1, 8)<1);
+			}
+		}
+
+	}
+
 	/**
 	 * We check that event points can be added efficiently from secant edges
 	 *
@@ -460,6 +489,22 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==3);
 
 		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(3,6,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,4,0), new MyPoint(7,2,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,3,0)));
+//		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,3,0), new MyPoint(2,2,0)));
+		mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==5);
+                MyEdge e1 = edgeList.get(0);
+                MyEdge e2;
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+
+		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,0,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(2,2,0)));
 		mesh.forceConstraintIntegrity();
@@ -499,8 +544,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==6);
 		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
                 assertTrue(sillyCheckIntersection(edgeList));
-                MyEdge e1 = edgeList.get(0);
-                MyEdge e2;
+                e1 = edgeList.get(0);
                 for(int i = 1; i<edgeList.size();i++){
                         e2 = e1;
                         e1 = edgeList.get(i);

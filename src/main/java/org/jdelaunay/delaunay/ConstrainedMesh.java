@@ -170,7 +170,6 @@ public class ConstrainedMesh {
 			c = edge.sortLeftRight(other);
 			switch (c) {
 				case -1:
-//					if(i-1>0){
 					other = sorted.get(i - 1);
 					c = edge.sortLeftRight(other);
 					switch (c) {
@@ -185,14 +184,9 @@ public class ConstrainedMesh {
 							return;
 					}
 					break;
-//					}else  {
-//						sorted.add(0, edge);
-//						return;
-//					}
 				case 0:
 					return;
 				case 1:
-//					if(i+1<s){
 					other = sorted.get(i + 1);
 					c = edge.sortLeftRight(other);
 					switch (c) {
@@ -206,10 +200,6 @@ public class ConstrainedMesh {
 							i = i + delta;
 							break;
 					}
-//					} else {
-//						sorted.add(i + 1, edge);
-//						return;
-//					}
 			}
 		}
 	}
@@ -623,6 +613,7 @@ public class ConstrainedMesh {
 								throw new RuntimeException("problem while removing an edge");
 							}
 							j--;
+							j = j-1 < 0 ? 0 : j-1;
 						}
 					}
 					j++;
