@@ -493,6 +493,7 @@ public class ConstrainedMesh {
 									}
 									inter4 = new MyEdge(e2.getPointRight(), newEvent);
 									insertEdgeVerticalList(inter4, edgeBuffer, abs);
+									rmCount++;
 								} else if (newEvent.equals2D(e2.getPointRight())) {
 									addConstraintEdge(e2);
 									rm = edgeBuffer.remove(j);
@@ -510,6 +511,7 @@ public class ConstrainedMesh {
 									}
 									inter3 = new MyEdge(e1.getPointRight(), newEvent);
 									insertEdgeVerticalList(inter3, edgeBuffer, abs);
+									rmCount++;
 								} else if (newEvent.equals2D(e1.getPointRight())) {
 									addConstraintEdge(e1);
 									rm = edgeBuffer.remove(j - 1);
@@ -561,6 +563,9 @@ public class ConstrainedMesh {
 							rightMost = (e1.getPointRight().compareTo2D(e2.getPointRight()) < 1
 								? e2.getPointRight()
 								: e1.getPointRight());
+							inter1 = null;
+							inter2 = null;
+							inter3 = null;
 							//we remove the two edges we are analyzing,
 							//new edges will be inserted if necessary.
 							rm = edgeBuffer.remove(j);
@@ -598,9 +603,11 @@ public class ConstrainedMesh {
 							}
 							if (inter3 != null) {
 								//inter3 must be processed further.
-								mem = insertEdgeVerticalList(inter3, edgeBuffer, abs);
-								j = j <= mem ? j : mem;
+								addEdgeToLeftSortedList(edgeMemory, inter3);
+//								mem = insertEdgeVerticalList(inter3, edgeBuffer, abs);
+//								j = j <= mem ? j : mem;
 							}
+							j = j-2 < 0 ? 0 : j-2 ;
 						} else {
 							throw new DelaunayError("We should already be on this event point");
 						}

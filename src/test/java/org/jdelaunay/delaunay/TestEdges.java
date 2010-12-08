@@ -6,7 +6,7 @@
 package org.jdelaunay.delaunay;
 
 /**
- *
+ * Tests some of the methods defined in MyEdge.
  * @author alexis
  */
 public class TestEdges extends BaseUtility {
@@ -156,28 +156,60 @@ public class TestEdges extends BaseUtility {
 		e2 = new MyEdge(4,3,0,8,3,0);
 		assertTrue(e1.intersects(e2)==2);
 
-		e1 = new MyEdge(1.8074157402864,98.70155495362685,17.33208384927718,15.677161919360142,88.91946702159545,72.62346056964518);
-		e2 = new MyEdge(15.893774288391056,88.76669412916696,73.48698005614088,16.7142085041698,88.18805631290299,76.75761938242825);
-		double d1 = (88.91946702159545 - 98.70155495362685)/(15.677161919360142 - 1.8074157402864);
-		double d2 = (88.18805631290299 - 88.76669412916696)/(16.7142085041698 - 15.893774288391056);
+		e1 = new MyEdge(26.605142485395294,45.996587159903655,14.80314043832656,26.60521489309339,45.99657676794573,14.803141832441982);
+		e2 = new MyEdge(26.605142485395294,45.996587159903655,14.80314043832656,26.60522657816091,45.996594194945246,14.80313187802681);
+		double d1 = (e1.getPointLeft().getY() - e1.getPointRight().getY())/(e1.getPointLeft().getX() - e1.getPointRight().getX());
+		double d2 = (e2.getPointLeft().getY() - e2.getPointRight().getY())/(e2.getPointLeft().getX() - e2.getPointRight().getX());
 		System.out.println("d1 : "+d1);
 		System.out.println("d2 : "+d2);
 		MyElement haha = e1.getIntersection(e2);
 		System.out.println(haha);
 		System.out.println("e1 inter e2 : "+e1.intersects(e2));
 		System.out.println("e2 inter e1 : "+e2.intersects(e1));
-		assertTrue(e1.intersects(e2)==2);
-		assertTrue(e2.intersects(e1)==2);
+		assertTrue(e1.intersects(e2)==3);
+		assertTrue(e2.intersects(e1)==3);
 	}
 
 	/**
 	 * This method check that the vertical sort defined in MyEdge works well
 	 */
-
 	public void testVerticalSort() throws DelaunayError{
 		MyEdge e1 = new MyEdge(0,0,0,2,2,2);
 		MyEdge e2 = new MyEdge(0,0,0,2,2,2);
 		assertTrue(e1.verticalSort(e2, 1)==0);
+
+		e1 = new MyEdge(0,0,0,2,3,2);
+		e2 = new MyEdge(0,0,0,2,2,2);
+		assertTrue(e1.verticalSort(e2, 1)==1);
+		assertTrue(e1.verticalSort(e2, 0)==1);
+
+		e1 = new MyEdge(1,8,0,2,3,2);
+		e2 = new MyEdge(0,0,0,2,2,2);
+		assertTrue(e1.verticalSort(e2, 1)==1);
+		assertTrue(e1.verticalSort(e2, 0)==1);
+
+		e1 = new MyEdge(0,0,0,3,3,2);
+		e2 = new MyEdge(0,0,0,2,2,2);
+		assertTrue(e1.verticalSort(e2, 1)==1);
+		assertTrue(e1.verticalSort(e2, 0)==1);
+
+		e1 = new MyEdge(-1,-1,0,2,2,2);
+		e2 = new MyEdge(0,0,0,2,2,2);
+		assertTrue(e1.verticalSort(e2, 1)==-1);
+		assertTrue(e1.verticalSort(e2, 0)==-1);
 	}
         
+	/**
+	 * Checks whether edges are vertical or not.
+	 */
+	public void testVertical(){
+		MyEdge e1 = new MyEdge(14.815045543900215,70.25119472533194,33.92748531499323,14.815093546085139,70.25101901938166,33.92739651606882);
+		assertFalse(e1.isVertical());
+
+		e1=new MyEdge(0,0,0,0,5,0);
+		assertTrue(e1.isVertical());
+
+		e1=new MyEdge(0,0,0,0.00000009,5,0);
+		assertTrue(e1.isVertical());
+	}
 }

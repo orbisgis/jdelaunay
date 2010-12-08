@@ -534,7 +534,7 @@ public class MyEdge extends MyElement {
 
 			// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 			double d = b1 * a2 - b2 * a1;
-			if(-MyTools.EPSILON < d && d < MyTools.EPSILON){
+			if(-MyTools.EPSILON2 < d && d < MyTools.EPSILON2){
 				//the two edges are colinear
 				return 2;
 			}else {
@@ -613,7 +613,7 @@ public class MyEdge extends MyElement {
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = deltaXT * deltaYO - deltaYT * deltaXO;
-		if (Math.abs(d) > MyTools.EPSILON) {
+		if (Math.abs(d) > MyTools.EPSILON2) {
 			// t1 = ((y3 - y1) (x4 - x3) - (x3 - x1) (y4 - y3)) / d
 			// t2 = ((x2 - x1) (y3 - y1) - (y2 - y1) (x3 - x1)) / d
 
@@ -1198,7 +1198,7 @@ public class MyEdge extends MyElement {
 		int c = pThis.compareTo2D(pEdge);
 		if (c == 0) {
 			if(this.isVertical()){
-				c = (this.getPointRight().compareTo2D(edge.getPointRight()));
+				c = this.getPointRight().compareTo2D(edge.getPointRight());
 			} else if(edge.isVertical()){
 				c = edge.getPointRight().compareTo2D(this.getPointRight());
 			} else {
@@ -1209,7 +1209,10 @@ public class MyEdge extends MyElement {
 				double cT = deltaYT / deltaXT;
 				double cO = deltaYO / deltaXO;
 				if(-MyTools.EPSILON < cT - cO && cT - cO < MyTools.EPSILON){
-					c =0;
+					c = getPointRight().compareTo2D(edge.getPointRight());
+					if(c==0){
+						c = getPointLeft().compareTo2D(edge.getPointLeft());
+					}
 				} else if(cT < cO){
 					c = -1;
 				} else {

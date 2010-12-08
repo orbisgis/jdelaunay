@@ -442,6 +442,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * in these tests.
 	 */
 	public void testProcessIntersections() throws DelaunayError {
+		//two crossing edges
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,2,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,0,0)));
@@ -450,6 +451,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==4);
 		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
 
+		//(1,1,0) lies on the first edge and is an extremity of the second one.
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,2,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,0,0)));
@@ -457,6 +459,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==3);
 		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
 
+		//idem, but changing the edges order
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,2,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,0,0)));
@@ -465,6 +468,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==3);
 		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
 
+		//The two edges don't intersect, they just share an extremity.
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,2,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,0,0)));
@@ -473,6 +477,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==2);
 		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
 
+		//one extremity of an edge relies the other, which is vertical
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,2,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,2,0), new MyPoint(1,0,0)));
@@ -481,6 +486,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==3);
 		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
 
+		//two vertical overlapping edges
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(2,2,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,0,0)));
@@ -488,11 +494,12 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
 
+		//the third edge is "between" the two first, which intersect and
+		//whose intersection lies after the right point of the third one.
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(3,6,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,4,0), new MyPoint(7,2,0)));
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,3,0)));
-//		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,3,0), new MyPoint(2,2,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==5);
@@ -504,12 +511,86 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                         assertTrue(e2.sortLeftRight(e1)==-1);
                 }
 
+		//two "crosses", one left from the first
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,0,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,1,0), new MyPoint(5,6,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,4,0), new MyPoint(10,2,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,3,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,3,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,4,0), new MyPoint(2,1,0)));
+		mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==8);
+                e1 = edgeList.get(0);
+//		System.out.println(e1);
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+//			System.out.println(e1);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+//		System.out.println();
+
+		//two "crosses", one under the other.
+		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,1,0), new MyPoint(8,6,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,4,0), new MyPoint(10,2,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,8,0), new MyPoint(10,10,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(5,10,0), new MyPoint(9,9,0)));
+		mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==8);
+                e1 = edgeList.get(0);
+//		System.out.println(e1);
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+//			System.out.println(e1);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+//		System.out.println();
+
+		//three edges intersect and form a triangle
+		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,3,0), new MyPoint(5,3,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,4,0), new MyPoint(3,1,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,0,0), new MyPoint(5,4,0)));
+		mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==9);
+                e1 = edgeList.get(0);
+//		System.out.println(e1);
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+//			System.out.println(e1);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+//		System.out.println();
+
+		//
+		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(2,2,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,0,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
+
+		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,3,0), new MyPoint(10,6,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,5,0), new MyPoint(13,7,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,7,0), new MyPoint(13,5,0)));
+		mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==5);
+
+		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,3,0), new MyPoint(10,6,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,5,0), new MyPoint(13,7,0)));
+		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,7,0), new MyPoint(10,3,0)));
+		mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==6);
 
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new MyEdge(23.754617414248024,25.03430079155673,8.321899736147756,29.974500344589934,23.130254996554104,8.9565816678153));
@@ -590,20 +671,25 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                 }
 		double t1 = System.currentTimeMillis();
                 mesh.forceConstraintIntegrity();
+		edgeList = mesh.getConstraintEdges();
+		boolean bool = sillyCheckIntersection(edgeList);
+		System.out.println("number of intersections : " +edgeList.size());
                 mesh.forceConstraintIntegrity();
 		double t2 = System.currentTimeMillis();
 		System.out.println("time used : "+(t2 - t1) );
-                assertTrue(sillyCheckIntersection(edgeList));
 		edgeList = mesh.getConstraintEdges();
+//		System.out.println("number of intersections : " +edgeList.size());
+		edgeList = mesh.getConstraintEdges();
+		System.out.println("number of intersections : " +edgeList.size());
                 e1 = edgeList.get(0);
+		t1 = System.currentTimeMillis();
+		bool = sillyCheckIntersection(edgeList);
+		t2 = System.currentTimeMillis();
                 for(int i = 1; i<edgeList.size();i++){
                         e2 = e1;
                         e1 = edgeList.get(i);
                         assertTrue(e2.sortLeftRight(e1)<1);
                 }
-		t1 = System.currentTimeMillis();
-		boolean bool = sillyCheckIntersection(edgeList);
-		t2 = System.currentTimeMillis();
 		System.out.println("time used : "+(t2 - t1) );
 		assertTrue(bool);
 	}
