@@ -592,6 +592,7 @@ public class MyEdge extends MyElement {
 		MyPoint p1 = new MyPoint();
 		MyPoint p2 = new MyPoint();
 		switch(point1.compareTo2D(point2)){
+			//we put the leftmost point in p1, and the rightmost in p2
 			case 1 :
 				p1=point2;
 				p2=point1;
@@ -614,6 +615,9 @@ public class MyEdge extends MyElement {
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = deltaXT * deltaYO - deltaYT * deltaXO;
 		if (Math.abs(d) > MyTools.EPSILON2) {
+			if(p1.compareTo2D(p4)==1 || p3.compareTo2D(p2)==1){
+				return null;
+			}
 			// t1 = ((y3 - y1) (x4 - x3) - (x3 - x1) (y4 - y3)) / d
 			// t2 = ((x2 - x1) (y3 - y1) - (y2 - y1) (x3 - x1)) / d
 

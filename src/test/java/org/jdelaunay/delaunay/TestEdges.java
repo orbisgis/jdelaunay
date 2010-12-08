@@ -156,18 +156,19 @@ public class TestEdges extends BaseUtility {
 		e2 = new MyEdge(4,3,0,8,3,0);
 		assertTrue(e1.intersects(e2)==2);
 
-		e1 = new MyEdge(26.605142485395294,45.996587159903655,14.80314043832656,26.60521489309339,45.99657676794573,14.803141832441982);
-		e2 = new MyEdge(26.605142485395294,45.996587159903655,14.80314043832656,26.60522657816091,45.996594194945246,14.80313187802681);
+		e1 = new MyEdge(90.63238154151456,43.20221085741341,41.857266329284386,91.81204048255302,43.45596499572569,38.49821580890875);
+		e2 = new MyEdge(91.81349681622754,43.456278264827304,23.46029784229816,94.75494831679701,44.08900817086041,30.11835638671625);
 		double d1 = (e1.getPointLeft().getY() - e1.getPointRight().getY())/(e1.getPointLeft().getX() - e1.getPointRight().getX());
 		double d2 = (e2.getPointLeft().getY() - e2.getPointRight().getY())/(e2.getPointLeft().getX() - e2.getPointRight().getX());
+		System.out.println("distance left - right : " + e1.getPointRight().squareDistance2D(e2.getPointLeft()));
 		System.out.println("d1 : "+d1);
 		System.out.println("d2 : "+d2);
 		MyElement haha = e1.getIntersection(e2);
 		System.out.println(haha);
 		System.out.println("e1 inter e2 : "+e1.intersects(e2));
 		System.out.println("e2 inter e1 : "+e2.intersects(e1));
-		assertTrue(e1.intersects(e2)==3);
-		assertTrue(e2.intersects(e1)==3);
+		assertTrue(e1.intersects(e2)==0);
+		assertTrue(e2.intersects(e1)==0);
 	}
 
 	/**
