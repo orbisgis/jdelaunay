@@ -15,15 +15,15 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class MyPolygon extends MyElement {
+public class ConstraintPolygon extends Element {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private Polygon polygon;
-	private ArrayList<MyEdge> edges;
-	private MyTriangle refTriangle;
+	private ArrayList<Edge> edges;
+	private DelaunayTriangle refTriangle;
 
 	
 	/**
@@ -48,7 +48,7 @@ public class MyPolygon extends MyElement {
 	 * @param polygon
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon) throws DelaunayError {
+	public ConstraintPolygon(Polygon polygon) throws DelaunayError {
 		super();
 		this.usePolygonZ=false;
 		this.isEmpty=false;
@@ -62,7 +62,7 @@ public class MyPolygon extends MyElement {
 	 * @param isEmpty True, if we remove triangle who are inside the polygon.
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, boolean isEmpty) throws DelaunayError {
+	public ConstraintPolygon(Polygon polygon, boolean isEmpty) throws DelaunayError {
 		super();
 		init(polygon);
 		this.usePolygonZ=false;
@@ -76,7 +76,7 @@ public class MyPolygon extends MyElement {
 	 * @param property
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int property) throws DelaunayError {
+	public ConstraintPolygon(Polygon polygon, int property) throws DelaunayError {
 		super(property);
 		this.usePolygonZ=false;
 		this.isEmpty=false;
@@ -91,7 +91,7 @@ public class MyPolygon extends MyElement {
 	 * @param True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int property, boolean usePolygonZ) throws DelaunayError {
+	public ConstraintPolygon(Polygon polygon, int property, boolean usePolygonZ) throws DelaunayError {
 		super(property);
 		this.usePolygonZ=usePolygonZ;
 		this.isEmpty=false;
@@ -107,7 +107,7 @@ public class MyPolygon extends MyElement {
 	 * @param isEmpty True, if we remove triangle who are inside the polygon.
 	 * @throws DelaunayError 
 	 */
-	public MyPolygon(Polygon polygon, int property, boolean usePolygonZ, boolean isEmpty) throws DelaunayError {
+	public ConstraintPolygon(Polygon polygon, int property, boolean usePolygonZ, boolean isEmpty) throws DelaunayError {
 		super(property);
 		this.usePolygonZ=usePolygonZ;
 		this.isEmpty=isEmpty;
@@ -130,7 +130,7 @@ public class MyPolygon extends MyElement {
 			refTriangle=null;
 			
 			// create edge list
-			edges = new ArrayList<MyEdge>();
+			edges = new ArrayList<Edge>();
 
 			// add edges to the edge list
 			// each point is created one
@@ -139,16 +139,16 @@ public class MyPolygon extends MyElement {
 			if(Double.isNaN(polygon.getCoordinates()[0].z)) {
 				polygon.getCoordinates()[0].z = 0;
 			}
-			MyPoint lastPoint = new MyPoint(polygon.getCoordinates()[0]);
+			Point lastPoint = new Point(polygon.getCoordinates()[0]);
 
-			MyPoint aPoint;
-			MyEdge aEdge;
+			Point aPoint;
+			Edge aEdge;
 			for (int i = 1; i < nbPoints; i++) {
 				if(Double.isNaN(polygon.getCoordinates()[i].z)) {
 					polygon.getCoordinates()[i].z = 0;
 				}
-				aPoint = new MyPoint(polygon.getCoordinates()[i]);
-				aEdge=new MyEdge(lastPoint, aPoint);
+				aPoint = new Point(polygon.getCoordinates()[i]);
+				aEdge=new Edge(lastPoint, aPoint);
 				aEdge.setUseByPolygon(true);
 				edges.add(aEdge);
 				lastPoint = aPoint;
@@ -168,7 +168,7 @@ public class MyPolygon extends MyElement {
 	 */
 	public void setUsePolygonZ(boolean usePolygonZ) {
 		this.usePolygonZ = usePolygonZ;
-		for(MyEdge aEdge:edges){
+		for(Edge aEdge:edges){
 			aEdge.setUseZ(usePolygonZ);
                 }
 	}
@@ -211,7 +211,7 @@ public class MyPolygon extends MyElement {
 	/**
 	 * @return The reference triangle.
 	 */
-	public MyTriangle getRefTriangle() {
+	public DelaunayTriangle getRefTriangle() {
 		return refTriangle;
 	}
 
@@ -219,7 +219,7 @@ public class MyPolygon extends MyElement {
 	 * Set the reference triangle.
 	 * @param refTriangle
 	 */
-	public void setRefTriangle(MyTriangle refTriangle) {
+	public void setRefTriangle(DelaunayTriangle refTriangle) {
 		this.refTriangle = refTriangle;
 	}
 
@@ -235,7 +235,7 @@ public class MyPolygon extends MyElement {
 	 * 
 	 * @return edges
 	 */
-	public ArrayList<MyEdge> getEdges() {
+	public ArrayList<Edge> getEdges() {
 		return edges;
 	}
 	
@@ -245,12 +245,12 @@ public class MyPolygon extends MyElement {
 	 * @return points
 	 * @throws DelaunayError 
 	 */
-	public ArrayList<MyPoint> getPoints() throws DelaunayError {
-		ArrayList<MyPoint> points= new ArrayList<MyPoint>();
-		MyPoint aPoint;
+	public ArrayList<Point> getPoints() throws DelaunayError {
+		ArrayList<Point> points= new ArrayList<Point>();
+		Point aPoint;
 		for (int i = 0; i < polygon.getNumPoints()-1; i++)
 		{	
-			aPoint=new MyPoint(polygon.getCoordinates()[i]);
+			aPoint=new Point(polygon.getCoordinates()[i]);
 			aPoint.setUseByPolygon(true);
 			aPoint.setUseZ(usePolygonZ);
 			points.add(aPoint);
@@ -259,7 +259,7 @@ public class MyPolygon extends MyElement {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
+	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
 	public MyBox getBoundingBox() {
@@ -275,10 +275,10 @@ public class MyPolygon extends MyElement {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
+	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
 	 */
 	@Override
-	public boolean contains(MyPoint aPoint) { //FIXME make better code
+	public boolean contains(Point aPoint) { //FIXME make better code
 		boolean intersect=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 		for(int i=0;i<edges.size() && !intersect;i++ )
 		{
@@ -287,8 +287,8 @@ public class MyPolygon extends MyElement {
 		return intersect;
 	}
 	
-	public boolean contains(MyEdge anEdge) throws DelaunayError { //FIXME make better code
-		MyPoint aPoint = anEdge.getBarycenter();
+	public boolean contains(Edge anEdge) throws DelaunayError { //FIXME make better code
+		Point aPoint = anEdge.getBarycenter();
 		boolean intersectPolygon=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 		boolean edgeColinear=false, intersectEdge=false;
 		for(int i=0;i<edges.size();i++ )
@@ -304,19 +304,19 @@ public class MyPolygon extends MyElement {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.MyElement#contains(com.vividsolutions.jts.geom.Coordinate)
+	 * @see org.jdelaunay.delaunay.Element#contains(com.vividsolutions.jts.geom.Coordinate)
 	 */
 	@Override
 	public boolean contains(Coordinate coordinate) throws DelaunayError {  //FIXME make better code
 		boolean intersect=polygon.contains(new GeometryFactory().createPoint(coordinate));
 		for(int i=0;i<edges.size() && !intersect;i++ )
 		{
-			intersect=edges.get(i).isInside(new MyPoint(coordinate));
+			intersect=edges.get(i).isInside(new Point(coordinate));
 		}
 		return intersect;
 	}
 	
-	public boolean isIntersect(MyEdge anEdge) throws DelaunayError{
+	public boolean isIntersect(Edge anEdge) throws DelaunayError{
 		boolean intersect=false;
 		for(int i=0;i<edges.size() && !intersect;i++ )
 		{

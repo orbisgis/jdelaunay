@@ -12,7 +12,7 @@ import java.util.LinkedList;
  * @version 1.3
  */
 
-public class MyQuadTreeMapper<T extends MyElement> {
+public class MyQuadTreeMapper<T extends Element> {
 	private MyBox myBoundingBox;
 	private boolean usable;
 	private MyQuadTree<T> myQuadTree;
@@ -182,7 +182,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @param aPoint
 	 * @return anElement
 	 */
-	public T search(MyPoint aPoint) {
+	public T search(Point aPoint) {
 		T anElement = null;
 		if (this.usable) {
 			anElement = myQuadTree.search(aPoint, myBoundingBox);
@@ -196,7 +196,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @param aPoint
 	 * @return anElement
 	 */
-	public T search(MyPoint aPoint, double precision) {
+	public T search(Point aPoint, double precision) {
 		T anElement = null;
 		if (this.usable) {
 			anElement = myQuadTree.search(aPoint, precision, myBoundingBox);
@@ -272,7 +272,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	public T search(double x, double y, double z) throws DelaunayError {
 		T anElement = null;
 		if (this.usable) {
-			anElement = myQuadTree.search(new MyPoint(x,y, z), myBoundingBox);
+			anElement = myQuadTree.search(new Point(x,y, z), myBoundingBox);
 		}
 		return anElement;
 	}
@@ -283,10 +283,10 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @param searchBoundingBox Bounding box of anEdge.
 	 * @param boundingBox
 	 * @return ArrayList of Object[].<br/>
-	 * Object[0] is an MyEdge<br/>
+	 * Object[0] is an Edge<br/>
 	 * Object[1] is an Integer ( The result of anEdge.intersects(...) ).
 	 */
-	public ArrayList<Object[]> searchIntersection(MyEdge anEdge) throws DelaunayError {
+	public ArrayList<Object[]> searchIntersection(Edge anEdge) throws DelaunayError {
 		ArrayList<Object[]>  allElements = null;
 		if (this.usable) {
 			allElements = myQuadTree.searchIntersection(anEdge, anEdge.getBoundingBox(), myBoundingBox);
@@ -299,7 +299,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @param anEdge
 	 * @return True is an intersection exist between an other edge.
 	 */
-	public boolean isIntersect(MyEdge anEdge) throws DelaunayError {
+	public boolean isIntersect(Edge anEdge) throws DelaunayError {
 		if (this.usable) {
 			return myQuadTree.isIntersect(anEdge, anEdge.getBoundingBox(), myBoundingBox);
 		}
@@ -341,7 +341,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @return The element that contain anElement.
 	 * @throws DelaunayError 
 	 */
-	public <E extends MyElement> T searchInWhichElementItIs(E anElement) throws DelaunayError {
+	public <E extends Element> T searchInWhichElementItIs(E anElement) throws DelaunayError {
 		if (this.usable) {
 		return myQuadTree.searchInWhichElementItIs(anElement, myBoundingBox);
 		}
@@ -368,7 +368,7 @@ public class MyQuadTreeMapper<T extends MyElement> {
 	 * @return All elements in the quadtree with out elements strictly inside the area searchBoundingBox.
 	 * @throws DelaunayError 
 	 */
-	public void removeAllStric(MyPolygon aPolygon) throws DelaunayError {
+	public void removeAllStric(ConstraintPolygon aPolygon) throws DelaunayError {
 		if (this.usable) {
 			quadtreeSize -= myQuadTree.removeAllStric(aPolygon, myBoundingBox);
 		}

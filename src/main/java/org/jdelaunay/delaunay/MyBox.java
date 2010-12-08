@@ -148,7 +148,7 @@ public class MyBox implements Serializable {
 	 * 
 	 * @param aPoint
 	 */
-	public void alterBox(MyPoint aPoint) {
+	public void alterBox(Point aPoint) {
 		double x = aPoint.getX();
 		double y = aPoint.getY();
 		double z = aPoint.getZ();
@@ -170,12 +170,12 @@ public class MyBox implements Serializable {
 		return "min x["+minx+"] y["+miny+"] z["+minz+"] | max x["+maxx+"] y["+maxy+"] z["+maxz+"]";
 	}
 
-	public ArrayList<MyPoint> getPoints() throws DelaunayError {
-		ArrayList<MyPoint> points = new ArrayList<MyPoint>();
-		points.add(new MyPoint(minx, miny, 0));
-		points.add(new MyPoint(minx, maxy, 0));
-		points.add(new MyPoint(maxx, miny, 0));
-		points.add(new MyPoint(maxx, maxy, 0));
+	public ArrayList<Point> getPoints() throws DelaunayError {
+		ArrayList<Point> points = new ArrayList<Point>();
+		points.add(new Point(minx, miny, 0));
+		points.add(new Point(minx, maxy, 0));
+		points.add(new Point(maxx, miny, 0));
+		points.add(new Point(maxx, maxy, 0));
 		return points;
 	}
 }

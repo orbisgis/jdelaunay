@@ -14,7 +14,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @version 2.0
  */
 
-public abstract class MyElement  implements Serializable {
+public abstract class Element  implements Serializable {
 	/**
 	 * 
 	 */
@@ -32,14 +32,14 @@ public abstract class MyElement  implements Serializable {
 	/**
 	 * default constructor
 	 */
-	public MyElement() {
+	public Element() {
 		init();
 	}
 	
 	/**
 	 * Constructor
 	 */
-	public MyElement(MyElement element) {
+	public Element(Element element) {
 		init();
 		this.property = element.property;
 	}
@@ -47,7 +47,7 @@ public abstract class MyElement  implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public MyElement(int property) {
+	public Element(int property) {
 		init();
 		this.property = property;
 	}
@@ -55,7 +55,7 @@ public abstract class MyElement  implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public MyElement(int property, int gid) {
+	public Element(int property, int gid) {
 		init();
 		this.gid = gid;
 		this.property = property;
@@ -146,7 +146,7 @@ public abstract class MyElement  implements Serializable {
 	 * @param aPoint
 	 * @return bool
 	 */
-	public abstract boolean contains(MyPoint aPoint);
+	public abstract boolean contains(Point aPoint);
 	
 	/**
 	 * Check if the coordinate is inside the element

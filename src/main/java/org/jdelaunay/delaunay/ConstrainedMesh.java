@@ -11,11 +11,11 @@ import java.util.List;
 public class ConstrainedMesh {
 
 	//The list of triangles contained in the mesh
-	private ArrayList<MyTriangle> triangleList;
+	private ArrayList<DelaunayTriangle> triangleList;
 	//The lis of constraints used during the triangulation
-	private ArrayList<MyEdge> constraintEdges;
+	private ArrayList<Edge> constraintEdges;
 	//The list of points used during the triangulation
-	private ArrayList<MyPoint> points;
+	private ArrayList<Point> points;
 	//
 	private double precision;
 	//The minimum distance between two distinct points
@@ -23,9 +23,9 @@ public class ConstrainedMesh {
 	//The two following lists are used only during computation.
 	//The bad edge queue list contains all the edges that coud be changed
 	//during a flip-flap operation
-	private LinkedList<MyEdge> badEdgesQueueList;
+	private LinkedList<Edge> badEdgesQueueList;
 	//boundaryEdges contains the Envelope of the CURRENT geometry.
-	private LinkedList<MyEdge> boundaryEdges;
+	private LinkedList<Edge> boundaryEdges;
 	// constants
 	public static final double EPSILON = 0.00001;
 	public static final int MAXITER = 5;
@@ -35,22 +35,22 @@ public class ConstrainedMesh {
 	public static final int REFINEMENT_OBTUSE_ANGLE = 8;
 
 	public ConstrainedMesh() {
-		triangleList = new ArrayList<MyTriangle>();
-		constraintEdges = new ArrayList<MyEdge>();
-		points = new ArrayList<MyPoint>();
+		triangleList = new ArrayList<DelaunayTriangle>();
+		constraintEdges = new ArrayList<Edge>();
+		points = new ArrayList<Point>();
 
 		precision = 0;
 		tolerance = 0.00001;
 
-		badEdgesQueueList = new LinkedList<MyEdge>();
-		boundaryEdges = new LinkedList<MyEdge>();
+		badEdgesQueueList = new LinkedList<Edge>();
+		boundaryEdges = new LinkedList<Edge>();
 	}
 
 	/**
 	 * Get the list of edges that are to be processed by the flip flap algorithm
 	 * @return
 	 */
-	public LinkedList<MyEdge> getBadEdgesQueueList() {
+	public LinkedList<Edge> getBadEdgesQueueList() {
 		return badEdgesQueueList;
 	}
 
@@ -58,7 +58,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges that are to be processed by the flip flap algorithm
 	 * @param badEdgesQueueList
 	 */
-	public void setBadEdgesQueueList(LinkedList<MyEdge> badEdgesQueueList) {
+	public void setBadEdgesQueueList(LinkedList<Edge> badEdgesQueueList) {
 		this.badEdgesQueueList = badEdgesQueueList;
 	}
 
@@ -66,7 +66,7 @@ public class ConstrainedMesh {
 	 * Get the list of edges that form the current convex hull of the triangulation
 	 * @return
 	 */
-	public LinkedList<MyEdge> getBoundaryEdges() {
+	public LinkedList<Edge> getBoundaryEdges() {
 		return boundaryEdges;
 	}
 
@@ -74,7 +74,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges that form the current convex hull of the triangulation
 	 * @param boundaryEdges
 	 */
-	public void setBoundaryEdges(LinkedList<MyEdge> boundaryEdges) {
+	public void setBoundaryEdges(LinkedList<Edge> boundaryEdges) {
 		this.boundaryEdges = boundaryEdges;
 	}
 
@@ -82,7 +82,7 @@ public class ConstrainedMesh {
 	 * Get the list of edges that are used as constraints during triangulation
 	 * @return
 	 */
-	public ArrayList<MyEdge> getConstraintEdges() {
+	public ArrayList<Edge> getConstraintEdges() {
 		return constraintEdges;
 	}
 
@@ -92,9 +92,9 @@ public class ConstrainedMesh {
 	 * and add all the corresponding points to the point list.
 	 * @param constraintEdges
 	 */
-	public void setConstraintEdges(ArrayList<MyEdge> constraint) {
-		this.constraintEdges = new ArrayList<MyEdge>();
-		for (MyEdge e : constraint) {
+	public void setConstraintEdges(ArrayList<Edge> constraint) {
+		this.constraintEdges = new ArrayList<Edge>();
+		for (Edge e : constraint) {
 			addPoint(e.getStart());
 			addPoint(e.getEnd());
 			addConstraintEdge(e);
@@ -106,9 +106,9 @@ public class ConstrainedMesh {
 	 * @param e
 	 *	the edge we want to add
 	 */
-	public void addConstraintEdge(MyEdge e) {
+	public void addConstraintEdge(Edge e) {
 		if (constraintEdges == null) {
-			constraintEdges = new ArrayList<MyEdge>();
+			constraintEdges = new ArrayList<Edge>();
 		}
 		addEdgeToLeftSortedList(constraintEdges, e);
 		addPoint(e.getStart());
@@ -120,9 +120,9 @@ public class ConstrainedMesh {
 	 * of the edges.
 	 * @return
 	 */
-	public List<MyEdge> sortEdgesLeft(List<MyEdge> inputList) {
-		ArrayList<MyEdge> outputList = new ArrayList<MyEdge>();
-		for (MyEdge e : inputList) {
+	public List<Edge> sortEdgesLeft(List<Edge> inputList) {
+		ArrayList<Edge> outputList = new ArrayList<Edge>();
+		for (Edge e : inputList) {
 			addEdgeToLeftSortedList(outputList, e);
 		}
 		return outputList;
@@ -138,7 +138,7 @@ public class ConstrainedMesh {
 	 * @param sorted
 	 * @param edge
 	 */
-	private void addEdgeToLeftSortedList(ArrayList<MyEdge> sorted, MyEdge edge) {
+	private void addEdgeToLeftSortedList(ArrayList<Edge> sorted, Edge edge) {
 		if (sorted.isEmpty()) {
 			sorted.add(edge);
 			return;
@@ -164,7 +164,7 @@ public class ConstrainedMesh {
 		int i = s / 2;
 		int delta = s / 2;
 		boolean next = true;
-		MyEdge other;
+		Edge other;
 		while (next) {
 			other = sorted.get(i);
 			c = edge.sortLeftRight(other);
@@ -240,7 +240,7 @@ public class ConstrainedMesh {
 	 * Get the list of triangles already computed and added in this mesh
 	 * @return
 	 */
-	public ArrayList<MyTriangle> getTriangleList() {
+	public ArrayList<DelaunayTriangle> getTriangleList() {
 		return triangleList;
 	}
 
@@ -248,7 +248,7 @@ public class ConstrainedMesh {
 	 * Set the list of triangles already computed in this mesh.
 	 * @param triangleList
 	 */
-	public void setTriangleList(ArrayList<MyTriangle> triangleList) {
+	public void setTriangleList(ArrayList<DelaunayTriangle> triangleList) {
 		this.triangleList = triangleList;
 	}
 
@@ -256,7 +256,7 @@ public class ConstrainedMesh {
 	 * Get the points contained in this mesh
 	 * @return
 	 */
-	public ArrayList<MyPoint> getPoints() {
+	public ArrayList<Point> getPoints() {
 		return points;
 	}
 
@@ -264,7 +264,7 @@ public class ConstrainedMesh {
 	 * Set the list of points to be used during the triangulation
 	 * @param points
 	 */
-	public void setPoints(ArrayList<MyPoint> points) {
+	public void setPoints(ArrayList<Point> points) {
 		this.points = points;
 	}
 
@@ -273,7 +273,7 @@ public class ConstrainedMesh {
 	 * The list of points is supposed to be sorted.
 	 * @param point
 	 */
-	public void addPoint(MyPoint point) {
+	public void addPoint(Point point) {
 		addPointToSortedList(point, points);
 	}
 
@@ -282,7 +282,7 @@ public class ConstrainedMesh {
 	 * @param point
 	 * @param sortedList
 	 */
-	private void addPointToSortedList(MyPoint point, List<MyPoint> sortedList) {
+	private void addPointToSortedList(Point point, List<Point> sortedList) {
 		int s = sortedList.size();
 		if (s == 0) {
 			sortedList.add(point);
@@ -337,7 +337,7 @@ public class ConstrainedMesh {
 	 * @param p
 	 * @return the index of p, -1 if it's not in the list
 	 */
-	public int listContainsPoint(MyPoint p) {
+	public int listContainsPoint(Point p) {
 		int s = points.size();
 		int c = p.compareTo2D(points.get(0));
 		if (c == -1) {	//p<first, p is not in the sorted list
@@ -405,37 +405,37 @@ public class ConstrainedMesh {
 		//The event points are the extremities and intersections of the
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
-		ArrayList<MyPoint> eventPoints = new ArrayList<MyPoint>();
+		ArrayList<Point> eventPoints = new ArrayList<Point>();
 		//We fill the list.
-		for (MyEdge edge : constraintEdges) {
+		for (Edge edge : constraintEdges) {
 			addPointToSortedList(edge.getStart(), eventPoints);
 			addPointToSortedList(edge.getEnd(), eventPoints);
 		}
 		//we are about to perform the sweepline algorithm
-		MyPoint currentEvent = null;
+		Point currentEvent = null;
 		//edgeBuffer will contain the edges sorted vertically
-		ArrayList<MyEdge> edgeBuffer = new ArrayList<MyEdge>();
+		ArrayList<Edge> edgeBuffer = new ArrayList<Edge>();
 		//We keep a shallow copy of constraintEdges...
-		ArrayList<MyEdge> edgeMemory = constraintEdges;
+		ArrayList<Edge> edgeMemory = constraintEdges;
 		//...and we empty it
-		constraintEdges = new ArrayList<MyEdge>();
+		constraintEdges = new ArrayList<Edge>();
 		//The absciss where we search the intersections
 		double abs;
 		//Used in the  loop...
 		int i = 0;//The first while
 		int j = 0;//the inner while
-		MyEdge e1, e2; //the edges that will be compared in the for loop
-		MyEdge inter1 = null;// the edges resulting of the intersection.
-		MyEdge inter2 = null;
-		MyEdge inter3 = null;
-		MyEdge inter4 = null;
-		MyPoint newEvent = null;//the event that will be added to the eventList
-		MyEdge edgeEvent = null;//used when the intersection is an edge
-		MyPoint leftMost = null;
-		MyPoint rightMost = null;
-		MyElement intersection = null;
-		MyEdge currentMemEdge = null;
-		MyEdge rm;
+		Edge e1, e2; //the edges that will be compared in the for loop
+		Edge inter1 = null;// the edges resulting of the intersection.
+		Edge inter2 = null;
+		Edge inter3 = null;
+		Edge inter4 = null;
+		Point newEvent = null;//the event that will be added to the eventList
+		Edge edgeEvent = null;//used when the intersection is an edge
+		Point leftMost = null;
+		Point rightMost = null;
+		Element intersection = null;
+		Edge currentMemEdge = null;
+		Edge rm;
 		int memoryPos = 0;
 		int rmCount;
 		int mem;
@@ -473,10 +473,10 @@ public class ConstrainedMesh {
 					e2 = edgeBuffer.get(j);
 					intersection = e1.getIntersection(e2);
 					rmCount = 0;
-					if (intersection instanceof MyPoint) {
+					if (intersection instanceof Point) {
 						//We have a single intersection point.
 						//We must check it's not at an extremity.
-						newEvent = (MyPoint) intersection;
+						newEvent = (Point) intersection;
 						if (!e1.isExtremity(newEvent) || !e2.isExtremity(newEvent)) {
 							//We've found an intersection between two non-colinear edges
 							//We must check that this intersection point is not
@@ -485,13 +485,13 @@ public class ConstrainedMesh {
 							if (newEvent.equals2D(currentEvent)) {//We process the intersection.
 								if (!newEvent.equals2D(e2.getPointLeft()) && !newEvent.equals2D(e2.getPointRight())) {
 									//newEvent lies on e2, and is not an extremity
-									inter2 = new MyEdge(e2.getPointLeft(), newEvent);
+									inter2 = new Edge(e2.getPointLeft(), newEvent);
 									addConstraintEdge(inter2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
 										throw new RuntimeException("problem while removing an edge");
 									}
-									inter4 = new MyEdge(e2.getPointRight(), newEvent);
+									inter4 = new Edge(e2.getPointRight(), newEvent);
 									insertEdgeVerticalList(inter4, edgeBuffer, abs);
 									rmCount++;
 								} else if (newEvent.equals2D(e2.getPointRight())) {
@@ -503,13 +503,13 @@ public class ConstrainedMesh {
 									rmCount++;
 								}
 								if (!newEvent.equals2D(e1.getPointLeft()) && !newEvent.equals2D(e1.getPointRight())) {
-									inter1 = new MyEdge(e1.getPointLeft(), newEvent);
+									inter1 = new Edge(e1.getPointLeft(), newEvent);
 									addConstraintEdge(inter1);
 									rm = edgeBuffer.remove(j - 1);
 									if (!rm.equals(e1)) {
 										throw new RuntimeException("problem while removing an edge");
 									}
-									inter3 = new MyEdge(e1.getPointRight(), newEvent);
+									inter3 = new Edge(e1.getPointRight(), newEvent);
 									insertEdgeVerticalList(inter3, edgeBuffer, abs);
 									rmCount++;
 								} else if (newEvent.equals2D(e1.getPointRight())) {
@@ -544,13 +544,13 @@ public class ConstrainedMesh {
 							}
 							j = (j - rmCount < 0 ? 0 : j - rmCount);
 						}
-					} else if (intersection instanceof MyEdge) {
+					} else if (intersection instanceof Edge) {
 						//The intersection is an edge. There are two possible cases :
 						//The left point of the intersection is at the extremity of e1 and e2 : we
 						//register the right point as an event
 						//The left point is the extremity of e1 OR (exclusive) of e2. It is an event,
 						//and certainly the current one.
-						edgeEvent = (MyEdge) intersection;
+						edgeEvent = (Edge) intersection;
 						newEvent = edgeEvent.getPointLeft();
 						//the intersection point is inside one of the edges.
 						//We are supposed to be on it..
@@ -578,11 +578,11 @@ public class ConstrainedMesh {
 							}
 							j--;
 							if (leftMost.compareTo2D(newEvent) == -1) {
-								inter1 = new MyEdge(leftMost, newEvent);
+								inter1 = new Edge(leftMost, newEvent);
 							}
 							inter2 = edgeEvent;
 							if (rightMost.compareTo2D(edgeEvent.getPointRight()) == 1) {
-								inter3 = new MyEdge(edgeEvent.getPointRight(), rightMost);
+								inter3 = new Edge(edgeEvent.getPointRight(), rightMost);
 							}
 							if (inter1 != null) {
 								if (inter1.getPointRight().compareTo2D(currentEvent) == 1) {
@@ -640,12 +640,12 @@ public class ConstrainedMesh {
 	 * @param edgeList
 	 * @param x
 	 */
-	public void sortEdgesVertically(List<MyEdge> edgeList, double abs) throws DelaunayError {
+	public void sortEdgesVertically(List<Edge> edgeList, double abs) throws DelaunayError {
 		int s = edgeList.size();
 		int i = 0;
 		int c = 0;
-		MyEdge e1;
-		MyEdge e2;
+		Edge e1;
+		Edge e2;
 		while (i < s - 1) {
 			e1 = edgeList.get(i);
 			e2 = edgeList.get(i + 1);
@@ -668,7 +668,7 @@ public class ConstrainedMesh {
 	 * @param edge
 	 * @param edgeList
 	 */
-	public int insertEdgeVerticalList(MyEdge edge, List<MyEdge> edgeList, double abs) throws DelaunayError {
+	public int insertEdgeVerticalList(Edge edge, List<Edge> edgeList, double abs) throws DelaunayError {
 		if (edgeList == null || edgeList.isEmpty()) {
 			edgeList.add(edge);
 		}
@@ -729,8 +729,8 @@ public class ConstrainedMesh {
 	 * @param edgeList
 	 * @return
 	 */
-	public boolean isVerticallySorted(List<MyEdge> edgeList, double abs) {
-		MyEdge e1, e2;
+	public boolean isVerticallySorted(List<Edge> edgeList, double abs) {
+		Edge e1, e2;
 		e2 = edgeList.get(0);
 		for (int i = 1; i < edgeList.size(); i++) {
 			e1 = e2;
@@ -753,10 +753,10 @@ public class ConstrainedMesh {
 	 * the eventList.
 	 * @param edgeList
 	 */
-	public void addPointsFromNeighbourEdges(List<MyEdge> edgeList, List<MyPoint> eventList) throws DelaunayError {
-		MyEdge e1;
-		MyEdge e2;
-		MyElement inter = null;
+	public void addPointsFromNeighbourEdges(List<Edge> edgeList, List<Point> eventList) throws DelaunayError {
+		Edge e1;
+		Edge e2;
+		Element inter = null;
 		//we check that our paremeters are not null, and that our edge list contains
 		//at least two edges, because they couldn't be intersections otherwise.
 		if (edgeList == null || eventList == null || edgeList.size() < 2) {
@@ -767,10 +767,10 @@ public class ConstrainedMesh {
 				e2 = edgeList.get(i + 1);
 				inter = e1.getIntersection(e2);
 				if (inter != null) {
-					if (inter instanceof MyPoint) {
-						eventList.add((MyPoint) inter);
+					if (inter instanceof Point) {
+						eventList.add((Point) inter);
 					} else {
-						eventList.add(((MyEdge) inter).getPointLeft());
+						eventList.add(((Edge) inter).getPointLeft());
 					}
 				}
 			}

@@ -1,8 +1,8 @@
 package org.jhydrocell.utilities;
 
-import org.jdelaunay.delaunay.MyEdge;
-import org.jdelaunay.delaunay.MyPoint;
-import org.jdelaunay.delaunay.MyTriangle;
+import org.jdelaunay.delaunay.Edge;
+import org.jdelaunay.delaunay.Point;
+import org.jdelaunay.delaunay.DelaunayTriangle;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -24,7 +24,7 @@ public class HydroPolygonUtil {
 
 	private GeometryFactory gf = new GeometryFactory();
 
-	public HydroPolygonUtil(MyTriangle myTriangle) {
+	public HydroPolygonUtil(DelaunayTriangle myTriangle) {
 
 		Coordinate p1 = myTriangle.getPoint(0).getCoordinate();
 		Coordinate p2 = myTriangle.getPoint(1).getCoordinate();
@@ -143,11 +143,11 @@ public class HydroPolygonUtil {
 		return valeurPente;
 	}
 
-	public boolean getPenteVersEdge(MyEdge myEdge) {
+	public boolean getPenteVersEdge(Edge myEdge) {
 		boolean res = false;
 
-		MyPoint pt1 = myEdge.getStartPoint();
-		MyPoint pt2 = myEdge.getEndPoint();
+		Point pt1 = myEdge.getStartPoint();
+		Point pt2 = myEdge.getEndPoint();
 
 		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
 		// sur e

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public class MyTools {
+public class Tools {
 
 	protected static final double EPSILON = 0.0000001;
 	protected static final double EPSILON2 = EPSILON * EPSILON;
@@ -25,25 +25,25 @@ public class MyTools {
 	}
 
 	/**
-	 * Quick sort a MyElement array ordered according to the GID
+	 * Quick sort a Element array ordered according to the GID
 	 * 
 	 * @param points
 	 * @param minIndex
 	 * @param maxIndex
 	 */
-	protected static void quickSortGID(ArrayList<? extends MyElement> elements,
+	protected static void quickSortGID(ArrayList<? extends Element> elements,
 			int minIndex, int maxIndex) {
 		int i, j;
 		int enreg_ref;
 		double cle_ref;
 		boolean found;
-		MyElement anElement;
+		Element anElement;
 		int valGid = -1;
 
 		i = minIndex;
 		j = maxIndex;
 		enreg_ref = (maxIndex + minIndex) / 2;
-		anElement = (MyElement)elements.get(enreg_ref);
+		anElement = (Element)elements.get(enreg_ref);
 		cle_ref = anElement.getGid();
 		do {
 			// first : increasing index
@@ -53,7 +53,7 @@ public class MyTools {
 					found = true;
 				}
 				else {
-					anElement = (MyElement)elements.get(i);
+					anElement = (Element)elements.get(i);
 					valGid = anElement.getGid();
 					if (valGid > cle_ref) {
 						found = true;
@@ -70,7 +70,7 @@ public class MyTools {
 					found = true;
 				}
 				else {
-					anElement = (MyElement)elements.get(j);
+					anElement = (Element)elements.get(j);
 					valGid = anElement.getGid();
 					if (valGid <= cle_ref) {
 						found = true;
@@ -109,13 +109,13 @@ public class MyTools {
 	 * @param minIndex
 	 * @param maxIndex
 	 */
-	public static void quickSort_Points(ArrayList<MyPoint> points,
+	public static void quickSort_Points(ArrayList<Point> points,
 			int minIndex, int maxIndex) {
 		int i, j;
 		int enreg_ref;
 		double cle_ref1, cle_ref2;
 		boolean found;
-		MyPoint aPoint;
+		Point aPoint;
 
 		i = minIndex;
 		j = maxIndex;
@@ -190,8 +190,8 @@ public class MyTools {
 	 * 
 	 * @param points
 	 */
-	protected static void quickSort_Points(ArrayList<MyPoint> points) {
-		MyTools.quickSort_Points(points, 0, points.size() - 1);
+	protected static void quickSort_Points(ArrayList<Point> points) {
+		Tools.quickSort_Points(points, 0, points.size() - 1);
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class MyTools {
 	 * @param minIndex
 	 * @param maxIndex
 	 */
-	protected static void quickSort_Edges(ArrayList<MyEdge> edges, int minIndex,
+	protected static void quickSort_Edges(ArrayList<Edge> edges, int minIndex,
 			int maxIndex, boolean switchPoints) {
 		int i, j;
 		int enreg_ref;
@@ -213,7 +213,7 @@ public class MyTools {
 		i = minIndex;
 		j = maxIndex;
 		enreg_ref = (maxIndex + minIndex) / 2;
-		MyEdge anEdge = edges.get(enreg_ref);
+		Edge anEdge = edges.get(enreg_ref);
 		cle_ref1 = anEdge.getStartPoint().getX();
 		cle_ref2 = anEdge.getStartPoint().getY();
 		cle_ref3 = anEdge.getEndPoint().getX();
@@ -400,7 +400,7 @@ public class MyTools {
 	 * @param aPoint
 	 * @return
 	 */
-	public static double interpolateZ(MyPoint p1, MyPoint p2, MyPoint aPoint) {
+	public static double interpolateZ(Point p1, Point p2, Point aPoint) {
 		double D = p1.squareDistance(p2);
 		double Z = p2.getZ() - p1.getZ();
 
@@ -418,15 +418,15 @@ public class MyTools {
 	 * @param EdgeList
 	 * @return theEdge
 	 */
-	protected static MyEdge checkTwoPointsEdge(MyPoint p1, MyPoint p2,
-			LinkedList<MyEdge> EdgeList) {
+	protected static Edge checkTwoPointsEdge(Point p1, Point p2,
+			LinkedList<Edge> EdgeList) {
 		// Check if the two points already lead to an existing edge.
 		// If the edge exists it must be in the non-processed edges
-		MyEdge theEdge = null;
-		MyPoint test1, test2;
-		ListIterator<MyEdge> iter1 = EdgeList.listIterator();
+		Edge theEdge = null;
+		Point test1, test2;
+		ListIterator<Edge> iter1 = EdgeList.listIterator();
 		while (iter1.hasNext() && (theEdge == null)) {
-			MyEdge anEdge = iter1.next();
+			Edge anEdge = iter1.next();
 			test1 = anEdge.getStartPoint();
 			test2 = anEdge.getEndPoint();
 			if (((test1 == p1) && (test2 == p2))

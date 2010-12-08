@@ -58,7 +58,7 @@ public class MyMeshExport {
 
 		DiskBufferDriver driver = new DiskBufferDriver(dsf, metadata);
 		
-		for(MyPoint aPoint:aMesh.getPoints())
+		for(Point aPoint:aMesh.getPoints())
 		{
 			driver.addValues(new Value[] { ValueFactory.createValue(new GeometryFactory().createPoint(aPoint.getCoordinate())),
 			ValueFactory.createValue(aPoint.getGID()),
@@ -83,7 +83,7 @@ public class MyMeshExport {
 
 		driver = new DiskBufferDriver(dsf, metadata);
 		
-		for(MyEdge anEdge:aMesh.getEdges())
+		for(Edge anEdge:aMesh.getEdges())
 		{
 			Collection<LineString> lineStrings = new ArrayList<LineString>();
 			lineStrings.add(	new GeometryFactory().createLineString(
@@ -124,7 +124,7 @@ public class MyMeshExport {
 
 		driver = new DiskBufferDriver(dsf, metadata);
 		
-		for(MyTriangle aTriangle:aMesh.getTriangles())
+		for(DelaunayTriangle aTriangle:aMesh.getTriangles())
 		{
 			Collection<Polygon> polygons = new ArrayList<Polygon>();
 			polygons.add(new GeometryFactory().createPolygon(
@@ -188,10 +188,10 @@ public class MyMeshExport {
 				for (int j = 0; j < geom.getNumGeometries(); j++) {
 					Geometry subGeom = geom.getGeometryN(j);
 					if (subGeom instanceof MultiPolygon) {
-						MyTriangle atriangle = new MyTriangle(
-																new MyEdge(new MyPoint(subGeom.getCoordinates()[0]),	new MyPoint(subGeom.getCoordinates()[1])),
-																new MyEdge(new MyPoint(subGeom.getCoordinates()[1]),	new MyPoint(subGeom.getCoordinates()[2])),
-																new MyEdge(new MyPoint(subGeom.getCoordinates()[2]),	new MyPoint(subGeom.getCoordinates()[3]))
+						DelaunayTriangle atriangle = new DelaunayTriangle(
+																new Edge(new Point(subGeom.getCoordinates()[0]),	new Point(subGeom.getCoordinates()[1])),
+																new Edge(new Point(subGeom.getCoordinates()[1]),	new Point(subGeom.getCoordinates()[2])),
+																new Edge(new Point(subGeom.getCoordinates()[2]),	new Point(subGeom.getCoordinates()[3]))
 															);
 						aMesh.addTriangle(atriangle);
 					}

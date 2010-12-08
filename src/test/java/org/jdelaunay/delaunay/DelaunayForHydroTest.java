@@ -2,7 +2,7 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 
-import org.jhydrocell.hydronetwork.MyHydroNetwork;
+import org.jhydrocell.hydronetwork.HydroNetwork;
 
 
 public class DelaunayForHydroTest extends BaseUtility {
@@ -22,10 +22,10 @@ public class DelaunayForHydroTest extends BaseUtility {
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
 
-		ArrayList<MyTriangle> triangles = aMesh.getTriangles();
+		ArrayList<DelaunayTriangle> triangles = aMesh.getTriangles();
 
 		int nbFlat = 0;
-		for (MyTriangle myTriangle : triangles) {
+		for (DelaunayTriangle myTriangle : triangles) {
 
 			if (myTriangle.isFlatSlope()) {
 				nbFlat++;
@@ -37,7 +37,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 		triangles = aMesh.getTriangles();
 
 		nbFlat = 0;
-		for (MyTriangle myTriangle : triangles) {
+		for (DelaunayTriangle myTriangle : triangles) {
 
 			if (myTriangle.isFlatSlope()) {
 				nbFlat++;
@@ -52,7 +52,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 	public void testEdgesMorphologicalClassification() throws DelaunayError {
 
 		MyMesh aMesh = new MyMesh();
-		MyHydroNetwork HydroNetwork = new MyHydroNetwork(aMesh);
+		HydroNetwork HydroNetwork = new HydroNetwork(aMesh);
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
@@ -63,9 +63,9 @@ public class DelaunayForHydroTest extends BaseUtility {
 		
 		HydroNetwork.morphologicalQualification();
 
-		ArrayList<MyEdge> edges = aMesh.getEdges();
+		ArrayList<Edge> edges = aMesh.getEdges();
 
-		for (MyEdge myEdge : edges) {
+		for (Edge myEdge : edges) {
 
 			myEdge.getProperty();
 		}

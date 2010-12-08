@@ -59,8 +59,8 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 //		aMesh.setVerbose(true);
 		
 		aMesh.setPoints(getPoints());
-		ArrayList<MyEdge> breaklines = getBreaklines();
-		breaklines.add(new MyEdge(new MyPoint(120, 10, 2), new MyPoint(102, 10,
+		ArrayList<Edge> breaklines = getBreaklines();
+		breaklines.add(new Edge(new Point(120, 10, 2), new Point(102, 10,
 				1)));
 		aMesh.setConstraintEdges(breaklines);
 
@@ -81,11 +81,11 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			//We create two edges that intersect in 1,1. We must obtain
 			//4 constraints ( ((0,0),(1,1)), ((1,1),(2,2)), ((2,0),(1,1)
 			// and ((1,1), (0,2)) ). and (consequently) 5 points.
-			MyEdge e1 = new MyEdge(new MyPoint(0, 0, 0), new MyPoint(2, 2, 0));
-			MyEdge e2 = new MyEdge(new MyPoint(0, 2, 0), new MyPoint(2, 0, 0));
+			Edge e1 = new Edge(new Point(0, 0, 0), new Point(2, 2, 0));
+			Edge e2 = new Edge(new Point(0, 2, 0), new Point(2, 0, 0));
 
 			//We add the two points to the constraints of the mesh
-			ArrayList<MyEdge> edgeList= new ArrayList<MyEdge>();
+			ArrayList<Edge> edgeList= new ArrayList<Edge>();
 			edgeList.add(e2);
 			edgeList.add(e1);
 			mesh.setConstraintEdges(edgeList);
@@ -112,27 +112,27 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	public void testPointOrder(){
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		try {
-			mesh.addPoint(new MyPoint(1,1,0));
-			mesh.addPoint(new MyPoint(2,1,0));
-			mesh.addPoint(new MyPoint(7,1,0));
-			mesh.addPoint(new MyPoint(3,2,0));
-			mesh.addPoint(new MyPoint(3,0,0));
-			mesh.addPoint(new MyPoint(3,1,0));
-			mesh.addPoint(new MyPoint(1,0,0));
-			mesh.addPoint(new MyPoint(8,1,0));
-			mesh.addPoint(new MyPoint(1,3,0));
-			mesh.addPoint(new MyPoint(1,4,0));
-			ArrayList<MyPoint> list = mesh.getPoints();
-			assertTrue(list.get(0).equals2D(new MyPoint(1,0,0)));
-			assertTrue(list.get(1).equals2D(new MyPoint(1,1,0)));
-			assertTrue(list.get(2).equals2D(new MyPoint(1,3,0)));
-			assertTrue(list.get(3).equals2D(new MyPoint(1,4,0)));
-			assertTrue(list.get(4).equals2D(new MyPoint(2,1,0)));
-			assertTrue(list.get(5).equals2D(new MyPoint(3,0,0)));
-			assertTrue(list.get(6).equals2D(new MyPoint(3,1,0)));
-			assertTrue(list.get(7).equals2D(new MyPoint(3,2,0)));
-			assertTrue(list.get(8).equals2D(new MyPoint(7,1,0)));
-			assertTrue(list.get(9).equals2D(new MyPoint(8,1,0)));
+			mesh.addPoint(new Point(1,1,0));
+			mesh.addPoint(new Point(2,1,0));
+			mesh.addPoint(new Point(7,1,0));
+			mesh.addPoint(new Point(3,2,0));
+			mesh.addPoint(new Point(3,0,0));
+			mesh.addPoint(new Point(3,1,0));
+			mesh.addPoint(new Point(1,0,0));
+			mesh.addPoint(new Point(8,1,0));
+			mesh.addPoint(new Point(1,3,0));
+			mesh.addPoint(new Point(1,4,0));
+			ArrayList<Point> list = mesh.getPoints();
+			assertTrue(list.get(0).equals2D(new Point(1,0,0)));
+			assertTrue(list.get(1).equals2D(new Point(1,1,0)));
+			assertTrue(list.get(2).equals2D(new Point(1,3,0)));
+			assertTrue(list.get(3).equals2D(new Point(1,4,0)));
+			assertTrue(list.get(4).equals2D(new Point(2,1,0)));
+			assertTrue(list.get(5).equals2D(new Point(3,0,0)));
+			assertTrue(list.get(6).equals2D(new Point(3,1,0)));
+			assertTrue(list.get(7).equals2D(new Point(3,2,0)));
+			assertTrue(list.get(8).equals2D(new Point(7,1,0)));
+			assertTrue(list.get(9).equals2D(new Point(8,1,0)));
 
 		} catch (DelaunayError e ){
 			System.out.println(e.getMessage());
@@ -142,26 +142,26 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	public void testListContainsPoint(){
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		try {
-			mesh.addPoint(new MyPoint(1,1,0));
-			mesh.addPoint(new MyPoint(2,1,0));
-			mesh.addPoint(new MyPoint(7,1,0));
-			mesh.addPoint(new MyPoint(3,2,0));
-			mesh.addPoint(new MyPoint(3,0,0));
-			mesh.addPoint(new MyPoint(3,1,0));
-			mesh.addPoint(new MyPoint(1,0,0));
-			mesh.addPoint(new MyPoint(8,1,0));
-			mesh.addPoint(new MyPoint(1,3,0));
-			mesh.addPoint(new MyPoint(1,4,0));
-			assertTrue(mesh.listContainsPoint(new MyPoint(1,0,0))==0);
-			assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))==1);
-			assertTrue(mesh.listContainsPoint(new MyPoint(1,3,0))==2);
-			assertTrue(mesh.listContainsPoint(new MyPoint(1,4,0))==3);
-			assertTrue(mesh.listContainsPoint(new MyPoint(2,1,0))==4);
-			assertTrue(mesh.listContainsPoint(new MyPoint(3,0,0))==5);
-			assertTrue(mesh.listContainsPoint(new MyPoint(3,1,0))==6);
-			assertTrue(mesh.listContainsPoint(new MyPoint(3,2,0))==7);
-			assertTrue(mesh.listContainsPoint(new MyPoint(7,1,0))==8);
-			assertTrue(mesh.listContainsPoint(new MyPoint(8,1,0))==9);
+			mesh.addPoint(new Point(1,1,0));
+			mesh.addPoint(new Point(2,1,0));
+			mesh.addPoint(new Point(7,1,0));
+			mesh.addPoint(new Point(3,2,0));
+			mesh.addPoint(new Point(3,0,0));
+			mesh.addPoint(new Point(3,1,0));
+			mesh.addPoint(new Point(1,0,0));
+			mesh.addPoint(new Point(8,1,0));
+			mesh.addPoint(new Point(1,3,0));
+			mesh.addPoint(new Point(1,4,0));
+			assertTrue(mesh.listContainsPoint(new Point(1,0,0))==0);
+			assertTrue(mesh.listContainsPoint(new Point(1,1,0))==1);
+			assertTrue(mesh.listContainsPoint(new Point(1,3,0))==2);
+			assertTrue(mesh.listContainsPoint(new Point(1,4,0))==3);
+			assertTrue(mesh.listContainsPoint(new Point(2,1,0))==4);
+			assertTrue(mesh.listContainsPoint(new Point(3,0,0))==5);
+			assertTrue(mesh.listContainsPoint(new Point(3,1,0))==6);
+			assertTrue(mesh.listContainsPoint(new Point(3,2,0))==7);
+			assertTrue(mesh.listContainsPoint(new Point(7,1,0))==8);
+			assertTrue(mesh.listContainsPoint(new Point(8,1,0))==9);
 		} catch (DelaunayError e ){
 			System.out.println(e.getMessage());
 		}
@@ -174,11 +174,11 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	public void testAddDuplicatePoint(){
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		try {
-			mesh.addPoint(new MyPoint(1,1,0));
-			mesh.addPoint(new MyPoint(1,1,0));
-			ArrayList<MyPoint> list = mesh.getPoints();
+			mesh.addPoint(new Point(1,1,0));
+			mesh.addPoint(new Point(1,1,0));
+			ArrayList<Point> list = mesh.getPoints();
 			assertTrue(list.size()==1);
-			assertTrue(list.get(0).equals2D(new MyPoint(1,1,0)));
+			assertTrue(list.get(0).equals2D(new Point(1,1,0)));
 		} catch (DelaunayError e ){
 			System.out.println(e.getMessage());
 		}
@@ -190,27 +190,27 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * It tests that duplicates are removed during the insertion
 	 */
 	public void testOrderEdgeList(){
-		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
+		ArrayList<Edge> list = new ArrayList<Edge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		list.add(new MyEdge(0,0,0,10,1,1));
-		list.add(new MyEdge(0.5,0,0,10,1,1));
-		list.add(new MyEdge(0,0.5,0,10,1,1));
-		list.add(new MyEdge(1,2,0,10,10,1));
-		list.add(new MyEdge(5,0,0,10,1,1));
-		list.add(new MyEdge(0,4,0,10,1,1));
-		list.add(new MyEdge(3,0,0,10,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(7,0,0,10,1,1));
-		list.add(new MyEdge(15,2,0,6,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(2,0,0,11,1,1));
-		list.add(new MyEdge(2,0,0,8,1,1));
-		list.add(new MyEdge(2,0,0,15,1,1));
-		list.add(new MyEdge(2,0,0,14,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		List<MyEdge> sorted = mesh.sortEdgesLeft(list);
-		MyEdge e1 ;
-		MyEdge e2= sorted.get(0);
+		list.add(new Edge(0,0,0,10,1,1));
+		list.add(new Edge(0.5,0,0,10,1,1));
+		list.add(new Edge(0,0.5,0,10,1,1));
+		list.add(new Edge(1,2,0,10,10,1));
+		list.add(new Edge(5,0,0,10,1,1));
+		list.add(new Edge(0,4,0,10,1,1));
+		list.add(new Edge(3,0,0,10,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(7,0,0,10,1,1));
+		list.add(new Edge(15,2,0,6,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(2,0,0,11,1,1));
+		list.add(new Edge(2,0,0,8,1,1));
+		list.add(new Edge(2,0,0,15,1,1));
+		list.add(new Edge(2,0,0,14,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		List<Edge> sorted = mesh.sortEdgesLeft(list);
+		Edge e1 ;
+		Edge e2= sorted.get(0);
 		for(int i=1; i<sorted.size(); i++){
 			e1=e2;
 			e2=sorted.get(i);
@@ -219,7 +219,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		}
 		assertTrue(sorted.size()==14);
 		//We do the same thing but with random edges.
-		List<MyEdge> random = getRandomEdges(1000);
+		List<Edge> random = getRandomEdges(1000);
 		sorted = mesh.sortEdgesLeft(random);
 		e2= sorted.get(0);
 		for(int i=1; i<sorted.size(); i++){
@@ -232,7 +232,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			assertTrue(c<=0);
 		}
 		random = getRandomEdges(1000);
-		for(MyEdge ed : random){
+		for(Edge ed : random){
 			mesh.addConstraintEdge(ed);
 		}
 		sorted = mesh.getConstraintEdges();
@@ -254,31 +254,31 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testSortEdgeVertically() throws DelaunayError{
-		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
+		ArrayList<Edge> list = new ArrayList<Edge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		list.add(new MyEdge(0,0,0,10,4,1));
-		list.add(new MyEdge(0.5,0,0,10,1,1));
-		list.add(new MyEdge(0,0.5,0,10,1,1));
-		list.add(new MyEdge(1,2,0,10,10,1));
-		list.add(new MyEdge(5,0,0,10,1,1));
-		list.add(new MyEdge(0,4,0,10,6,1));
-		list.add(new MyEdge(3,0,0,10,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(7,0,0,10,8,1));
-		list.add(new MyEdge(15,2,0,6,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(2,0,0,11,1,1));
-		list.add(new MyEdge(2,0,0,8,1,1));
-		list.add(new MyEdge(2,0,0,15,1,1));
-		list.add(new MyEdge(2,0,0,14,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(8,-4,0,8,50,1));
+		list.add(new Edge(0,0,0,10,4,1));
+		list.add(new Edge(0.5,0,0,10,1,1));
+		list.add(new Edge(0,0.5,0,10,1,1));
+		list.add(new Edge(1,2,0,10,10,1));
+		list.add(new Edge(5,0,0,10,1,1));
+		list.add(new Edge(0,4,0,10,6,1));
+		list.add(new Edge(3,0,0,10,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(7,0,0,10,8,1));
+		list.add(new Edge(15,2,0,6,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(2,0,0,11,1,1));
+		list.add(new Edge(2,0,0,8,1,1));
+		list.add(new Edge(2,0,0,15,1,1));
+		list.add(new Edge(2,0,0,14,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(8,-4,0,8,50,1));
 		//We sort our edges (left-right), as we don't want to keep duplicates.
-		List<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
+		List<Edge> sortedLeft = mesh.sortEdgesLeft(list);
 		//We sort the edges vertically
 		mesh.sortEdgesVertically(sortedLeft, 8);
-		MyEdge e1 ;
-		MyEdge e2= sortedLeft.get(0);
+		Edge e1 ;
+		Edge e2= sortedLeft.get(0);
 		double d1, d2;
 		for(int i=1; i<sortedLeft.size(); i++){
 			e1=e2;
@@ -295,38 +295,38 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testInsertEdgeVertically() throws DelaunayError{
-		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
+		ArrayList<Edge> list = new ArrayList<Edge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		list.add(new MyEdge(0,0,0,10,4,1));
-		list.add(new MyEdge(0.5,0,0,10,1,1));
-		list.add(new MyEdge(0,0.5,0,10,1,1));
-		list.add(new MyEdge(1,2,0,10,10,1));
-		list.add(new MyEdge(5,0,0,10,1,1));
-		list.add(new MyEdge(0,4,0,10,6,1));
-		list.add(new MyEdge(3,0,0,10,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(7,0,0,10,8,1));
-		list.add(new MyEdge(15,2,0,6,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(2,0,0,11,1,1));
-		list.add(new MyEdge(2,0,0,8,1,1));
-		list.add(new MyEdge(2,0,0,15,1,1));
-		list.add(new MyEdge(2,0,0,14,1,1));
-		list.add(new MyEdge(2,0,0,10,1,1));
-		list.add(new MyEdge(8,-4,0,8,50,1));
+		list.add(new Edge(0,0,0,10,4,1));
+		list.add(new Edge(0.5,0,0,10,1,1));
+		list.add(new Edge(0,0.5,0,10,1,1));
+		list.add(new Edge(1,2,0,10,10,1));
+		list.add(new Edge(5,0,0,10,1,1));
+		list.add(new Edge(0,4,0,10,6,1));
+		list.add(new Edge(3,0,0,10,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(7,0,0,10,8,1));
+		list.add(new Edge(15,2,0,6,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(2,0,0,11,1,1));
+		list.add(new Edge(2,0,0,8,1,1));
+		list.add(new Edge(2,0,0,15,1,1));
+		list.add(new Edge(2,0,0,14,1,1));
+		list.add(new Edge(2,0,0,10,1,1));
+		list.add(new Edge(8,-4,0,8,50,1));
 		//We sort our edges (left-right), as we don't want to keep duplicates.
-		List<MyEdge> sortedLeft = mesh.sortEdgesLeft(list);
+		List<Edge> sortedLeft = mesh.sortEdgesLeft(list);
 		//We sort the edges vertically
 		mesh.sortEdgesVertically(sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,1,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,6,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(5,2,0,12,7,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(5,0,0,19,5,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(4,0,0,12,1,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(4,0,0,12,6,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(5,2,0,12,7,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(5,0,0,19,5,1), sortedLeft, 8);
 		//We add vertical edges to be sure they are well processed
-		mesh.insertEdgeVerticalList(new MyEdge(8,0,0,8,9,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(8,7,0,8,3,1), sortedLeft, 8);
-		MyEdge e1 ;
-		MyEdge e2= sortedLeft.get(0);
+		mesh.insertEdgeVerticalList(new Edge(8,0,0,8,9,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(8,7,0,8,3,1), sortedLeft, 8);
+		Edge e1 ;
+		Edge e2= sortedLeft.get(0);
 		double d1, d2;
 		for(int i=1; i<sortedLeft.size(); i++){
 			e1=e2;
@@ -336,17 +336,17 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			assertTrue(d1<=d2);
 		}
 		//We check that insertEdgesVerticalList doesn't keep duplicates
-		sortedLeft = new ArrayList<MyEdge>();
-		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,1,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(4,0,0,12,6,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(5,2,0,12,7,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(5,0,0,19,5,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(26,0,0,12,1,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(23,0,0,12,6,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(23,2,0,12,7,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(16,0,0,19,5,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(8,0,0,8,9,1), sortedLeft, 8);
-		mesh.insertEdgeVerticalList(new MyEdge(8,0,0,8,9,1), sortedLeft, 8);
+		sortedLeft = new ArrayList<Edge>();
+		mesh.insertEdgeVerticalList(new Edge(4,0,0,12,1,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(4,0,0,12,6,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(5,2,0,12,7,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(5,0,0,19,5,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(26,0,0,12,1,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(23,0,0,12,6,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(23,2,0,12,7,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(16,0,0,19,5,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(8,0,0,8,9,1), sortedLeft, 8);
+		mesh.insertEdgeVerticalList(new Edge(8,0,0,8,9,1), sortedLeft, 8);
 		assertTrue(sortedLeft.size()==9);
 
 	}
@@ -357,17 +357,17 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 */
 	public void testVerticalSortRandom() throws DelaunayError{
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		List<MyEdge> constraints =  getRandomEdges(500);
+		List<Edge> constraints =  getRandomEdges(500);
 		mesh.sortEdgesVertically(constraints, 8);
-		MyEdge e1 = constraints.get(0);
-		MyEdge e2;
+		Edge e1 = constraints.get(0);
+		Edge e2;
 		for(int i=1; i<constraints.size();i++){
 			e2=e1;
 			e1=constraints.get(i);
 			assertTrue(e2.verticalSort(e1, 8)<1);
 		}
-		List<MyEdge> toBeAdded = getRandomEdges(500);
-		for(MyEdge edge : toBeAdded){
+		List<Edge> toBeAdded = getRandomEdges(500);
+		for(Edge edge : toBeAdded){
 			mesh.insertEdgeVerticalList(edge, constraints, 8);
 			e1 = constraints.get(0);
 			for(int i=1; i<constraints.size();i++){
@@ -384,28 +384,28 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 *
 	 */
 	public void testAddIntersectionPoints() throws DelaunayError{
-		ArrayList<MyEdge> list = new ArrayList<MyEdge>();
+		ArrayList<Edge> list = new ArrayList<Edge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		ArrayList<MyPoint> events = new ArrayList<MyPoint>();
+		ArrayList<Point> events = new ArrayList<Point>();
 		//We first check with only two edges which intersect in three
 		//dimensions
-		list.add(new MyEdge(0,0,0,5,5,5));
-		list.add(new MyEdge(0,5,0,5,0,5));
+		list.add(new Edge(0,0,0,5,5,5));
+		list.add(new Edge(0,5,0,5,0,5));
 		mesh.addPointsFromNeighbourEdges(list, events);
 		assertTrue(events.size()==1);
-		MyPoint inter = events.get(0);
-		assertTrue(inter.equals2D(new MyPoint(2.5,2.5,0)));
-		assertTrue(inter.equals(new MyPoint(2.5,2.5,2.5)));
+		Point inter = events.get(0);
+		assertTrue(inter.equals2D(new Point(2.5,2.5,0)));
+		assertTrue(inter.equals(new Point(2.5,2.5,2.5)));
 		//We check with two edges which intersect in only two dimensions
-		list = new ArrayList<MyEdge>();
-		events = new ArrayList<MyPoint>();
-		list.add(new MyEdge(0,0,0,5,5,5));
-		list.add(new MyEdge(0,5,0,5,0,0));
+		list = new ArrayList<Edge>();
+		events = new ArrayList<Point>();
+		list.add(new Edge(0,0,0,5,5,5));
+		list.add(new Edge(0,5,0,5,0,0));
 		mesh.addPointsFromNeighbourEdges(list, events);
 		assertTrue(events.size()==1);
 		inter = events.get(0);
-		assertTrue(inter.equals2D(new MyPoint(2.5,2.5,0)));
-		assertTrue(inter.equals(new MyPoint(2.5,2.5,2.5)));
+		assertTrue(inter.equals2D(new Point(2.5,2.5,0)));
+		assertTrue(inter.equals(new Point(2.5,2.5,2.5)));
 	}
 	/**
 	 * This test checks that edges and their points are properly added to the mesh
@@ -413,20 +413,20 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	public void testAddConstraintEdge(){
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		try{
-			mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(3,3,0)));
-			mesh.addConstraintEdge(new MyEdge(new MyPoint(2,3,0), new MyPoint(5,3,0)));
+			mesh.addConstraintEdge(new Edge(new Point(0,0,0), new Point(3,3,0)));
+			mesh.addConstraintEdge(new Edge(new Point(2,3,0), new Point(5,3,0)));
 			//We check that the points are in the points list
-			ArrayList<MyPoint> list = mesh.getPoints();
-			assertTrue(list.get(0).equals2D(new MyPoint(0,0,0)));
-			assertTrue(list.get(1).equals2D(new MyPoint(2,3,0)));
-			assertTrue(list.get(2).equals2D(new MyPoint(3,3,0)));
-			assertTrue(list.get(3).equals2D(new MyPoint(5,3,0)));
+			ArrayList<Point> list = mesh.getPoints();
+			assertTrue(list.get(0).equals2D(new Point(0,0,0)));
+			assertTrue(list.get(1).equals2D(new Point(2,3,0)));
+			assertTrue(list.get(2).equals2D(new Point(3,3,0)));
+			assertTrue(list.get(3).equals2D(new Point(5,3,0)));
 
 			//We check that the edges are in the list
-			MyEdge m1 = new MyEdge(new MyPoint(0,0,0), new MyPoint(3,3,0));
-			MyEdge m2 = new MyEdge(new MyPoint(2,3,0), new MyPoint(5,3,0));
+			Edge m1 = new Edge(new Point(0,0,0), new Point(3,3,0));
+			Edge m2 = new Edge(new Point(2,3,0), new Point(5,3,0));
 
-			ArrayList<MyEdge> listConst = mesh.getConstraintEdges();
+			ArrayList<Edge> listConst = mesh.getConstraintEdges();
 			assertTrue(listConst.get(0).haveSamePoint(m1));
 			assertTrue(listConst.get(1).haveSamePoint(m2));
 		} catch(DelaunayError d){
@@ -444,52 +444,52 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	public void testProcessIntersections() throws DelaunayError {
 		//two crossing edges
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,0,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,2,0), new Point(2,0,0)));
 		mesh.forceConstraintIntegrity();
-		List<MyEdge> edgeList = mesh.getConstraintEdges();
+		List<Edge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==4);
-		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+		assertTrue(mesh.listContainsPoint(new Point(1,1,0))>-1);
 
 		//(1,1,0) lies on the first edge and is an extremity of the second one.
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,0,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,1,0), new Point(2,0,0)));
 		mesh.forceConstraintIntegrity();edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
-		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+		assertTrue(mesh.listContainsPoint(new Point(1,1,0))>-1);
 
 		//idem, but changing the edges order
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,1,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,2,0), new Point(2,0,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
-		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+		assertTrue(mesh.listContainsPoint(new Point(1,1,0))>-1);
 
 		//The two edges don't intersect, they just share an extremity.
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,1,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,1,0), new Point(2,0,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==2);
-		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+		assertTrue(mesh.listContainsPoint(new Point(1,1,0))>-1);
 
 		//one extremity of an edge relies the other, which is vertical
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,2,0), new MyPoint(1,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,1,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,2,0), new Point(1,0,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
-		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+		assertTrue(mesh.listContainsPoint(new Point(1,1,0))>-1);
 
 		//two vertical overlapping edges
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,1,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,4,0), new Point(2,0,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
@@ -497,14 +497,14 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		//the third edge is "between" the two first, which intersect and
 		//whose intersection lies after the right point of the third one.
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(3,6,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,4,0), new MyPoint(7,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,1,0), new Point(3,6,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,4,0), new Point(7,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,2,0), new Point(2,3,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==5);
-                MyEdge e1 = edgeList.get(0);
-                MyEdge e2;
+                Edge e1 = edgeList.get(0);
+                Edge e2;
                 for(int i = 1; i<edgeList.size();i++){
                         e2 = e1;
                         e1 = edgeList.get(i);
@@ -513,11 +513,11 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 		//two "crosses", one left from the first
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,1,0), new MyPoint(5,6,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,4,0), new MyPoint(10,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,3,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,3,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,4,0), new MyPoint(2,1,0)));
+		mesh.addConstraintEdge(new Edge(new Point(4,1,0), new Point(5,6,0)));
+		mesh.addConstraintEdge(new Edge(new Point(4,4,0), new Point(10,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,2,0), new Point(2,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,2,0), new Point(2,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,4,0), new Point(2,1,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==8);
@@ -533,10 +533,10 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 		//two "crosses", one under the other.
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,1,0), new MyPoint(8,6,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,4,0), new MyPoint(10,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(4,8,0), new MyPoint(10,10,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(5,10,0), new MyPoint(9,9,0)));
+		mesh.addConstraintEdge(new Edge(new Point(4,1,0), new Point(8,6,0)));
+		mesh.addConstraintEdge(new Edge(new Point(4,4,0), new Point(10,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(4,8,0), new Point(10,10,0)));
+		mesh.addConstraintEdge(new Edge(new Point(5,10,0), new Point(9,9,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==8);
@@ -552,9 +552,9 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 		//three edges intersect and form a triangle
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,3,0), new MyPoint(5,3,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,4,0), new MyPoint(3,1,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,0,0), new MyPoint(5,4,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,3,0), new Point(5,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,4,0), new Point(3,1,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,0,0), new Point(5,4,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==9);
@@ -570,60 +570,60 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 		//
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,1,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,4,0), new Point(2,0,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,3,0), new MyPoint(10,6,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,5,0), new MyPoint(13,7,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,7,0), new MyPoint(13,5,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,3,0), new Point(10,6,0)));
+		mesh.addConstraintEdge(new Edge(new Point(7,5,0), new Point(13,7,0)));
+		mesh.addConstraintEdge(new Edge(new Point(7,7,0), new Point(13,5,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==5);
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,3,0), new MyPoint(10,6,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,5,0), new MyPoint(13,7,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(7,7,0), new MyPoint(10,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,3,0), new Point(10,6,0)));
+		mesh.addConstraintEdge(new Edge(new Point(7,5,0), new Point(13,7,0)));
+		mesh.addConstraintEdge(new Edge(new Point(7,7,0), new Point(10,3,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==6);
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(23.754617414248024,25.03430079155673,8.321899736147756,29.974500344589934,23.130254996554104,8.9565816678153));
-		mesh.addConstraintEdge(new MyEdge(23.754617414248024,25.03430079155673,8.321899736147756,30.606126914660827,32.288840262582056,15.237518756619197));
+		mesh.addConstraintEdge(new Edge(23.754617414248024,25.03430079155673,8.321899736147756,29.974500344589934,23.130254996554104,8.9565816678153));
+		mesh.addConstraintEdge(new Edge(23.754617414248024,25.03430079155673,8.321899736147756,30.606126914660827,32.288840262582056,15.237518756619197));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==2);
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(2,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,4,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,1,0), new Point(2,3,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
-		assertTrue(edgeList.get(0).equals(new MyEdge(2,1,0,2,2,0)));
-		assertTrue(edgeList.get(1).equals(new MyEdge(2,2,0,2,3,0)));
-		assertTrue(edgeList.get(2).equals(new MyEdge(2,3,0,2,4,0)));
+		assertTrue(edgeList.get(0).equals(new Edge(2,1,0,2,2,0)));
+		assertTrue(edgeList.get(1).equals(new Edge(2,2,0,2,3,0)));
+		assertTrue(edgeList.get(2).equals(new Edge(2,3,0,2,4,0)));
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,4,0), new MyPoint(2,3,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(2,1,0), new MyPoint(2,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,4,0), new Point(2,3,0)));
+		mesh.addConstraintEdge(new Edge(new Point(2,1,0), new Point(2,3,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==2);
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(1,1,0), new MyPoint(2,2,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,2,0), new MyPoint(2,0,0)));
-		mesh.addConstraintEdge(new MyEdge(new MyPoint(0,0,0), new MyPoint(2,1,0)));
+		mesh.addConstraintEdge(new Edge(new Point(1,1,0), new Point(2,2,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,2,0), new Point(2,0,0)));
+		mesh.addConstraintEdge(new Edge(new Point(0,0,0), new Point(2,1,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==6);
-		assertTrue(mesh.listContainsPoint(new MyPoint(1,1,0))>-1);
+		assertTrue(mesh.listContainsPoint(new Point(1,1,0))>-1);
                 assertTrue(sillyCheckIntersection(edgeList));
                 e1 = edgeList.get(0);
                 for(int i = 1; i<edgeList.size();i++){
@@ -633,25 +633,25 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                 }
 
 		mesh = new ConstrainedMesh();
-		MyEdge edge1 = new MyEdge(29.04662741160085,52.16572027299656,68.38018218763128 , 21.70784635428322,52.702506064941865,70.26548339515645);
+		Edge edge1 = new Edge(29.04662741160085,52.16572027299656,68.38018218763128 , 21.70784635428322,52.702506064941865,70.26548339515645);
 		mesh.addConstraintEdge(edge1);
-		MyEdge edge2 = new MyEdge(32.696545765031715,62.25043024404333,48.051049255488714 , 27.630378535764756,51.60370887400286,81.41914742448961);
+		Edge edge2 = new Edge(32.696545765031715,62.25043024404333,48.051049255488714 , 27.630378535764756,51.60370887400286,81.41914742448961);
 		mesh.addConstraintEdge(edge2);
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==4);
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new MyEdge(50, 17, 11,1 ,32, 6));
-		mesh.addConstraintEdge(new MyEdge(97, 30, 99,46, 1, 98));
-		mesh.addConstraintEdge(new MyEdge(63, 17, 56,91, 26, 35));
-		mesh.addConstraintEdge(new MyEdge(59, 12, 96,47, 35, 24));
-		mesh.addConstraintEdge(new MyEdge(44, 44, 10,72, 7, 27));
-		mesh.addConstraintEdge(new MyEdge(29, 9, 35,33, 67 ,39));
-		mesh.addConstraintEdge(new MyEdge(4, 5, 18,89, 12, 17));
-		mesh.addConstraintEdge(new MyEdge(38, 81, 70,33, 35, 36));
-		mesh.addConstraintEdge(new MyEdge(70, 74, 55,2, 2, 64));
-		mesh.addConstraintEdge(new MyEdge(51, 50, 47,8, 21, 73));
+		mesh.addConstraintEdge(new Edge(50, 17, 11,1 ,32, 6));
+		mesh.addConstraintEdge(new Edge(97, 30, 99,46, 1, 98));
+		mesh.addConstraintEdge(new Edge(63, 17, 56,91, 26, 35));
+		mesh.addConstraintEdge(new Edge(59, 12, 96,47, 35, 24));
+		mesh.addConstraintEdge(new Edge(44, 44, 10,72, 7, 27));
+		mesh.addConstraintEdge(new Edge(29, 9, 35,33, 67 ,39));
+		mesh.addConstraintEdge(new Edge(4, 5, 18,89, 12, 17));
+		mesh.addConstraintEdge(new Edge(38, 81, 70,33, 35, 36));
+		mesh.addConstraintEdge(new Edge(70, 74, 55,2, 2, 64));
+		mesh.addConstraintEdge(new Edge(51, 50, 47,8, 21, 73));
 		edgeList = mesh.getConstraintEdges();
                 e1 = edgeList.get(0);
                 for(int i = 1; i<edgeList.size();i++){
@@ -665,8 +665,8 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                 assertTrue(sillyCheckIntersection(edgeList));
 
                 mesh = new ConstrainedMesh();
-                List<MyEdge> randomEdges = getRandomEdges(1000);
-                for(MyEdge edge : randomEdges){
+                List<Edge> randomEdges = getRandomEdges(1000);
+                for(Edge edge : randomEdges){
                         mesh.addConstraintEdge(edge);
                 }
 		double t1 = System.currentTimeMillis();
@@ -699,8 +699,8 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * @param number
 	 * @return
 	 */
-	private List<MyEdge> getRandomEdges(int number){
-		ArrayList<MyEdge> retList = new ArrayList<MyEdge>();
+	private List<Edge> getRandomEdges(int number){
+		ArrayList<Edge> retList = new ArrayList<Edge>();
 		int num = (number < 0 ? -number : number);
 		for(int i=0; i<num; i++){
 			double d1 = Math.random()*100;
@@ -709,7 +709,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			double d4 = Math.random()*100;
 			double d5 = Math.random()*100;
 			double d6 = Math.random()*100;
-			retList.add(new MyEdge(d1, d2, d3, d4, d5, d6));
+			retList.add(new Edge(d1, d2, d3, d4, d5, d6));
 		}
 		return retList;
 	}
@@ -719,15 +719,15 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * @param edgeList
 	 * @return
 	 */
-	private boolean sillyCheckIntersection(List<MyEdge> edgeList) throws DelaunayError{
-		MyEdge e1;
-		MyEdge e2;
+	private boolean sillyCheckIntersection(List<Edge> edgeList) throws DelaunayError{
+		Edge e1;
+		Edge e2;
                 boolean ret=true;
 		for(int i = 0; i < edgeList.size(); i++){
 			e1 = edgeList.get(i);
 			for (int j = i+1; j < edgeList.size(); j++){
 				e2=edgeList.get(j);
-				MyElement inter =e1.getIntersection(e2);
+				Element inter =e1.getIntersection(e2);
 				int c = e1.intersects(e2);
                                 if((c==1 || c==4)&& !e1.equals(e2)){
                                         System.out.println("intersection : "+inter);

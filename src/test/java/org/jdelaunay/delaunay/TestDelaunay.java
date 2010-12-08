@@ -72,8 +72,8 @@ public class TestDelaunay extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		
-		ArrayList<MyPoint> pts = getPoints();
-		MyPoint addedPoint = new MyPoint(pts.get(1));
+		ArrayList<Point> pts = getPoints();
+		Point addedPoint = new Point(pts.get(1));
 		pts.add(addedPoint);
 		int PtsSize = pts.size();
 		
@@ -94,8 +94,8 @@ public class TestDelaunay extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		
-		ArrayList<MyPoint> pts = getPoints();
-		MyPoint addedPoint = new MyPoint(pts.get(1));
+		ArrayList<Point> pts = getPoints();
+		Point addedPoint = new Point(pts.get(1));
 		addedPoint.setZ(addedPoint.getZ() + 10);
 		pts.add(addedPoint);
 		int PtsSize = pts.size();
@@ -109,7 +109,7 @@ public class TestDelaunay extends BaseUtility {
 	/**
 	 * Check coherence
 	 * An edge is made of 2 different points
-	 * A Triangle is made of 3 different edges
+	 * A DelaunayTriangle is made of 3 different edges
 	 * @throws DelaunayError
 	 */
 	public void testCoherence() throws DelaunayError {
@@ -167,14 +167,14 @@ public class TestDelaunay extends BaseUtility {
 		aMesh.processDelaunay();
 
 		boolean correct = true;
-		ArrayList<MyEdge> edgeList = aMesh.getEdges();
+		ArrayList<Edge> edgeList = aMesh.getEdges();
 		
-		for (MyEdge anEdge:edgeList) {
-			MyEdge myEdge;
-			MyPoint start = anEdge.getStart();
-			MyPoint end = anEdge.getEnd();
+		for (Edge anEdge:edgeList) {
+			Edge myEdge;
+			Point start = anEdge.getStart();
+			Point end = anEdge.getEnd();
 			
-			ListIterator<MyEdge> iterEdge = edgeList.listIterator();
+			ListIterator<Edge> iterEdge = edgeList.listIterator();
 			while ((correct) && (iterEdge.hasNext())) {
 				myEdge = iterEdge.next();
 				if (anEdge != myEdge) {
@@ -209,7 +209,7 @@ public class TestDelaunay extends BaseUtility {
 		aMesh.refineMesh();
 //		show(aMesh);
 
-		for (MyTriangle myTriangle : aMesh.getTriangles()) {
+		for (DelaunayTriangle myTriangle : aMesh.getTriangles()) {
 			if (myTriangle.computeArea() > 1000) {
 				assertTrue(false);
 			}

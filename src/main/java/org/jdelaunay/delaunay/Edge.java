@@ -15,14 +15,14 @@ import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyEdge extends MyElement {
+public class Edge extends Element {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private MyPoint startPoint, endPoint;
-	private MyTriangle left, right;
+	private Point startPoint, endPoint;
+	private DelaunayTriangle left, right;
 	private MyBox aBox;
 	/**
 	 * bit number  | function :
@@ -59,7 +59,7 @@ public class MyEdge extends MyElement {
 	/**
 	 * Generate a new edge.
 	 */
-	public MyEdge() {
+	public Edge() {
 		super();
 		init();
 	}
@@ -70,7 +70,7 @@ public class MyEdge extends MyElement {
 	 * @param startPoint
 	 * @param endPoint
 	 */
-	public MyEdge(MyPoint start, MyPoint end) {
+	public Edge(Point start, Point end) {
 		super();
 		init();
 		this.startPoint = start;
@@ -83,8 +83,8 @@ public class MyEdge extends MyElement {
 	 *
 	 * @param ed
 	 */
-	public MyEdge(MyEdge ed) {
-		super((MyElement) ed);
+	public Edge(Edge ed) {
+		super((Element) ed);
 		init();
 		this.startPoint = ed.startPoint;
 		this.endPoint = ed.endPoint;
@@ -104,12 +104,12 @@ public class MyEdge extends MyElement {
 	 * @param v
 	 * @param w
 	 */
-	public MyEdge(double x, double y, double z, double u, double v, double w) {
+	public Edge(double x, double y, double z, double u, double v, double w) {
 		super();
 		init();
 		try {
-			MyPoint p1 = new MyPoint(x, y, z);
-			MyPoint p2 = new MyPoint(u, v, w);
+			Point p1 = new Point(x, y, z);
+			Point p2 = new Point(u, v, w);
 			this.startPoint = p1;
 			this.endPoint = p2;
 		} catch (DelaunayError d) {
@@ -121,7 +121,7 @@ public class MyEdge extends MyElement {
 	 * @param i
 	 * @return If i==0, return startPoint else return endPoint.
 	 */
-	public MyPoint point(int i) {
+	public Point point(int i) {
 		if (i == 0) {
 			return this.startPoint;
 		} else {
@@ -130,62 +130,62 @@ public class MyEdge extends MyElement {
 	}
 
 	/**
-	 * @return Triangle at the left of edge.
+	 * @return DelaunayTriangle at the left of edge.
 	 */
-	public MyTriangle getLeft() {
+	public DelaunayTriangle getLeft() {
 		return this.left;
 	}
 
 	/**
-	 * @return Triangle at the right of edge.
+	 * @return DelaunayTriangle at the right of edge.
 	 */
-	public MyTriangle getRight() {
+	public DelaunayTriangle getRight() {
 		return this.right;
 	}
 
 	/**
-	 * Set Triangle at left of edge.
+	 * Set DelaunayTriangle at left of edge.
 	 * 
 	 * @param aTriangle A triangle at left of edge.
 	 */
-	public void setLeft(MyTriangle aTriangle) {
+	public void setLeft(DelaunayTriangle aTriangle) {
 		this.left = aTriangle;
 	}
 
 	/**
-	 * Set Triangle at right of edge.
+	 * Set DelaunayTriangle at right of edge.
 	 * 
 	 * @param aTriangle A triangle at right of edge.
 	 */
-	public void setRight(MyTriangle aTriangle) {
+	public void setRight(DelaunayTriangle aTriangle) {
 		this.right = aTriangle;
 	}
 
 	/**
 	 * @return start point of edge.
 	 */
-	public MyPoint getStart() {
+	public Point getStart() {
 		return this.startPoint;
 	}
 
 	/**
 	 * @return start point of edge.
 	 */
-	public MyPoint getStartPoint() {
+	public Point getStartPoint() {
 		return this.startPoint;
 	}
 
 	/**
 	 * @return end point of edge.
 	 */
-	public MyPoint getEnd() {
+	public Point getEnd() {
 		return this.endPoint;
 	}
 
 	/**
 	 * @return end point of edge.
 	 */
-	public MyPoint getEndPoint() {
+	public Point getEndPoint() {
 		return this.endPoint;
 	}
 
@@ -194,7 +194,7 @@ public class MyEdge extends MyElement {
 	 *
 	 * @param p Start point.
 	 */
-	public void setStart(MyPoint p) {
+	public void setStart(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -208,7 +208,7 @@ public class MyEdge extends MyElement {
 	 *
 	 * @param p Start point.
 	 */
-	public void setStartPoint(MyPoint p) {
+	public void setStartPoint(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -222,7 +222,7 @@ public class MyEdge extends MyElement {
 	 *
 	 * @param p End point.
 	 */
-	public void setEnd(MyPoint p) {
+	public void setEnd(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -236,7 +236,7 @@ public class MyEdge extends MyElement {
 	 *
 	 * @param p End point.
 	 */
-	public void setEndPoint(MyPoint p) {
+	public void setEndPoint(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -247,12 +247,12 @@ public class MyEdge extends MyElement {
 
 	/**
 	 * Get the point of this edge that is on the left from the other. 
-	 * We use the order relation defined in MyPoint. Consequently, with a vertical
+	 * We use the order relation defined in Point. Consequently, with a vertical
 	 * edge, this method return the minimum point, (so the one with the lowest
 	 * y).
 	 * @return
 	 */
-	public MyPoint getPointLeft() {
+	public Point getPointLeft() {
 		int c = endPoint.compareTo2D(startPoint);
 		switch (c) {
 			case -1:
@@ -264,10 +264,10 @@ public class MyEdge extends MyElement {
 
 	/**
 	 * Get the point of this edge that is on the left from the other.
-	 * We use the order relation defined in MyPoint.
+	 * We use the order relation defined in Point.
 	 * @return
 	 */
-	public MyPoint getPointRight() {
+	public Point getPointRight() {
 		int c = endPoint.compareTo2D(startPoint);
 		switch (c) {
 			case 1:
@@ -301,7 +301,7 @@ public class MyEdge extends MyElement {
 	/**
 	 * get 3D length
 	 */
-	public double get3DLength(MyPoint p) {
+	public double get3DLength(Point p) {
 		return Math.sqrt(getSquared3DLength());
 	}
 
@@ -448,7 +448,7 @@ public class MyEdge extends MyElement {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
+	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
 	public MyBox getBoundingBox() {
@@ -461,10 +461,10 @@ public class MyEdge extends MyElement {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
+	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
 	 */
 	@Override
-	public boolean contains(MyPoint aPoint) {
+	public boolean contains(Point aPoint) {
 		return contains(aPoint.getCoordinate());
 //		if (intersects(aPoint, aPoint) > 0)
 //			return true;
@@ -474,8 +474,8 @@ public class MyEdge extends MyElement {
 
 	@Override
 	public boolean contains(Coordinate c) {
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
+		Point p1 = this.startPoint;
+		Point p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
 		double vx = c.x - p1.getX();
@@ -483,7 +483,7 @@ public class MyEdge extends MyElement {
 		double res = ux * vy - uy * vx;
 		boolean px = (ux >= 0 ? (p1.getX() <= c.x && c.x <= p2.getX()) : (p2.getX() <= c.x && c.x <= p1.getX()));/* px is in [p1x, p2x]*/
 		boolean py = (uy >= 0 ? (p1.getY() <= c.y && c.y <= p2.getY()) : (p2.getY() <= c.y && c.y <= p1.getY()));/* py is in [p1y, p2y]*/
-		return res <= MyTools.EPSILON && res >= -MyTools.EPSILON/* p is on p1, p2 line */
+		return res <= Tools.EPSILON && res >= -Tools.EPSILON/* p is on p1, p2 line */
 			&& px && py;
 	}
 
@@ -500,7 +500,7 @@ public class MyEdge extends MyElement {
 	 * is not one of the extremities of the other edge, this method
 	 * returns 1
 	 */
-	public int intersects(MyEdge other) throws DelaunayError{
+	public int intersects(Edge other) throws DelaunayError{
 		return intersects(other.getStart(), other.getEnd());
 	}
 
@@ -519,11 +519,11 @@ public class MyEdge extends MyElement {
 	 * is not one of the extremities of the other edge, this method
 	 * returns 1
 	 */
-	public int intersects(MyPoint p1, MyPoint p2) throws DelaunayError {
+	public int intersects(Point p1, Point p2) throws DelaunayError {
 		int result = 0;
-		MyPoint p3 = this.startPoint;
-		MyPoint p4 = this.endPoint;
-		MyElement inter = getIntersection(p1, p2, false);
+		Point p3 = this.startPoint;
+		Point p4 = this.endPoint;
+		Element inter = getIntersection(p1, p2, false);
 		if(inter==null){//there is no intersection, return 0 or 2
 			// (x2 - x1) t1 - (x4 - x3) t2 = (x3 - x1)
 			// (y2 - y1) t1 - (y4 - y3) t2 = (y3 - y1)
@@ -534,27 +534,27 @@ public class MyEdge extends MyElement {
 
 			// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 			double d = b1 * a2 - b2 * a1;
-			if(-MyTools.EPSILON2 < d && d < MyTools.EPSILON2){
+			if(-Tools.EPSILON2 < d && d < Tools.EPSILON2){
 				//the two edges are colinear
 				return 2;
 			}else {
 				return 0;
 			}
-		} else if(inter instanceof MyPoint){
+		} else if(inter instanceof Point){
 			//intersection in one point,
 			//return 1 or 3
-			MyPoint interPoint = (MyPoint) inter;
-			if((interPoint.squareDistance2D(p1)<MyTools.EPSILON2 ||
-				interPoint.squareDistance2D(p2)<MyTools.EPSILON2)&&
-				(interPoint.squareDistance2D(p3)<MyTools.EPSILON2||
-				interPoint.squareDistance2D(p4)<MyTools.EPSILON2)){
+			Point interPoint = (Point) inter;
+			if((interPoint.squareDistance2D(p1)<Tools.EPSILON2 ||
+				interPoint.squareDistance2D(p2)<Tools.EPSILON2)&&
+				(interPoint.squareDistance2D(p3)<Tools.EPSILON2||
+				interPoint.squareDistance2D(p4)<Tools.EPSILON2)){
 				//intersection at an extremity of each edge.
 				return 3;
 			} else {
 				return 1;
 			}
 			
-		} else if(inter instanceof MyEdge){
+		} else if(inter instanceof Edge){
 			//intersection in more than
 			//one point, return 4
 			return 4;
@@ -570,7 +570,7 @@ public class MyEdge extends MyElement {
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public MyElement getIntersection(MyPoint p1, MyPoint p2) throws DelaunayError {
+	public Element getIntersection(Point p1, Point p2) throws DelaunayError {
 		return getIntersection(p1, p2, false);
 	}
 
@@ -585,12 +585,12 @@ public class MyEdge extends MyElement {
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public MyElement getIntersection(MyPoint point1, MyPoint point2, boolean useCoordZOfp1p2) throws DelaunayError {
-		MyElement intersection = null;
-		MyPoint p3 = getPointLeft();
-		MyPoint p4 = getPointRight();
-		MyPoint p1 = new MyPoint();
-		MyPoint p2 = new MyPoint();
+	public Element getIntersection(Point point1, Point point2, boolean useCoordZOfp1p2) throws DelaunayError {
+		Element intersection = null;
+		Point p3 = getPointLeft();
+		Point p4 = getPointRight();
+		Point p1 = new Point();
+		Point p2 = new Point();
 		switch(point1.compareTo2D(point2)){
 			//we put the leftmost point in p1, and the rightmost in p2
 			case 1 :
@@ -614,7 +614,7 @@ public class MyEdge extends MyElement {
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = deltaXT * deltaYO - deltaYT * deltaXO;
-		if (Math.abs(d) > MyTools.EPSILON2) {
+		if (Math.abs(d) > Tools.EPSILON2) {
 			if(p1.compareTo2D(p4)==1 || p3.compareTo2D(p2)==1){
 				return null;
 			}
@@ -624,16 +624,16 @@ public class MyEdge extends MyElement {
 			double t1 = (c2 * deltaXT - c1 * deltaYT) / d;
 			double t2 = (deltaXO * c2 - deltaYO * c1) / d;
 
-			if ((-MyTools.EPSILON <= t1) && (t1 <= 1 + MyTools.EPSILON) && (-MyTools.EPSILON <= t2)
-				&& (t2 <= 1 + MyTools.EPSILON)) {
+			if ((-Tools.EPSILON <= t1) && (t1 <= 1 + Tools.EPSILON) && (-Tools.EPSILON <= t2)
+				&& (t2 <= 1 + Tools.EPSILON)) {
 				// it intersects
-				if (t2 <= MyTools.EPSILON) {
+				if (t2 <= Tools.EPSILON) {
 					intersection = p3;
-				} else if (t2 >= 1 - MyTools.EPSILON) {
+				} else if (t2 >= 1 - Tools.EPSILON) {
 					intersection = p4;
-				} else if (t1 <= MyTools.EPSILON) {
+				} else if (t1 <= Tools.EPSILON) {
 					intersection = p1;
-				} else if (t1 >= 1 - MyTools.EPSILON) {
+				} else if (t1 >= 1 - Tools.EPSILON) {
 					intersection = p2;
 				} else {
 					// x = x2 t1 + (1 - t1) x1
@@ -652,99 +652,99 @@ public class MyEdge extends MyElement {
 						// Average of p1, p2, p3 and p4 Z.
 						z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
 					}
-					intersection = new MyPoint(x, y, z);
+					intersection = new Point(x, y, z);
 
 				}
 			}
 		} else { //d==0 : the two edges are colinear
 			double test;
-			if (Math.abs(deltaXO) < MyTools.EPSILON) {
+			if (Math.abs(deltaXO) < Tools.EPSILON) {
 				test = c1 / deltaXT - c2 / deltaYT;
 			} else {
 				test = c1 / deltaXO - c2 / deltaYO;
 			}
-			if (Math.abs(test) > MyTools.EPSILON) {//the two supporting lines are different
+			if (Math.abs(test) > Tools.EPSILON) {//the two supporting lines are different
 				intersection = null;
 			} else {//we have one supporting line
 				//t13 is the position of the point three on the edge 1->2
 				double t13, t14, t21, t22;
-				if (Math.abs(deltaXO) < MyTools.EPSILON) {
+				if (Math.abs(deltaXO) < Tools.EPSILON) {
 					t13 = c2 / deltaYO;
 					t14 = (p4.getY() - p1.getY()) / (deltaYO);
 				} else {
 					t13 = c1 / deltaXO;
 					t14 = (p4.getX() - p1.getX()) / (deltaXO);
 				}
-				if (Math.abs(deltaXT) > MyTools.EPSILON) {
+				if (Math.abs(deltaXT) > Tools.EPSILON) {
 					t21 = -c1 / deltaXT;
 					t22 = (p2.getX() - p3.getX()) / deltaXT;
 				} else {
 					t21 = -c2 / deltaYT;
 					t22 = (p2.getY() - p3.getY()) / (deltaYT);
 				}
-				if (-MyTools.EPSILON < t13 && t13 < 1 + MyTools.EPSILON) {
-					if (-MyTools.EPSILON < t14 && t14 < 1 + MyTools.EPSILON) {
+				if (-Tools.EPSILON < t13 && t13 < 1 + Tools.EPSILON) {
+					if (-Tools.EPSILON < t14 && t14 < 1 + Tools.EPSILON) {
                                                 //p3 and p4 are both on the edge [p1 p2]
-						intersection = new MyEdge(p3, p4);
+						intersection = new Edge(p3, p4);
 					} else {
                                                 //p4 is not on [p1 p2]
-						if (p3.squareDistance2D(p1) < MyTools.EPSILON2) {
+						if (p3.squareDistance2D(p1) < Tools.EPSILON2) {
                                                         //p3 and p1 are equal
-							if (-MyTools.EPSILON < t22 && t22 < 1 + MyTools.EPSILON) {
+							if (-Tools.EPSILON < t22 && t22 < 1 + Tools.EPSILON) {
                                                                 //p2 is on [p3 p4]
-								intersection = new MyEdge(p1, p2);
+								intersection = new Edge(p1, p2);
 							} else {
                                                                 //p2 is not on [p3 p4], and p3 is not on [p1 p2]
 								intersection = p3;
 							}
-						} else if (p3.squareDistance2D(p2) < MyTools.EPSILON2) {
+						} else if (p3.squareDistance2D(p2) < Tools.EPSILON2) {
                                                         //p3 and p2 are equals
-							if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
+							if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
                                                                 //p1 is on [p3 p4]
-								intersection = new MyEdge(p1, p2);
+								intersection = new Edge(p1, p2);
 							} else {
                                                                 //p1 is not on [p3 p4], and p3 is not on [p1 p2]
 								intersection = p3;
 							}
 
-						} else if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
+						} else if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
                                                         //p1 is on [p3 p4]
-							intersection = new MyEdge(p1, p3);
+							intersection = new Edge(p1, p3);
 						} else {
-							intersection = new MyEdge(p2, p3);
+							intersection = new Edge(p2, p3);
 						}
 					}
-				} else if (-MyTools.EPSILON < t14 && t14 < 1 + MyTools.EPSILON) {
+				} else if (-Tools.EPSILON < t14 && t14 < 1 + Tools.EPSILON) {
                                 //p3 is not on [p1 p2], but p4 is on it
-					if (p4.squareDistance2D(p1) < MyTools.EPSILON2) {
+					if (p4.squareDistance2D(p1) < Tools.EPSILON2) {
                                                 //p4 and p1 are equal
-						if (-MyTools.EPSILON < t22 && t22 < 1 + MyTools.EPSILON) {
+						if (-Tools.EPSILON < t22 && t22 < 1 + Tools.EPSILON) {
                                                         //p2 is on [p3 p4]
-							intersection = new MyEdge(p1, p2);
+							intersection = new Edge(p1, p2);
 						} else {
                                                         //p2 is not on [p3 p4] and p3 is not on [p1 p2]
 							intersection = p4;
 						}
-					} else if (p4.squareDistance2D(p2) < MyTools.EPSILON2) {
+					} else if (p4.squareDistance2D(p2) < Tools.EPSILON2) {
                                                 //p4 and p1 are equal
-						if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
+						if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
                                                         //p1  is on [p3 p4]
-							intersection = new MyEdge(p1, p2);
+							intersection = new Edge(p1, p2);
 						} else {
                                                         //p1 is not on [p3 p4] and p3 is not on [p1 p2]
 							intersection = p4;
 						}
 
-					} else if (-MyTools.EPSILON < t21 && t21 < 1 + MyTools.EPSILON) {
+					} else if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
                                                 //p1 is on [p3 p4]
-						intersection = new MyEdge(p1, p4);
+						intersection = new Edge(p1, p4);
 					} else {
-						intersection = new MyEdge(p2, p4);
+						intersection = new Edge(p2, p4);
 					}
-				} else if (MyTools.EPSILON < t21 && t21 < 1 - MyTools.EPSILON) {
+				} else if (Tools.EPSILON < t21 && t21 < 1 - Tools.EPSILON) {
                                         //p1 is on [p3 p4]. As we've seen, nor p4 neither p3 are
                                         // on [p1 p2], so we can conclude that the intersection is [p1 p2]
-					intersection = new MyEdge(p1, p2);
+					intersection = new Edge(p1, p2);
 				}
 
 			}
@@ -760,7 +760,7 @@ public class MyEdge extends MyElement {
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public MyElement getIntersection(MyEdge anEdge) throws DelaunayError {
+	public Element getIntersection(Edge anEdge) throws DelaunayError {
 		return getIntersection(anEdge.startPoint, anEdge.endPoint);
 	}
 
@@ -768,9 +768,9 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return Z coordinate of point p on the edge.
 	 */
-	public double getZOnEdge(MyPoint p) {
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
+	public double getZOnEdge(Point p) {
+		Point p1 = this.startPoint;
+		Point p2 = this.endPoint;
 
 		if (p2.getX() == p1.getX()) {
 			return ((p2.getX() - p.getX()) * (p2.getZ() - p1.getZ())) / (p2.getX() - p1.getX());
@@ -790,11 +790,11 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return isInside
 	 */
-	public boolean isInside(MyPoint p) {
+	public boolean isInside(Point p) {
 		boolean isInside = false;
 
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
+		Point p1 = this.startPoint;
+		Point p2 = this.endPoint;
 
 		// x = x2 t1 + (1 - t1) x1
 		// y = y2 t1 + (1 - t1) y1
@@ -812,29 +812,29 @@ public class MyEdge extends MyElement {
 		double a2 = p2.getY() - p1.getY();
 		double c2 = p.getY() - p1.getY();
 
-		if (Math.abs(a1) > MyTools.EPSILON) {
+		if (Math.abs(a1) > Tools.EPSILON) {
 			t1 = c1 / a1;
-			if ((-MyTools.EPSILON < t1) && (t1 < 1 + MyTools.EPSILON)) {
+			if ((-Tools.EPSILON < t1) && (t1 < 1 + Tools.EPSILON)) {
 				// p.getX() is between p1.getX() and p2.getX()
-				if (Math.abs(a2) > MyTools.EPSILON) {
+				if (Math.abs(a2) > Tools.EPSILON) {
 					t2 = c2 / a2;
-					if ((-MyTools.EPSILON < t2) && (t2 < 1 + MyTools.EPSILON)
-						&& (Math.abs(t1 - t2) < MyTools.EPSILON)) {
+					if ((-Tools.EPSILON < t2) && (t2 < 1 + Tools.EPSILON)
+						&& (Math.abs(t1 - t2) < Tools.EPSILON)) {
 						isInside = true;
 					}
-				} else if (Math.abs(c2) < MyTools.EPSILON) {
+				} else if (Math.abs(c2) < Tools.EPSILON) {
 					// p1.getY(), p2.getY() and p.getY() are the same
 					isInside = true;
 				}
 			}
-		} else if (Math.abs(c1) < MyTools.EPSILON) {
+		} else if (Math.abs(c1) < Tools.EPSILON) {
 			// p1.getX(), p2.getX() and p.getX() are the same
-			if (Math.abs(a2) > MyTools.EPSILON) {
+			if (Math.abs(a2) > Tools.EPSILON) {
 				t2 = c2 / a2;
-				if ((-MyTools.EPSILON < t2) && (t2 < 1 + MyTools.EPSILON)) {
+				if ((-Tools.EPSILON < t2) && (t2 < 1 + Tools.EPSILON)) {
 					isInside = true;
 				}
-			} else if (Math.abs(c2) < MyTools.EPSILON) {
+			} else if (Math.abs(c2) < Tools.EPSILON) {
 				// p1.getY(), p2.getY() and p.getY() are also the same
 				isInside = true;
 			}
@@ -850,18 +850,18 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return isColinear2D
 	 */
-	public boolean isColinear2D(MyPoint p) {
+	public boolean isColinear2D(Point p) {
 		boolean isColinear2D = false;
 
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
+		Point p1 = this.startPoint;
+		Point p2 = this.endPoint;
 
 		double a1 = p2.getX() - p1.getX();
 		double c1 = p.getX() - p1.getX();
 		double a2 = p2.getY() - p1.getY();
 		double c2 = p.getY() - p1.getY();
 		double t = a1 * c2 - a2 * c1;
-		if (Math.abs(t) < MyTools.EPSILON2) {
+		if (Math.abs(t) < Tools.EPSILON2) {
 			isColinear2D = true;
 		}
 
@@ -874,11 +874,11 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return isColinear2D
 	 */
-	public boolean isColinear(MyPoint p) {
+	public boolean isColinear(Point p) {
 		boolean isColinear = false;
 
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
+		Point p1 = this.startPoint;
+		Point p2 = this.endPoint;
 
 		double a1 = p2.getX() - p1.getX();
 		double c1 = p.getX() - p1.getX();
@@ -889,7 +889,7 @@ public class MyEdge extends MyElement {
 		double t1 = a1 * c2 - a2 * c1;
 		double t2 = a1 * c3 - a3 * c1;
 		double t3 = a3 * c2 - a2 * c3;
-		if ((Math.abs(t1) < MyTools.EPSILON2) && (Math.abs(t2) < MyTools.EPSILON2) && (Math.abs(t3) < MyTools.EPSILON2)) {
+		if ((Math.abs(t1) < Tools.EPSILON2) && (Math.abs(t2) < Tools.EPSILON2) && (Math.abs(t3) < Tools.EPSILON2)) {
 			isColinear = true;
 		}
 
@@ -901,7 +901,7 @@ public class MyEdge extends MyElement {
 	 * @param anEdge
 	 * @return True if points are the same.
 	 */
-	public boolean haveSamePoint(MyEdge anEdge) {
+	public boolean haveSamePoint(Edge anEdge) {
 		return (getStartPoint().equals(anEdge.getStartPoint())
 			&& getEndPoint().equals(anEdge.getEndPoint()))
 			|| (getStartPoint().equals(anEdge.getEndPoint())
@@ -913,7 +913,7 @@ public class MyEdge extends MyElement {
 	 * @param anEdge
 	 * @return True if points are the same.
 	 */
-	public boolean haveSamePoint(MyPoint p1, MyPoint p2) {
+	public boolean haveSamePoint(Point p1, Point p2) {
 		return (getStartPoint().getCoordinate().equals(p1.getCoordinate())
 			&& getEndPoint().getCoordinate().equals(p2.getCoordinate()))
 			|| (getStartPoint().getCoordinate().equals(p2.getCoordinate())
@@ -927,7 +927,7 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return isInside
 	 */
-	public boolean isExtremity(MyPoint p) {
+	public boolean isExtremity(Point p) {
 		return (startPoint.equals2D(p) ) || (endPoint.equals2D(p) );
 	}
 
@@ -937,7 +937,7 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return
 	 */
-	public boolean isLeft(MyPoint p) {
+	public boolean isLeft(Point p) {
 		double ux = this.endPoint.getX() - this.startPoint.getX();
 		double uy = this.endPoint.getY() - this.startPoint.getY();
 		double vx = p.getX() - this.startPoint.getX();
@@ -952,7 +952,7 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return
 	 */
-	public boolean isRight(MyPoint p) {
+	public boolean isRight(Point p) {
 		double ux = this.endPoint.getX() - this.startPoint.getX();
 		double uy = this.endPoint.getY() - this.startPoint.getY();
 		double vx = p.getX() - this.startPoint.getX();
@@ -966,9 +966,9 @@ public class MyEdge extends MyElement {
 	 * @param p
 	 * @return True if the point is on edge.
 	 */
-	public boolean isOnEdge(MyPoint p) {
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
+	public boolean isOnEdge(Point p) {
+		Point p1 = this.startPoint;
+		Point p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
 		double vx = p.getX() - p1.getX();
@@ -987,7 +987,7 @@ public class MyEdge extends MyElement {
 			? /* p2y > p1y ?*/ (p1.getY() < p.getY() && p.getY() < p2.getY()) /* p2y > py > p1y ?*/
 			: (p2.getY() < p.getY() && p.getY() < p1.getY())));
 
-		return res <= MyTools.EPSILON2 && res >= -MyTools.EPSILON2/* p is on p1, p2 line */
+		return res <= Tools.EPSILON2 && res >= -Tools.EPSILON2/* p is on p1, p2 line */
 
 			&& b1	/* p2x < px < p1x ?*/
 
@@ -1001,7 +1001,7 @@ public class MyEdge extends MyElement {
 	public boolean isVertical() {
 		double dx = (startPoint.getX() - endPoint.getX());
 		double delta = (dx < 0 ? -dx : dx);
-		return delta < MyTools.EPSILON;
+		return delta < Tools.EPSILON;
 	}
 
 	/**
@@ -1014,11 +1014,11 @@ public class MyEdge extends MyElement {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public MyPoint getPointFromItsX(double abs) throws DelaunayError {
+	public Point getPointFromItsX(double abs) throws DelaunayError {
 		double deltaX = (startPoint.getX() - endPoint.getX());
 		double dX = (deltaX < 0 ? -deltaX : deltaX);
 		double p = (abs - startPoint.getX()) / (endPoint.getX() - startPoint.getX());
-		if (dX < MyTools.EPSILON) {
+		if (dX < Tools.EPSILON) {
 			//the edge is vertical
 			double delta = startPoint.getX() - abs;
 			dX = ((delta < 0) ? -delta : delta);
@@ -1031,7 +1031,7 @@ public class MyEdge extends MyElement {
 		} else {
 			double y = startPoint.getY() + p * (endPoint.getY() - startPoint.getY());
 			double z = startPoint.getZ() + p * (endPoint.getZ() - startPoint.getZ());
-			return new MyPoint(abs, y, z);
+			return new Point(abs, y, z);
 		}
 	}
 
@@ -1041,12 +1041,12 @@ public class MyEdge extends MyElement {
 	 */
 	public void swap() {
 		// swap points
-		MyPoint aPoint = this.endPoint;
+		Point aPoint = this.endPoint;
 		this.endPoint = this.startPoint;
 		this.startPoint = aPoint;
 
 		// swap triangles
-		MyTriangle aTriangle = left;
+		DelaunayTriangle aTriangle = left;
 		left = right;
 		right = aTriangle;
 	}
@@ -1058,7 +1058,7 @@ public class MyEdge extends MyElement {
 	 */
 	public boolean isFlatSlope() {
 		boolean isFlat = true;
-		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > MyTools.EPSILON) {
+		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > Tools.EPSILON) {
 			isFlat = false;
 		}
 		return isFlat;
@@ -1070,11 +1070,11 @@ public class MyEdge extends MyElement {
 	 * @return barycenter point.
 	 * @throws DelaunayError 
 	 */
-	public MyPoint getBarycenter() throws DelaunayError {
+	public Point getBarycenter() throws DelaunayError {
 		double x = (this.startPoint.getX() + this.endPoint.getX()) / 2.0;
 		double y = (this.startPoint.getY() + this.endPoint.getY()) / 2.0;
 		double z = (this.startPoint.getZ() + this.endPoint.getZ()) / 2.0;
-		return new MyPoint(x, y, z);
+		return new Point(x, y, z);
 	}
 
 	/**
@@ -1085,8 +1085,8 @@ public class MyEdge extends MyElement {
 	 */
 	@Override
 	public boolean equals(Object other){
-		if (other instanceof MyEdge){
-			MyEdge otherEdge = (MyEdge) other;
+		if (other instanceof Edge){
+			Edge otherEdge = (Edge) other;
 			return (endPoint.equals(otherEdge.getEnd()) && startPoint.equals(otherEdge.getStart()))
 				|| (endPoint.equals(otherEdge.getStart()) && startPoint.equals(otherEdge.getEnd()));
 		}else{
@@ -1102,8 +1102,8 @@ public class MyEdge extends MyElement {
 	 */
 	@Override
 	public int hashCode() {
-		MyPoint p1 = this.startPoint;
-		MyPoint p2 = this.endPoint;
+		Point p1 = this.startPoint;
+		Point p2 = this.endPoint;
 		int hashValue = 0;
 
 		int v1 = p1.hashCode();
@@ -1170,9 +1170,9 @@ public class MyEdge extends MyElement {
 	 * @param edge
 	 * @return
 	 */
-	public int sortLeftRight(MyEdge edge) {
-		MyPoint p1 = getPointLeft();
-		MyPoint p2 = edge.getPointLeft();
+	public int sortLeftRight(Edge edge) {
+		Point p1 = getPointLeft();
+		Point p2 = edge.getPointLeft();
 		int c = p1.compareTo2D(p2);
 		if (c == 0) {
 			p1 = getPointRight();
@@ -1193,9 +1193,9 @@ public class MyEdge extends MyElement {
 	 * @param edge
 	 * @return
 	 */
-	public int verticalSort(MyEdge edge, double abs) throws DelaunayError {
-		MyPoint pThis = this.getPointFromItsX(abs);
-		MyPoint pEdge = edge.getPointFromItsX(abs);
+	public int verticalSort(Edge edge, double abs) throws DelaunayError {
+		Point pThis = this.getPointFromItsX(abs);
+		Point pEdge = edge.getPointFromItsX(abs);
 		if (pThis == null || pEdge == null) {
 			throw new DelaunayError("You shouldn't try to sort vertical edges where x != abs !!!!");
 		}
@@ -1212,7 +1212,7 @@ public class MyEdge extends MyElement {
 				double deltaYO = edge.getPointRight().getY()-edge.getPointLeft().getY();
 				double cT = deltaYT / deltaXT;
 				double cO = deltaYO / deltaXO;
-				if(-MyTools.EPSILON < cT - cO && cT - cO < MyTools.EPSILON){
+				if(-Tools.EPSILON < cT - cO && cT - cO < Tools.EPSILON){
 					c = getPointRight().compareTo2D(edge.getPointRight());
 					if(c==0){
 						c = getPointLeft().compareTo2D(edge.getPointLeft());
@@ -1233,11 +1233,11 @@ public class MyEdge extends MyElement {
 	public int getGradient() {
 		int gradient;
 		if (getStart().getZ() > getEnd().getZ()) {
-			gradient = MyEdge.DOWNSLOPE;
+			gradient = Edge.DOWNSLOPE;
 		} else if (getStart().getZ() < getEnd().getZ()) {
-			gradient = MyEdge.UPSLOPE;
+			gradient = Edge.UPSLOPE;
 		} else {
-			gradient = MyEdge.FLATSLOPE;
+			gradient = Edge.FLATSLOPE;
 		}
 		return gradient;
 	}

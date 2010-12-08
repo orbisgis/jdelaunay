@@ -45,9 +45,9 @@ public class DelaunayTest extends BaseUtility {
 
 //		show(aMesh);
 		
-		ArrayList<MyTriangle> triangles = aMesh.getTriangles();
+		ArrayList<DelaunayTriangle> triangles = aMesh.getTriangles();
 
-		for (MyTriangle myTriangle : triangles) {
+		for (DelaunayTriangle myTriangle : triangles) {
 
 			if (myTriangle.computeArea() > 1000) {
 				assertTrue(false);
@@ -62,8 +62,8 @@ public class DelaunayTest extends BaseUtility {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
-		ArrayList<MyPoint> pts = getPoints();
-		pts.add(new MyPoint(52, 100, 1));
+		ArrayList<Point> pts = getPoints();
+		pts.add(new Point(52, 100, 1));
 		aMesh.setPoints(pts);
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
@@ -76,8 +76,8 @@ public class DelaunayTest extends BaseUtility {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
-		ArrayList<MyPoint> pts = getPoints();
-		pts.add(new MyPoint(52, 100, 10));
+		ArrayList<Point> pts = getPoints();
+		pts.add(new Point(52, 100, 10));
 		aMesh.setPoints(pts);
 		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
@@ -107,18 +107,18 @@ public class DelaunayTest extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 
-		ArrayList<MyPoint> points = new ArrayList<MyPoint>();
+		ArrayList<Point> points = new ArrayList<Point>();
 
-		points.add(new MyPoint(50, 100, 10));
-		points.add(new MyPoint(30, 20, 10));
-		points.add(new MyPoint(30, 10, 1));
-		points.add(new MyPoint(100, 10, 5));
-		points.add(new MyPoint(50, 10, 5));
+		points.add(new Point(50, 100, 10));
+		points.add(new Point(30, 20, 10));
+		points.add(new Point(30, 10, 1));
+		points.add(new Point(100, 10, 5));
+		points.add(new Point(50, 10, 5));
 
-		ArrayList<MyEdge> edges = new ArrayList<MyEdge>();
-		MyEdge edge1 = new MyEdge(new MyPoint(50, 100, 10), new MyPoint(30, 20,
+		ArrayList<Edge> edges = new ArrayList<Edge>();
+		Edge edge1 = new Edge(new Point(50, 100, 10), new Point(30, 20,
 				10));
-		MyEdge edge2 = new MyEdge(new MyPoint(50, 100, 10), new MyPoint(100,
+		Edge edge2 = new Edge(new Point(50, 100, 10), new Point(100,
 				10, 5));
 
 		edges.add(edge1);

@@ -1,8 +1,8 @@
 package org.jhydrocell.utilities;
 
-import org.jdelaunay.delaunay.MyEdge;
-import org.jdelaunay.delaunay.MyPoint;
-import org.jdelaunay.delaunay.MyTriangle;
+import org.jdelaunay.delaunay.Edge;
+import org.jdelaunay.delaunay.Point;
+import org.jdelaunay.delaunay.DelaunayTriangle;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -16,7 +16,7 @@ public class HydroTriangleUtil {
 	 * @return normal vector (that pointing to the sky --> z>0) of the face
 	 *
 	 */
-	public static Coordinate getNormal(MyTriangle triangle) {
+	public static Coordinate getNormal(DelaunayTriangle triangle) {
 
 		Coordinate n = new Coordinate();
 
@@ -42,7 +42,7 @@ public class HydroTriangleUtil {
 	 *
 	 * @return steepest path vector of the face also direction
 	 */
-	public static Coordinate get3DVector(MyTriangle triangle) {
+	public static Coordinate get3DVector(DelaunayTriangle triangle) {
 		Coordinate	pente = new Coordinate(0, 0, 0);
 			// on recupere le vecteur normal
 			Coordinate n = getNormal(triangle);
@@ -81,7 +81,7 @@ public class HydroTriangleUtil {
 	}
 
 	
-	public static boolean getPenteVersEdge(MyEdge myEdge, MyTriangle triangle) {
+	public static boolean getPenteVersEdge(Edge myEdge, DelaunayTriangle triangle) {
 		boolean res = false;
 
 		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
@@ -118,11 +118,11 @@ public class HydroTriangleUtil {
 	}
 	
 	
-	public static boolean isLeftTriangleGoToEdge(MyEdge edge)
+	public static boolean isLeftTriangleGoToEdge(Edge edge)
 	{
 		if(edge.getLeft()!=null)
 		{
-			MyPoint p= edge.getLeft().getAlterPoint(edge);
+			Point p= edge.getLeft().getAlterPoint(edge);
 			if(p.getZ() <edge.getStartPoint().getZ() && p.getZ() <edge.getEndPoint().getZ()) {
 				return false;
 			}
@@ -133,11 +133,11 @@ public class HydroTriangleUtil {
 	}
 	
 	
-	public static boolean isRightTriangleGoToEdge(MyEdge edge)
+	public static boolean isRightTriangleGoToEdge(Edge edge)
 	{
 		if(edge.getRight()!=null)
 		{
-			MyPoint p= edge.getRight().getAlterPoint(edge);
+			Point p= edge.getRight().getAlterPoint(edge);
 			if(p.getZ() <edge.getStartPoint().getZ() && p.getZ() <edge.getEndPoint().getZ()) {
 				return false;
 			}
@@ -154,7 +154,7 @@ public class HydroTriangleUtil {
 	 * @return angle entre le nord et la direction de plus forte pente (sens
 	 *         descendant) de la face (en degres)
 	 */
-	public static double getSlopeAzimut(MyTriangle triangle) {
+	public static double getSlopeAzimut(DelaunayTriangle triangle) {
 		double orientationPente;
 			Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
 			Coordinate c2 = get3DVector(triangle);
@@ -183,7 +183,7 @@ public class HydroTriangleUtil {
 	 * @return pente du vecteur de plus forte pente de la face (dz/distance
 	 *         horizontale)
 	 */
-	public static double getSlope(MyTriangle triangle) {
+	public static double getSlope(DelaunayTriangle triangle) {
 			double d = 0.0, valeurPente;
 			Coordinate p = get3DVector(triangle);
 			if (p != null) {
@@ -194,7 +194,7 @@ public class HydroTriangleUtil {
 		return valeurPente;
 	}
 
-//	public boolean getPenteVersEdge(MyEdge myEdge) {
+//	public boolean getPenteVersEdge(Edge myEdge) {
 //		boolean res = false;
 //
 //		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
@@ -238,7 +238,7 @@ public class HydroTriangleUtil {
 	 *
 	 * @return
 	 */
-	public static double getSlopeInPourcent(MyTriangle triangle) {
+	public static double getSlopeInPourcent(DelaunayTriangle triangle) {
 		return Math.abs(getSlope(triangle)) * 100;
 	}
 	
@@ -248,7 +248,7 @@ public class HydroTriangleUtil {
 	 *
 	 * @return
 	 */
-	public static double getSlopeInDegree(MyTriangle triangle) {
+	public static double getSlopeInDegree(DelaunayTriangle triangle) {
 		return Math.round(360/(2*Math.PI)*Math.atan(getSlopeInPourcent(triangle)/100));
 	}
 	

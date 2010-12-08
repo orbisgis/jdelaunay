@@ -13,7 +13,7 @@ import java.util.ListIterator;
  * @version 1.3
  */
 
-public class MyQuadTree<T extends MyElement> {
+public class MyQuadTree<T extends Element> {
 	/**
 	 * 0 : bottom left
 	 * 1 : top left
@@ -383,23 +383,23 @@ public class MyQuadTree<T extends MyElement> {
 		while ((iterList.hasNext()) && (found == null)) {
 			T searchedElement = iterList.next();
 		
-			if(element instanceof MyEdge && searchedElement instanceof MyEdge)
+			if(element instanceof Edge && searchedElement instanceof Edge)
 			{
 				if(		/* check points' coordinates */ 
-						( ((MyEdge) element).getStartPoint().getCoordinate().equals(((MyEdge) searchedElement).getStartPoint().getCoordinate()) &&
-								((MyEdge) element).getEndPoint().getCoordinate().equals(((MyEdge) searchedElement).getEndPoint().getCoordinate()) )
-						||( ((MyEdge) element).getStartPoint().getCoordinate().equals(((MyEdge) searchedElement).getEndPoint().getCoordinate()) &&
-								((MyEdge) element).getEndPoint().getCoordinate().equals(((MyEdge) searchedElement).getStartPoint().getCoordinate()) )
+						( ((Edge) element).getStartPoint().getCoordinate().equals(((Edge) searchedElement).getStartPoint().getCoordinate()) &&
+								((Edge) element).getEndPoint().getCoordinate().equals(((Edge) searchedElement).getEndPoint().getCoordinate()) )
+						||( ((Edge) element).getStartPoint().getCoordinate().equals(((Edge) searchedElement).getEndPoint().getCoordinate()) &&
+								((Edge) element).getEndPoint().getCoordinate().equals(((Edge) searchedElement).getStartPoint().getCoordinate()) )
 				) {
 					found = searchedElement;
 				}
 			}
-			else if(element instanceof MyPoint && searchedElement instanceof MyPoint)
+			else if(element instanceof Point && searchedElement instanceof Point)
 			{
-				if(((MyPoint) element).getX()== ((MyPoint) searchedElement).getX()			/* check X */
-					&& ((MyPoint) element).getY()== ((MyPoint) searchedElement).getY() 		/* check Y */
-					&& (((MyPoint) element).isZUse()?
-							((MyPoint) element).getZ()==((MyPoint) searchedElement).getZ()	/* check Z if element.isZUse()==true */
+				if(((Point) element).getX()== ((Point) searchedElement).getX()			/* check X */
+					&& ((Point) element).getY()== ((Point) searchedElement).getY() 		/* check Y */
+					&& (((Point) element).isZUse()?
+							((Point) element).getZ()==((Point) searchedElement).getZ()	/* check Z if element.isZUse()==true */
 							:true)) {
 					found = searchedElement;
 				}
@@ -442,7 +442,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * @param boundingBox
 	 * @return
 	 */
-	protected T search(MyPoint aPoint, double precision, MyBox boundingBox) {
+	protected T search(Point aPoint, double precision, MyBox boundingBox) {
 		T anElement = null;
 
 		// test root list
@@ -456,8 +456,8 @@ public class MyQuadTree<T extends MyElement> {
 				
 				double a,b;
 				if(searchedElement.getClass().getName().equals("org.jdelaunay.delaunay.MyPoint"))
-				{	a=((MyPoint)searchedElement).getX() - aPoint.getX();
-					b=((MyPoint)searchedElement).getY() - aPoint.getY();
+				{	a=((Point)searchedElement).getX() - aPoint.getX();
+					b=((Point)searchedElement).getY() - aPoint.getY();
 				}
 				else
 				{
@@ -507,7 +507,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * @param boundingBox
 	 * @return
 	 */
-	protected T search(MyPoint aPoint, MyBox boundingBox) {
+	protected T search(Point aPoint, MyBox boundingBox) {
 		T anElement = null;
 
 		// test root list
@@ -607,7 +607,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * @return The element that contain anElement.
 	 * @throws DelaunayError 
 	 */
-	protected <E extends MyElement> T searchInWhichElementItIs(E anElement, MyBox boundingBox) throws DelaunayError {
+	protected <E extends Element> T searchInWhichElementItIs(E anElement, MyBox boundingBox) throws DelaunayError {
 		T  foudElement = null;
 		
 		// test root list
@@ -670,16 +670,16 @@ public class MyQuadTree<T extends MyElement> {
 	 * @param searchBoundingBox Bounding box of anEdge.
 	 * @param boundingBox
 	 * @return ArrayList of Object[].<br/>
-	 * Object[0] is an MyEdge<br/>
+	 * Object[0] is an Edge<br/>
 	 * Object[1] is an Integer ( The result of anEdge.intersects(...) ).
 	 */
-	protected ArrayList<Object[]> searchIntersection(MyEdge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {//TODO optimize me !!!
+	protected ArrayList<Object[]> searchIntersection(Edge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {//TODO optimize me !!!
 		ArrayList<Object[]>  allElements = new ArrayList<Object[]>();
 		int intersect=0;
 
-		ListIterator<MyEdge> iterList = (ListIterator<MyEdge>) theList[0].listIterator();
+		ListIterator<Edge> iterList = (ListIterator<Edge>) theList[0].listIterator();
 		while ((iterList.hasNext())) {
-			MyEdge searchedElement =  iterList.next();
+			Edge searchedElement =  iterList.next();
 
 			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 				break;
@@ -699,9 +699,9 @@ public class MyQuadTree<T extends MyElement> {
 		{
 			if(isIntersectSectorList(i, searchBoundingBox, boundingBox))
 			{
-				iterList = (ListIterator<MyEdge>) theList[i].listIterator();
+				iterList = (ListIterator<Edge>) theList[i].listIterator();
 				while ((iterList.hasNext())) {
-					MyEdge searchedElement =  iterList.next();
+					Edge searchedElement =  iterList.next();
 	
 					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 						break;
@@ -741,13 +741,13 @@ public class MyQuadTree<T extends MyElement> {
 	 * @param boundingBox
 	 * @return True is an intersection exist between an other edge.
 	 */
-	protected boolean isIntersect(MyEdge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {
+	protected boolean isIntersect(Edge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {
 		boolean isIntersect=false;
 //		int intersect=0;
 
-		ListIterator<MyEdge> iterList = (ListIterator<MyEdge>) theList[0].listIterator();
+		ListIterator<Edge> iterList = (ListIterator<Edge>) theList[0].listIterator();
 		while ((iterList.hasNext()) && !isIntersect) {
-			MyEdge searchedElement =  iterList.next();
+			Edge searchedElement =  iterList.next();
 
 			if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 				break;
@@ -760,9 +760,9 @@ public class MyQuadTree<T extends MyElement> {
 		{
 			if(isIntersectSectorList(i, searchBoundingBox, boundingBox))
 			{
-				iterList = (ListIterator<MyEdge>) theList[i].listIterator();
+				iterList = (ListIterator<Edge>) theList[i].listIterator();
 				while ((iterList.hasNext()) && !isIntersect) {
-					MyEdge searchedElement =  iterList.next();
+					Edge searchedElement =  iterList.next();
 	
 					if(searchBoundingBox.minx>searchedElement.getBoundingBox().maxx) {
 						break;
@@ -956,7 +956,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * @return Number of elements removed.
 	 * @throws DelaunayError 
 	 */
-	protected int removeAllStric(MyPolygon aPolygon, MyBox boundingBox) throws DelaunayError {
+	protected int removeAllStric(ConstraintPolygon aPolygon, MyBox boundingBox) throws DelaunayError {
 		
 		return removeAllStric(aPolygon, aPolygon.getBoundingBox(),boundingBox);
 	}
@@ -969,7 +969,7 @@ public class MyQuadTree<T extends MyElement> {
 	 * @return Number of elements removed.
 	 * @throws DelaunayError 
 	 */
-	private int removeAllStric(MyPolygon aPolygon, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {
+	private int removeAllStric(ConstraintPolygon aPolygon, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {
 
 		int quadtreeSize=0;
 		// test root list

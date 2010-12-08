@@ -24,7 +24,7 @@ public class TestCheckMesh  extends BaseUtility {
 		System.out.println("\n\ntest_1\n");
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((3 3 0, 3 5 0, 8 6 0, 8 3 0, 3 3 0))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(true);
 		aPolygon.setUsePolygonZ(false);
 		
@@ -34,15 +34,15 @@ public class TestCheckMesh  extends BaseUtility {
 
 		MyBox abox=new MyBox();
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-			listePoints.add(new MyPoint(0, 3, 5));
-			listePoints.add(new MyPoint(2, 7, 5));
-			listePoints.add(new MyPoint(6, 8, 5));
-			listePoints.add(new MyPoint(11, 8, 5));
-			listePoints.add(new MyPoint(12, 6, 5));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+			listePoints.add(new Point(0, 3, 5));
+			listePoints.add(new Point(2, 7, 5));
+			listePoints.add(new Point(6, 8, 5));
+			listePoints.add(new Point(11, 8, 5));
+			listePoints.add(new Point(12, 6, 5));
 		
 		
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		
@@ -83,7 +83,7 @@ public class TestCheckMesh  extends BaseUtility {
 		System.out.println("\n\ntest_2\n");
 			WKTReader reader = new WKTReader();
 			Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-			MyPolygon aPolygon = new MyPolygon(polygon, 500);
+			ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 			 
 			MyMesh aMesh = new MyMesh();
 			aMesh.setPrecision(1.0e-3);
@@ -130,14 +130,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 3, 0));
-		listePoints.add(new MyPoint(12, 3, 0));
-		listePoints.add(new MyPoint(0, 8, 0));
-		listePoints.add(new MyPoint(12, 8, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 3, 0));
+		listePoints.add(new Point(12, 3, 0));
+		listePoints.add(new Point(0, 8, 0));
+		listePoints.add(new Point(12, 8, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 	
@@ -150,7 +150,7 @@ public class TestCheckMesh  extends BaseUtility {
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(3, 5, 5),new MyPoint(10, 5, 5)));
+		aMesh.addLevelEdge(new Edge(new Point(3, 5, 5),new Point(10, 5, 5)));
 		
 //		show(aMesh);
 //		System.out.println("end\n\nPush Enter to finish...");
@@ -179,19 +179,19 @@ public class TestCheckMesh  extends BaseUtility {
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 3, 0));
-		listePoints.add(new MyPoint(12, 3, 0));
-		listePoints.add(new MyPoint(0, 8, 0));
-		listePoints.add(new MyPoint(12, 8, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 3, 0));
+		listePoints.add(new Point(12, 3, 0));
+		listePoints.add(new Point(0, 8, 0));
+		listePoints.add(new Point(12, 8, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(3, 5, 5),new MyPoint(10, 5, 5)));
+		aMesh.addLevelEdge(new Edge(new Point(3, 5, 5),new Point(10, 5, 5)));
 		aMesh.processDelaunay();
 		
 //		show(aMesh);
@@ -221,24 +221,24 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(0, 12, 0));
-		listePoints.add(new MyPoint(35, 0, 0));
-		listePoints.add(new MyPoint(35, 12, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(0, 12, 0));
+		listePoints.add(new Point(35, 0, 0));
+		listePoints.add(new Point(35, 12, 0));
 		
-		listePoints.add(new MyPoint(7, 0, 0));
-		listePoints.add(new MyPoint(13, 0, 0));
-		listePoints.add(new MyPoint(19, 0, 0));
-		listePoints.add(new MyPoint(25, 0, 0));
+		listePoints.add(new Point(7, 0, 0));
+		listePoints.add(new Point(13, 0, 0));
+		listePoints.add(new Point(19, 0, 0));
+		listePoints.add(new Point(25, 0, 0));
 		
-		listePoints.add(new MyPoint(7, 12, 0));
-		listePoints.add(new MyPoint(13, 12, 0));
-		listePoints.add(new MyPoint(19, 12, 0));
-		listePoints.add(new MyPoint(25, 12, 0));
+		listePoints.add(new Point(7, 12, 0));
+		listePoints.add(new Point(13, 12, 0));
+		listePoints.add(new Point(19, 12, 0));
+		listePoints.add(new Point(25, 12, 0));
 		
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);
@@ -248,31 +248,31 @@ public class TestCheckMesh  extends BaseUtility {
 		int height=2;
 		
 		// H
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(2, 2, height),new MyPoint(2, 6, height)));// 	|
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(2, 6, height),new MyPoint(2, 10, height)));//	|
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(2, 6, height),new MyPoint(6, 6, height)));//	-
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(6, 2, height),new MyPoint(6, 6, height)));//	|
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(6, 6, height),new MyPoint(6, 10, height)));//	|
+		aMesh.addLevelEdge(new Edge(new Point(2, 2, height),new Point(2, 6, height)));// 	|
+		aMesh.addLevelEdge(new Edge(new Point(2, 6, height),new Point(2, 10, height)));//	|
+		aMesh.addLevelEdge(new Edge(new Point(2, 6, height),new Point(6, 6, height)));//	-
+		aMesh.addLevelEdge(new Edge(new Point(6, 2, height),new Point(6, 6, height)));//	|
+		aMesh.addLevelEdge(new Edge(new Point(6, 6, height),new Point(6, 10, height)));//	|
 		
 		// E
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(8, 2, height),new MyPoint(8, 6, height)));// 	|
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(8, 6, height),new MyPoint(8, 10, height)));//	|
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(8, 2, height),new MyPoint(12, 2, height)));//	-
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(8, 6, height),new MyPoint(12, 6, height)));//	-
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(8, 10, height),new MyPoint(12, 10, height)));//	-
+		aMesh.addLevelEdge(new Edge(new Point(8, 2, height),new Point(8, 6, height)));// 	|
+		aMesh.addLevelEdge(new Edge(new Point(8, 6, height),new Point(8, 10, height)));//	|
+		aMesh.addLevelEdge(new Edge(new Point(8, 2, height),new Point(12, 2, height)));//	-
+		aMesh.addLevelEdge(new Edge(new Point(8, 6, height),new Point(12, 6, height)));//	-
+		aMesh.addLevelEdge(new Edge(new Point(8, 10, height),new Point(12, 10, height)));//	-
 		
 		// L
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(14, 2, height),new MyPoint(14, 10, height)));// 	|
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(14, 2, height),new MyPoint(18, 2, height)));//	-
+		aMesh.addLevelEdge(new Edge(new Point(14, 2, height),new Point(14, 10, height)));// 	|
+		aMesh.addLevelEdge(new Edge(new Point(14, 2, height),new Point(18, 2, height)));//	-
 		
 		// L
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(20, 2, height),new MyPoint(20, 10, height)));// 	|
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(20, 2, height),new MyPoint(24, 2, height)));//	-
+		aMesh.addLevelEdge(new Edge(new Point(20, 2, height),new Point(20, 10, height)));// 	|
+		aMesh.addLevelEdge(new Edge(new Point(20, 2, height),new Point(24, 2, height)));//	-
 
 		// O
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((28 2 "+height+",26 5 "+height+", 26 7 "+height+", 28 10 "+height+", 31 10 "+height+", 33 7 "+height+", 33 5 "+height+", 31 2 "+height+" ,28 2 "+height+"))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(true);
 		aMesh.addPolygon(aPolygon);
 		
@@ -305,13 +305,13 @@ public class TestCheckMesh  extends BaseUtility {
 
 		MyBox abox=new MyBox(-1, 9, -1, 8, 0, 5);
 		aMesh.init(abox);
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(0, 0, 2),new MyPoint(0, 7, 2)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(8, 0, 5),new MyPoint(8, 7, 5)));
+		aMesh.addLevelEdge(new Edge(new Point(0, 0, 2),new Point(0, 7, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(8, 0, 5),new Point(8, 7, 5)));
 	
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((2 2 0, 2 5 0, 6 5 0, 6 2 0, 2 2 0))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(true);
 		aPolygon.setUsePolygonZ(false);
 		aMesh.processDelaunay();
@@ -351,13 +351,13 @@ public class TestCheckMesh  extends BaseUtility {
 
 		MyBox abox=new MyBox(0, 12, 0, 12, 0, 5);
 		aMesh.init(abox);
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(2, 10, 2),new MyPoint(2, 2, 2)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(2, 2, 2),new MyPoint(10, 2, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(2, 10, 2),new Point(2, 2, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(2, 2, 2),new Point(10, 2, 2)));
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(7, 7, 6),new MyPoint(10, 7, 6)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(10, 7, 6),new MyPoint(10, 10, 6)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(10, 10, 6),new MyPoint(7, 10, 6)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(7, 10, 6),new MyPoint(7, 7, 6)));
+		aMesh.addLevelEdge(new Edge(new Point(7, 7, 6),new Point(10, 7, 6)));
+		aMesh.addLevelEdge(new Edge(new Point(10, 7, 6),new Point(10, 10, 6)));
+		aMesh.addLevelEdge(new Edge(new Point(10, 10, 6),new Point(7, 10, 6)));
+		aMesh.addLevelEdge(new Edge(new Point(7, 10, 6),new Point(7, 7, 6)));
 		
 		aMesh.processDelaunay();
 		
@@ -370,13 +370,13 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((8 8 7, 9 8 7, 9 9 7, 8 9 7, 8 8 7))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(true);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((3 3 3, 7 3 3, 7 5 3, 5 5 3, 5 7 3, 3 7 3, 3 3 3))");
-		aPolygon = new MyPolygon(polygon, 600);
+		aPolygon = new ConstraintPolygon(polygon, 600);
 		aPolygon.setEmpty(true);
 		aPolygon.setUsePolygonZ(false);
 		aMesh.addPolygon(aPolygon);
@@ -413,13 +413,13 @@ public class TestCheckMesh  extends BaseUtility {
 //		aMesh.showDebug=true;
 		MyBox abox=new MyBox(0, 28, 0, 8, 0, 5);
 		aMesh.init(abox);
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 1, 2),new MyPoint(1, 4, 2)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 4, 2),new MyPoint(1, 7, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 1, 2),new Point(1, 4, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 4, 2),new Point(1, 7, 2)));
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(27, 1, 7),new MyPoint(27, 7, 7)));
+		aMesh.addLevelEdge(new Edge(new Point(27, 1, 7),new Point(27, 7, 7)));
 		
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 4, 2),new MyPoint(15, 4, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 4, 2),new Point(15, 4, 2)));
 		
 		aMesh.processDelaunay();
 		
@@ -432,13 +432,13 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((3 2 6, 3 6 6, 7 6 6, 7 2 6, 3 2 6))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(true);
 		aPolygon.setUsePolygonZ(false);
 		aMesh.addPolygon(aPolygon);
 		
 //		polygon = (Polygon) reader.read("POLYGON((9 2 9, 9 6 9, 13 6 9, 13 2 9, 9 2 9))");
-//		aPolygon = new MyPolygon(polygon, 600);
+//		aPolygon = new ConstraintPolygon(polygon, 600);
 //		aPolygon.setEmpty(true);
 //		aPolygon.setUsePolygonZ(false);
 //		aMesh.addPolygon(aPolygon);
@@ -474,13 +474,13 @@ public class TestCheckMesh  extends BaseUtility {
 
 		MyBox abox=new MyBox(0, 10, 0, 8, 0, 5);
 		aMesh.init(abox);
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 1, 2),new MyPoint(1, 4, 2)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 4, 2),new MyPoint(1, 7, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 1, 2),new Point(1, 4, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 4, 2),new Point(1, 7, 2)));
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 4, 2),new MyPoint(9, 4, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 4, 2),new Point(9, 4, 2)));
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(9, 1, 2),new MyPoint(9, 4, 2)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(9, 4, 2),new MyPoint(9, 7, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(9, 1, 2),new Point(9, 4, 2)));
+		aMesh.addLevelEdge(new Edge(new Point(9, 4, 2),new Point(9, 7, 2)));
 		
 		aMesh.processDelaunay();
 		
@@ -492,7 +492,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((3 2 6, 3 6 6, 7 6 6, 7 2 6, 3 2 6))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(true);
 		aPolygon.setUsePolygonZ(false);
 		aMesh.addPolygon(aPolygon);
@@ -526,12 +526,12 @@ public class TestCheckMesh  extends BaseUtility {
 
 		MyBox abox=new MyBox(0, 7, 0, 8, 0, 5);
 		aMesh.init(abox);
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 1, 0.5),new MyPoint(1, 7, 3.5)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(1, 7, 3.5),new MyPoint(6, 7, 6)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(6, 7, 6),new MyPoint(6, 3, 8)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(6, 3, 8),new MyPoint(3, 3, 9.5)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(3, 3, 9.5),new MyPoint(3, 5, 10.5)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(3, 5, 10.5),new MyPoint(4, 5, 11)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 1, 0.5),new Point(1, 7, 3.5)));
+		aMesh.addLevelEdge(new Edge(new Point(1, 7, 3.5),new Point(6, 7, 6)));
+		aMesh.addLevelEdge(new Edge(new Point(6, 7, 6),new Point(6, 3, 8)));
+		aMesh.addLevelEdge(new Edge(new Point(6, 3, 8),new Point(3, 3, 9.5)));
+		aMesh.addLevelEdge(new Edge(new Point(3, 3, 9.5),new Point(3, 5, 10.5)));
+		aMesh.addLevelEdge(new Edge(new Point(3, 5, 10.5),new Point(4, 5, 11)));
 		
 		aMesh.processDelaunay();
 		
@@ -569,14 +569,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(10, 0, 0));
-		listePoints.add(new MyPoint(0, 10, 0));
-		listePoints.add(new MyPoint(10, 10, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(10, 0, 0));
+		listePoints.add(new Point(0, 10, 0));
+		listePoints.add(new Point(10, 10, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
@@ -592,7 +592,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 5 2, 4 6 2, 5 9 2, 6 6 2, 9 5 2, 6 4 2, 5 1 2, 4 4 2, 1 5 2))");// a star
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -630,14 +630,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(10, 0, 0));
-		listePoints.add(new MyPoint(0, 10, 0));
-		listePoints.add(new MyPoint(10, 10, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(10, 0, 0));
+		listePoints.add(new Point(0, 10, 0));
+		listePoints.add(new Point(10, 10, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
@@ -645,7 +645,7 @@ public class TestCheckMesh  extends BaseUtility {
 
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 5 2, 4 6 2, 5 9 2, 6 6 2, 9 5 2, 6 4 2, 5 1 2, 4 4 2, 1 5 2))");// a star
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -685,14 +685,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(10, 0, 0));
-		listePoints.add(new MyPoint(0, 10, 0));
-		listePoints.add(new MyPoint(10, 10, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(10, 0, 0));
+		listePoints.add(new Point(0, 10, 0));
+		listePoints.add(new Point(10, 10, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
@@ -707,7 +707,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 5 2, 4 6 2, 5 9 2, 6 6 2, 9 5 2, 6 4 2, 5 1 2, 4 4 2, 1 5 2))");// a star
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(true);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -744,14 +744,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(1, 1, 0));
-		listePoints.add(new MyPoint(9, 1, 0));
-		listePoints.add(new MyPoint(1, 9, 0));
-		listePoints.add(new MyPoint(9, 9, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(1, 1, 0));
+		listePoints.add(new Point(9, 1, 0));
+		listePoints.add(new Point(1, 9, 0));
+		listePoints.add(new Point(9, 9, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
@@ -761,7 +761,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 5 2, 4 6 3, 5 9 2, 6 6 3, 9 5 2, 6 4 3, 5 1 2, 4 4 3, 1 5 2))");// a star
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setUsePolygonZ(true);
 		
 		aPolygon.setEmpty(false);
@@ -774,7 +774,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		
 		polygon = (Polygon) reader.read("POLYGON((1 5 5, 4 6 6, 5 9 5, 6 6 6, 9 5 5, 6 4 6, 5 1 5, 4 4 6, 1 5 5))");// a star
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setUsePolygonZ(true);
 		aPolygon.setEmpty(false);
 		aMesh.addBridge(aPolygon);
@@ -814,14 +814,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(10, 0, 0));
-		listePoints.add(new MyPoint(0, 11, 0));
-		listePoints.add(new MyPoint(10, 11, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(10, 0, 0));
+		listePoints.add(new Point(0, 11, 0));
+		listePoints.add(new Point(10, 11, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
@@ -838,7 +838,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 1 2, 1 5 2, 5 5 2, 5 1 2, 1 1 2))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -850,7 +850,7 @@ public class TestCheckMesh  extends BaseUtility {
 		System.out.println("Next");
 		
 		polygon = (Polygon) reader.read("POLYGON((1 6 5, 1 10 5, 5 10 5, 5 6 5, 1 6 5))");
-		aPolygon = new MyPolygon(polygon, 200);
+		aPolygon = new ConstraintPolygon(polygon, 200);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -862,7 +862,7 @@ public class TestCheckMesh  extends BaseUtility {
 		System.out.println("Next");
 		
 		polygon = (Polygon) reader.read("POLYGON((6 3 7, 6 8 7, 8 8 7, 8 3 7, 6 3 7))");
-		aPolygon = new MyPolygon(polygon, 200);
+		aPolygon = new ConstraintPolygon(polygon, 200);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -874,7 +874,7 @@ public class TestCheckMesh  extends BaseUtility {
 		System.out.println("Next");
 		
 		polygon = (Polygon) reader.read("POLYGON((6 0 3, 6 2 3, 9 2 3, 9 0 3, 6 0 3))");
-		aPolygon = new MyPolygon(polygon, 200);
+		aPolygon = new ConstraintPolygon(polygon, 200);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -906,25 +906,25 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 1 2, 1 5 2, 5 5 2, 5 1 2, 1 1 2))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((1 6 5, 1 10 5, 5 10 5, 5 6 5, 1 6 5))");
-		aPolygon = new MyPolygon(polygon, 200);
+		aPolygon = new ConstraintPolygon(polygon, 200);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((6 3 7, 6 8 7, 8 8 7, 8 3 7, 6 3 7))");
-		aPolygon = new MyPolygon(polygon, 200);
+		aPolygon = new ConstraintPolygon(polygon, 200);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((6 0 3, 6 2 3, 9 2 3, 9 0 3, 6 0 3))");
-		aPolygon = new MyPolygon(polygon, 200);
+		aPolygon = new ConstraintPolygon(polygon, 200);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -958,12 +958,12 @@ public class TestCheckMesh  extends BaseUtility {
 		MyBox abox=new MyBox(0, 10, 0, 10, 0, 5);
 		aMesh.init(abox);
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(1,1, 0));
-		listePoints.add(new MyPoint(5, 9, 0));
-		listePoints.add(new MyPoint(5,5, 0));
-		listePoints.add(new MyPoint(9, 5, 0));
-		listePoints.add(new MyPoint(8, 8, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(1,1, 0));
+		listePoints.add(new Point(5, 9, 0));
+		listePoints.add(new Point(5,5, 0));
+		listePoints.add(new Point(9, 5, 0));
+		listePoints.add(new Point(8, 8, 0));
 		
 		
 		aMesh.setPoints(listePoints);
@@ -974,7 +974,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((2 2 2, 3 4 2, 4 3 2, 2 2 2))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1013,12 +1013,12 @@ public class TestCheckMesh  extends BaseUtility {
 		MyBox abox=new MyBox(0, 10, 0, 8, 0, 5);
 		aMesh.init(abox);
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(1, 4, 0));
-		listePoints.add(new MyPoint(1, 7, 0));
-		listePoints.add(new MyPoint(3, 1, 0));
-		listePoints.add(new MyPoint(3, 4, 0));
-		listePoints.add(new MyPoint(9, 4, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(1, 4, 0));
+		listePoints.add(new Point(1, 7, 0));
+		listePoints.add(new Point(3, 1, 0));
+		listePoints.add(new Point(3, 4, 0));
+		listePoints.add(new Point(9, 4, 0));
 		
 		
 		aMesh.setPoints(listePoints);
@@ -1029,7 +1029,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((4 3 2, 4 5 2, 5 5 2,4 3 2 ))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1062,25 +1062,25 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-			listePoints.add(new MyPoint(0, 13, 0));
-			listePoints.add(new MyPoint(0, -1, 0));
-			listePoints.add(new MyPoint(13, 13, 0));
-			listePoints.add(new MyPoint(13, -1, 0));
-			listePoints.add(new MyPoint(21, 13, 0));
-			listePoints.add(new MyPoint(21, -1, 0));
-			listePoints.add(new MyPoint(31, 13, 0));
-			listePoints.add(new MyPoint(31, -1, 0));
-			listePoints.add(new MyPoint(37, 13, 0));
-			listePoints.add(new MyPoint(37, -1, 0));
-			listePoints.add(new MyPoint(46, 13, 0));
-			listePoints.add(new MyPoint(46, -1, 0));
-			listePoints.add(new MyPoint(61, 13, 0));
-			listePoints.add(new MyPoint(57, -1, 0));
-			listePoints.add(new MyPoint(69, 13, 0));
-			listePoints.add(new MyPoint(68, -1, 0));
-			listePoints.add(new MyPoint(81, 13, 0));
-			listePoints.add(new MyPoint(81, -1, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+			listePoints.add(new Point(0, 13, 0));
+			listePoints.add(new Point(0, -1, 0));
+			listePoints.add(new Point(13, 13, 0));
+			listePoints.add(new Point(13, -1, 0));
+			listePoints.add(new Point(21, 13, 0));
+			listePoints.add(new Point(21, -1, 0));
+			listePoints.add(new Point(31, 13, 0));
+			listePoints.add(new Point(31, -1, 0));
+			listePoints.add(new Point(37, 13, 0));
+			listePoints.add(new Point(37, -1, 0));
+			listePoints.add(new Point(46, 13, 0));
+			listePoints.add(new Point(46, -1, 0));
+			listePoints.add(new Point(61, 13, 0));
+			listePoints.add(new Point(57, -1, 0));
+			listePoints.add(new Point(69, 13, 0));
+			listePoints.add(new Point(68, -1, 0));
+			listePoints.add(new Point(81, 13, 0));
+			listePoints.add(new Point(81, -1, 0));
 			
 		aMesh.setPoints(listePoints);
 		
@@ -1089,25 +1089,25 @@ public class TestCheckMesh  extends BaseUtility {
 		// O
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 4 0, 1 8 0, 5 12 0, 8 12 0, 12 8 0, 12 4 0, 8 0 0, 5 0 0, 1 4 0))");// contour O
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((2 4 2, 2 8 2, 5 11 2, 8 11 2, 11 8 2, 11 4 2, 8 1 2, 5 1 2, 2 4 2))");// O
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((4 4 2, 4 8 2, 5 9 2, 8 9 2, 9 8 2, 9 4 2, 8 3 2, 5 3 2, 4 4 2))");// inside O
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((5 5 0, 5 7 0, 6 8 0, 7 8 0, 8 7 0, 8 5 0, 7 4 0, 6 4 0, 5 5 0))");// inside O
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1115,63 +1115,63 @@ public class TestCheckMesh  extends BaseUtility {
 
 		// r
 		polygon = (Polygon) reader.read("POLYGON((14 0 0, 14 8 0, 17 8 0, 17.5 7 0, 18 8 0, 20 8 0, 20 4 0, 18 4 0, 18 0 0, 14 0 0))");// contour r
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		
 		polygon = (Polygon) reader.read("POLYGON((15 1 2, 15 7 2, 17 7 2, 17 6 2, 18 7 2, 19 7 2, 19 5 2, 17 5 2, 17 1 2 ,15 1 2))");// r
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		// b
 		polygon = (Polygon) reader.read("POLYGON((22 0 0, 22 11 0, 26 11 0, 26 8 0, 29 8 0, 30 7 0, 30 1 0, 29 0 0, 26 0 0, 25.5 1 0, 25 0 0, 22 0 0))");// contour b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((23 1 2, 23 10 2, 25 10 2, 25 6 2, 26 7 2, 28 7 2, 29 6 2, 29 2 2, 28 1 2, 26 1 2, 25 2 2, 25 1 2,23 1 2))");// b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((25 3 2, 25 5 2, 26 6 2, 27 6 2, 28 5 2, 28 3 2, 27 2 2, 26 2 2,25 3 2))");// inside b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((25.5 3.5 0, 25.5 4.5 0, 26 5 0, 27 5 0, 27.5 4.5 0, 27.5 3.5 0, 27 3 0, 26 3 0,25.5 3.5 0))");// inside b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		// i
 		polygon = (Polygon) reader.read("POLYGON((32 0 0, 32 7.5 0, 36 7.5 0, 36 0 0, 32 0 0))");// contour |
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 
 		polygon = (Polygon) reader.read("POLYGON((33 1 2, 33 7 2, 35 7 2, 35 1 2, 33 1 2))");// |
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((32 7.5 0, 32 11 0, 36 11 0, 36 7.5 0, 32 7.5 0))");// contour .
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((33 8 2, 33 10 2, 35 10 2, 35 8 2, 33 8 2))");//  .
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1179,60 +1179,60 @@ public class TestCheckMesh  extends BaseUtility {
 
 		// s
 		polygon = (Polygon) reader.read("POLYGON((38 1.5 0, 38 3 0, 39 3.5 0, 40 3 0, 41 3 0, 39 4 0, 38 5 0, 38 6 0, 40 8 0, 43 8 0, 45 7 0, 45 5 0, 44 4.50 0, 43 5 0, 42 5 0, 44 4 0, 45 3 0, 45 2 0, 43 0 0, 40 0 0, 38 1.5 0))");// contour s
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((39 1.5 2, 39 3 2, 40 2.5 2, 42 2.5 2, 42 3 2, 40 4 2, 39 5 2, 39 6 2, 40 7 2, 43 7 2, 44 6.5 2, 44 5 2, 43 5.5 2, 41 5.5 2, 41 5 2, 43 4 2, 44 3 2, 44 2 2, 43 1 2, 40 1 2 ,39 1.5 2))");// s
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		// G
 		polygon = (Polygon) reader.read("POLYGON((47 4 0, 47 7 0, 48.5 10 0, 52 12 0, 55 12 0, 58 11 0, 59 10 0, 58 7 0, 56 1 0, 55 0 0, 50 0 0, 48 2 0,47 4 0))");// contour G
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((48 4 2, 48 7 2, 49 9 2, 52 11 2, 55 11 2, 57 10.5 2, 58 9.5 2, 57.5 8 2, 56.5 9 2, 54 9.5 2, 52 9 2, 51 8 2, 50 6 2, 50 4 2, 51 3 2, 53 3 2, 54 5 2, 52 5 2, 53 7 2, 57 7 2, 55 2 2, 54 1 2, 50 1 2, 49 2 2, 48 4 2))");// G
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(58, 7, 0),new MyPoint(56, 8, 0)));// inside G
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(56, 8, 0),new MyPoint(53, 8, 0)));// inside G
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(53, 8, 0),new MyPoint(52, 7, 0)));// inside G
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(52, 7, 0),new MyPoint(51, 5, 0)));// inside G
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(51, 5, 0),new MyPoint(52, 4, 0)));// inside G
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(52, 4, 0),new MyPoint(53, 4, 0)));// inside G
+		aMesh.addLevelEdge(new Edge(new Point(58, 7, 0),new Point(56, 8, 0)));// inside G
+		aMesh.addLevelEdge(new Edge(new Point(56, 8, 0),new Point(53, 8, 0)));// inside G
+		aMesh.addLevelEdge(new Edge(new Point(53, 8, 0),new Point(52, 7, 0)));// inside G
+		aMesh.addLevelEdge(new Edge(new Point(52, 7, 0),new Point(51, 5, 0)));// inside G
+		aMesh.addLevelEdge(new Edge(new Point(51, 5, 0),new Point(52, 4, 0)));// inside G
+		aMesh.addLevelEdge(new Edge(new Point(52, 4, 0),new Point(53, 4, 0)));// inside G
 
 		
 		// I
 		polygon = (Polygon) reader.read("POLYGON((59 0 0, 60 4 0, 61.5 4 0, 62 8 0, 60 8 0, 61 12 0, 68 12 0, 67 8 0, 66 8 0, 65.5 4 0, 67 4 0, 66 0 0, 59 0 0))");// contour I
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((60 1 2, 60.5 3 2, 62 3 2, 63 9 2, 61.5 9 2, 62 11 2, 67 11 2, 66.5 9 2, 65 9 2, 64 3 2, 65.5 3 2, 65 1 2, 60 1 2 ))");// I
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		// S
 		polygon = (Polygon) reader.read("POLYGON((67.5 1.5 0, 68.5 5 0, 71 4 0, 73 4 0, 71 5 0, 69.5 6 0, 68.5 8 0, 69 10 0, 70 11 0, 72 12 0, 77 12 0, 79 11 0, 80 10 0, 78.5 5.5 0, 77 7 0, 75 8 0, 73.5 8 0, 73.5 7.5 0, 77 5.5 0, 78 4 0, 78 2 0, 77 1 0, 75 0 0, 71 0 0, 67.5 1.5 0))");// contour S
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((68.5 2 2, 69 4 2, 71 3 2, 74 3 2, 75 4 2, 71 6 2, 69.5 8 2, 70 9 2, 71 10 2, 73 11 2, 75 11 2, 77.5 10.5 2, 79 9.5 2, 78 7 2, 77 8.5 2, 75 9 2, 73 9 2, 72 8 2, 72 7.5 2, 77 4.5 2, 77.5 3 2, 77 2 2, 75 1 2, 71 1 2, 68.5 2 2))");// S
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1267,25 +1267,25 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-			listePoints.add(new MyPoint(0, 13, 0));
-			listePoints.add(new MyPoint(0, -1, 0));
-			listePoints.add(new MyPoint(13, 13, 0));
-			listePoints.add(new MyPoint(13, -1, 0));
-			listePoints.add(new MyPoint(21, 13, 0));
-			listePoints.add(new MyPoint(21, -1, 0));
-			listePoints.add(new MyPoint(31, 13, 0));
-			listePoints.add(new MyPoint(31, -1, 0));
-			listePoints.add(new MyPoint(37, 13, 0));
-			listePoints.add(new MyPoint(37, -1, 0));
-			listePoints.add(new MyPoint(46, 13, 0));
-			listePoints.add(new MyPoint(46, -1, 0));
-			listePoints.add(new MyPoint(61, 13, 0));
-			listePoints.add(new MyPoint(57, -1, 0));
-			listePoints.add(new MyPoint(69, 13, 0));
-			listePoints.add(new MyPoint(68, -1, 0));
-			listePoints.add(new MyPoint(81, 13, 0));
-			listePoints.add(new MyPoint(81, -1, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+			listePoints.add(new Point(0, 13, 0));
+			listePoints.add(new Point(0, -1, 0));
+			listePoints.add(new Point(13, 13, 0));
+			listePoints.add(new Point(13, -1, 0));
+			listePoints.add(new Point(21, 13, 0));
+			listePoints.add(new Point(21, -1, 0));
+			listePoints.add(new Point(31, 13, 0));
+			listePoints.add(new Point(31, -1, 0));
+			listePoints.add(new Point(37, 13, 0));
+			listePoints.add(new Point(37, -1, 0));
+			listePoints.add(new Point(46, 13, 0));
+			listePoints.add(new Point(46, -1, 0));
+			listePoints.add(new Point(61, 13, 0));
+			listePoints.add(new Point(57, -1, 0));
+			listePoints.add(new Point(69, 13, 0));
+			listePoints.add(new Point(68, -1, 0));
+			listePoints.add(new Point(81, 13, 0));
+			listePoints.add(new Point(81, -1, 0));
 			
 		aMesh.setPoints(listePoints);
 		
@@ -1295,25 +1295,25 @@ public class TestCheckMesh  extends BaseUtility {
 		// O
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((1 4 0, 1 8 0, 5 12 0, 8 12 0, 12 8 0, 12 4 0, 8 0 0, 5 0 0, 1 4 0))");// contour O
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((2 4 2, 2 8 2, 5 11 2, 8 11 2, 11 8 2, 11 4 2, 8 1 2, 5 1 2, 2 4 2))");// O
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((4 4 2, 4 8 2, 5 9 2, 8 9 2, 9 8 2, 9 4 2, 8 3 2, 5 3 2, 4 4 2))");// inside O
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((5 5 0, 5 7 0, 6 8 0, 7 8 0, 8 7 0, 8 5 0, 7 4 0, 6 4 0, 5 5 0))");// inside O
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1327,7 +1327,7 @@ public class TestCheckMesh  extends BaseUtility {
 		// r
 		System.out.println("\ncontour r\n");
 		polygon = (Polygon) reader.read("POLYGON((14 0 0, 14 8 0, 17 8 0, 17.5 7 0, 18 8 0, 20 8 0, 20 4 0, 18 4 0, 18 0 0, 14 0 0))");// contour r
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1340,7 +1340,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		// end debug mode
 		System.out.println("\nr\n");
 		polygon = (Polygon) reader.read("POLYGON((15 1 2, 15 7 2, 17 7 2, 17 6 2, 18 7 2, 19 7 2, 19 5 2, 17 5 2, 17 1 2 ,15 1 2))");// r
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1353,7 +1353,7 @@ public class TestCheckMesh  extends BaseUtility {
 		// b
 		System.out.println("\ncontour b\n");
 		polygon = (Polygon) reader.read("POLYGON((22 0 0, 22 11 0, 26 11 0, 26 8 0, 29 8 0, 30 7 0, 30 1 0, 29 0 0, 26 0 0, 25.5 1 0, 25 0 0, 22 0 0))");// contour b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1365,7 +1365,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		aMesh.showDebug=true;
 		polygon = (Polygon) reader.read("POLYGON((23 1 2, 23 10 2, 25 10 2, 25 6 2, 26 7 2, 28 7 2, 29 6 2, 29 2 2, 28 1 2, 26 1 2, 25 2 2, 25 1 2,23 1 2))");// b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1373,13 +1373,13 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		
 		polygon = (Polygon) reader.read("POLYGON((25 3 2, 25 5 2, 26 6 2, 27 6 2, 28 5 2, 28 3 2, 27 2 2, 26 2 2,25 3 2))");// inside b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((25.5 3.5 0, 25.5 4.5 0, 26 5 0, 27 5 0, 27.5 4.5 0, 27.5 3.5 0, 27 3 0, 26 3 0,25.5 3.5 0))");// inside b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1391,25 +1391,25 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		// i
 		polygon = (Polygon) reader.read("POLYGON((32 0 0, 32 7.5 0, 36 7.5 0, 36 0 0, 32 0 0))");// contour |
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 
 		polygon = (Polygon) reader.read("POLYGON((33 1 2, 33 7 2, 35 7 2, 35 1 2, 33 1 2))");// |
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((32 7.5 0, 32 11 0, 36 11 0, 36 7.5 0, 32 7.5 0))");// contour .
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((33 8 2, 33 10 2, 35 10 2, 35 8 2, 33 8 2))");//  .
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1421,13 +1421,13 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		// s
 		polygon = (Polygon) reader.read("POLYGON((38 1.5 0, 38 3 0, 39 3.5 0, 40 3 0, 41 3 0, 39 4 0, 38 5 0, 38 6 0, 40 8 0, 43 8 0, 45 7 0, 45 5 0, 44 4.50 0, 43 5 0, 42 5 0, 44 4 0, 45 3 0, 45 2 0, 43 0 0, 40 0 0, 38 1.5 0))");// contour s
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((39 1.5 2, 39 3 2, 40 2.5 2, 42 2.5 2, 42 3 2, 40 4 2, 39 5 2, 39 6 2, 40 7 2, 43 7 2, 44 6.5 2, 44 5 2, 43 5.5 2, 41 5.5 2, 41 5 2, 43 4 2, 44 3 2, 44 2 2, 43 1 2, 40 1 2 ,39 1.5 2))");// s
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addPolygon(aPolygon);
@@ -1441,23 +1441,23 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		// G
 //		polygon = (Polygon) reader.read("POLYGON((47 4 0, 47 7 0, 48.5 10 0, 52 12 0, 55 12 0, 58 11 0, 59 10 0, 58 7 0, 56 1 0, 55 0 0, 50 0 0, 48 2 0,47 4 0))");// contour G
-//		aPolygon = new MyPolygon(polygon, 500);
+//		aPolygon = new ConstraintPolygon(polygon, 500);
 //		aPolygon.setEmpty(false);
 //		aPolygon.setUsePolygonZ(true);
 //		aMesh.addPolygon(aPolygon);
 //		
 //		polygon = (Polygon) reader.read("POLYGON((48 4 2, 48 7 2, 49 9 2, 52 11 2, 55 11 2, 57 10.5 2, 58 9.5 2, 57.5 8 2, 56.5 9 2, 54 9.5 2, 52 9 2, 51 8 2, 50 6 2, 50 4 2, 51 3 2, 53 3 2, 54 5 2, 52 5 2, 53 7 2, 57 7 2, 55 2 2, 54 1 2, 50 1 2, 49 2 2, 48 4 2))");// G
-//		aPolygon = new MyPolygon(polygon, 500);
+//		aPolygon = new ConstraintPolygon(polygon, 500);
 //		aPolygon.setEmpty(false);
 //		aPolygon.setUsePolygonZ(true);
 //		aMesh.addPolygon(aPolygon);
 //		
-//		aMesh.addLevelEdge(new MyEdge(new MyPoint(58, 7, 0),new MyPoint(56, 8, 0)));// inside G
-//		aMesh.addLevelEdge(new MyEdge(new MyPoint(56, 8, 0),new MyPoint(53, 8, 0)));// inside G
-//		aMesh.addLevelEdge(new MyEdge(new MyPoint(53, 8, 0),new MyPoint(52, 7, 0)));// inside G
-//		aMesh.addLevelEdge(new MyEdge(new MyPoint(52, 7, 0),new MyPoint(51, 5, 0)));// inside G
-//		aMesh.addLevelEdge(new MyEdge(new MyPoint(51, 5, 0),new MyPoint(52, 4, 0)));// inside G
-//		aMesh.addLevelEdge(new MyEdge(new MyPoint(52, 4, 0),new MyPoint(53, 4, 0)));// inside G
+//		aMesh.addLevelEdge(new Edge(new Point(58, 7, 0),new Point(56, 8, 0)));// inside G
+//		aMesh.addLevelEdge(new Edge(new Point(56, 8, 0),new Point(53, 8, 0)));// inside G
+//		aMesh.addLevelEdge(new Edge(new Point(53, 8, 0),new Point(52, 7, 0)));// inside G
+//		aMesh.addLevelEdge(new Edge(new Point(52, 7, 0),new Point(51, 5, 0)));// inside G
+//		aMesh.addLevelEdge(new Edge(new Point(51, 5, 0),new Point(52, 4, 0)));// inside G
+//		aMesh.addLevelEdge(new Edge(new Point(52, 4, 0),new Point(53, 4, 0)));// inside G
 //		
 //		
 //		System.out.println("\ncheck the G");
@@ -1467,13 +1467,13 @@ public class TestCheckMesh  extends BaseUtility {
 //		
 //		// I
 //		polygon = (Polygon) reader.read("POLYGON((59 0 0, 60 4 0, 61.5 4 0, 62 8 0, 60 8 0, 61 12 0, 68 12 0, 67 8 0, 66 8 0, 65.5 4 0, 67 4 0, 66 0 0, 59 0 0))");// contour I
-//		aPolygon = new MyPolygon(polygon, 500);
+//		aPolygon = new ConstraintPolygon(polygon, 500);
 //		aPolygon.setEmpty(false);
 //		aPolygon.setUsePolygonZ(true);
 //		aMesh.addPolygon(aPolygon);
 //		
 //		polygon = (Polygon) reader.read("POLYGON((60 1 2, 60.5 3 2, 62 3 2, 63 9 2, 61.5 9 2, 62 11 2, 67 11 2, 66.5 9 2, 65 9 2, 64 3 2, 65.5 3 2, 65 1 2, 60 1 2 ))");// I
-//		aPolygon = new MyPolygon(polygon, 500);
+//		aPolygon = new ConstraintPolygon(polygon, 500);
 //		aPolygon.setEmpty(false);
 //		aPolygon.setUsePolygonZ(true);
 //		aMesh.addPolygon(aPolygon);
@@ -1485,13 +1485,13 @@ public class TestCheckMesh  extends BaseUtility {
 //		
 //		// S
 //		polygon = (Polygon) reader.read("POLYGON((67.5 1.5 0, 68.5 5 0, 71 4 0, 73 4 0, 71 5 0, 69.5 6 0, 68.5 8 0, 69 10 0, 70 11 0, 72 12 0, 77 12 0, 79 11 0, 80 10 0, 78.5 5.5 0, 77 7 0, 75 8 0, 73.5 8 0, 73.5 7.5 0, 77 5.5 0, 78 4 0, 78 2 0, 77 1 0, 75 0 0, 71 0 0, 67.5 1.5 0))");// contour S
-//		aPolygon = new MyPolygon(polygon, 500);
+//		aPolygon = new ConstraintPolygon(polygon, 500);
 //		aPolygon.setEmpty(false);
 //		aPolygon.setUsePolygonZ(true);
 //		aMesh.addPolygon(aPolygon);
 //		
 //		polygon = (Polygon) reader.read("POLYGON((68.5 2 2, 69 4 2, 71 3 2, 74 3 2, 75 4 2, 71 6 2, 69.5 8 2, 70 9 2, 71 10 2, 73 11 2, 75 11 2, 77.5 10.5 2, 79 9.5 2, 78 7 2, 77 8.5 2, 75 9 2, 73 9 2, 72 8 2, 72 7.5 2, 77 4.5 2, 77.5 3 2, 77 2 2, 75 1 2, 71 1 2, 68.5 2 2))");// S
-//		aPolygon = new MyPolygon(polygon, 500);
+//		aPolygon = new ConstraintPolygon(polygon, 500);
 //		aPolygon.setEmpty(false);
 //		aPolygon.setUsePolygonZ(true);
 //		aMesh.addPolygon(aPolygon);
@@ -1521,25 +1521,25 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-			listePoints.add(new MyPoint(0, 13, 0));
-			listePoints.add(new MyPoint(0, -1, 0));
-			listePoints.add(new MyPoint(13, 13, 0));
-			listePoints.add(new MyPoint(13, -1, 0));
-			listePoints.add(new MyPoint(21, 13, 0));
-			listePoints.add(new MyPoint(21, -1, 0));
-			listePoints.add(new MyPoint(31, 13, 0));
-			listePoints.add(new MyPoint(31, -1, 0));
-			listePoints.add(new MyPoint(37, 13, 0));
-			listePoints.add(new MyPoint(37, -1, 0));
-			listePoints.add(new MyPoint(46, 13, 0));
-			listePoints.add(new MyPoint(46, -1, 0));
-			listePoints.add(new MyPoint(61, 13, 0));
-			listePoints.add(new MyPoint(57, -1, 0));
-			listePoints.add(new MyPoint(69, 13, 0));
-			listePoints.add(new MyPoint(68, -1, 0));
-			listePoints.add(new MyPoint(81, 13, 0));
-			listePoints.add(new MyPoint(81, -1, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+			listePoints.add(new Point(0, 13, 0));
+			listePoints.add(new Point(0, -1, 0));
+			listePoints.add(new Point(13, 13, 0));
+			listePoints.add(new Point(13, -1, 0));
+			listePoints.add(new Point(21, 13, 0));
+			listePoints.add(new Point(21, -1, 0));
+			listePoints.add(new Point(31, 13, 0));
+			listePoints.add(new Point(31, -1, 0));
+			listePoints.add(new Point(37, 13, 0));
+			listePoints.add(new Point(37, -1, 0));
+			listePoints.add(new Point(46, 13, 0));
+			listePoints.add(new Point(46, -1, 0));
+			listePoints.add(new Point(61, 13, 0));
+			listePoints.add(new Point(57, -1, 0));
+			listePoints.add(new Point(69, 13, 0));
+			listePoints.add(new Point(68, -1, 0));
+			listePoints.add(new Point(81, 13, 0));
+			listePoints.add(new Point(81, -1, 0));
 			
 		aMesh.setPoints(listePoints);
 		
@@ -1547,18 +1547,18 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		WKTReader reader = new WKTReader();
 		Polygon polygon;
-		MyPolygon aPolygon;
+		ConstraintPolygon aPolygon;
 		
 		// O
 		polygon = (Polygon) reader.read("POLYGON((2 4 10, 2 8 10, 5 11 10, 8 11 10, 11 8 10, 11 4 10, 8 1 10, 5 1 10, 2 4 10))");// O
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
 		// r
 		polygon = (Polygon) reader.read("POLYGON((15 1 10, 15 7 10, 17 7 10, 17 6 10, 18 7 10, 19 7 10, 19 5 10, 17 5 10, 17 1 10 ,15 1 10))");// r
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1566,20 +1566,20 @@ public class TestCheckMesh  extends BaseUtility {
 
 		// b
 		polygon = (Polygon) reader.read("POLYGON((23 1 10, 23 10 10, 25 10 10, 25 6 10, 26 7 10, 28 7 10, 29 6 10, 29 2 10, 28 1 10, 26 1 10, 25 2 10, 25 1 10,23 1 10))");// b
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
 		// i
 		polygon = (Polygon) reader.read("POLYGON((33 1 10, 33 7 10, 35 7 10, 35 1 10, 33 1 10))");// |
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
 		polygon = (Polygon) reader.read("POLYGON((33 8 10, 33 10 10, 35 10 10, 35 8 10, 33 8 10))");//  .
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1587,7 +1587,7 @@ public class TestCheckMesh  extends BaseUtility {
 	
 		// s		
 		polygon = (Polygon) reader.read("POLYGON((39 1.5 10, 39 3 10, 40 2.5 10, 42 2.5 10, 42 3 10, 40 4 10, 39 5 10, 39 6 10, 40 7 10, 43 7 10, 44 6.5 10, 44 5 10, 43 5.5 10, 41 5.5 10, 41 5 10, 43 4 10, 44 3 10, 44 2 10, 43 1 10, 40 1 10, 39 1.5 10))");// s
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1596,7 +1596,7 @@ public class TestCheckMesh  extends BaseUtility {
 		// G
 		
 		polygon = (Polygon) reader.read("POLYGON((48 4 10, 48 7 10, 49 9 10, 52 11 10, 55 11 10, 57 10.5 10, 58 9.5 10, 57.5 8 10, 56.5 9 10, 54 9.5 10, 52 9 10, 51 8 10, 50 6 10, 50 4 10, 51 3 10, 53 3 10, 54 5 10, 52 5 10, 53 7 10, 57 7 10, 55 2 10, 54 1 10, 50 1 10, 49 2 10, 48 4 10))");// G
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1605,14 +1605,14 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		// I		
 		polygon = (Polygon) reader.read("POLYGON((60 1 10, 60.5 3 10, 62 3 10, 63 9 10, 61.5 9 10, 62 11 10, 67 11 10, 66.5 9 10, 65 9 10, 64 3 10, 65.5 3 10, 65 1 10, 60 1 10 ))");// I
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
 		
 		// S
 		polygon = (Polygon) reader.read("POLYGON((68.5 2 10, 69 4 10, 71 3 10, 74 3 10, 75 4 10, 71 6 10, 69.5 8 10, 70 9 10, 71 10 10, 73 11 10, 75 11 10, 77.5 10.5 10, 79 9.5 10, 78 7 10, 77 8.5 10, 75 9 10, 73 9 10, 72 8 10, 72 7.5 10, 77 4.5 10, 77.5 3 10, 77 2 10, 75 1 10, 71 1 10, 68.5 2 10))");// S
-		aPolygon = new MyPolygon(polygon, 500);
+		aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1641,14 +1641,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(13, 0, 0));
-		listePoints.add(new MyPoint(0, 8, 0));
-		listePoints.add(new MyPoint(13, 8, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(13, 0, 0));
+		listePoints.add(new Point(0, 8, 0));
+		listePoints.add(new Point(13, 8, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);		
@@ -1660,7 +1660,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		Polygon polygon = (Polygon) reader.read("POLYGON((2 2 0, 2 6 0, 5 6 2, 8 6 0, 8 2 0, 5 2 2, 2 2 0))");
 		Polygon polygon = (Polygon) reader.read("POLYGON((2 2 0, 2 6 0, 5 8 2, 8 8 2, 11 6 0, 11 2 0, 8 4 2, 5 4 2, 2 2 0))");
 
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1692,14 +1692,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(8, 0, 0));
-		listePoints.add(new MyPoint(0, 10, 0));
-		listePoints.add(new MyPoint(8, 10, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(8, 0, 0));
+		listePoints.add(new Point(0, 10, 0));
+		listePoints.add(new Point(8, 10, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
@@ -1711,7 +1711,7 @@ public class TestCheckMesh  extends BaseUtility {
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((6 1 0, 4 1 1, 2 1 1, 2 3 1, 2 4 1.5, 2 6 1.5, 2 7 1, 2 9 1, 4 9 1, 6 9 0, 6 7 0, 4 7 1, 4 6 1.5, 4 4 1.5, 4 3 1, 6 3 0 ,6 1 0))");
 //		Polygon polygon = (Polygon) reader.read("POLYGON((4 1 1, 2 1 1, 2 3 1, 2 4 1.5, 2 6 1.5, 2 7 1, 2 9 1, 4 9 1, 4 7 1, 4 6 1.5, 4 4 1.5, 4 3 1, 4 1 1))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1742,14 +1742,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 				
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(0, 0, 0));
-		listePoints.add(new MyPoint(8, 0, 0));
-		listePoints.add(new MyPoint(0, 10, 0));
-		listePoints.add(new MyPoint(8, 10, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(0, 0, 0));
+		listePoints.add(new Point(8, 0, 0));
+		listePoints.add(new Point(0, 10, 0));
+		listePoints.add(new Point(8, 10, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints)
+		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);	
@@ -1760,7 +1760,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		aMesh.showDebug=true;
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((2 1 0, 4 1 1, 6 1 1, 6 3 1, 6 4 1.5, 6 6 1.5, 6 7 1, 6 9 1, 4 9 1, 2 9 0, 2 7 0, 4 7 1, 4 6 1.5, 4 4 1.5, 4 3 1, 2 3 0 ,2 1 0))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1791,14 +1791,14 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		
-		ArrayList<MyPoint> listePoints=new ArrayList<MyPoint>();
-		listePoints.add(new MyPoint(45, 0, 0));
-		listePoints.add(new MyPoint(46, 0, 0));
-		listePoints.add(new MyPoint(45, 1, 0));
-		listePoints.add(new MyPoint(46, 1, 0));
+		ArrayList<Point> listePoints=new ArrayList<Point>();
+		listePoints.add(new Point(45, 0, 0));
+		listePoints.add(new Point(46, 0, 0));
+		listePoints.add(new Point(45, 1, 0));
+		listePoints.add(new Point(46, 1, 0));
 	
 		MyBox abox=new MyBox();
-		for(MyPoint p:listePoints) {
+		for(Point p:listePoints) {
 			abox.alterBox(p);
 		}
 		aMesh.init(abox);
@@ -1810,7 +1810,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((48 4 2, 48 7 2, 49 9 2, 52 11 2, 55 11 2, 57 10.5 2, 58 9.5 2, 57.5 8 2, 56.5 9 2, 54 9.5 2, 52 9 2, 51 8 2, 50 6 2, 50 4 2, 51 3 2, 53 3 2, 54 5 2, 52 5 2, 53 7 2, 57 7 2, 55 2 2, 54 1 2, 50 1 2, 49 2 2, 48 4 2))");// G
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		aPolygon.setEmpty(false);
 		aPolygon.setUsePolygonZ(true);
 		aMesh.addBridge(aPolygon);
@@ -1869,7 +1869,7 @@ public class TestCheckMesh  extends BaseUtility {
 	 * @param edgeList
 	 * @return true if the mesh is good.
 	 */
-	public static boolean checkNoDuplicateEdge(ArrayList<MyEdge> edgeList)
+	public static boolean checkNoDuplicateEdge(ArrayList<Edge> edgeList)
 	{
 		boolean ok=true;
 		for(int i=0; i<edgeList.size();i++) {
@@ -1892,8 +1892,8 @@ public class TestCheckMesh  extends BaseUtility {
 	public static boolean checkEdgeTriangleExiste(MyMesh aMesh)
 	{
 		boolean ok=true;
-		ArrayList<MyTriangle> triangles = aMesh.getTriangles();
-		for(MyEdge anEdge : aMesh.getEdges())
+		ArrayList<DelaunayTriangle> triangles = aMesh.getTriangles();
+		for(Edge anEdge : aMesh.getEdges())
 		{
 				boolean findleft= (anEdge.getLeft()!=null?(anEdge.getLeft().getGID()==-1):true);
 				boolean findright= (anEdge.getRight()!=null?(anEdge.getRight().getGID()==-1):true);
@@ -1925,7 +1925,7 @@ public class TestCheckMesh  extends BaseUtility {
 	}
 
 	
-	public static boolean checkEdgeNoIntersection(ArrayList<MyEdge> edgeList) throws DelaunayError{
+	public static boolean checkEdgeNoIntersection(ArrayList<Edge> edgeList) throws DelaunayError{
 		boolean ok=true;
 		for(int i=0; i<edgeList.size();i++) {
 			for (int j = i + 1; j < edgeList.size(); j++) {
@@ -1950,16 +1950,16 @@ public class TestCheckMesh  extends BaseUtility {
 	 */
 	public static void checkMesh(MyMesh aMesh, String pathFileRef) throws IOException, ClassNotFoundException, DelaunayError
 	{
-		ArrayList<MyPoint> pointListToCheck= aMesh.getPoints();
-		ArrayList<MyEdge> edgeListToCheck= aMesh.getEdges();
-		ArrayList<MyTriangle> triangleListToCheck= aMesh.getTriangles();
+		ArrayList<Point> pointListToCheck= aMesh.getPoints();
+		ArrayList<Edge> edgeListToCheck= aMesh.getEdges();
+		ArrayList<DelaunayTriangle> triangleListToCheck= aMesh.getTriangles();
 		
 		System.out.println("\nChecking mesh...\n");
 		FileInputStream fis = new FileInputStream(pathFileRef);
 		ObjectInputStream ois = new ObjectInputStream(fis);
-		ArrayList<MyPoint> pointListRef = (ArrayList<MyPoint>) ois.readObject();
-		ArrayList<MyEdge> edgeListRef = (ArrayList<MyEdge>) ois.readObject();
-		ArrayList<MyTriangle> tiangleListRef = (ArrayList<MyTriangle>) ois.readObject();
+		ArrayList<Point> pointListRef = (ArrayList<Point>) ois.readObject();
+		ArrayList<Edge> edgeListRef = (ArrayList<Edge>) ois.readObject();
+		ArrayList<DelaunayTriangle> tiangleListRef = (ArrayList<DelaunayTriangle>) ois.readObject();
 		ois.close();
 		
 		
@@ -1977,7 +1977,7 @@ public class TestCheckMesh  extends BaseUtility {
 		//
 		// 		checking points
 		//
-		for(MyPoint aPoint: pointListRef)
+		for(Point aPoint: pointListRef)
 		{
 			find=false;
 			for(i=0;i<pointListToCheck.size()&&!find;i++)
@@ -2000,7 +2000,7 @@ public class TestCheckMesh  extends BaseUtility {
 		if(!pointListToCheck.isEmpty())
 		{
 			meshIsGood=false;
-			for(MyPoint aPoint:pointListToCheck) {
+			for(Point aPoint:pointListToCheck) {
 				System.err.println("Not fond in reference! : " + aPoint + " " + aPoint.getIndicator() + " | " + (aPoint.isUseByLevelEdge() ? "lvl" : "") + "  " + (aPoint.isUseByPolygon() ? "poly" : ""));
 			}
 		}
@@ -2019,7 +2019,7 @@ public class TestCheckMesh  extends BaseUtility {
 		}
 
 		
-		for(MyEdge anEdge: edgeListRef)
+		for(Edge anEdge: edgeListRef)
 		{
 			find=false;
 			for(i=0;i<edgeListToCheck.size()&&!find;i++)
@@ -2052,7 +2052,7 @@ public class TestCheckMesh  extends BaseUtility {
 		if(!edgeListToCheck.isEmpty())
 		{
 			meshIsGood=false;
-			for(MyEdge anEdge:edgeListToCheck) {
+			for(Edge anEdge:edgeListToCheck) {
 				System.err.println("Not fond in reference! : " + anEdge + " " + anEdge.getIndicator() + " | " + (anEdge.isLevelEdge() ? "lvl" : "") + "  " + (anEdge.isUseByPolygon() ? "poly" : ""));
 			}
 		}

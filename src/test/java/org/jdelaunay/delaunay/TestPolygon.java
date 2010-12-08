@@ -12,7 +12,7 @@ public class TestPolygon  extends BaseUtility  {
 	
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -33,7 +33,7 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -56,7 +56,7 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -78,7 +78,7 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -98,7 +98,7 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -119,10 +119,10 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -145,13 +145,13 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		
 		Polygon polygon3 = (Polygon) reader.read("POLYGON((80 20 10, 80 80 10, 120 80 30, 120 20 30, 80 20 10))");
-		MyPolygon aPolygon3 = new MyPolygon(polygon3,5210967);
+		ConstraintPolygon aPolygon3 = new ConstraintPolygon(polygon3,5210967);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -176,16 +176,16 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		
 		Polygon polygon3 = (Polygon) reader.read("POLYGON((80 20 10, 80 80 10, 120 80 30, 120 20 30, 80 20 10))");
-		MyPolygon aPolygon3 = new MyPolygon(polygon3,5210967);
+		ConstraintPolygon aPolygon3 = new ConstraintPolygon(polygon3,5210967);
 		
 		Polygon polygon4 = (Polygon) reader.read("POLYGON((45 70 30, 45 100 30, 70 100 30, 70 60 30, 45 70 30))");
-		MyPolygon aPolygon4 = new MyPolygon(polygon4,13606732);
+		ConstraintPolygon aPolygon4 = new ConstraintPolygon(polygon4,13606732);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -209,16 +209,16 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		
 		Polygon polygon3 = (Polygon) reader.read("POLYGON((80 20 10, 80 80 10, 120 80 30, 120 20 30, 80 20 10))");
-		MyPolygon aPolygon3 = new MyPolygon(polygon3,5210967);
+		ConstraintPolygon aPolygon3 = new ConstraintPolygon(polygon3,5210967);
 		
 		Polygon polygon4 = (Polygon) reader.read("POLYGON((45 70 30, 45 100 30, 70 100 30, 70 60 30, 45 70 30))");
-		MyPolygon aPolygon4 = new MyPolygon(polygon4,13606732);
+		ConstraintPolygon aPolygon4 = new ConstraintPolygon(polygon4,13606732);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -245,16 +245,16 @@ public class TestPolygon  extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		
 		Polygon polygon3 = (Polygon) reader.read("POLYGON((80 20 10, 80 80 10, 120 80 30, 120 20 30, 80 20 10))");
-		MyPolygon aPolygon3 = new MyPolygon(polygon3,5210967);
+		ConstraintPolygon aPolygon3 = new ConstraintPolygon(polygon3,5210967);
 		
 		Polygon polygon4 = (Polygon) reader.read("POLYGON((70 55 5, 70 45 5, 110 45 5, 110 55 5, 70 55 5))");
-		MyPolygon aPolygon4 = new MyPolygon(polygon4,13606732);
+		ConstraintPolygon aPolygon4 = new ConstraintPolygon(polygon4,13606732);
 		 
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);

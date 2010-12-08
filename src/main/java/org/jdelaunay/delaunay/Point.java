@@ -14,7 +14,7 @@ import java.awt.Graphics;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MyPoint extends MyElement {
+public class Point extends Element {
 	/**
 	 * 
 	 */
@@ -55,7 +55,7 @@ public class MyPoint extends MyElement {
 	 * Build a point at the origin
 	 * @throws DelaunayError  If x, y or z is not set.
 	 */
-	public MyPoint() throws DelaunayError {
+	public Point() throws DelaunayError {
 		super();
 		init(0.0,0.0,0.0);
 	}
@@ -68,7 +68,7 @@ public class MyPoint extends MyElement {
 	 * @param z
 	 * @throws DelaunayError If x, y or z is not set.
 	 */
-	public MyPoint(double x, double y, double z) throws DelaunayError {
+	public Point(double x, double y, double z) throws DelaunayError {
 		super();
 		init(x,y,z);
 	}
@@ -77,8 +77,8 @@ public class MyPoint extends MyElement {
 	 * Build a point as a copy of another point
 	 * @throws DelaunayError DelaunayError
 	 */
-	public MyPoint(MyPoint pt) throws DelaunayError {
-		super((MyElement) pt);
+	public Point(Point pt) throws DelaunayError {
+		super((Element) pt);
 		init(pt.coord.x,pt.coord.y,pt.coord.z);
 	}
 
@@ -86,7 +86,7 @@ public class MyPoint extends MyElement {
 	 * Build a point as a copy of jts Coordinates
 	 * @throws DelaunayError If x, y or z is not set.
 	 */
-	public MyPoint(Coordinate coord) throws DelaunayError {
+	public Point(Coordinate coord) throws DelaunayError {
 		super();
 		init(coord.x,coord.y,coord.z);
 	}
@@ -284,7 +284,7 @@ public class MyPoint extends MyElement {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.MyElement#getBoundingBox()
+	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
 	public MyBox getBoundingBox() {
@@ -295,16 +295,16 @@ public class MyPoint extends MyElement {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.MyElement#contains(org.jdelaunay.delaunay.MyPoint)
+	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
 	 */
 	@Override
-	public boolean contains(MyPoint aPoint) {
-		return squareDistance(aPoint) < MyTools.EPSILON2;
+	public boolean contains(Point aPoint) {
+		return squareDistance(aPoint) < Tools.EPSILON2;
 	}
 	
 	@Override
 	public boolean contains(Coordinate c) {
-		return squareDistance(c.x, c.y, c.z) < MyTools.EPSILON2;
+		return squareDistance(c.x, c.y, c.z) < Tools.EPSILON2;
 	}
 	
 	/**
@@ -313,7 +313,7 @@ public class MyPoint extends MyElement {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance1D(MyPoint aPoint) {
+	protected double squareDistance1D(Point aPoint) {
 		return (coord.x - aPoint.coord.x) * (coord.x - aPoint.coord.x);
 	}
 
@@ -323,7 +323,7 @@ public class MyPoint extends MyElement {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance2D(MyPoint aPoint) {
+	protected double squareDistance2D(Point aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y);
 	}
 
@@ -344,7 +344,7 @@ public class MyPoint extends MyElement {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance(MyPoint aPoint) {
+	protected double squareDistance(Point aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
 	}
 
@@ -379,7 +379,7 @@ public class MyPoint extends MyElement {
 	 * @param tolarence
 	 * @return closedTo
 	 */
-	protected boolean closedTo(MyPoint aPoint, double tolerence) {
+	protected boolean closedTo(Point aPoint, double tolerence) {
 		return (squareDistance(aPoint) < tolerence*tolerence);
 	}
 
@@ -401,11 +401,11 @@ public class MyPoint extends MyElement {
 	 */
 	@Override
 	public boolean equals(Object p){
-		if(p instanceof MyPoint){
-			MyPoint y = (MyPoint) p;
+		if(p instanceof Point){
+			Point y = (Point) p;
                         double dist = (getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY());
                         dist = dist + (getZ() - y.getZ())*(getZ() - y.getZ());
-			return dist<MyTools.EPSILON2;
+			return dist<Tools.EPSILON2;
 		}else {
 			return false;
 		}
@@ -423,11 +423,11 @@ public class MyPoint extends MyElement {
 	 * @param y
 	 * @return
 	 */
-	public boolean equals2D(MyPoint y){
+	public boolean equals2D(Point y){
 		if(y==null){
 			return false;
 		} else {
-                        return (((getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY()))<MyTools.EPSILON2);
+                        return (((getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY()))<Tools.EPSILON2);
 		}
 	}
 
@@ -439,11 +439,11 @@ public class MyPoint extends MyElement {
 	 *	0 : if this.x == p.x && this.y == p.y
 	 *	1 otherwise.
 	 */
-	public int compareTo2D(MyPoint p){
+	public int compareTo2D(Point p){
                 double dx = (getX() - p.getX());
-                if(dx*dx*2 < MyTools.EPSILON2){
+                if(dx*dx*2 < Tools.EPSILON2){
                         double dy = (getY() - p.getY());
-                        if(dx*dx+dy*dy<MyTools.EPSILON2){
+                        if(dx*dx+dy*dy<Tools.EPSILON2){
                                 return 0;
                         } else if(getY()<p.getY()){
                                 return -1;

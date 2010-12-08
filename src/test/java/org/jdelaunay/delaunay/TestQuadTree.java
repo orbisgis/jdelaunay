@@ -13,10 +13,10 @@ public class TestQuadTree extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		
 		
 		MyMesh aMesh = new MyMesh();
@@ -45,10 +45,10 @@ public class TestQuadTree extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		
 		
 		MyMesh aMesh = new MyMesh();
@@ -78,10 +78,10 @@ public class TestQuadTree extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((55 80 10, 55 90 10, 35 90 10, 40 120 10, 75 110 10, 55 80 10))");
-		MyPolygon aPolygon = new MyPolygon(polygon, 500);
+		ConstraintPolygon aPolygon = new ConstraintPolygon(polygon, 500);
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,16750080);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,16750080);
 		
 		
 		MyMesh aMesh = new MyMesh();
@@ -114,11 +114,11 @@ public class TestQuadTree extends BaseUtility  {
 		
 		WKTReader reader = new WKTReader();
 		Polygon polygon = (Polygon) reader.read("POLYGON((20 20 10, 80 20 10, 80 80 10, 20 80 10, 20 20 10))");
-		MyPolygon secPolygon = new MyPolygon(polygon,16750080);
+		ConstraintPolygon secPolygon = new ConstraintPolygon(polygon,16750080);
 		
 		
 		Polygon polygon2 = (Polygon) reader.read("POLYGON((100 20 60, 100 80 60, 180 80 60, 180 20 60, 100 20 60))");
-		MyPolygon aPolygon2 = new MyPolygon(polygon2,500);
+		ConstraintPolygon aPolygon2 = new ConstraintPolygon(polygon2,500);
 		
 		MyMesh aMesh = new MyMesh();
 		aMesh.setPrecision(1.0e-3);
@@ -142,16 +142,16 @@ public class TestQuadTree extends BaseUtility  {
 //		aPolygon2.setUsePolygonZ(true);
 		
 		
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(30, 150, 7), new MyPoint(100, 150, 3)));
+		aMesh.addLevelEdge(new Edge(new Point(30, 150, 7), new Point(100, 150, 3)));
 
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(30, 50, 20), new MyPoint(300, 50, 20)));
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(300, 50, 20),new MyPoint(300, 150, 20)));		
+		aMesh.addLevelEdge(new Edge(new Point(30, 50, 20), new Point(300, 50, 20)));
+		aMesh.addLevelEdge(new Edge(new Point(300, 50, 20),new Point(300, 150, 20)));
 		
 //		aMesh.addPolygon(aPolygon);
 		aMesh.addPolygon(aPolygon2);
 		
 		aMesh.processDelaunay();
-		aMesh.addLevelEdge(new MyEdge(new MyPoint(30, 95, 50), new MyPoint(100, 120, 50)));
+		aMesh.addLevelEdge(new Edge(new Point(30, 95, 50), new Point(100, 120, 50)));
 		
 
 	
