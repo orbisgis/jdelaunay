@@ -46,7 +46,7 @@ public class MyMesh {
 
 	// bounding box
 	protected int maxx, maxy;
-	private MyBox theBox;
+	private BoundaryBox theBox;
 
 	// GIDs
 	private int point_GID;
@@ -103,7 +103,7 @@ public class MyMesh {
 		
 		this.maxx = 1200;
 		this.maxy = 700;
-		this.theBox = new MyBox();
+		this.theBox = new BoundaryBox();
 //		this.isBoundingBoxInit=false;
 		
 		
@@ -143,7 +143,7 @@ public class MyMesh {
 		trianglesQuadTree=new MyQuadTreeMapper<DelaunayTriangle>(getBoundingBox());
 	}
 	
-	public void init(MyBox boundingBox) throws DelaunayError
+	public void init(BoundaryBox boundingBox) throws DelaunayError
 	{
 		this.theBox=boundingBox;
 		pointsQuadTree=new MyQuadTreeMapper<Point>(this.theBox);
@@ -172,7 +172,7 @@ public class MyMesh {
 	/**
 	 * Compute Mesh bounding box
 	 */
-	public MyBox getBoundingBox() {
+	public BoundaryBox getBoundingBox() {
 //		isBoundingBoxInit=true;
 		this.theBox = pointsQuadTree.getBox();
 		return this.theBox;
@@ -376,7 +376,7 @@ public class MyMesh {
 	 * 
 	 * @return the theBox
 	 */
-	public MyBox getTheBox() {
+	public BoundaryBox getTheBox() {
 		return theBox;
 	}
 
@@ -3387,7 +3387,7 @@ public class MyMesh {
 
 	
 	/**
-	 * Insert a point to the current triangularization
+	 * Insert a point to the current triangulation
 	 * 
 	 * @param aPoint
 	 * @param property Property for the new triangle.

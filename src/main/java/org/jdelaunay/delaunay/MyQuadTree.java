@@ -61,7 +61,7 @@ public class MyQuadTree<T extends Element> {
 	 * Only not empty nodes are generated.
 	 * @param maxLevel
 	 */
-	public MyQuadTree(int maxLevel, MyBox boundingBox, ArrayList<T> elements) {
+	public MyQuadTree(int maxLevel, BoundaryBox boundingBox, ArrayList<T> elements) {
 		init();
 		level=maxLevel;
 		System.out.println("bip");
@@ -77,8 +77,8 @@ public class MyQuadTree<T extends Element> {
 	 * @param sector
 	 * @param boundingBox
 	 */
-	private MyBox getSectorNode(int sector, MyBox boundingBox) {
-		MyBox aBox = new MyBox();
+	private BoundaryBox getSectorNode(int sector, BoundaryBox boundingBox) {
+		BoundaryBox aBox = new BoundaryBox();
 
 		switch (sector) {
 		case 0: // bottom left
@@ -115,7 +115,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox Bounding Box of the node of quadtree.
 	 * @return The number of the case of thelist who contain the good list of element.
 	 */
-	private int getSectorList(MyBox elementBoundingBox, MyBox boundingBox) {	
+	private int getSectorList(BoundaryBox elementBoundingBox, BoundaryBox boundingBox) {
 		//	 _______ _______ _______
 		//	|		|		|		|
 		//	|		|	2	|		|
@@ -166,7 +166,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox Bounding Box of the node of quadtree.
 	 * @return True is elementBoundingBox intersect the sector.
 	 */
-	private boolean isIntersectSectorList(int sector, MyBox elementBoundingBox, MyBox boundingBox) {	
+	private boolean isIntersectSectorList(int sector, BoundaryBox elementBoundingBox, BoundaryBox boundingBox) {
 		
 		//	 _______ _______ _______
 		//	|		|		|		|
@@ -228,20 +228,20 @@ public class MyQuadTree<T extends Element> {
 	 * @param theBox
 	 * @param boundingBox
 	 */
-	protected void add(T element, MyBox theBox, MyBox boundingBox, int maxLevel) {
+	protected void add(T element, BoundaryBox theBox, BoundaryBox boundingBox, int maxLevel) {
 		int indexIntersect = -1;
-		MyBox saveBox = null;
+		BoundaryBox saveBox = null;
 
 		// Check in which area of the QuadTree it can be
 		// Elements at the frontier may be counted several times -> the will be
 		// inserted in the root
 		for (int sector = 0; sector < 4; sector++) {
-			MyBox testBox = getSectorNode(sector, boundingBox);
+			BoundaryBox testBox = getSectorNode(sector, boundingBox);
 				if ( (theBox.minx >= testBox.minx) && (theBox.maxx <= testBox.maxx) 
 				 &&  (theBox.miny >= testBox.miny) && (theBox.maxy <= testBox.maxy) ) {
 				// One point at least is inside => memorize it
 				indexIntersect = sector;
-				saveBox = new MyBox(testBox);
+				saveBox = new BoundaryBox(testBox);
 			}
 		}
 
@@ -270,21 +270,21 @@ public class MyQuadTree<T extends Element> {
 	 * @param theBox
 	 * @param boundingBox
 	 */
-	protected void add(T element, MyBox theBox, MyBox boundingBox) {
+	protected void add(T element, BoundaryBox theBox, BoundaryBox boundingBox) {
 		int indexIntersect = -1;
-		MyBox saveBox = null;
+		BoundaryBox saveBox = null;
 
 		// Check in which area of the QuadTree it can be
 		// Elements at the frontier may be counted several times -> the will be
 		// inserted in the root
 		for (int sector = 0; sector < 4; sector++) {
-			MyBox testBox = getSectorNode(sector, boundingBox);
+			BoundaryBox testBox = getSectorNode(sector, boundingBox);
 				if ( (theBox.minx >= testBox.minx) && (theBox.maxx <= testBox.maxx) 
 						 &&  (theBox.miny >= testBox.miny) && (theBox.maxy <= testBox.maxy) ) {
 
 			// One point at least is inside => memorize it
 				indexIntersect = sector;
-				saveBox = new MyBox(testBox);
+				saveBox = new BoundaryBox(testBox);
 			}
 		}
 
@@ -317,7 +317,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param element
 	 * @param boundingBo 
 	 */
-	private void add(T element, MyBox boundingBox)//FIXME too slow
+	private void add(T element, BoundaryBox boundingBox)//FIXME too slow
 	{
 		int i, sector =getSectorList(element.getBoundingBox(), boundingBox);
 		for(i=0;i<theList[sector].size()
@@ -338,7 +338,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox
 	 * @return True if it's inside the tree. 
 	 */
-	protected boolean contains(T element, MyBox boundingBox) {
+	protected boolean contains(T element, BoundaryBox boundingBox) {
 		boolean found = false;
 
 		// test root list
@@ -354,7 +354,7 @@ public class MyQuadTree<T extends Element> {
 			int i = 0;
 			while ((i < 4) && (found == false)) {
 				if (theQuadTree[i] != null) {
-					MyBox testBox = getSectorNode(i, boundingBox);
+					BoundaryBox testBox = getSectorNode(i, boundingBox);
 					if ((x >= testBox.minx) && (x <= testBox.maxx)
 							&& (y >= testBox.miny) && (y <= testBox.maxy)) {
 						// One point at least is inside => memorize it
@@ -375,7 +375,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox
 	 * @return True if it's inside the tree. 
 	 */
-	protected T get(T element, MyBox boundingBox) {
+	protected T get(T element, BoundaryBox boundingBox) {
 		T found = null;
 
 		// test root list
@@ -421,7 +421,7 @@ public class MyQuadTree<T extends Element> {
 			int i = 0;
 			while ((i < 4) && (found == null)) {
 				if (theQuadTree[i] != null) {
-					MyBox testBox = getSectorNode(i, boundingBox);
+					BoundaryBox testBox = getSectorNode(i, boundingBox);
 					if ((x >= testBox.minx) && (x <= testBox.maxx)
 							&& (y >= testBox.miny) && (y <= testBox.maxy)) {
 						// One point at least is inside => memorize it
@@ -442,7 +442,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox
 	 * @return
 	 */
-	protected T search(Point aPoint, double precision, MyBox boundingBox) {
+	protected T search(Point aPoint, double precision, BoundaryBox boundingBox) {
 		T anElement = null;
 
 		// test root list
@@ -485,7 +485,7 @@ public class MyQuadTree<T extends Element> {
 			int i = 0;
 			while ((i < 4) && (anElement == null)) {
 				if (theQuadTree[i] != null) {
-					MyBox testBox = getSectorNode(i, boundingBox);
+					BoundaryBox testBox = getSectorNode(i, boundingBox);
 					if ((x >= testBox.minx) && (x <= testBox.maxx)
 							&& (y >= testBox.miny) && (y <= testBox.maxy)) {
 						// One point at least is inside => memorize it
@@ -507,7 +507,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox
 	 * @return
 	 */
-	protected T search(Point aPoint, MyBox boundingBox) {
+	protected T search(Point aPoint, BoundaryBox boundingBox) {
 		T anElement = null;
 
 		// test root list
@@ -545,7 +545,7 @@ public class MyQuadTree<T extends Element> {
 			int i = 0;
 			while ((i < 4) && (anElement == null)) {
 				if (theQuadTree[i] != null) {
-					MyBox testBox = getSectorNode(i, boundingBox);
+					BoundaryBox testBox = getSectorNode(i, boundingBox);
 					if ((x >= testBox.minx) && (x <= testBox.maxx)
 							&& (y >= testBox.miny) && (y <= testBox.maxy)) {
 						// One point at least is inside => memorize it
@@ -565,7 +565,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox
 	 * @return
 	 */
-	protected T searchGID(int gid, MyBox boundingBox) {
+	protected T searchGID(int gid, BoundaryBox boundingBox) {
 		T anElement = null;
 
 		// test root list
@@ -588,7 +588,7 @@ public class MyQuadTree<T extends Element> {
 			int i = 0;
 			while ((i < 4) && (anElement == null)) {
 				if (theQuadTree[i] != null) {
-					MyBox testBox = getSectorNode(i, boundingBox);
+					BoundaryBox testBox = getSectorNode(i, boundingBox);
 						// One point at least is inside => memorize it
 						anElement = theQuadTree[i].searchGID(gid, testBox);
 				}
@@ -607,7 +607,7 @@ public class MyQuadTree<T extends Element> {
 	 * @return The element that contain anElement.
 	 * @throws DelaunayError 
 	 */
-	protected <E extends Element> T searchInWhichElementItIs(E anElement, MyBox boundingBox) throws DelaunayError {
+	protected <E extends Element> T searchInWhichElementItIs(E anElement, BoundaryBox boundingBox) throws DelaunayError {
 		T  foudElement = null;
 		
 		// test root list
@@ -646,7 +646,7 @@ public class MyQuadTree<T extends Element> {
 	
 		// test bounding box of the each subarea and search inside if it is in the box
 		int i = 0;
-		MyBox testBox;
+		BoundaryBox testBox;
 		while ((i < 4)) {
 			if (theQuadTree[i] != null) {
 				testBox = getSectorNode(i, boundingBox);
@@ -673,7 +673,7 @@ public class MyQuadTree<T extends Element> {
 	 * Object[0] is an Edge<br/>
 	 * Object[1] is an Integer ( The result of anEdge.intersects(...) ).
 	 */
-	protected ArrayList<Object[]> searchIntersection(Edge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {//TODO optimize me !!!
+	protected ArrayList<Object[]> searchIntersection(Edge anEdge, BoundaryBox searchBoundingBox, BoundaryBox boundingBox) throws DelaunayError {//TODO optimize me !!!
 		ArrayList<Object[]>  allElements = new ArrayList<Object[]>();
 		int intersect=0;
 
@@ -722,7 +722,7 @@ public class MyQuadTree<T extends Element> {
 		int i = 0;
 		while ((i < 4)) {
 			if (theQuadTree[i] != null) {
-				MyBox testBox = getSectorNode(i, boundingBox);
+				BoundaryBox testBox = getSectorNode(i, boundingBox);
 				if (searchBoundingBox.maxx >= testBox.minx && searchBoundingBox.minx <= testBox.maxx
 					&& searchBoundingBox.miny <= testBox.maxy && searchBoundingBox.maxy >= testBox.miny )
 				{
@@ -741,7 +741,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox
 	 * @return True is an intersection exist between an other edge.
 	 */
-	protected boolean isIntersect(Edge anEdge, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {
+	protected boolean isIntersect(Edge anEdge, BoundaryBox searchBoundingBox, BoundaryBox boundingBox) throws DelaunayError {
 		boolean isIntersect=false;
 //		int intersect=0;
 
@@ -776,7 +776,7 @@ public class MyQuadTree<T extends Element> {
 		int i = 0;
 		while ((i < 4) && !isIntersect) {
 			if (theQuadTree[i] != null) {
-				MyBox testBox = getSectorNode(i, boundingBox);
+				BoundaryBox testBox = getSectorNode(i, boundingBox);
 				if (searchBoundingBox.maxx >= testBox.minx && searchBoundingBox.minx <= testBox.maxx
 					&& searchBoundingBox.miny <= testBox.maxy && searchBoundingBox.maxy >= testBox.miny )
 				{
@@ -795,7 +795,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox Bounding box of quad tree.
 	 * @return All elements inside or on the area searchBoundingBox.
 	 */
-	protected ArrayList<T> searchAll(MyBox searchBoundingBox, MyBox boundingBox) {
+	protected ArrayList<T> searchAll(BoundaryBox searchBoundingBox, BoundaryBox boundingBox) {
 		ArrayList<T>  allElements = new ArrayList<T>();
 
 		// test root list
@@ -803,7 +803,7 @@ public class MyQuadTree<T extends Element> {
 		iterList = theList[0].listIterator();
 		while ((iterList.hasNext())) {
 			T searchedElement = iterList.next();
-			MyBox b=searchedElement.getBoundingBox();
+			BoundaryBox b=searchedElement.getBoundingBox();
 			
 			if(
 					b.maxx>=searchBoundingBox.minx &&
@@ -823,7 +823,7 @@ public class MyQuadTree<T extends Element> {
 				iterList = theList[i].listIterator();
 				while ((iterList.hasNext())) {
 					T searchedElement = iterList.next();
-					MyBox b=searchedElement.getBoundingBox();
+					BoundaryBox b=searchedElement.getBoundingBox();
 					
 					if(
 							b.maxx>=searchBoundingBox.minx &&
@@ -844,7 +844,7 @@ public class MyQuadTree<T extends Element> {
 		int i = 0;
 		while ((i < 4)) {
 			if (theQuadTree[i] != null) {
-				MyBox testBox = getSectorNode(i, boundingBox);
+				BoundaryBox testBox = getSectorNode(i, boundingBox);
 				if (searchBoundingBox.maxx >= testBox.minx && searchBoundingBox.minx <= testBox.maxx
 					&& searchBoundingBox.miny <= testBox.maxy && searchBoundingBox.maxy >= testBox.miny )
 				{
@@ -864,7 +864,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param boundingBox Bounding box of quad tree.
 	 * @return All elements strictly inside the area searchBoundingBox.
 	 */
-	protected ArrayList<T> searchAllStric(MyBox searchBoundingBox, MyBox boundingBox) {
+	protected ArrayList<T> searchAllStric(BoundaryBox searchBoundingBox, BoundaryBox boundingBox) {
 		ArrayList<T>  allElements = new ArrayList<T>();
 		
 		// test root list
@@ -875,7 +875,7 @@ public class MyQuadTree<T extends Element> {
 		while ((iterList.hasNext())) {
 			T searchedElement = iterList.next();
 
-			MyBox b=searchedElement.getBoundingBox();
+			BoundaryBox b=searchedElement.getBoundingBox();
 			
 			if(searchBoundingBox.minx>b.maxx) {
 				break;
@@ -902,7 +902,7 @@ public class MyQuadTree<T extends Element> {
 				while ((iterList.hasNext())) {
 					T searchedElement = iterList.next();
 		
-					MyBox b=searchedElement.getBoundingBox();
+					BoundaryBox b=searchedElement.getBoundingBox();
 					
 					if(searchBoundingBox.minx>b.maxx) {
 						break;
@@ -928,7 +928,7 @@ public class MyQuadTree<T extends Element> {
 		int i = 0;
 		while ((i < 4)) {
 			if (theQuadTree[i] != null) {
-				MyBox testBox = getSectorNode(i, boundingBox);
+				BoundaryBox testBox = getSectorNode(i, boundingBox);
 				
 //				if (!((searchBoundingBox.maxx < testBox.minx) || (searchBoundingBox.minx > testBox.maxx)
 //				|| (searchBoundingBox.miny > testBox.maxy) || (searchBoundingBox.maxy < testBox.miny)) )
@@ -956,7 +956,7 @@ public class MyQuadTree<T extends Element> {
 	 * @return Number of elements removed.
 	 * @throws DelaunayError 
 	 */
-	protected int removeAllStric(ConstraintPolygon aPolygon, MyBox boundingBox) throws DelaunayError {
+	protected int removeAllStric(ConstraintPolygon aPolygon, BoundaryBox boundingBox) throws DelaunayError {
 		
 		return removeAllStric(aPolygon, aPolygon.getBoundingBox(),boundingBox);
 	}
@@ -969,7 +969,7 @@ public class MyQuadTree<T extends Element> {
 	 * @return Number of elements removed.
 	 * @throws DelaunayError 
 	 */
-	private int removeAllStric(ConstraintPolygon aPolygon, MyBox searchBoundingBox, MyBox boundingBox) throws DelaunayError {
+	private int removeAllStric(ConstraintPolygon aPolygon, BoundaryBox searchBoundingBox, BoundaryBox boundingBox) throws DelaunayError {
 
 		int quadtreeSize=0;
 		// test root list
@@ -1014,7 +1014,7 @@ public class MyQuadTree<T extends Element> {
 
 		// test bounding box of the each subarea and search inside if it is in the box
 		int i = 0;
-		MyBox testBox;
+		BoundaryBox testBox;
 		while ((i < 4)) {
 			if (theQuadTree[i] != null) {
 				testBox = getSectorNode(i, boundingBox);
@@ -1053,7 +1053,7 @@ public class MyQuadTree<T extends Element> {
 	 * @param element
 	 * @return True if it done.
 	 */
-	protected int remove(T element, MyBox boundingBox) {
+	protected int remove(T element, BoundaryBox boundingBox) {
 		int removeDone=0;
 		// test root list
 
@@ -1099,7 +1099,7 @@ public class MyQuadTree<T extends Element> {
 			
 		// test bounding box of the each subarea and search inside if it is in the box
 		int i = 0;
-		MyBox testBox;
+		BoundaryBox testBox;
 		while ((i < 4)) {
 			if (theQuadTree[i] != null) {
 				testBox = getSectorNode(i, boundingBox);

@@ -233,8 +233,8 @@ public class DelaunayTriangle extends Element implements Serializable{
 	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
-	public MyBox getBoundingBox() {
-		MyBox aBox = new MyBox();
+	public BoundaryBox getBoundingBox() {
+		BoundaryBox aBox = new BoundaryBox();
 
 		Point p1,p2,p3;
 		p1 = edges[0].getStartPoint();

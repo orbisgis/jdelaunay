@@ -138,7 +138,7 @@ public abstract class Element  implements Serializable {
 	 * 
 	 * @return
 	 */
-	public abstract MyBox getBoundingBox();
+	public abstract BoundaryBox getBoundingBox();
 	
 	/**
 	 * Check if the point is inside the element

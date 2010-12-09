@@ -32,7 +32,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		
 		ArrayList<Point> listePoints=new ArrayList<Point>();
 			listePoints.add(new Point(0, 3, 5));
@@ -136,7 +136,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 8, 0));
 		listePoints.add(new Point(12, 8, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -185,7 +185,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 8, 0));
 		listePoints.add(new Point(12, 8, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -237,12 +237,12 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(19, 12, 0));
 		listePoints.add(new Point(25, 12, 0));
 		
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
 		aMesh.setPoints(listePoints);
-//		MyBox abox=new MyBox(0, 35, 0, 12, 0, 5);
+//		BoundaryBox abox=new BoundaryBox(0, 35, 0, 12, 0, 5);
 //		aMesh.init(abox);
 
 		int height=2;
@@ -303,7 +303,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 
-		MyBox abox=new MyBox(-1, 9, -1, 8, 0, 5);
+		BoundaryBox abox=new BoundaryBox(-1, 9, -1, 8, 0, 5);
 		aMesh.init(abox);
 		aMesh.addLevelEdge(new Edge(new Point(0, 0, 2),new Point(0, 7, 2)));
 		aMesh.addLevelEdge(new Edge(new Point(8, 0, 5),new Point(8, 7, 5)));
@@ -349,7 +349,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 
-		MyBox abox=new MyBox(0, 12, 0, 12, 0, 5);
+		BoundaryBox abox=new BoundaryBox(0, 12, 0, 12, 0, 5);
 		aMesh.init(abox);
 		aMesh.addLevelEdge(new Edge(new Point(2, 10, 2),new Point(2, 2, 2)));
 		aMesh.addLevelEdge(new Edge(new Point(2, 2, 2),new Point(10, 2, 2)));
@@ -411,7 +411,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 //		aMesh.showDebug=true;
-		MyBox abox=new MyBox(0, 28, 0, 8, 0, 5);
+		BoundaryBox abox=new BoundaryBox(0, 28, 0, 8, 0, 5);
 		aMesh.init(abox);
 		aMesh.addLevelEdge(new Edge(new Point(1, 1, 2),new Point(1, 4, 2)));
 		aMesh.addLevelEdge(new Edge(new Point(1, 4, 2),new Point(1, 7, 2)));
@@ -472,7 +472,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 
-		MyBox abox=new MyBox(0, 10, 0, 8, 0, 5);
+		BoundaryBox abox=new BoundaryBox(0, 10, 0, 8, 0, 5);
 		aMesh.init(abox);
 		aMesh.addLevelEdge(new Edge(new Point(1, 1, 2),new Point(1, 4, 2)));
 		aMesh.addLevelEdge(new Edge(new Point(1, 4, 2),new Point(1, 7, 2)));
@@ -524,7 +524,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 
-		MyBox abox=new MyBox(0, 7, 0, 8, 0, 5);
+		BoundaryBox abox=new BoundaryBox(0, 7, 0, 8, 0, 5);
 		aMesh.init(abox);
 		aMesh.addLevelEdge(new Edge(new Point(1, 1, 0.5),new Point(1, 7, 3.5)));
 		aMesh.addLevelEdge(new Edge(new Point(1, 7, 3.5),new Point(6, 7, 6)));
@@ -575,7 +575,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 10, 0));
 		listePoints.add(new Point(10, 10, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -636,7 +636,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 10, 0));
 		listePoints.add(new Point(10, 10, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -691,7 +691,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 10, 0));
 		listePoints.add(new Point(10, 10, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -750,7 +750,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(1, 9, 0));
 		listePoints.add(new Point(9, 9, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -820,7 +820,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 11, 0));
 		listePoints.add(new Point(10, 11, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -901,7 +901,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		MyBox abox=new MyBox(0, 10, 0, 11, 0, 5);
+		BoundaryBox abox=new BoundaryBox(0, 10, 0, 11, 0, 5);
 		aMesh.init(abox);
 		
 		WKTReader reader = new WKTReader();
@@ -955,7 +955,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		MyBox abox=new MyBox(0, 10, 0, 10, 0, 5);
+		BoundaryBox abox=new BoundaryBox(0, 10, 0, 10, 0, 5);
 		aMesh.init(abox);
 		
 		ArrayList<Point> listePoints=new ArrayList<Point>();
@@ -1010,7 +1010,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.setVerbose(true);
 		
 		
-		MyBox abox=new MyBox(0, 10, 0, 8, 0, 5);
+		BoundaryBox abox=new BoundaryBox(0, 10, 0, 8, 0, 5);
 		aMesh.init(abox);
 		
 		ArrayList<Point> listePoints=new ArrayList<Point>();
@@ -1647,7 +1647,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 8, 0));
 		listePoints.add(new Point(13, 8, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -1698,7 +1698,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 10, 0));
 		listePoints.add(new Point(8, 10, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -1748,7 +1748,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(0, 10, 0));
 		listePoints.add(new Point(8, 10, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints)
 			abox.alterBox(p);
 		aMesh.init(abox);
@@ -1797,7 +1797,7 @@ public class TestCheckMesh  extends BaseUtility {
 		listePoints.add(new Point(45, 1, 0));
 		listePoints.add(new Point(46, 1, 0));
 	
-		MyBox abox=new MyBox();
+		BoundaryBox abox=new BoundaryBox();
 		for(Point p:listePoints) {
 			abox.alterBox(p);
 		}

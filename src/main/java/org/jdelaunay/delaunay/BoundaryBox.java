@@ -14,7 +14,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @version 1.1
  */
 
-public class MyBox implements Serializable {
+public class BoundaryBox implements Serializable {
 	/**
 	 * 
 	 */
@@ -28,7 +28,7 @@ public class MyBox implements Serializable {
 	/**
 	 *  initialization method
 	 */
-	public void init() {
+	private void init() {
 		minx = 0.0;
                 maxx = 0.0;
                 miny = 0.0;
@@ -42,7 +42,7 @@ public class MyBox implements Serializable {
 	/**
 	 * generate an empty box centered on 0,0,0
 	 */
-	public MyBox() {
+	public BoundaryBox() {
 		init();
 	}
 
@@ -55,7 +55,7 @@ public class MyBox implements Serializable {
 	 * @param pminz
 	 * @param pmaxz
 	 */
-	public MyBox(double pminx, double pmaxx, double pminy, double pmaxy,
+	public BoundaryBox(double pminx, double pmaxx, double pminy, double pmaxy,
 			double pminz, double pmaxz) {
 		init();
 
@@ -66,7 +66,7 @@ public class MyBox implements Serializable {
 	 * set a box according to coordinates
 	 * @param aBox
 	 */
-	public MyBox(MyBox aBox) {
+	public BoundaryBox(BoundaryBox aBox) {
 		init();
 
 		setBox(aBox.minx,aBox.maxx, aBox.miny, aBox.maxy, aBox.minz, aBox.maxz);
@@ -82,7 +82,7 @@ public class MyBox implements Serializable {
 	 * @param pminz
 	 * @param pmaxz
 	 */
-	public void setBox(double pminx, double pmaxx, double pminy, double pmaxy,
+	public final void setBox(double pminx, double pmaxx, double pminy, double pmaxy,
 			double pminz, double pmaxz) {
 		minx = pminx;
 		maxx = pmaxx;
@@ -98,12 +98,11 @@ public class MyBox implements Serializable {
 	/**
 	 * Update middle coordinate. 
 	 */
-	private void updateMiddle()
-	{
-		double mx = maxx-minx;
-		double my = maxy-miny;
-		double mz = maxz-minz;
-		middle=new Coordinate(minx+(mx!=0?mx/2:0), miny+(my!=0?my/2:0), minz+(mz!=0?mz/2:0));
+	private void updateMiddle(){
+		double mx = (maxx-minx)/2;
+		double my = (maxy-miny)/2;
+		double mz = (maxz-minz)/2;
+		middle=new Coordinate(minx+mx, miny+my, minz+mz);
 	}
 
 	/**

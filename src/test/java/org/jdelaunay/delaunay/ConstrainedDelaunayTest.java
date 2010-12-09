@@ -1,6 +1,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ConstrainedDelaunayTest extends BaseUtility {
@@ -713,7 +714,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		}
 		return retList;
 	}
-
+	
 	/**
 	 * Returns false if there is an intersction (ie if the edges are invalid)
 	 * @param edgeList

@@ -23,7 +23,7 @@ public class Edge extends Element {
 	private static final long serialVersionUID = 1L;
 	private Point startPoint, endPoint;
 	private DelaunayTriangle left, right;
-	private MyBox aBox;
+	private BoundaryBox aBox;
 	/**
 	 * bit number  | function :
 	 * 1			| isOutsideMesh / setOutsideMesh
@@ -51,7 +51,7 @@ public class Edge extends Element {
 	}
 
 	private void updateBox() {
-		aBox = new MyBox();
+		aBox = new BoundaryBox();
 		aBox.alterBox(this.startPoint);
 		aBox.alterBox(this.endPoint);
 	}
@@ -451,9 +451,9 @@ public class Edge extends Element {
 	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
-	public MyBox getBoundingBox() {
+	public BoundaryBox getBoundingBox() {
 
-		MyBox box = new MyBox();
+		BoundaryBox box = new BoundaryBox();
 		box.alterBox(this.startPoint);
 		box.alterBox(this.endPoint);
 

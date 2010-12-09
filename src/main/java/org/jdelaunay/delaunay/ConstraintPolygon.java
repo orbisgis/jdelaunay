@@ -262,8 +262,8 @@ public class ConstraintPolygon extends Element {
 	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
-	public MyBox getBoundingBox() {
-		MyBox aBox = new MyBox();
+	public BoundaryBox getBoundingBox() {
+		BoundaryBox aBox = new BoundaryBox();
 
 		int nbPoints = polygon.getNumPoints();
 		for (int i = 0; i < nbPoints; i++) {

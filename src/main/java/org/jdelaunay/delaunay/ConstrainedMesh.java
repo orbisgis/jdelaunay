@@ -1,7 +1,6 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,9 +22,9 @@ public class ConstrainedMesh {
 	//The two following lists are used only during computation.
 	//The bad edge queue list contains all the edges that coud be changed
 	//during a flip-flap operation
-	private LinkedList<Edge> badEdgesQueueList;
+	private List<Edge> badEdgesQueueList;
 	//boundaryEdges contains the Envelope of the CURRENT geometry.
-	private LinkedList<Edge> boundaryEdges;
+	private List<Edge> boundaryEdges;
 	// constants
 	public static final double EPSILON = 0.00001;
 	public static final int MAXITER = 5;
@@ -42,15 +41,15 @@ public class ConstrainedMesh {
 		precision = 0;
 		tolerance = 0.00001;
 
-		badEdgesQueueList = new LinkedList<Edge>();
-		boundaryEdges = new LinkedList<Edge>();
+		badEdgesQueueList = new ArrayList<Edge>();
+		boundaryEdges = new ArrayList<Edge>();
 	}
 
 	/**
 	 * Get the list of edges that are to be processed by the flip flap algorithm
 	 * @return
 	 */
-	public LinkedList<Edge> getBadEdgesQueueList() {
+	public List<Edge> getBadEdgesQueueList() {
 		return badEdgesQueueList;
 	}
 
@@ -58,7 +57,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges that are to be processed by the flip flap algorithm
 	 * @param badEdgesQueueList
 	 */
-	public void setBadEdgesQueueList(LinkedList<Edge> badEdgesQueueList) {
+	public void setBadEdgesQueueList(ArrayList<Edge> badEdgesQueueList) {
 		this.badEdgesQueueList = badEdgesQueueList;
 	}
 
@@ -66,7 +65,7 @@ public class ConstrainedMesh {
 	 * Get the list of edges that form the current convex hull of the triangulation
 	 * @return
 	 */
-	public LinkedList<Edge> getBoundaryEdges() {
+	public List<Edge> getBoundaryEdges() {
 		return boundaryEdges;
 	}
 
@@ -74,7 +73,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges that form the current convex hull of the triangulation
 	 * @param boundaryEdges
 	 */
-	public void setBoundaryEdges(LinkedList<Edge> boundaryEdges) {
+	public void setBoundaryEdges(ArrayList<Edge> boundaryEdges) {
 		this.boundaryEdges = boundaryEdges;
 	}
 

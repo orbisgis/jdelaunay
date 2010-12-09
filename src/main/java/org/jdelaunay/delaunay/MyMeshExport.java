@@ -175,7 +175,7 @@ public class MyMeshExport {
 			Envelope env = sds.getFullExtent();
 			Geometry geomEnv = EnvelopeUtil.toGeometry(env);
 			Coordinate[] coords = geomEnv.getCoordinates();
-			MyBox abox= new MyBox();
+			BoundaryBox abox= new BoundaryBox();
 			for (int i = 0; i < coords.length - 1; i++) {
 				abox.alterBox(coords[i].x, coords[i].y, 0);
 			}

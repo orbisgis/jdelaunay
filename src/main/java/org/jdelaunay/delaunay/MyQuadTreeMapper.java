@@ -13,7 +13,7 @@ import java.util.LinkedList;
  */
 
 public class MyQuadTreeMapper<T extends Element> {
-	private MyBox myBoundingBox;
+	private BoundaryBox myBoundingBox;
 	private boolean usable;
 	private MyQuadTree<T> myQuadTree;
 	private int maxLevel=20;//FIXME maxLevel=5 or 7 or 20 or ... ?
@@ -35,8 +35,8 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * Generate all nodes.
 	 * @param theBox
 	 */
-	public MyQuadTreeMapper(MyBox theBox) {
-		this.myBoundingBox = new MyBox(theBox);
+	public MyQuadTreeMapper(BoundaryBox theBox) {
+		this.myBoundingBox = new BoundaryBox(theBox);
 		this.usable = true;
 		this.myQuadTree = new MyQuadTree<T>(maxLevel);
 		this.quadtreeSize=0;
@@ -47,9 +47,9 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * @param theBox
 	 */
 	public MyQuadTreeMapper(LinkedList<T> theList) {
-		this.myBoundingBox = new MyBox();
+		this.myBoundingBox = new BoundaryBox();
 		for (T element : theList) {
-			MyBox aBox = element.getBoundingBox();
+			BoundaryBox aBox = element.getBoundingBox();
 			myBoundingBox.alterBox(aBox.minx, aBox.miny, aBox.minz);
 			myBoundingBox.alterBox(aBox.maxx, aBox.maxy, aBox.maxz);
 		}
@@ -64,9 +64,9 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * @param theBox
 	 */
 	public MyQuadTreeMapper(ArrayList<T> theList) {
-		this.myBoundingBox = new MyBox();
+		this.myBoundingBox = new BoundaryBox();
 		for (T element : theList) {
-			MyBox aBox = element.getBoundingBox();
+			BoundaryBox aBox = element.getBoundingBox();
 			myBoundingBox.alterBox(aBox.minx, aBox.miny, aBox.minz);
 			myBoundingBox.alterBox(aBox.maxx, aBox.maxy, aBox.maxz);
 		}
@@ -98,8 +98,8 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * Only not empty nodes are generated.
 	 * @param theBox
 	 */
-	public MyQuadTreeMapper(MyBox theBox, ArrayList<T> elements) {
-		this.myBoundingBox = new MyBox(theBox);
+	public MyQuadTreeMapper(BoundaryBox theBox, ArrayList<T> elements) {
+		this.myBoundingBox = new BoundaryBox(theBox);
 		this.usable = true;
 		this.myQuadTree = new MyQuadTree<T>(maxLevel, myBoundingBox, elements);
 		this.quadtreeSize=elements.size();
@@ -110,12 +110,12 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * Set QuadTree bounding box and allow insertion / searches
 	 * @param theBox
 	 */
-	public void setBox(MyBox theBox) {
-			this.myBoundingBox = new MyBox(theBox);
+	public void setBox(BoundaryBox theBox) {
+			this.myBoundingBox = new BoundaryBox(theBox);
 			this.usable = true;
 	}
 
-	public MyBox getBox() {
+	public BoundaryBox getBox() {
 		return myBoundingBox;
 	}
 	/**
@@ -124,7 +124,7 @@ public class MyQuadTreeMapper<T extends Element> {
 	 */
 	public void add(T element) {
 		if (this.usable) {
-			MyBox theBox = element.getBoundingBox();
+			BoundaryBox theBox = element.getBoundingBox();
 			myQuadTree.add(element, theBox, myBoundingBox);
 			quadtreeSize++;
 		}
@@ -137,7 +137,7 @@ public class MyQuadTreeMapper<T extends Element> {
 	 */
 	public void addAll(ArrayList<T> elements) {
 		if (this.usable) {
-			MyBox theBox;
+			BoundaryBox theBox;
 			for(T element:elements)
 			{
 				theBox = element.getBoundingBox();
@@ -156,7 +156,7 @@ public class MyQuadTreeMapper<T extends Element> {
 	public void add(LinkedList<T> theList) {
 		if (this.usable) {
 			for (T element : theList) {
-				MyBox theBox = element.getBoundingBox();
+				BoundaryBox theBox = element.getBoundingBox();
 				myQuadTree.add(element, theBox, myBoundingBox);
 			}
 			quadtreeSize+=theList.size();
@@ -170,7 +170,7 @@ public class MyQuadTreeMapper<T extends Element> {
 	public void add(ArrayList<T> theList) {
 		if (this.usable) {
 			for (T element : theList) {
-				MyBox theBox = element.getBoundingBox();
+				BoundaryBox theBox = element.getBoundingBox();
 				myQuadTree.add(element, theBox, myBoundingBox);
 			}
 			quadtreeSize+=theList.size();
@@ -243,9 +243,9 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * Redefine QuadTree
 	 * @param theBox
 	 */
-	protected void remap(MyBox theBox) {
+	protected void remap(BoundaryBox theBox) {
 		if (this.usable) {
-			this.myBoundingBox = new MyBox(theBox);
+			this.myBoundingBox = new BoundaryBox(theBox);
 			this.removeData();
 		}
 	}
@@ -311,7 +311,7 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * @param searchBoundingBox Area of search.
 	 * @return All elements inside or on the area searchBoundingBox.
 	 */
-	public ArrayList<T> searchAll(MyBox searchBoundingBox) {
+	public ArrayList<T> searchAll(BoundaryBox searchBoundingBox) {
 		ArrayList<T>  allElements = null;
 		if (this.usable) {
 			allElements = myQuadTree.searchAll(searchBoundingBox, myBoundingBox);
@@ -325,7 +325,7 @@ public class MyQuadTreeMapper<T extends Element> {
 	 * @param searchBoundingBox Area of search.
 	 * @return All elements strictly inside the area searchBoundingBox.
 	 */
-	public ArrayList<T> searchAllStric(MyBox searchBoundingBox) {
+	public ArrayList<T> searchAllStric(BoundaryBox searchBoundingBox) {
 		ArrayList<T>  allElements = null;
 		if (this.usable) {
 			allElements = myQuadTree.searchAllStric(searchBoundingBox, myBoundingBox);
