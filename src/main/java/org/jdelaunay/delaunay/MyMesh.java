@@ -1297,8 +1297,7 @@ public class MyMesh {
 	 * @param aPoint
 	 * @param anEdge
 	 */
-	private void addPointOnEdge(Point aPoint, Edge anEdge)
-	{
+	private void addPointOnEdge(Point aPoint, Edge anEdge) throws DelaunayError {
 
 		addPointToQuadTree(aPoint);
 		
@@ -2401,7 +2400,7 @@ public class MyMesh {
 				if ((refinement & REFINEMENT_OBTUSE_ANGLE) != 0) {
 					// Look for triangles with an obtuse angle
 					for (DelaunayTriangle aTriangle : trianglesQuadTree.getAll()) {
-						if (aTriangle.getMaxAmgle() >= 90) {
+						if (aTriangle.getMaxAngle() >= 90) {
 							badTrianglesList.add(aTriangle);
 						}
 					}

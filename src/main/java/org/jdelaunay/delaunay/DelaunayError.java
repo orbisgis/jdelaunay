@@ -31,6 +31,7 @@ public class DelaunayError extends Throwable {
 	
 	public final static int DELAUNAY_ERROR_INVALID_CALL = 998;
 	public final static int DELAUNAY_ERROR_INTERNAL_ERROR = 999;
+	public final static int DELAUNAY_ERROR_MISC = 1000;
 
 	private String message="";
 
@@ -42,7 +43,7 @@ public class DelaunayError extends Throwable {
 	public DelaunayError(String s){
 		super(s);
 		message = s;
-		code = DELAUNAY_ERROR_INTERNAL_ERROR;
+		code = DELAUNAY_ERROR_MISC;
 	}
 
 	public DelaunayError(int errorCode) {

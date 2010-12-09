@@ -67,17 +67,29 @@ public class DelaunayTriangle extends Element implements Serializable{
 	 * @param e2
 	 * @param e3
 	 */
-	public DelaunayTriangle(Edge e1, Edge e2, Edge e3) {
+	public DelaunayTriangle(Edge e1, Edge e2, Edge e3) throws DelaunayError {
 		super();
 		init();
 
-		edges[0] = e1;
-		edges[1] = e2;
-		edges[2] = e3;
-		
-		connectEdges();
-		recomputeCenter();
-		radius = e1.getStartPoint().squareDistance2D(x_center, y_center);
+		//We check the integrity of the edges given to build this triangle
+		boolean integrityE1E2 = (e1.isExtremity(e2.getStart()) && ! e3.isExtremity((e2.getStart())))
+			|| (e1.isExtremity(e2.getEnd()) && !e3.isExtremity(e2.getEnd()));
+		boolean integrityE1E3 =  (e1.isExtremity(e3.getStart()) && ! e2.isExtremity((e3.getStart())))
+			|| (e1.isExtremity(e3.getEnd()) && !e2.isExtremity(e3.getEnd()));
+		boolean integrityE3E2= (e2.isExtremity(e3.getStart()) && ! e1.isExtremity((e3.getStart())))
+			|| (e2.isExtremity(e3.getEnd()) && !e1.isExtremity(e3.getEnd()));
+
+		if(integrityE1E2 && integrityE1E3 && integrityE3E2){
+			edges[0] = e1;
+			edges[1] = e2;
+			edges[2] = e3;
+
+			connectEdges();
+			recomputeCenter();
+			radius = e1.getStartPoint().squareDistance2D(x_center, y_center);
+		} else {
+			throw new DelaunayError("Problem while generating the Triangle");
+		}
 	}
 
 	/**
@@ -89,10 +101,7 @@ public class DelaunayTriangle extends Element implements Serializable{
 	public DelaunayTriangle(DelaunayTriangle aTriangle) {
 		super((Element)aTriangle);
 		init();
-
-		for (int i = 0; i < 3; i++) {
-			edges[i] = aTriangle.edges[i];
-		}
+		System.arraycopy(aTriangle.edges, 0, edges, 0, 3);
 
 		x_center = aTriangle.x_center;
 		y_center = aTriangle.y_center;
@@ -138,6 +147,14 @@ public class DelaunayTriangle extends Element implements Serializable{
 		else {
 			return null;
 		}
+	}
+
+	/**
+	 * Return the edges that form this triangle in an array.
+	 * @return
+	 */
+	public Edge[] getEdges(){
+		return this.edges;
 	}
 
 	/**
@@ -266,7 +283,7 @@ public class DelaunayTriangle extends Element implements Serializable{
 	/**
 	 * Recompute the center of the circle that joins the 3 points : the CircumCenter
 	 */
-	protected void recomputeCenter() {
+	protected final void recomputeCenter() {
 		Point p1,p2,p3;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
@@ -471,21 +488,9 @@ public class DelaunayTriangle extends Element implements Serializable{
 			p3 = edges[1].getEndPoint();
 		}
 
-		double ux = p2.getX() - p1.getX();
-		double uy = p2.getY() - p1.getY();
-		double vx = p3.getX() - p1.getX();
-		double vy = p3.getY() - p1.getY();
-		double wx = p3.getX() - p2.getX();
-		double wy = p3.getY() - p2.getY();
+		double area = ((p3.getX()-p1.getX())*(p2.getY()-p1.getY())-(p2.getX()-p1.getX())*(p3.getY()-p1.getY()))/2;
 
-		double a = Math.sqrt(ux * ux + uy * uy);
-		double b = Math.sqrt(vx * vx + vy * vy);
-		double c = Math.sqrt(wx * wx + wy * wy);
-
-		double area = Math.sqrt((a + b + c) * (b + c - a) * (c + a - b)
-				* (a + b - c));
-
-		return area;
+		return area<0 ? -area : area ;
 	}
 
 	/**
@@ -529,7 +534,7 @@ public class DelaunayTriangle extends Element implements Serializable{
 	 *
 	 * @return maxAngle
 	 */
-	protected double getMaxAmgle() {
+	protected double getMaxAngle() {
 		double maxAngle = 0;
 		for (int k = 0; k < 3; k++) {
 			int k1 = (k + 1) % 3;
