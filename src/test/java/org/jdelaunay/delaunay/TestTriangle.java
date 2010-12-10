@@ -5,6 +5,8 @@
 
 package org.jdelaunay.delaunay;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 /**
  * This class checks the reliability of the methods written in DelaunayTriangle
  * @author alexis
@@ -100,5 +102,23 @@ public class TestTriangle extends BaseUtility {
 		}
 		assertNull(t);
 
+	}
+
+	/**
+	 * Checks that the center of the triangle (or rather, the center of its circumcircle)
+	 * is well computed.
+	 * @throws DelaunayError
+	 */
+	public void testGetAndRecomputeCenter() throws DelaunayError{
+		Point p1 = new Point(0,0,0);
+		Point p2 = new Point(0,3,0);
+		Point p3 = new Point(3,0,0);
+		Edge e1 = new Edge(p1,p2);
+		Edge e2 = new Edge(p2,p3);
+		Edge e3 = new Edge(p3,p1);
+		DelaunayTriangle t = null;
+		t= new DelaunayTriangle(e1,e2,e3);
+		Coordinate center = t.getCircumCenter();
+		assertTrue(center.equals(new Coordinate(1.5,1.5,0)));
 	}
 }
