@@ -245,4 +245,23 @@ public class TestTriangle extends BaseUtility {
 		}
 	}
 
+	/**
+	 * Test the isInside method.
+	 * @throws DelaunayError
+	 */
+	public void testIsInside() throws DelaunayError{
+		Point p1 = new Point(0,0,0);
+		Point p2 = new Point(4,5,0);
+		Point p3 = new Point(3,0,0);
+		Edge e1 = new Edge(p1,p2);
+		Edge e2 = new Edge(p2,p3);
+		Edge e3 = new Edge(p3,p1);
+		DelaunayTriangle t1 =new DelaunayTriangle(e1, e2, e3);
+		assertTrue(t1.isInside(p1));
+		assertTrue(t1.isInside(p2));
+		assertTrue(t1.isInside(p3));
+		assertTrue(t1.isInside(new Point(2,2,0)));
+		assertTrue(t1.isInside(new Point(1,0,0)));
+
+	}
 }

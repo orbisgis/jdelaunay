@@ -3240,151 +3240,6 @@ public class MyMesh {
 		return insertPoint(aPoint, 0);
 	}
 	
-	
-	/**
-	 * Insert a point to the current triangularization
-	 * 
-	 * @param aPoint
-	 * @param property Property for the new triangle.
-	 * @throws DelaunayError 
-	 */
-//	private DelaunayTriangle myInsertPoint_2(Point aPoint, int property) throws DelaunayError {
-//		DelaunayTriangle foundTriangle = null;
-//		// We build triangles with all boundary edges for which the point is on
-//		// the left
-//		Point p1, p2;
-//		Edge anEdge1, anEdge2;
-//		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
-//		LinkedList<Edge> newEdges = new LinkedList<Edge>();
-//		
-//		
-//		for(int i=0; i<boundaryEdges.size(); i++)
-//		{
-//			Edge anEdge=boundaryEdges.get(i);
-//
-//			
-//			// as the boundary edge anEdge already exists, we check if the
-//			// point is on the left for the reverse order of the edge
-//			// So, the point must be on the right of the BoundaryEdge
-//			boolean test = false;
-//			p1 = null;
-//			p2 = null;
-//			anEdge1=anEdge2=null;
-//			test = anEdge.isRight(aPoint);
-//			if (test) {
-//				// We have the edge and the 2 point, in reverse order
-//				p2 = anEdge.getStartPoint();
-//				p1 = anEdge.getEndPoint();
-//
-//				// triangle points order is p1, p2, aPoint
-//				// check if there is an edge between p2 and aPoint
-//
-//				
-//				if(!tempEdges.isEmpty())
-//				{
-//					anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, tempEdges);
-//				}
-//				
-//				if(anEdge1==null)
-//				{
-//					anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, newEdges);
-//				}else
-//				{
-//					newEdges.add(anEdge1);
-//				}
-//				
-//				if (anEdge1 == null) {
-//					anEdge1 = new Edge(p2, aPoint);
-//					if(!edgesQuadTree.isIntersect(anEdge1))
-//					{
-//						addEdgeToQuadTree(anEdge1);
-//						newEdges.add(anEdge1);
-//					}
-//					else
-//						test=false;
-//				}
-//				
-//				
-//				if(test)
-//				{
-//					// check if there is an edge between aPoint and p1		
-//					
-//					if(!tempEdges.isEmpty())
-//						anEdge2 = Tools.checkTwoPointsEdge(aPoint, p1, tempEdges);
-//				
-//					
-//					if(anEdge2==null)
-//					{
-//						anEdge2 = Tools.checkTwoPointsEdge(aPoint, p1, newEdges);
-//					}
-//					else
-//					{
-//						newEdges.add(anEdge2);
-//					}
-//					
-//	
-//					if (anEdge2 == null) {
-//						anEdge2 = new Edge(aPoint, p1);
-//						
-//						if(!edgesQuadTree.isIntersect(anEdge2))
-//						{
-//							addEdgeToQuadTree(anEdge2);
-//							newEdges.add(anEdge2);
-//						}
-//						else
-//							test=false;
-//						
-//					} 
-//
-//					if(test)
-//					{
-//						// create triangle : take care of the order : anEdge MUST be
-//						// first
-//						DelaunayTriangle aTriangle = new DelaunayTriangle(anEdge, anEdge1, anEdge2);
-//						aTriangle.setProperty(property);
-//						addTriangleToQuadTree(aTriangle);
-//		
-//						// We say we founded a first triangle
-//						if (foundTriangle == null)
-//							foundTriangle = aTriangle;
-//		
-//						// Mark the edge to be removed
-//						oldEdges.add(anEdge);
-//		
-//						// add the edges to the bad edges list
-//						if (!isMeshComputed()) {
-//							if (!badEdgesQueueList.contains(anEdge))
-//								badEdgesQueueList.add(anEdge);
-//							if (!badEdgesQueueList.contains(anEdge1))
-//								badEdgesQueueList.add(anEdge1);
-//							if (!badEdgesQueueList.contains(anEdge2))
-//								badEdgesQueueList.add(anEdge2);
-//						}
-//					}
-//				}
-//
-//			}
-//		}
-//		
-//		
-//		// remove old edges
-//		for (Edge anEdge : oldEdges)
-//			boundaryEdges.remove(anEdge);
-//
-//		// add the newEdges to the boundary list
-//		for (Edge anEdge : newEdges)
-//			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
-//			{
-//				boundaryEdges.add(anEdge);
-//			}
-//
-//		// Process badTriangleQueueList
-//		processBadEdges();
-//
-//		return foundTriangle;
-//	}
-
-	
 	/**
 	 * Insert a point to the current triangulation
 	 * 
@@ -4958,19 +4813,20 @@ public class MyMesh {
 	 * 
 	 * @param p1
 	 * @param p2
-	 * @param EdgeQueueList
+	 * @param edgeQueueList
 	 * @param size
 	 * 
 	 * @return
 	 */
 	private Edge checkTwoPointsEdge(Point p1, Point p2,
-			Edge[] EdgeQueueList, int size) {
+			Edge[] edgeQueueList, int size) {
 		// Check if the two points already lead to an existing edge.
 		// If the edge exists it must be in the non-processed edges
 		Edge theEdge = null;
 		int i = 0;
-		while ((i < size) && (theEdge == null)) {
-			Edge anEdge = EdgeQueueList[i];
+		int max = (edgeQueueList.length < size ? edgeQueueList.length : size);
+		while ((i < max) && (theEdge == null)) {
+			Edge anEdge = edgeQueueList[i];
 			if (((anEdge.getStartPoint() == p1) && (anEdge.getEndPoint() == p2))
 					|| ((anEdge.getStartPoint() == p2) && (anEdge.getEndPoint() == p1))) {
 				theEdge = anEdge;

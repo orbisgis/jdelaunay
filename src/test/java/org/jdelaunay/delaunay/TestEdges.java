@@ -213,4 +213,27 @@ public class TestEdges extends BaseUtility {
 		e1=new Edge(0,0,0,0.00000009,5,0);
 		assertTrue(e1.isVertical());
 	}
+
+	/**
+	 * tests the initialization of an edge.
+	 */
+	public void testInit(){
+		Edge edge = new Edge();
+		assertNull(edge.getStart());
+		assertNull(edge.getEnd());
+		assertNull(edge.getLeft());
+		assertNull(edge.getRight());
+		assertTrue(edge.getIndicator()==0);
+	}
+
+	/**
+	 * Tests the methods who retrieve the points of the edge.
+	 */
+	public void testGetPoint() throws DelaunayError{
+		Edge edge = new Edge(1,2,0,4,9,5);
+		assertTrue(edge.point(0).equals(new Point(1,2,0)));
+		assertTrue(edge.point(1).equals(new Point(4,9,5)));
+		assertTrue(edge.point(42).equals(new Point(4,9,5)));
+
+	}
 }
