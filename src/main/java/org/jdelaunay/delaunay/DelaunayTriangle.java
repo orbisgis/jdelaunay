@@ -17,7 +17,7 @@ import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class DelaunayTriangle extends Element implements Serializable{
+public class DelaunayTriangle extends Element implements Serializable, Comparable<DelaunayTriangle>{
 
 
 
@@ -955,17 +955,20 @@ public class DelaunayTriangle extends Element implements Serializable{
 		setBit(4, useByPolygon);
 	}
 
+	/**
+	 * implements the Comparable interface. The triangles will be sorted according
+	 * the middle of their bounding box.
+	 * As we work on a triangulation where triangles' intersection can only be an edge, a point
+	 * or void, the Bounding boxes are unique.
+	 * @param t
+	 * @return
+	 */
+	@Override
+	public int compareTo(DelaunayTriangle t) {
+		Coordinate midT = getBoundingBox().getMiddle();
+		Coordinate midO = t.getBoundingBox().getMiddle();
+		return midT.compareTo(midO);
+	}
 
-	
-	
-//	public  boolean getPenteVersEdge(Edge myEdge) {
-//		HydroTriangleUtil hpu=new HydroTriangleUtil(this);
-//		return hpu.getPenteVersEdge(myEdge);
-//	}
-//	
-//	
-//	public Coordinate getNormal() {
-//		HydroTriangleUtil htu=new HydroTriangleUtil(this);
-//		return htu.getNormal();
-//	}
+
 }

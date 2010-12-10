@@ -1,7 +1,6 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ConstrainedDelaunayTest extends BaseUtility {
@@ -123,7 +122,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			mesh.addPoint(new Point(8,1,0));
 			mesh.addPoint(new Point(1,3,0));
 			mesh.addPoint(new Point(1,4,0));
-			ArrayList<Point> list = mesh.getPoints();
+			List<Point> list = mesh.getPoints();
 			assertTrue(list.get(0).equals2D(new Point(1,0,0)));
 			assertTrue(list.get(1).equals2D(new Point(1,1,0)));
 			assertTrue(list.get(2).equals2D(new Point(1,3,0)));
@@ -177,7 +176,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		try {
 			mesh.addPoint(new Point(1,1,0));
 			mesh.addPoint(new Point(1,1,0));
-			ArrayList<Point> list = mesh.getPoints();
+			List<Point> list = mesh.getPoints();
 			assertTrue(list.size()==1);
 			assertTrue(list.get(0).equals2D(new Point(1,1,0)));
 		} catch (DelaunayError e ){
@@ -417,7 +416,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			mesh.addConstraintEdge(new Edge(new Point(0,0,0), new Point(3,3,0)));
 			mesh.addConstraintEdge(new Edge(new Point(2,3,0), new Point(5,3,0)));
 			//We check that the points are in the points list
-			ArrayList<Point> list = mesh.getPoints();
+			List<Point> list = mesh.getPoints();
 			assertTrue(list.get(0).equals2D(new Point(0,0,0)));
 			assertTrue(list.get(1).equals2D(new Point(2,3,0)));
 			assertTrue(list.get(2).equals2D(new Point(3,3,0)));
@@ -427,7 +426,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			Edge m1 = new Edge(new Point(0,0,0), new Point(3,3,0));
 			Edge m2 = new Edge(new Point(2,3,0), new Point(5,3,0));
 
-			ArrayList<Edge> listConst = mesh.getConstraintEdges();
+			List<Edge> listConst = mesh.getConstraintEdges();
 			assertTrue(listConst.get(0).haveSamePoint(m1));
 			assertTrue(listConst.get(1).haveSamePoint(m2));
 		} catch(DelaunayError d){

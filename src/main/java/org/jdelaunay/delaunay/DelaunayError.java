@@ -12,7 +12,7 @@ public class DelaunayError extends Throwable {
 	private static final long serialVersionUID = 1L;
 
 	// error code saving
-	private static int code;
+	private int code;
 
 	// error codes
 	public final static int DELAUNAY_ERROR_NO_ERROR = 0;

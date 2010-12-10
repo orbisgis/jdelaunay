@@ -14,7 +14,7 @@ import java.awt.Graphics;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class Point extends Element {
+public class Point extends Element implements Comparable<Point> {
 	/**
 	 * 
 	 */
@@ -456,6 +456,20 @@ public class Point extends Element {
                         return 1;
                 }
 	}
+
+	/**
+	 * Compare this and p in two dimensions.
+	 * @param y
+	 * @return
+	 *	-1 : if this.x < p.x || (this.x == p.x && this.y < p.y)
+	 *	0 : if this.x == p.x && this.y == p.y
+	 *	1 otherwise.
+	 */
+	@Override
+	public int compareTo(Point p){
+		return compareTo2D(p);
+	}
+	
 	/**
 	 * Set the point color for the JFrame panel
 	 * 
