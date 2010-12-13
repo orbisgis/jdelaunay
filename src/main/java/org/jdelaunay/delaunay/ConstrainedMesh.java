@@ -121,6 +121,8 @@ public class ConstrainedMesh {
 		for (Edge e : constraint) {
 			addPoint(e.getStart());
 			addPoint(e.getEnd());
+			//We lock the edge. It will not be supposed to be switched
+			//during a flip flap.
 			e.setLocked(true);
 			addConstraintEdge(e);
 		}
@@ -177,6 +179,20 @@ public class ConstrainedMesh {
 	}
 
 	/**
+	 * Remove an Edge from the list of edges.
+	 * @param e
+	 */
+	public void removeEdge(Edge e) {
+		//edges is a sorted list, using the left right sort. We are supposed
+		//to ensure unicity of objects in it, so we can use the binarysearch directly.
+		int index = Collections.binarySearch(edges, e);
+		//index will be positive if and only ifedges contains e (cf java API)
+		if(index>=0){
+			edges.remove(index);
+		}
+	}
+
+	/**
 	 * This method will sort the edges using the coordinates of the left point
 	 * of the edges.
 	 * @return
@@ -200,69 +216,7 @@ public class ConstrainedMesh {
 	 * @param edge
 	 */
 	private void addEdgeToLeftSortedList(List<Edge> sorted, Edge edge) {
-		if (sorted.isEmpty()) {
-			sorted.add(edge);
-			return;
-		}
-		int c;
-		int s = sorted.size();
-		c = edge.sortLeftRight(sorted.get(0));
-		if (c < 1) {
-			//left is on the left of the first edge in the list, we put it there
-			if (c == -1) {
-				sorted.add(0, edge);
-			}
-			return;
-		}
-		c = edge.sortLeftRight(sorted.get(s - 1));
-		if (c > -1) {
-			//left is on the right of the leftmost edge of the last element.
-			if (c == 1) {
-				sorted.add(edge);
-			}
-			return;
-		}
-		int i = s / 2;
-		int delta = s / 2;
-		boolean next = true;
-		Edge other;
-		while (next) {
-			other = sorted.get(i);
-			c = edge.sortLeftRight(other);
-			switch (c) {
-				case -1:
-					other = sorted.get(i - 1);
-					c = edge.sortLeftRight(other);
-					switch (c) {
-						case -1:
-							delta = (delta / 2 > 0 ? delta / 2 : 1);
-							i = i - delta;
-							break;
-						case 0:
-							return;
-						case 1:
-							sorted.add(i, edge);
-							return;
-					}
-					break;
-				case 0:
-					return;
-				case 1:
-					other = sorted.get(i + 1);
-					c = edge.sortLeftRight(other);
-					switch (c) {
-						case -1:
-							sorted.add(i + 1, edge);
-							return;
-						case 0:
-							return;
-						default:
-							delta = (delta / 2 > 0 ? delta / 2 : 1);
-							i = i + delta;
-							break;
-					}
-			}
-		}
+		addToSortedList(edge, sorted);
 	}
 
 	/**
@@ -384,58 +338,21 @@ public class ConstrainedMesh {
 	}
 
 	/**
-	 *
+	 * Add an element to the list. This method takes care to ensure that we don't
+	 * insert duplicated items in the list.
 	 * @param <T extends Element & Comparable<? super T>>
-	 * @param point
+	 * @param elt
 	 * @param sortedList
 	 */
-	private <T extends Element & Comparable<? super T>> void addToSortedList(T point, List<T> sortedList){
-		int s = sortedList.size();
-		if (s == 0) {
-			sortedList.add(point);
-		} else {
-			int p = s / 2;
-			int delta = s / 2;
-			int ret = -1;
-			int c;
-			//If the point is inferior to the first element of te list, we place it at the beginning
-			if (point.compareTo(sortedList.get(0)) == -1) {
-				p = 0;
-				ret = 0;
-				//If the point is superior to the last element of the list, we place it at the end
-			} else if (point.compareTo(sortedList.get(s - 1)) == 1) {
-				p = s;
-				ret = s;
-			}
-			while (ret != p) {
-				delta = (delta / 2 > 0 ? delta / 2 : 1);
-				c = point.compareTo(sortedList.get(p));
-				switch (c) {
-					case -1:
-						//point < points.get(p)
-						//We must move left
-						c = point.compareTo(sortedList.get(p - 1));
-						switch (c) {
-							case -1:
-								p = p - delta;
-								break;
-							case 0:
-								p = -1;
-								break;
-							default:
-								ret = p;
-						}
-						break;
-					case 0:
-						p = -1;
-						break;
-					default:
-						p = p + delta;
-				}
-			}
-			if (p != -1) {
-				sortedList.add(p, point);
-			}
+	private <T extends Element & Comparable<? super T>> void addToSortedList(T elt, List<T> sortedList){
+		//We make a binary search, as divides and conquers rules...
+		int index = Collections.binarySearch(sortedList, elt);
+		if(index < 0){
+			//The position where we want to insert elt is -index-1, as the
+			//value retruned by binary search is equal to (-insertPos -1)
+			//(cf java.util.Collections javadoc)
+			int insertPos = -index-1;
+			sortedList.add(insertPos, elt);
 		}
 	}
 
@@ -444,61 +361,25 @@ public class ConstrainedMesh {
 	 * @param p
 	 * @return the index of p, -1 if it's not in the list
 	 */
-	public int listContainsPoint(Point p) {
-		int s = points.size();
-		int c = p.compareTo2D(points.get(0));
-		if (c == -1) {	//p<first, p is not in the sorted list
-			return -1;
-		} else if (c == 0) {
-			return 0;
-		}
-		c = p.compareTo2D(points.get(s - 1));
-		if (c == 1) {	//p>last, p is not in the sorted list
-			return -1;
-		} else if (c == 0) {
-			return points.size() - 1;
-		}
-		//p is ppotentially in the list, and is not one of the extremities.
-		int delta = points.size() / 2;
-		int i = points.size() / 2;
-		while (delta > 0) {
-			c = p.compareTo2D(points.get(i));
-			switch (c) {
-				case -1://p is on the left of points(i)...
-					if (i == 0) {
-						return -1;
-					}
-					c = p.compareTo2D(points.get(i - 1));
-					switch (c) {
-						case 1://...and on the right of points(i-1), so it's no in the list
-							return -1;
-						case 0:
-							return i - 1;
-						default://...and on the left of points(i-1), we continue
-							delta = delta / 2;
-							i = i - delta;
-					}
-					break;
-				case 0:
-					return i;
-				case 1://p is on the right of points(i)
-					if (i == points.size() - 1) {
-						return -1;
-					}
-					c = p.compareTo2D(points.get(i + 1));
-					switch (c) {
-						case -1://...and on the left of points(i-1), so it's no in the list
-							return -1;
-						case 0:
-							return i + 1;
-						default://...and on the right of points(i-1), we continue
-							delta = delta / 2;
-							i = i + delta;
-					}
+	public int listContainsPoint(Point p){
+		return sortedListContains(points, p);
+	}
 
-			}
-		}
-		return -1;
+	/**
+	 * Search the element elt in the sorted list sortedList. You are supposed
+	 * to be sure that sortedList is actually sorted ;-)
+	 * @param <T>
+	 * @param sortedList
+	 * @param elt
+	 * @return
+	 */
+	private <T extends Element & Comparable<T>> int sortedListContains(List<T> sortedList, T elt) {
+		//We make a binary search, as divides and conquers rules...
+		int index = Collections.binarySearch(sortedList, elt);
+		//binarySearch will return the index of the element if it is found
+		//(-insertPosition -1) otherwise. Consequently, if index > 0
+		//we are sure that elt is in the list.
+		return (index < 0 ? -1 : index);
 	}
 
 	/**
@@ -855,6 +736,23 @@ public class ConstrainedMesh {
 	}
 
 	/**
+	 * Checks that edge does not intersect the existing edges of the mesh.
+	 * @param edge
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public boolean intersectsExistingEdges(Edge edge) throws DelaunayError{
+		int inter;
+		for(Edge ed : edges){
+			inter = ed.intersects(edge);
+			if(inter == 1 || inter == 4){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * This method simply travels the list given in argument. If edges edgelist.get(i)
 	 * and edgeList.get(i+1) intersect, then we add the intersection point in
 	 * the eventList.
@@ -884,466 +782,466 @@ public class ConstrainedMesh {
 		}
 	}
 
-//	// ------------------------------------------------------------------------------------------
-//	/**
-//	 * Generate the Delaunay's triangularization with a flip-flop algorithm.
-//	 * Mesh must have been set. Triangulation can only be done once.
-//	 * Otherwise call reprocessDelaunay
-//	 *
-//	 * @throws DelaunayError
-//	 */
-//	public void processDelaunay() throws DelaunayError {
-//		if (isMeshComputed()) {
-//			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
-//		}
-//		else if (points.size() < 3) {
-//			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
-//		}
-//		else {
-//			// general data structures
-//			badEdgesQueueList = new LinkedList<Edge>();
-//			boundaryEdges = new ArrayList<Edge>();
-//			LinkedList<Point> badPointList = new LinkedList<Point>();
-//
-//			// sort points
-//			if (verbose){
-//				System.out.println("Sorting points");
-//                        }
-//			ListIterator<Point> iterPoint = points.listIterator();
-//
-//
-//			// we build a first triangle with the 3 first points we find
-//			if (verbose){
-//				System.out.println("Processing triangularization");
-//                        }
-//			DelaunayTriangle aTriangle;
-//			Point p1, p2, p3;
-//			Edge e1, e2, e3;
-//			p1 = p2 = p3 = null;
-//
-//
-//			p1 = iterPoint.next();
-//			while (p1.isLocked()){
-//				p1 = iterPoint.next();
-//                        }
-//
-//			p2 = iterPoint.next();
-//			while (p2.isLocked()){
-//				p2 = iterPoint.next();
-//                        }
-//			e1 = new Edge(p1, p2);
-//
-//			// The 3 points MUST NOT be colinear
-//			p3 = iterPoint.next();
-//			while (p3.isLocked()){
-//				p3 = iterPoint.next();
-//                        }
-//
-//			while ((e1.isColinear2D(p3)) && (iterPoint.hasNext())) {
-//				badPointList.add(p3);
-//
-//				p3 = iterPoint.next();
-//				while (p3.isLocked()){
-//					p3 = iterPoint.next();
-//                                }
-//			}
-//
-//			// The triangle's edges MUST be in the right direction
-//			if (e1.isLeft(p3)) {
-//				e2 = new Edge(p2, p3);
-//				e3 = new Edge(p3, p1);
-//			} else {
-//				e1.setStartPoint(p2);
-//				e1.setEndPoint(p1);
-//
-//				e2 = new Edge(p1, p3);
-//				e3 = new Edge(p3, p2);
-//			}
-//
-//			addEdge(e1);
-//			addEdge(e2);
-//			addEdge(e3);
-//
-//
-//			aTriangle = new DelaunayTriangle(e1, e2, e3);
-//			addTriangle(aTriangle);
-//
-//			// Then process the other points - order don't care
-//			boundaryEdges.add(e1);
-//			boundaryEdges.add(e2);
-//			boundaryEdges.add(e3);
-//
-//			// flip-flop on a list of points
-//			boolean ended = false;
-//			Point aPoint=null;
-//			Point LastTestedPoint=null;
-//			int count = 0;
-//			while (! ended) {
-//				boolean hasGotPoint = false;
-//				if (! badPointList.isEmpty()) {
-//					aPoint = badPointList.getFirst();
-//					if (LastTestedPoint != aPoint) {
-//						badPointList.removeFirst();
-//						hasGotPoint = true;
-//					}
-//				}
-//
-//				if (! hasGotPoint) {
-//					if (iterPoint.hasNext()) {
-//						count++;
-//						aPoint = iterPoint.next();
-//					} else {
-//						ended = true;
-//						aPoint = null;
-//					}
-//				}
-//				LastTestedPoint = aPoint;
-//
-//				if (aPoint!= null && aPoint.isLocked() && myInsertPoint(aPoint) == null) {
-//					badPointList.addFirst(aPoint);
-//                                }
-//
-//			}
-//
-//
-//			meshComputed = true;
-//
-//			if(polygons.size()>0)
-//			{
-//				if (verbose){
-//					System.out.println("Processing edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
-//                                }
-////				processPolygons();
-//			}
-//
-//			// It's fine, we computed the mesh
-//			if (verbose) {
-//				System.out.println("End processing");
-//				System.out.println("Triangularization end phase : ");
-//				System.out.println("  Points : " + points.size());
-//				System.out.println("  Edges : " + edges.size());
-//				System.out.println("  Triangles : " + triangleList.size());
-//			}
-//		}
-//	}
-//
-//	/**
-//	 * Insert a point to the current triangulation
-//	 *
-//	 * @param aPoint
-//	 * @param property Property for the new triangle.
-//	 * @throws DelaunayError
-//	 */
-//	private DelaunayTriangle insertPoint(Point aPoint, int property) throws DelaunayError {//test
-//		DelaunayTriangle foundTriangle = null;
-//		// We build triangles with all boundary edges for which the point is on
-//		// the left
-//		Point p1, p2;
-//		Edge anEdge1, anEdge2;
-//		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
-//		LinkedList<Edge> newEdges = new LinkedList<Edge>();
-//
-//
-//		for(int i=0; i<boundaryEdges.size(); i++){
-//			Edge anEdge=boundaryEdges.get(i);
-//
-//
-//			// as the boundary edge anEdge already exists, we check if the
-//			// point is on the left for the reverse order of the edge
-//			// So, the point must be on the right of the BoundaryEdge
-//			boolean test = false;
-//			p1 = null;
-//			p2 = null;
-//			anEdge1=anEdge2=null;
-//			test = anEdge.isRight(aPoint);
-//			if (test) {
-//				// We have the edge and the 2 point, in reverse order
-//				p2 = anEdge.getStartPoint();
-//				p1 = anEdge.getEndPoint();
-//
-//				// triangle points order is p1, p2, aPoint
-//				// check if there is an edge between p2 and aPoint
-//
-//
-//				anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, newEdges);
-//
-//
-//				if (anEdge1 == null) {
-//					anEdge1 = new Edge(p2, aPoint);
-//					if(!edgesQuadTree.isIntersect(anEdge1)){
-//						addEdgeToLeftSortedList(edges,anEdge1);
-//						newEdges.add(anEdge1);
-//					}
-//					else {
-//						test = false;
-//					}
-//				}
-//
-//				if(test)
-//				{
-//					// check if there is an edge between aPoint and p1
-//
-//					anEdge2 = Tools.checkTwoPointsEdge(aPoint, p1, newEdges);
-//
-//
-//					if (anEdge2 == null) {
-//						anEdge2 = new Edge(aPoint, p1);
-//
-//						if(!edgesQuadTree.isIntersect(anEdge2)){
-//							addEdgeToLeftSortedList(edges,anEdge2);
-//							newEdges.add(anEdge2);
-//						}
-//						else {
-//							test = false;
-//						}
-//					}
-//
-//
-//					if(test)
-//					{
-//
-//						// create triangle : take care of the order : anEdge MUST be
-//						// first
-//						DelaunayTriangle aTriangle = new DelaunayTriangle(anEdge, anEdge1, anEdge2);
-//						aTriangle.setProperty(property);
-//						addTriangle(aTriangle);
-//
-//						// We say we founded a first triangle
-//						if (foundTriangle == null) {
-//							foundTriangle = aTriangle;
-//						}
-//
-//						// Mark the edge to be removed
-//						oldEdges.add(anEdge);
-//
-//						// add the edges to the bad edges list
-//						if (!isMeshComputed()) {
-//							if (!badEdgesQueueList.contains(anEdge)) {
-//								badEdgesQueueList.add(anEdge);
-//							}
-//							if (!badEdgesQueueList.contains(anEdge1)) {
-//								badEdgesQueueList.add(anEdge1);
-//							}
-//							if (!badEdgesQueueList.contains(anEdge2)) {
-//								badEdgesQueueList.add(anEdge2);
-//							}
-//						}
-//
-//					}
-//				}
-//			}
-//		}
-//
-//
-//
-//		// remove old edges
-//		for (Edge anEdge : oldEdges){
-//			boundaryEdges.remove(anEdge);
-//                }
-//
-//		// add the newEdges to the boundary list
-//		for (Edge anEdge : newEdges){
-//			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
-//			{
-//				boundaryEdges.add(anEdge);
-//			}
-//                }
-//
-//
-//		// Process badTriangleQueueList
-//		processBadEdges();
-//
-//
-//		return foundTriangle;
-//	}
-//
-//	/**
-//	 * Process the flip-flop algorithm on the list of triangles
-//	 */
-//	private void processBadEdges() {
-//		if (!isMeshComputed()) {
-//			LinkedList<Edge> alreadySeen = new LinkedList<Edge>();
-//			while (!badEdgesQueueList.isEmpty()) {
-//				Edge anEdge = badEdgesQueueList.getFirst();
-//				badEdgesQueueList.removeFirst();
-//
-//				boolean doIt = true;
-//
-//				if (anEdge.isLocked()) {
-//					doIt = false;
-//				}
-//				else if (alreadySeen.contains(anEdge)) {
-//					doIt = false;
-//				}
-//
-//				if (doIt) {
-//					alreadySeen.add(anEdge);
-//					// We cannot process marked edges
-//					// We check if the two triangles around the edge are ok
-//					DelaunayTriangle aTriangle1 = anEdge.getLeft();
-//					DelaunayTriangle aTriangle2 = anEdge.getRight();
-//					if ((aTriangle1 != null) && (aTriangle2 != null)) {
-//
-//						if (swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
-//							// Add the triangle"s edges to the bad edges list
-//							Edge addEdge;
-//							for (int j = 0; j < 3; j++) {
-//								addEdge = aTriangle1.edges[j];
-//								if ((addEdge.getLeft() != null)
-//										&& (addEdge.getRight() != null)) {
-//									if (addEdge != anEdge){
-//										if (!badEdgesQueueList.contains(addEdge)){
-//											badEdgesQueueList.add(addEdge);
-//                                                                                }
-//                                                                        }
-//								}
-//								addEdge = aTriangle2.edges[j];
-//								if ((addEdge.getLeft() != null)
-//										&& (addEdge.getRight() != null)) {
-//									if (addEdge != anEdge){
-//										if (!badEdgesQueueList.contains(addEdge)){
-//											badEdgesQueueList.add(addEdge);
-//                                                                                }
-//                                                                        }
-//								}
-//							}
-//						}
-//					}
-//				}
-//			}
-//		} else {
-//			while (!badEdgesQueueList.isEmpty()) {
-//				badEdgesQueueList.removeFirst();
-//			}
-//		}
-//	}
-//
-//	/**
-//	 * Insert a point to the current triangularization
-//	 *
-//	 * @param aPoint
-//	 * @throws DelaunayError
-//	 */
-//	private DelaunayTriangle myInsertPoint(Point aPoint) throws DelaunayError {
-//		return insertPoint(aPoint, 0);
-//	}
-//
-//	/**
-//	 * Swap two neighbour triangles, whose common edge is anEdge
-//	 * @param aTriangle1
-//	 * @param aTriangle2
-//	 * @param anEdge
-//	 * @param forced
-//	 * @return
-//	 */
-//	private boolean swapTriangle(DelaunayTriangle aTriangle1, DelaunayTriangle aTriangle2,
-//			Edge anEdge, boolean forced) {
-//
-//		boolean exchange = false;
-//		Edge anEdge10, anEdge11, anEdge12;
-//		Edge anEdge20, anEdge21, anEdge22;
-//		Point p1, p2, p3, p4;
-//
-//		if ((aTriangle1 != null) && (aTriangle2 != null)) {
-//			p1 = anEdge.getStartPoint();
-//			p2 = anEdge.getEndPoint();
-//
-//			p3 = p4 = null;
-//
-//			// Test for each triangle if the remaining point of the
-//			// other triangle is inside or not
-//			// DelaunayTriangle 1 is p1, p2, p3 or p2, p1, p3
-//			p3 = aTriangle1.getAlterPoint(p1, p2);
-//			if (p3 != null) {
-//				if (aTriangle2.inCircle(p3) == 1) {
-//					exchange = true;
-//				}
-//			}
-//
-//			// DelaunayTriangle 2 is p2, p1, p4 or p1, p2, p4
-//			p4 = aTriangle2.getAlterPoint(p1, p2);
-//			if (p4 != null) {
-//				if (aTriangle1.inCircle(p4) == 1) {
-//					exchange = true;
-//				}
-//			}
-//
-//			if (p3 != p4) {
-//				if ((exchange) || (forced)) {
-//					anEdge10 = anEdge;
-//					anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
-//					anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
-//					anEdge20 = anEdge;
-//					anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
-//					anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
-//					if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
-//						System.out.println("ERREUR");
-//					} else {
-//						edgesQuadTree.remove(anEdge);
-//						anEdge.setStartPoint(p3);
-//						anEdge.setEndPoint(p4);
-//						edgeGID++;
-//						anEdge.setGID(edgeGID);
-//						addEdgeToLeftSortedList(edges, anEdge);
-//						aTriangle1.edges[0] = anEdge10;
-//						aTriangle1.edges[1] = anEdge11;
-//						aTriangle1.edges[2] = anEdge12;
-//						aTriangle2.edges[0] = anEdge20;
-//						aTriangle2.edges[1] = anEdge21;
-//						aTriangle2.edges[2] = anEdge22;
-//						if (anEdge12.getLeft() == aTriangle2) {
-//							anEdge12.setLeft(aTriangle1);
-//						} else {
-//							anEdge12.setRight(aTriangle1);
-//						}
-//						if (anEdge22.getLeft() == aTriangle1) {
-//							anEdge22.setLeft(aTriangle2);
-//						} else {
-//							anEdge22.setRight(aTriangle2);
-//						}
-//						if (anEdge.isLeft(p1)) {
-//							anEdge.setLeft(aTriangle1);
-//							anEdge.setRight(aTriangle2);
-//						} else {
-//							anEdge.setLeft(aTriangle2);
-//							anEdge.setRight(aTriangle1);
-//						}
-//						aTriangle1.recomputeCenter();
-//						aTriangle2.recomputeCenter();
-//					}
-//				}
-//			}
-//		}
-//		return exchange;
-//	}
-//
-//	/**
-//	 * Check if the edge already exists. Returns null if it doesn't
-//	 *
-//	 * @param p1
-//	 * @param p2
-//	 * @param edgeQueueList
-//	 * @param size
-//	 *
-//	 * @return
-//	 */
-//	private Edge checkTwoPointsEdge(Point p1, Point p2,
-//			Edge[] edgeQueueList, int size) {
-//		// Check if the two points already lead to an existing edge.
-//		// If the edge exists it must be in the non-processed edges
-//		Edge theEdge = null;
-//		int i = 0;
-//		int max = (edgeQueueList.length < size ? edgeQueueList.length : size);
-//		while ((i < max) && (theEdge == null)) {
-//			Edge anEdge = edgeQueueList[i];
-//			if (((anEdge.getStartPoint() == p1) && (anEdge.getEndPoint() == p2))
-//					|| ((anEdge.getStartPoint() == p2) && (anEdge.getEndPoint() == p1))) {
-//				theEdge = anEdge;
-//			}
-//			else {
-//				i++;
-//			}
-//		}
-//		return theEdge;
-//	}
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Generate the Delaunay's triangularization with a flip-flop algorithm.
+	 * Mesh must have been set. Triangulation can only be done once.
+	 * Otherwise call reprocessDelaunay
+	 *
+	 * @throws DelaunayError
+	 */
+	public void processDelaunay() throws DelaunayError {
+		if (isMeshComputed()) {
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
+		}
+		else if (points.size() < 3) {
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
+		}
+		else {
+			// general data structures
+			badEdgesQueueList = new LinkedList<Edge>();
+			boundaryEdges = new ArrayList<Edge>();
+			LinkedList<Point> badPointList = new LinkedList<Point>();
+
+			// sort points
+			if (verbose){
+				System.out.println("Sorting points");
+                        }
+			ListIterator<Point> iterPoint = points.listIterator();
+
+
+			// we build a first triangle with the 3 first points we find
+			if (verbose){
+				System.out.println("Processing triangularization");
+                        }
+			DelaunayTriangle aTriangle;
+			Point p1, p2, p3;
+			Edge e1, e2, e3;
+			p1 = p2 = p3 = null;
+
+
+			p1 = iterPoint.next();
+			while (p1.isLocked()){
+				p1 = iterPoint.next();
+                        }
+
+			p2 = iterPoint.next();
+			while (p2.isLocked()){
+				p2 = iterPoint.next();
+                        }
+			e1 = new Edge(p1, p2);
+
+			// The 3 points MUST NOT be colinear
+			p3 = iterPoint.next();
+			while (p3.isLocked()){
+				p3 = iterPoint.next();
+                        }
+
+			while ((e1.isColinear2D(p3)) && (iterPoint.hasNext())) {
+				badPointList.add(p3);
+
+				p3 = iterPoint.next();
+				while (p3.isLocked()){
+					p3 = iterPoint.next();
+                                }
+			}
+
+			// The triangle's edges MUST be in the right direction
+			if (e1.isLeft(p3)) {
+				e2 = new Edge(p2, p3);
+				e3 = new Edge(p3, p1);
+			} else {
+				e1.setStartPoint(p2);
+				e1.setEndPoint(p1);
+
+				e2 = new Edge(p1, p3);
+				e3 = new Edge(p3, p2);
+			}
+
+			addEdge(e1);
+			addEdge(e2);
+			addEdge(e3);
+
+
+			aTriangle = new DelaunayTriangle(e1, e2, e3);
+			addTriangle(aTriangle);
+
+			// Then process the other points - order don't care
+			boundaryEdges.add(e1);
+			boundaryEdges.add(e2);
+			boundaryEdges.add(e3);
+
+			// flip-flop on a list of points
+			boolean ended = false;
+			Point aPoint=null;
+			Point LastTestedPoint=null;
+			int count = 0;
+			while (! ended) {
+				boolean hasGotPoint = false;
+				if (! badPointList.isEmpty()) {
+					aPoint = badPointList.getFirst();
+					if (LastTestedPoint != aPoint) {
+						badPointList.removeFirst();
+						hasGotPoint = true;
+					}
+				}
+
+				if (! hasGotPoint) {
+					if (iterPoint.hasNext()) {
+						count++;
+						aPoint = iterPoint.next();
+					} else {
+						ended = true;
+						aPoint = null;
+					}
+				}
+				LastTestedPoint = aPoint;
+
+				if (aPoint!= null && aPoint.isLocked() && myInsertPoint(aPoint) == null) {
+					badPointList.addFirst(aPoint);
+                                }
+
+			}
+
+
+			meshComputed = true;
+
+			if(polygons.size()>0)
+			{
+				if (verbose){
+					System.out.println("Processing edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
+                                }
+//				processPolygons();
+			}
+
+			// It's fine, we computed the mesh
+			if (verbose) {
+				System.out.println("End processing");
+				System.out.println("Triangularization end phase : ");
+				System.out.println("  Points : " + points.size());
+				System.out.println("  Edges : " + edges.size());
+				System.out.println("  Triangles : " + triangleList.size());
+			}
+		}
+	}
+
+	/**
+	 * Insert a point to the current triangulation
+	 *
+	 * @param aPoint
+	 * @param property Property for the new triangle.
+	 * @throws DelaunayError
+	 */
+	private DelaunayTriangle insertPoint(Point aPoint, int property) throws DelaunayError {//test
+		DelaunayTriangle foundTriangle = null;
+		// We build triangles with all boundary edges for which the point is on
+		// the left
+		Point p1, p2;
+		Edge anEdge1, anEdge2;
+		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
+		LinkedList<Edge> newEdges = new LinkedList<Edge>();
+
+
+		for(int i=0; i<boundaryEdges.size(); i++){
+			Edge anEdge=boundaryEdges.get(i);
+
+
+			// as the boundary edge anEdge already exists, we check if the
+			// point is on the left for the reverse order of the edge
+			// So, the point must be on the right of the BoundaryEdge
+			boolean test = false;
+			p1 = null;
+			p2 = null;
+			anEdge1=anEdge2=null;
+			test = anEdge.isRight(aPoint);
+			if (test) {
+				// We have the edge and the 2 point, in reverse order
+				p2 = anEdge.getStartPoint();
+				p1 = anEdge.getEndPoint();
+
+				// triangle points order is p1, p2, aPoint
+				// check if there is an edge between p2 and aPoint
+
+
+				anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, newEdges);
+
+
+				if (anEdge1 == null) {
+					anEdge1 = new Edge(p2, aPoint);
+					if(!intersectsExistingEdges(anEdge1)){
+						addEdgeToLeftSortedList(edges,anEdge1);
+						newEdges.add(anEdge1);
+					}
+					else {
+						test = false;
+					}
+				}
+
+				if(test)
+				{
+					// check if there is an edge between aPoint and p1
+
+					anEdge2 = Tools.checkTwoPointsEdge(aPoint, p1, newEdges);
+
+
+					if (anEdge2 == null) {
+						anEdge2 = new Edge(aPoint, p1);
+
+						if(!intersectsExistingEdges(anEdge2)){
+							addEdgeToLeftSortedList(edges,anEdge2);
+							newEdges.add(anEdge2);
+						}
+						else {
+							test = false;
+						}
+					}
+
+
+					if(test)
+					{
+
+						// create triangle : take care of the order : anEdge MUST be
+						// first
+						DelaunayTriangle aTriangle = new DelaunayTriangle(anEdge, anEdge1, anEdge2);
+						aTriangle.setProperty(property);
+						addTriangle(aTriangle);
+
+						// We say we founded a first triangle
+						if (foundTriangle == null) {
+							foundTriangle = aTriangle;
+						}
+
+						// Mark the edge to be removed
+						oldEdges.add(anEdge);
+
+						// add the edges to the bad edges list
+						if (!isMeshComputed()) {
+							if (!badEdgesQueueList.contains(anEdge)) {
+								badEdgesQueueList.add(anEdge);
+							}
+							if (!badEdgesQueueList.contains(anEdge1)) {
+								badEdgesQueueList.add(anEdge1);
+							}
+							if (!badEdgesQueueList.contains(anEdge2)) {
+								badEdgesQueueList.add(anEdge2);
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+
+
+		// remove old edges
+		for (Edge anEdge : oldEdges){
+			boundaryEdges.remove(anEdge);
+                }
+
+		// add the newEdges to the boundary list
+		for (Edge anEdge : newEdges){
+			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
+			{
+				boundaryEdges.add(anEdge);
+			}
+                }
+
+
+		// Process badTriangleQueueList
+		processBadEdges();
+
+
+		return foundTriangle;
+	}
+
+	/**
+	 * Process the flip-flop algorithm on the list of triangles
+	 */
+	private void processBadEdges() {
+		if (!isMeshComputed()) {
+			LinkedList<Edge> alreadySeen = new LinkedList<Edge>();
+			while (!badEdgesQueueList.isEmpty()) {
+				Edge anEdge = badEdgesQueueList.getFirst();
+				badEdgesQueueList.removeFirst();
+
+				boolean doIt = true;
+
+				if (anEdge.isLocked()) {
+					doIt = false;
+				}
+				else if (alreadySeen.contains(anEdge)) {
+					doIt = false;
+				}
+
+				if (doIt) {
+					alreadySeen.add(anEdge);
+					// We cannot process marked edges
+					// We check if the two triangles around the edge are ok
+					DelaunayTriangle aTriangle1 = anEdge.getLeft();
+					DelaunayTriangle aTriangle2 = anEdge.getRight();
+					if ((aTriangle1 != null) && (aTriangle2 != null)) {
+
+						if (swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
+							// Add the triangle"s edges to the bad edges list
+							Edge addEdge;
+							for (int j = 0; j < 3; j++) {
+								addEdge = aTriangle1.edges[j];
+								if ((addEdge.getLeft() != null)
+										&& (addEdge.getRight() != null)) {
+									if (addEdge != anEdge){
+										if (!badEdgesQueueList.contains(addEdge)){
+											badEdgesQueueList.add(addEdge);
+                                                                                }
+                                                                        }
+								}
+								addEdge = aTriangle2.edges[j];
+								if ((addEdge.getLeft() != null)
+										&& (addEdge.getRight() != null)) {
+									if (addEdge != anEdge){
+										if (!badEdgesQueueList.contains(addEdge)){
+											badEdgesQueueList.add(addEdge);
+                                                                                }
+                                                                        }
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			while (!badEdgesQueueList.isEmpty()) {
+				badEdgesQueueList.removeFirst();
+			}
+		}
+	}
+
+	/**
+	 * Insert a point to the current triangularization
+	 *
+	 * @param aPoint
+	 * @throws DelaunayError
+	 */
+	private DelaunayTriangle myInsertPoint(Point aPoint) throws DelaunayError {
+		return insertPoint(aPoint, 0);
+	}
+
+	/**
+	 * Swap two neighbour triangles, whose common edge is anEdge
+	 * @param aTriangle1
+	 * @param aTriangle2
+	 * @param anEdge
+	 * @param forced
+	 * @return
+	 */
+	private boolean swapTriangle(DelaunayTriangle aTriangle1, DelaunayTriangle aTriangle2,
+			Edge anEdge, boolean forced) {
+
+		boolean exchange = false;
+		Edge anEdge10, anEdge11, anEdge12;
+		Edge anEdge20, anEdge21, anEdge22;
+		Point p1, p2, p3, p4;
+
+		if ((aTriangle1 != null) && (aTriangle2 != null)) {
+			p1 = anEdge.getStartPoint();
+			p2 = anEdge.getEndPoint();
+
+			p3 = p4 = null;
+
+			// Test for each triangle if the remaining point of the
+			// other triangle is inside or not
+			// DelaunayTriangle 1 is p1, p2, p3 or p2, p1, p3
+			p3 = aTriangle1.getAlterPoint(p1, p2);
+			if (p3 != null) {
+				if (aTriangle2.inCircle(p3) == 1) {
+					exchange = true;
+				}
+			}
+
+			// DelaunayTriangle 2 is p2, p1, p4 or p1, p2, p4
+			p4 = aTriangle2.getAlterPoint(p1, p2);
+			if (p4 != null) {
+				if (aTriangle1.inCircle(p4) == 1) {
+					exchange = true;
+				}
+			}
+
+			if (p3 != p4) {
+				if ((exchange) || (forced)) {
+					anEdge10 = anEdge;
+					anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
+					anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
+					anEdge20 = anEdge;
+					anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
+					anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
+					if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
+						System.out.println("ERREUR");
+					} else {
+						removeEdge(anEdge);
+						anEdge.setStartPoint(p3);
+						anEdge.setEndPoint(p4);
+						edgeGID++;
+						anEdge.setGID(edgeGID);
+						addEdgeToLeftSortedList(edges, anEdge);
+						aTriangle1.edges[0] = anEdge10;
+						aTriangle1.edges[1] = anEdge11;
+						aTriangle1.edges[2] = anEdge12;
+						aTriangle2.edges[0] = anEdge20;
+						aTriangle2.edges[1] = anEdge21;
+						aTriangle2.edges[2] = anEdge22;
+						if (anEdge12.getLeft() == aTriangle2) {
+							anEdge12.setLeft(aTriangle1);
+						} else {
+							anEdge12.setRight(aTriangle1);
+						}
+						if (anEdge22.getLeft() == aTriangle1) {
+							anEdge22.setLeft(aTriangle2);
+						} else {
+							anEdge22.setRight(aTriangle2);
+						}
+						if (anEdge.isLeft(p1)) {
+							anEdge.setLeft(aTriangle1);
+							anEdge.setRight(aTriangle2);
+						} else {
+							anEdge.setLeft(aTriangle2);
+							anEdge.setRight(aTriangle1);
+						}
+						aTriangle1.recomputeCenter();
+						aTriangle2.recomputeCenter();
+					}
+				}
+			}
+		}
+		return exchange;
+	}
+
+	/**
+	 * Check if the edge already exists. Returns null if it doesn't
+	 *
+	 * @param p1
+	 * @param p2
+	 * @param edgeQueueList
+	 * @param size
+	 *
+	 * @return
+	 */
+	private Edge checkTwoPointsEdge(Point p1, Point p2,
+			Edge[] edgeQueueList, int size) {
+		// Check if the two points already lead to an existing edge.
+		// If the edge exists it must be in the non-processed edges
+		Edge theEdge = null;
+		int i = 0;
+		int max = (edgeQueueList.length < size ? edgeQueueList.length : size);
+		while ((i < max) && (theEdge == null)) {
+			Edge anEdge = edgeQueueList[i];
+			if (((anEdge.getStartPoint() == p1) && (anEdge.getEndPoint() == p2))
+					|| ((anEdge.getStartPoint() == p2) && (anEdge.getEndPoint() == p1))) {
+				theEdge = anEdge;
+			}
+			else {
+				i++;
+			}
+		}
+		return theEdge;
+	}
 }

@@ -89,15 +89,15 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			edgeList.add(e2);
 			edgeList.add(e1);
 			mesh.setConstraintEdges(edgeList);
-//			mesh.forceConstraintIntegrity();
+			mesh.forceConstraintIntegrity();
 			assertTrue(true);
 
 			//We check that all the five points are here.
-//			assertNotNull(mesh.searchPoint(0, 0, 0));
-//			assertNotNull(mesh.searchPoint(1, 1, 0));
-//			assertNotNull(mesh.searchPoint(2, 2, 0));
-//			assertNotNull(mesh.searchPoint(2, 0, 0));
-//			assertNotNull(mesh.searchPoint(0, 2, 0));
+			assertNotNull(mesh.listContainsPoint(new Point(0, 0, 0)));
+			assertNotNull(mesh.listContainsPoint(new Point(1, 1, 0)));
+			assertNotNull(mesh.listContainsPoint(new Point(2, 2, 0)));
+			assertNotNull(mesh.listContainsPoint(new Point(2, 0, 0)));
+			assertNotNull(mesh.listContainsPoint(new Point(0, 2, 0)));
 
 
 		} catch (DelaunayError d){
@@ -664,34 +664,61 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		edgeList = mesh.getConstraintEdges();
                 assertTrue(sillyCheckIntersection(edgeList));
 
-                mesh = new ConstrainedMesh();
-                List<Edge> randomEdges = getRandomEdges(1000);
-                for(Edge edge : randomEdges){
-                        mesh.addConstraintEdge(edge);
-                }
-		double t1 = System.currentTimeMillis();
-                mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
-		boolean bool;
-		System.out.println("number of intersections : " +edgeList.size());
+//                mesh = new ConstrainedMesh();
+//                List<Edge> randomEdges = getRandomEdges(1000);
+//                for(Edge edge : randomEdges){
+//                        mesh.addConstraintEdge(edge);
+//                }
+//		double t1 = System.currentTimeMillis();
 //                mesh.forceConstraintIntegrity();
-		double t2 = System.currentTimeMillis();
-		System.out.println("time used : "+(t2 - t1) );
-		edgeList = mesh.getConstraintEdges();
-//		System.out.println("number of intersections : " +edgeList.size());
 //		edgeList = mesh.getConstraintEdges();
+//		boolean bool;
 //		System.out.println("number of intersections : " +edgeList.size());
-                e1 = edgeList.get(0);
-		t1 = System.currentTimeMillis();
-		bool = sillyCheckIntersection(edgeList);
-		t2 = System.currentTimeMillis();
-                for(int i = 1; i<edgeList.size();i++){
-                        e2 = e1;
-                        e1 = edgeList.get(i);
-                        assertTrue(e2.sortLeftRight(e1)<1);
-                }
-		System.out.println("time used : "+(t2 - t1) );
-		assertTrue(bool);
+////                mesh.forceConstraintIntegrity();
+//		double t2 = System.currentTimeMillis();
+//		System.out.println("time used : "+(t2 - t1) );
+//		edgeList = mesh.getConstraintEdges();
+////		System.out.println("number of intersections : " +edgeList.size());
+////		edgeList = mesh.getConstraintEdges();
+////		System.out.println("number of intersections : " +edgeList.size());
+//                e1 = edgeList.get(0);
+//		t1 = System.currentTimeMillis();
+//		bool = sillyCheckIntersection(edgeList);
+//		t2 = System.currentTimeMillis();
+//                for(int i = 1; i<edgeList.size();i++){
+//                        e2 = e1;
+//                        e1 = edgeList.get(i);
+//                        assertTrue(e2.sortLeftRight(e1)<1);
+//                }
+//		System.out.println("time used : "+(t2 - t1) );
+//		assertTrue(bool);
+	}
+
+
+	/**
+	 * Tests the intersectsExistingEdges method
+	 * @throws DelaunayError
+	 */
+	public void testIntersectsExistingEdges() throws DelaunayError{
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		ArrayList<Edge> list = new ArrayList<Edge>();
+		list.add(new Edge(0,0,0,5,5,0));
+		list.add(new Edge(5,5,0,6,1,0));
+		mesh.setEdges(list);
+		//intersects the first edge
+		assertTrue(mesh.intersectsExistingEdges(new Edge(4,2,0,3,3,0)));
+		//intersects and colinear to the first edge
+		assertTrue(mesh.intersectsExistingEdges(new Edge(8,8,0,3,3,0)));
+		//one common point with the first edge and intersects the second edge
+		assertTrue(mesh.intersectsExistingEdges(new Edge(0,0,0,6,3,0)));
+		//One common extremity with the first edge. does not intersect.
+		assertFalse(mesh.intersectsExistingEdges(new Edge(0,0,0,4,3,0)));
+		//One extremity common to both edges. Does not intersect
+		assertFalse(mesh.intersectsExistingEdges(new Edge(5,5,0,6,6,0)));
+		//Does not intersect with any of the edges.
+		assertFalse(mesh.intersectsExistingEdges(new Edge(0,8,0,3,8,0)));
+		
+
 	}
 
 	/**

@@ -15,7 +15,7 @@ import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class Edge extends Element {
+public class Edge extends Element implements Comparable<Edge> {
 
 	/**
 	 * 
@@ -1180,6 +1180,17 @@ public class Edge extends Element {
 			c = p1.compareTo2D(p2);
 		}
 		return c;
+	}
+
+	/**
+	 * Realization of Compare. We use sortLeftRight here to sort our edges,
+	 * not a vertical sort or something else...
+	 * @param edge
+	 * @return
+	 */
+	@Override
+	public int compareTo(Edge edge){
+		return sortLeftRight(edge);
 	}
 
 	/**
