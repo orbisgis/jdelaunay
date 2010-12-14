@@ -199,6 +199,51 @@ public class TestEdges extends BaseUtility {
 		assertTrue(e1.verticalSort(e2, 1)==-1);
 		assertTrue(e1.verticalSort(e2, 0)==-1);
 	}
+
+	/**
+	 * This method check that the vertical sort defined in Edge works well,
+	 * using the VerticalComarator class.
+	 */
+	public void testVerticalComparison() throws DelaunayError{
+		VerticalComparator comp = new VerticalComparator(1);
+		assertTrue(comp.getAbs()==1);
+		Edge e1 = new Edge(0,0,0,2,2,2);
+		Edge e2 = new Edge(0,0,0,2,2,2);
+		assertTrue(comp.compare(e1, e2)==0);
+
+		e1 = new Edge(0,0,0,2,3,2);
+		e2 = new Edge(0,0,0,2,2,2);
+		comp.setAbs(1);
+		assertTrue(comp.compare(e1, e2)==1);
+		comp.setAbs(0);
+		assertTrue(comp.getAbs()==0);
+		assertTrue(comp.compare(e1, e2)==1);
+		assertTrue(comp.compare(e2, e1)==-1);
+
+		e1 = new Edge(1,8,0,2,3,2);
+		e2 = new Edge(0,0,0,2,2,2);
+		comp.setAbs(1);
+		assertTrue(comp.compare(e1, e2)==1);
+		comp.setAbs(0);
+		assertTrue(comp.compare(e1, e2)==1);
+		assertTrue(comp.compare(e2, e1)==-1);
+
+		e1 = new Edge(0,0,0,3,3,2);
+		e2 = new Edge(0,0,0,2,2,2);
+		comp.setAbs(1);
+		assertTrue(comp.compare(e1, e2)==1);
+		comp.setAbs(0);
+		assertTrue(comp.compare(e1, e2)==1);
+		assertTrue(comp.compare(e2, e1)==-1);
+
+		e1 = new Edge(-1,-1,0,2,2,2);
+		e2 = new Edge(0,0,0,2,2,2);
+		comp.setAbs(1);
+		assertTrue(comp.compare(e1, e2)==-1);
+		assertTrue(comp.compare(e2, e1)==1);
+		comp.setAbs(0);
+		assertTrue(comp.compare(e1, e2)==-1);
+	}
         
 	/**
 	 * Checks whether edges are vertical or not.

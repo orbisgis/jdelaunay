@@ -14,9 +14,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import org.apache.log4j.Logger;
 
 public class Edge extends Element implements Comparable<Edge> {
 
+	//The logger supposed to report errors to the user.
+	private static Logger log = Logger.getLogger(Edge.class);
 	/**
 	 * 
 	 */
@@ -113,7 +116,7 @@ public class Edge extends Element implements Comparable<Edge> {
 			this.startPoint = p1;
 			this.endPoint = p2;
 		} catch (DelaunayError d) {
-			System.err.println("A problem occured while building the points " + d.getMessage());
+			log.error("A problem occured while building the points " + d.getMessage());
 		}
 	}
 
@@ -589,8 +592,8 @@ public class Edge extends Element implements Comparable<Edge> {
 		Element intersection = null;
 		Point p3 = getPointLeft();
 		Point p4 = getPointRight();
-		Point p1 = new Point();
-		Point p2 = new Point();
+		Point p1 ;
+		Point p2 ;
 		switch(point1.compareTo2D(point2)){
 			//we put the leftmost point in p1, and the rightmost in p2
 			case 1 :
@@ -1020,8 +1023,6 @@ public class Edge extends Element implements Comparable<Edge> {
 		double p = (abs - startPoint.getX()) / (endPoint.getX() - startPoint.getX());
 		if (dX < Tools.EPSILON) {
 			//the edge is vertical
-			double delta = startPoint.getX() - abs;
-			dX = ((delta < 0) ? -delta : delta);
 			if (abs == startPoint.getX()) {//x is the absciss of every points in this edge
 				//We return the minimum point.
 				return ((endPoint.compareTo2D(startPoint) == -1) ? endPoint : startPoint);

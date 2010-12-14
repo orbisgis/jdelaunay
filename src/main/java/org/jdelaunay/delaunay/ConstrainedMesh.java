@@ -5,12 +5,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alexis
  */
 public class ConstrainedMesh {
+
+	private static Logger log = Logger.getLogger(ConstrainedMesh.class);
 
 	//The list of triangles during the triangulation process.
 	//This list is sorted by using the implementation of Comparable in
@@ -738,7 +741,7 @@ public class ConstrainedMesh {
 					return false;
 				}
 			} catch (DelaunayError e) {
-				System.err.println(e.getCause());
+				log.error(e.getCause());
 			}
 		}
 
@@ -815,14 +818,14 @@ public class ConstrainedMesh {
 
 			// sort points
 			if (verbose){
-				System.out.println("Sorting points");
+				log.trace("Sorting points");
                         }
 			ListIterator<Point> iterPoint = points.listIterator();
 
 
 			// we build a first triangle with the 3 first points we find
 			if (verbose){
-				System.out.println("Processing triangularization");
+				log.trace("Processing triangularization");
                         }
 			DelaunayTriangle aTriangle;
 			Point p1, p2, p3;
@@ -884,13 +887,13 @@ public class ConstrainedMesh {
 			// flip-flop on a list of points
 			boolean ended = false;
 			Point aPoint=null;
-			Point LastTestedPoint=null;
+			Point lastTestedPoint=null;
 			int count = 0;
 			while (! ended) {
 				boolean hasGotPoint = false;
 				if (! badPointList.isEmpty()) {
 					aPoint = badPointList.getFirst();
-					if (LastTestedPoint != aPoint) {
+					if (lastTestedPoint != aPoint) {
 						badPointList.removeFirst();
 						hasGotPoint = true;
 					}
@@ -905,7 +908,7 @@ public class ConstrainedMesh {
 						aPoint = null;
 					}
 				}
-				LastTestedPoint = aPoint;
+				lastTestedPoint = aPoint;
 				//And here we add the point in the mesh (cf insertPointIntoMesh)
 				if (aPoint!= null && aPoint.isLocked() && insertPointIntoMesh(aPoint) == null) {
 					badPointList.addFirst(aPoint);
@@ -919,18 +922,18 @@ public class ConstrainedMesh {
 			if(polygons.size()>0)
 			{
 				if (verbose){
-					System.out.println("Processing edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
+					log.trace("Processing edges of "+polygons.size()+" polygon"+(polygons.size()>1?"s":""));
                                 }
 //				processPolygons();
 			}
 
 			// It's fine, we computed the mesh
 			if (verbose) {
-				System.out.println("End processing");
-				System.out.println("Triangularization end phase : ");
-				System.out.println("  Points : " + points.size());
-				System.out.println("  Edges : " + edges.size());
-				System.out.println("  Triangles : " + triangleList.size());
+				log.trace("End processing");
+				log.trace("Triangularization end phase : ");
+				log.trace("  Points : " + points.size());
+				log.trace("  Edges : " + edges.size());
+				log.trace("  Triangles : " + triangleList.size());
 			}
 		}
 	}
@@ -962,7 +965,8 @@ public class ConstrainedMesh {
 			boolean test = false;
 			p1 = null;
 			p2 = null;
-			anEdge1=anEdge2=null;
+			anEdge1=null;
+			anEdge2=null;
 			test = current.isRight(aPoint);
 			if (test) {
 				// We have the edge and the 2 point, in reverse order
@@ -1185,7 +1189,7 @@ public class ConstrainedMesh {
 					anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
 					anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
 					if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
-						System.out.println("ERREUR");
+						log.error("ERROR");
 					} else {
 						removeEdge(anEdge);
 						anEdge.setStartPoint(p3);

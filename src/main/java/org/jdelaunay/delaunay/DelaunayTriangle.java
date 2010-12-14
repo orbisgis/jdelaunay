@@ -411,7 +411,7 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 	 * @return ZValue
 	 */
 	public double interpolateZ(Point aPoint) {
-		double ZValue = 0;
+		double zValue = 0;
 
 		Point p1,p2,p3;
 		p1 = edges[0].getStartPoint();
@@ -435,10 +435,10 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 
 		if (Math.abs(c) > Tools.EPSILON) {
 			// Non vertical triangle
-			ZValue = (-a * aPoint.getX() - b * aPoint.getY() - d) / c;
+			zValue = (-a * aPoint.getX() - b * aPoint.getY() - d) / c;
 		}
 
-		return ZValue;
+		return zValue;
 	}
 
 	/**
@@ -450,7 +450,7 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 	 */
 	public double softInterpolateZ(Point aPoint) {
 		double weight = 3.0;
-		double ZValue = interpolateZ(aPoint) * weight;
+		double zValue = interpolateZ(aPoint) * weight;
 		
 		// Process connected edges
 		for (int i=0; i<3; i++) {
@@ -465,13 +465,13 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 			}
 			if (aTriangle != null) {
 				weight += 1.0;
-				ZValue += aTriangle.interpolateZ(aPoint);
+				zValue += aTriangle.interpolateZ(aPoint);
 			}
 		}
 		// Define new Z value
-		ZValue /= weight;
+		zValue /= weight;
 
-		return ZValue;
+		return zValue;
 	}
 
 	/**

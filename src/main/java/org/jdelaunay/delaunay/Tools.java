@@ -34,17 +34,17 @@ public class Tools {
 	protected static void quickSortGID(ArrayList<? extends Element> elements,
 			int minIndex, int maxIndex) {
 		int i, j;
-		int enreg_ref;
-		double cle_ref;
+		int enregRef;
+		double cleRef;
 		boolean found;
 		Element anElement;
 		int valGid = -1;
 
 		i = minIndex;
 		j = maxIndex;
-		enreg_ref = (maxIndex + minIndex) / 2;
-		anElement = (Element)elements.get(enreg_ref);
-		cle_ref = anElement.getGid();
+		enregRef = (maxIndex + minIndex) / 2;
+		anElement = (Element)elements.get(enregRef);
+		cleRef = anElement.getGid();
 		do {
 			// first : increasing index
 			found = false;
@@ -55,7 +55,7 @@ public class Tools {
 				else {
 					anElement = (Element)elements.get(i);
 					valGid = anElement.getGid();
-					if (valGid > cle_ref) {
+					if (valGid > cleRef) {
 						found = true;
 					}
 					else {
@@ -72,7 +72,7 @@ public class Tools {
 				else {
 					anElement = (Element)elements.get(j);
 					valGid = anElement.getGid();
-					if (valGid <= cle_ref) {
+					if (valGid <= cleRef) {
 						found = true;
 					}
 					else {
@@ -112,17 +112,17 @@ public class Tools {
 	public static void quickSort_Points(ArrayList<Point> points,
 			int minIndex, int maxIndex) {
 		int i, j;
-		int enreg_ref;
-		double cle_ref1, cle_ref2;
+		int enregRef;
+		double cleRef1, cleRef2;
 		boolean found;
 		Point aPoint;
 
 		i = minIndex;
 		j = maxIndex;
-		enreg_ref = (maxIndex + minIndex) / 2;
-		aPoint = points.get(enreg_ref);
-		cle_ref1 = aPoint.getX();
-		cle_ref2 = aPoint.getY();
+		enregRef = (maxIndex + minIndex) / 2;
+		aPoint = points.get(enregRef);
+		cleRef1 = aPoint.getX();
+		cleRef2 = aPoint.getY();
 		do {
 			// first : increasing index
 			found = false;
@@ -132,11 +132,11 @@ public class Tools {
 				}
 				else {
 					aPoint = points.get(i);
-					if (aPoint.getX() > cle_ref1) {
+					if (aPoint.getX() > cleRef1) {
 						found = true;
 					}
-					else if ((aPoint.getX() == cle_ref1)
-							&& (aPoint.getY() >= cle_ref2)) {
+					else if ((aPoint.getX() == cleRef1)
+							&& (aPoint.getY() >= cleRef2)) {
 						found = true;
 					}
 					else {
@@ -152,11 +152,11 @@ public class Tools {
 				}
 				else {
 					aPoint = points.get(j);
-					if (aPoint.getX() < cle_ref1) {
+					if (aPoint.getX() < cleRef1) {
 						found = true;
 					}
-					else if ((aPoint.getX() == cle_ref1)
-							&& (aPoint.getY() <= cle_ref2)) {
+					else if ((aPoint.getX() == cleRef1)
+							&& (aPoint.getY() <= cleRef2)) {
 						found = true;
 					}
 					else {
@@ -204,41 +204,41 @@ public class Tools {
 	protected static void quickSort_Edges(ArrayList<Edge> edges, int minIndex,
 			int maxIndex, boolean switchPoints) {
 		int i, j;
-		int enreg_ref;
-		double cle_ref1, cle_ref2, cle_ref3, cle_ref4;
+		int enregRef;
+		double cleRef1, cleRef2, cleRef3, cleRef4;
 		double cle1, cle2, cle3, cle4;
 		double x;
 		boolean found;
 
 		i = minIndex;
 		j = maxIndex;
-		enreg_ref = (maxIndex + minIndex) / 2;
-		Edge anEdge = edges.get(enreg_ref);
-		cle_ref1 = anEdge.getStartPoint().getX();
-		cle_ref2 = anEdge.getStartPoint().getY();
-		cle_ref3 = anEdge.getEndPoint().getX();
-		cle_ref4 = anEdge.getEndPoint().getY();
-		if (cle_ref3 < cle_ref1) {
-			x = cle_ref3;
-			cle_ref3 = cle_ref1;
-			cle_ref1 = x;
+		enregRef = (maxIndex + minIndex) / 2;
+		Edge anEdge = edges.get(enregRef);
+		cleRef1 = anEdge.getStartPoint().getX();
+		cleRef2 = anEdge.getStartPoint().getY();
+		cleRef3 = anEdge.getEndPoint().getX();
+		cleRef4 = anEdge.getEndPoint().getY();
+		if (cleRef3 < cleRef1) {
+			x = cleRef3;
+			cleRef3 = cleRef1;
+			cleRef1 = x;
 
-			x = cle_ref4;
-			cle_ref4 = cle_ref2;
-			cle_ref2 = x;
-		} else if ((cle_ref3 == cle_ref1) && (cle_ref4 < cle_ref2)) {
-			x = cle_ref4;
-			cle_ref4 = cle_ref2;
-			cle_ref2 = x;
+			x = cleRef4;
+			cleRef4 = cleRef2;
+			cleRef2 = x;
+		} else if ((cleRef3 == cleRef1) && (cleRef4 < cleRef2)) {
+			x = cleRef4;
+			cleRef4 = cleRef2;
+			cleRef2 = x;
 		}
 		if (switchPoints) {
-			x = cle_ref3;
-			cle_ref3 = cle_ref1;
-			cle_ref1 = x;
+			x = cleRef3;
+			cleRef3 = cleRef1;
+			cleRef1 = x;
 
-			x = cle_ref4;
-			cle_ref4 = cle_ref2;
-			cle_ref2 = x;
+			x = cleRef4;
+			cleRef4 = cleRef2;
+			cleRef2 = x;
 		}
 		do {
 			// first : increasing index
@@ -276,28 +276,28 @@ public class Tools {
 						cle2 = x;
 					}
 
-					if (cle1 > cle_ref1) {
+					if (cle1 > cleRef1) {
 						found = true;
 					}
-					else if (cle1 < cle_ref1) {
+					else if (cle1 < cleRef1) {
 						i++;
 					}
-					else if (cle2 > cle_ref2) {
+					else if (cle2 > cleRef2) {
 						found = true;
 					}
-					else if (cle2 < cle_ref2) {
+					else if (cle2 < cleRef2) {
 						i++;
 					}
-					else if (cle3 > cle_ref3) {
+					else if (cle3 > cleRef3) {
 						found = true;
 					}
-					else if (cle3 < cle_ref3) {
+					else if (cle3 < cleRef3) {
 						i++;
 					}
-					else if (cle4 > cle_ref4) {
+					else if (cle4 > cleRef4) {
 						found = true;
 					}
-					else if (cle4 < cle_ref4) {
+					else if (cle4 < cleRef4) {
 						i++;
 					}
 					else {
@@ -341,28 +341,28 @@ public class Tools {
 						cle2 = x;
 					}
 
-					if (cle1 < cle_ref1) {
+					if (cle1 < cleRef1) {
 						found = true;
 					}
-					else if (cle1 > cle_ref1) {
+					else if (cle1 > cleRef1) {
 						j--;
 					}
-					else if (cle2 < cle_ref2) {
+					else if (cle2 < cleRef2) {
 						found = true;
 					}
-					else if (cle2 > cle_ref2) {
+					else if (cle2 > cleRef2) {
 						j--;
 					}
-					else if (cle3 < cle_ref3) {
+					else if (cle3 < cleRef3) {
 						found = true;
 					}
-					else if (cle3 > cle_ref3) {
+					else if (cle3 > cleRef3) {
 						j--;
 					}
-					else if (cle4 < cle_ref4) {
+					else if (cle4 < cleRef4) {
 						found = true;
 					}
-					else if (cle4 > cle_ref4) {
+					else if (cle4 > cleRef4) {
 						j--;
 					}
 					else {
@@ -401,12 +401,12 @@ public class Tools {
 	 * @return
 	 */
 	public static double interpolateZ(Point p1, Point p2, Point aPoint) {
-		double D = p1.squareDistance(p2);
-		double Z = p2.getZ() - p1.getZ();
+		double dist = p1.squareDistance(p2);
+		double z = p2.getZ() - p1.getZ();
 
 		double d = aPoint.squareDistance(p1);
-		double factor = d / D;
-		return p1.getZ() + (factor * Z);
+		double factor = d / dist;
+		return p1.getZ() + (factor * z);
 
 	}
 
