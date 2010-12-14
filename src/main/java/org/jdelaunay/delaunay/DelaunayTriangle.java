@@ -683,7 +683,7 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 	 *
 	 * @return alterPoint
 	 */
-	public Point getAlterPoint(Edge anEdge) {
+	public final Point getAlterPoint(Edge anEdge) {
 		Point start = anEdge.getStartPoint();
 		Point end = anEdge.getEndPoint();
 		return getAlterPoint(start, end);

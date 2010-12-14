@@ -6,6 +6,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.Comparator;
+import org.apache.log4j.Logger;
 
 /**
  * The VerticalComparator class will be used to perform sorting and searching operations
@@ -14,6 +15,8 @@ import java.util.Comparator;
  * @author alexis
  */
 public class VerticalComparator implements Comparator<Edge> {
+
+	private static Logger log = Logger.getLogger(VerticalComparator.class);
 
 	//The absciss where we are going to make the comparison.
 	private double abs;
@@ -43,7 +46,17 @@ public class VerticalComparator implements Comparator<Edge> {
 	}
 
 	/**
-	 * 
+	 * This comparison method is a vertical sorting test :
+	 * Sort two edges (this and edge, indeed), and sort them according to their intersection point
+	 * with the line l of equation x=abs.
+	 * if p1 (p2) is the intersection between l and the line defined by this (edge),
+	 * this method returns :
+	 *  * -1 if p1 < p2 or ( p1 == p2 and this is "under" edge)
+	 *  * 0 if p1 == p2 and (this and edge are colinear)
+	 *  * 1 if p1 > p2 or (p1 == p2 and edge is under this)
+	 *
+	 * In our case, we will return -2 if one of the edge is vertical, and has absciss
+	 * other than abs.
 	 * @param edge1
 	 * @param edge2
 	 * @return
@@ -57,7 +70,7 @@ public class VerticalComparator implements Comparator<Edge> {
 			pEdge1 = edge1.getPointFromItsX(abs);
 			pEdge2 = edge2.getPointFromItsX(abs);
 		} catch (DelaunayError e){
-			System.err.println("Problem while processing the points from their absciss !");
+			log.error("Problem while processing the points from their absciss !");
 		}
 		if (pEdge1 == null || pEdge2 == null) {
 			c=-2;

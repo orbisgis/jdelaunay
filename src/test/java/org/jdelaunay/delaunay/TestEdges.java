@@ -243,6 +243,10 @@ public class TestEdges extends BaseUtility {
 		assertTrue(comp.compare(e2, e1)==1);
 		comp.setAbs(0);
 		assertTrue(comp.compare(e1, e2)==-1);
+
+
+		e2 = new Edge(8,0,0,8,2,2);
+		assertTrue(comp.compare(e1, e2)==-2);
 	}
         
 	/**

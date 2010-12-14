@@ -163,7 +163,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges
 	 * @param constraintEdges
 	 */
-	public void setEdges(ArrayList<Edge> constraint) {
+	public void setEdges(List<Edge> constraint) {
 		this.edges = new ArrayList<Edge>();
 		for (Edge e : constraint) {
 			addPoint(e.getStart());
@@ -238,7 +238,8 @@ public class ConstrainedMesh {
 	 * @return
 	 */
 	public int searchEdge(Edge edge){
-		return 0;
+		int index = Collections.binarySearch(edges, edge);
+		return index;
 	}
 
 	/**
@@ -347,6 +348,9 @@ public class ConstrainedMesh {
 	 * @param point
 	 */
 	public void addPoint(Point point) {
+		if(points == null){
+			points = new ArrayList<Point>();
+		}
 		addToSortedList(point, points);
 	}
 
@@ -670,7 +674,7 @@ public class ConstrainedMesh {
 	 * @param edgeList
 	 */
 	public int insertEdgeVerticalList(Edge edge, List<Edge> edgeList, double abs) throws DelaunayError {
-		if (edgeList == null || edgeList.isEmpty()) {
+		if (edgeList.isEmpty()) {
 			edgeList.add(edge);
 		}
 		int s = edgeList.size();

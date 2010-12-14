@@ -1,6 +1,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ConstrainedDelaunayTest extends BaseUtility {
@@ -736,6 +737,52 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(mesh.getEdges().get(0)==e1);
 	}
 
+	/**
+	 * Test that the methods who checks that a list is vertically sorted works well
+	 */
+	public void testIsVerticallySorted(){
+		List<Edge> list = new ArrayList<Edge>();
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		list.add(new Edge(0,0,0,2,2,2));
+		list.add(new Edge(0,1,0,2,3,2));
+		list.add(new Edge(0,2,0,2,4,2));
+		list.add(new Edge(0,3,0,2,5,2));
+		list.add(new Edge(0,4,0,2,6,2));
+		assertTrue(mesh.isVerticallySorted(list, 1));
+		list.add(new Edge(0,-1,0,2,0,2));
+		assertFalse(mesh.isVerticallySorted(list, 1));
+
+	}
+
+	/**
+	 * Checks that the searchEdge method works well.
+	 */
+	public void testSearchEdge(){
+		List<Edge> list = new ArrayList<Edge>();
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		list.add(new Edge(0,0,0,2,2,2));
+		list.add(new Edge(0,1,0,2,3,2));
+		list.add(new Edge(0,2,0,2,4,2));
+		list.add(new Edge(0,3,0,2,5,2));
+		list.add(new Edge(0,4,0,2,6,2));
+		mesh.setEdges(list);
+		Collections.sort(list);
+		assertTrue(mesh.searchEdge(new Edge(0,0,0,2,2,2))==0);
+		assertTrue(mesh.searchEdge(new Edge(0,1,0,2,3,2))==1);
+		assertTrue(mesh.searchEdge(new Edge(0,2,0,2,4,2))==2);
+		assertTrue(mesh.searchEdge(new Edge(-1,0,0,-1,1,0))<0);
+	}
+
+	/**
+	 * Checks that we are able to ad a point to the point list even if it has
+	 * not been instanciated.
+	 */
+	public void testAddPointNullList() throws DelaunayError{
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPoints(null);
+		mesh.addPoint(new Point(0,0,0));
+		assertTrue(mesh.listContainsPoint(new Point(0,0,0))>=0);
+	}
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number
