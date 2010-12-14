@@ -722,6 +722,21 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	}
 
 	/**
+	 * When adding a new Edge to the list of edges of the triangulation, we must
+	 * check before that this edge is not already referenced as a constraint. If
+	 * it is, we must add the constraint to the edge, not a new, not locked, edge.
+	 */
+	public void testAddExistingConstraintToEdges(){
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		Edge e1 = new Edge(0,0,0,2,2,0);
+		e1.setLocked(true);
+		mesh.addConstraintEdge(e1);
+		Edge e2 = new Edge(0,0,0,2,2,0);
+		mesh.addEdge(e2);
+		assertTrue(mesh.getEdges().get(0)==e1);
+	}
+
+	/**
 	 * Method used to create random a list of random edge.
 	 * @param number
 	 * @return

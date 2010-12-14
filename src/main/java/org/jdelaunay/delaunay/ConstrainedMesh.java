@@ -22,6 +22,10 @@ public class ConstrainedMesh {
 	private List<Point> points;
 	//The lis of constraints used during the triangulation
 	private List<Edge> constraintEdges;
+	//The constraint edges which are currently linked to the envelop during the
+	//triangulation, ie the edges whose one point is in the mesh and the other one
+	//is outside.
+	private List<Edge> edgesLinkedToEnv;
 	//A list of polygons that will be emptied after the triangulation
 	protected List<ConstraintPolygon> polygons;
 	//
@@ -57,6 +61,7 @@ public class ConstrainedMesh {
 		constraintEdges = new ArrayList<Edge>();
 		points = new ArrayList<Point>();
 		polygons = new ArrayList<ConstraintPolygon>();
+		edgesLinkedToEnv = new ArrayList<Edge>();
 		meshComputed = false;
 		precision = 0;
 		tolerance = 0.00001;
@@ -173,9 +178,14 @@ public class ConstrainedMesh {
 		if (edges == null) {
 			edges = new ArrayList<Edge>();
 		}
-		addEdgeToLeftSortedList(edges, e);
-		addPoint(e.getStart());
-		addPoint(e.getEnd());
+		int constraintIndex = sortedListContains(constraintEdges, e);
+		if(constraintIndex<0){
+			addEdgeToLeftSortedList(edges, e);
+			addPoint(e.getStart());
+			addPoint(e.getEnd());
+		} else {
+			addEdgeToLeftSortedList(edges, constraintEdges.get(constraintIndex));
+		}
 	}
 
 	/**
@@ -831,7 +841,7 @@ public class ConstrainedMesh {
                         }
 			e1 = new Edge(p1, p2);
 
-			// The 3 points MUST NOT be colinear
+			//The 3 points MUST NOT be colinear
 			p3 = iterPoint.next();
 			while (p3.isLocked()){
 				p3 = iterPoint.next();
@@ -896,8 +906,8 @@ public class ConstrainedMesh {
 					}
 				}
 				LastTestedPoint = aPoint;
-
-				if (aPoint!= null && aPoint.isLocked() && myInsertPoint(aPoint) == null) {
+				//And here we add the point in the mesh (cf insertPointIntoMesh)
+				if (aPoint!= null && aPoint.isLocked() && insertPointIntoMesh(aPoint) == null) {
 					badPointList.addFirst(aPoint);
                                 }
 
@@ -940,10 +950,10 @@ public class ConstrainedMesh {
 		Edge anEdge1, anEdge2;
 		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
 		LinkedList<Edge> newEdges = new LinkedList<Edge>();
-
+		Edge current;
 
 		for(int i=0; i<boundaryEdges.size(); i++){
-			Edge anEdge=boundaryEdges.get(i);
+			current=boundaryEdges.get(i);
 
 
 			// as the boundary edge anEdge already exists, we check if the
@@ -953,11 +963,11 @@ public class ConstrainedMesh {
 			p1 = null;
 			p2 = null;
 			anEdge1=anEdge2=null;
-			test = anEdge.isRight(aPoint);
+			test = current.isRight(aPoint);
 			if (test) {
 				// We have the edge and the 2 point, in reverse order
-				p2 = anEdge.getStartPoint();
-				p1 = anEdge.getEndPoint();
+				p2 = current.getStartPoint();
+				p1 = current.getEndPoint();
 
 				// triangle points order is p1, p2, aPoint
 				// check if there is an edge between p2 and aPoint
@@ -1002,7 +1012,7 @@ public class ConstrainedMesh {
 
 						// create triangle : take care of the order : anEdge MUST be
 						// first
-						DelaunayTriangle aTriangle = new DelaunayTriangle(anEdge, anEdge1, anEdge2);
+						DelaunayTriangle aTriangle = new DelaunayTriangle(current, anEdge1, anEdge2);
 						aTriangle.setProperty(property);
 						addTriangle(aTriangle);
 
@@ -1012,12 +1022,12 @@ public class ConstrainedMesh {
 						}
 
 						// Mark the edge to be removed
-						oldEdges.add(anEdge);
+						oldEdges.add(current);
 
 						// add the edges to the bad edges list
 						if (!isMeshComputed()) {
-							if (!badEdgesQueueList.contains(anEdge)) {
-								badEdgesQueueList.add(anEdge);
+							if (!badEdgesQueueList.contains(current)) {
+								badEdgesQueueList.add(current);
 							}
 							if (!badEdgesQueueList.contains(anEdge1)) {
 								badEdgesQueueList.add(anEdge1);
@@ -1122,7 +1132,7 @@ public class ConstrainedMesh {
 	 * @param aPoint
 	 * @throws DelaunayError
 	 */
-	private DelaunayTriangle myInsertPoint(Point aPoint) throws DelaunayError {
+	private DelaunayTriangle insertPointIntoMesh(Point aPoint) throws DelaunayError {
 		return insertPoint(aPoint, 0);
 	}
 
