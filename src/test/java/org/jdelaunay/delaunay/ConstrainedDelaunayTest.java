@@ -802,6 +802,26 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.addPoint(new Point(0,0,0));
 		assertTrue(mesh.listContainsPoint(new Point(0,0,0))>=0);
 	}
+
+	/**
+	 * This test checks that we obtain the good edge when searching in a list,
+	 * searching for the one that is directly upper to the point we use for
+	 * the search.
+	 * @throws DelaunayError
+	 */
+//	public void testGetUpperEdge() throws DelaunayError{
+//		ConstrainedMesh mesh = new ConstrainedMesh();
+//		mesh.addConstraintLinkedToEnv(new Edge(0,0,0,2,2,2));
+//		mesh.addConstraintLinkedToEnv(new Edge(0,1,0,2,3,2));
+//		mesh.addConstraintLinkedToEnv(new Edge(0,2,0,2,4,2));
+//		mesh.addConstraintLinkedToEnv(new Edge(0,3,0,2,5,2));
+//		mesh.addConstraintLinkedToEnv(new Edge(0,4,0,2,6,2));
+//		mesh.addConstraintLinkedToEnv(new Edge(-1,0,0,-1,1,0));
+//		Edge upper = mesh.getUpperConstraint(new Point(1.5,1.5,1.5));
+//		assertTrue(upper.equals(new Edge(0,1,0,2,3,2)));
+//
+//
+//	}
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number

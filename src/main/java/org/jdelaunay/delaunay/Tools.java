@@ -1,7 +1,10 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 public class Tools {
@@ -436,5 +439,45 @@ public class Tools {
 		}
 		return theEdge;
 	}
+
+
+
+	/**
+	 * Add an element to the list. This method takes care to ensure that we don't
+	 * insert duplicated items in the list.
+	 * @param <T extends Element & Comparable<? super T>>
+	 * @param elt
+	 * @param sortedList
+	 */
+	public static <T extends Element> int addToSortedList(T elt, List<T> sortedList, Comparator<T> comp){
+		//We make a binary search, as divides and conquers rules...
+		int index = Collections.binarySearch(sortedList, elt, comp);
+		if(index < 0){
+			//The position where we want to insert elt is -index-1, as the
+			//value retruned by binary search is equal to (-insertPos -1)
+			//(cf java.util.Collections javadoc)
+			int insertPos = -index-1;
+			sortedList.add(insertPos, elt);
+		}
+		return index;
+	}
+
+	/**
+	 * Search the element elt in the sorted list sortedList. You are supposed
+	 * to be sure that sortedList is actually sorted ;-)
+	 * @param <T>
+	 * @param sortedList
+	 * @param elt
+	 * @return
+	 */
+	public static <T extends Element> int sortedListContains(List<T> sortedList, T elt, Comparator<T> comp) {
+		//We make a binary search, as divides and conquers rules...
+		int index = Collections.binarySearch(sortedList, elt, comp);
+		//binarySearch will return the index of the element if it is found
+		//(-insertPosition -1) otherwise. Consequently, if index > 0
+		//we are sure that elt is in the list.
+		return (index < 0 ? -1 : index);
+	}
+
 
 }

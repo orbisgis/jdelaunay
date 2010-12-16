@@ -2,6 +2,7 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -28,7 +29,7 @@ public class ConstrainedMesh {
 	//The constraint edges which are currently linked to the envelop during the
 	//triangulation, ie the edges whose one point is in the mesh and the other one
 	//is outside.
-	private List<Edge> edgesLinkedToEnv;
+	private VerticalList constraintsLinkedToEnv;
 	//A list of polygons that will be emptied after the triangulation
 	protected List<ConstraintPolygon> polygons;
 	//
@@ -64,7 +65,7 @@ public class ConstrainedMesh {
 		constraintEdges = new ArrayList<Edge>();
 		points = new ArrayList<Point>();
 		polygons = new ArrayList<ConstraintPolygon>();
-		edgesLinkedToEnv = new ArrayList<Edge>();
+		constraintsLinkedToEnv = new VerticalList(0);
 		meshComputed = false;
 		precision = 0;
 		tolerance = 0.00001;
@@ -398,7 +399,7 @@ public class ConstrainedMesh {
 		//we are sure that elt is in the list.
 		return (index < 0 ? -1 : index);
 	}
-
+	
 	/**
 	 * This method will force the integrity of the constraints used to compute
 	 * the delaunay triangulation. After execution :
@@ -639,6 +640,17 @@ public class ConstrainedMesh {
 	}
 
 	/**
+	 * This method will vertically sort the edges in edgeList, using the absciss of the
+	 * point p given in parameter.
+	 * @param edgeList
+	 * @param p
+	 * @throws DelaunayError
+	 */
+	public void sortEdgesVertically(List<Edge> edgeList, Point p) throws DelaunayError{
+		sortEdgesVertically(edgeList, p.getX());
+	}
+
+	/**
 	 * This method will sort the edges contained in the ArrayList list by considering
 	 * their intersection point with the line of equation x=abs, where a is given
 	 * in parameter.
@@ -677,56 +689,8 @@ public class ConstrainedMesh {
 		if (edgeList.isEmpty()) {
 			edgeList.add(edge);
 		}
-		int s = edgeList.size();
-		int compare = edge.verticalSort(edgeList.get(0), abs);
-		if (compare == -1) {
-			edgeList.add(0, edge);
-			return 0;
-		}
-		compare = edge.verticalSort(edgeList.get(s - 1), abs);
-		if (compare == 1) {
-			edgeList.add(s, edge);
-			return s;
-		}
-		int delta = s / 2;
-		int i = s / 2;
-		while (delta > 0) {
-			compare = edge.verticalSort(edgeList.get(i), abs);
-			switch (compare) {
-				case -1:
-					compare = edge.verticalSort(edgeList.get(i - 1), abs);
-					switch (compare) {
-						case -1:
-							delta = delta / 2;
-							i = i - delta;
-							break;
-						case 1:
-							edgeList.add(i, edge);
-							return i;
-						case 0:
-							return i - 1;
-					}
-					break;
-				case 0:
-					return i;
-				case 1:
-					compare = edge.verticalSort(edgeList.get(i + 1), abs);
-					switch (compare) {
-						case 1:
-							delta = delta / 2;
-							i = i + delta;
-							break;
-						case -1:
-							edgeList.add(i + 1, edge);
-							return i + 1;
-						case 0:
-							return i + 1;
-
-					}
-					break;
-			}
-		}
-		return -1;
+		VerticalComparator comparator = new VerticalComparator(abs);
+		return Tools.addToSortedList(edge, edgeList, comparator);
 	}
 
 	/**
