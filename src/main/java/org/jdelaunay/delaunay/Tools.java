@@ -109,7 +109,7 @@ public class Tools {
 	 * @param minIndex
 	 * @param maxIndex
 	 */
-	public static void quickSort_Points(ArrayList<Point> points,
+	public static void quickSortPoints(ArrayList<Point> points,
 			int minIndex, int maxIndex) {
 		int i, j;
 		int enregRef;
@@ -177,11 +177,11 @@ public class Tools {
 		// Recurrent calls
 		if (minIndex < j) {
 			// if left side is not empty
-			quickSort_Points(points, minIndex, j);
+			quickSortPoints(points, minIndex, j);
 		}
 		if (maxIndex > i) {
 			// if right side is not empty
-			quickSort_Points(points, i, maxIndex);
+			quickSortPoints(points, i, maxIndex);
 		}
 	}
 
@@ -190,8 +190,8 @@ public class Tools {
 	 * 
 	 * @param points
 	 */
-	protected static void quickSort_Points(ArrayList<Point> points) {
-		Tools.quickSort_Points(points, 0, points.size() - 1);
+	protected static void quickSortPoints(ArrayList<Point> points) {
+		Tools.quickSortPoints(points, 0, points.size() - 1);
 	}
 
 	/**

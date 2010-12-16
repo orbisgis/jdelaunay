@@ -774,6 +774,25 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	}
 
 	/**
+	 * Checks that the searchEdge method works well.
+	 */
+	public void testRemoveEdge(){
+		List<Edge> list = new ArrayList<Edge>();
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		list.add(new Edge(0,0,0,2,2,2));
+		list.add(new Edge(0,1,0,2,3,2));
+		list.add(new Edge(0,2,0,2,4,2));
+		list.add(new Edge(0,3,0,2,5,2));
+		list.add(new Edge(0,4,0,2,6,2));
+		mesh.setEdges(list);
+		Collections.sort(list);
+		mesh.removeEdge(new Edge(0,0,0,2,2,2));
+		assertTrue(mesh.searchEdge(new Edge(0,0,0,2,2,2))<0);
+		assertTrue(mesh.searchEdge(new Edge(0,1,0,2,3,2))==0);
+		assertTrue(mesh.searchEdge(new Edge(0,2,0,2,4,2))==1);
+	}
+
+	/**
 	 * Checks that we are able to ad a point to the point list even if it has
 	 * not been instanciated.
 	 */

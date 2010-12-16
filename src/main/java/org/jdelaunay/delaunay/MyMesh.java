@@ -3108,7 +3108,7 @@ public class MyMesh {
 			// Then we mark all edges from p1 to p2
 			int size = addedPoints.size();
 			if (size > 2) {
-				Tools.quickSort_Points(addedPoints);
+				Tools.quickSortPoints(addedPoints);
 			}
 			Point LastPoint = p1;
 
@@ -3146,7 +3146,7 @@ public class MyMesh {
 
 		// sort points
 		if (NbPoints > 0) {
-			Tools.quickSort_Points(points);
+			Tools.quickSortPoints(points);
 		}
 
 		// Remove same points double precision2 = precision * precision;

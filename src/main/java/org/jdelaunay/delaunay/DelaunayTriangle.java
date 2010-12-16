@@ -3,23 +3,20 @@ package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
  *
- * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU, Alexis GUEGANNO
  * @date 2009-01-12
  * @revision 2010-11-08
- * @version 2.1
+ * @version 2.12-16
  */
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class DelaunayTriangle extends Element implements Serializable, Comparable<DelaunayTriangle>{
-
-
+public class DelaunayTriangle extends Element implements Comparable<DelaunayTriangle>{
 
 	/**
 	 * 
@@ -28,7 +25,7 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 
 	protected Edge[] edges;
 
-	private double x_center, y_center;
+	private double xCenter, yCenter;
 	private double radius;
 	
 	private int indicator;
@@ -39,8 +36,8 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 	 */
 	private void init() {
 		this.edges = new Edge[3];
-		this.x_center = 0;
-		this.y_center = 0;
+		this.xCenter = 0;
+		this.yCenter = 0;
 		this.radius = -1;
 		this.indicator = 0;
 	}
@@ -86,7 +83,7 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 
 			connectEdges();
 			recomputeCenter();
-			radius = e1.getStartPoint().squareDistance2D(x_center, y_center);
+			radius = e1.getStartPoint().squareDistance2D(xCenter, yCenter);
 		} else {
 			throw new DelaunayError("Problem while generating the Triangle");
 		}
@@ -103,8 +100,8 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 		init();
 		System.arraycopy(aTriangle.edges, 0, edges, 0, 3);
 
-		x_center = aTriangle.x_center;
-		y_center = aTriangle.y_center;
+		xCenter = aTriangle.xCenter;
+		yCenter = aTriangle.yCenter;
 		radius = aTriangle.radius;
 	}
 
@@ -184,7 +181,7 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 	 * @return
 	 */
 	public Coordinate getCircumCenter() {
-		return new Coordinate(this.x_center, this.y_center, 0.0);
+		return new Coordinate(this.xCenter, this.yCenter, 0.0);
 	}
 	
 	@Override
@@ -312,13 +309,13 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 					* (p2.getX() - p1.getX()))
 					/ (2.0 * cp);
 
-			x_center = cx;
-			y_center = cy;
+			xCenter = cx;
+			yCenter = cy;
 
-			radius = p1.squareDistance2D(x_center, y_center);
+			radius = p1.squareDistance2D(xCenter, yCenter);
 		} else {
-			x_center = 0.0;
-			y_center = 0.0;
+			xCenter = 0.0;
+			yCenter = 0.0;
 			radius = -1;
 		}
 
@@ -363,8 +360,8 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 		int returnedValue = 0;
 
 		// double distance = squareDistance(Center, aPoint);
-		double ux = aPoint.getX() - x_center;
-		double uy = aPoint.getY() - y_center;
+		double ux = aPoint.getX() - xCenter;
+		double uy = aPoint.getY() - yCenter;
 		double distance = ux * ux + uy * uy;
 		if (distance < radius - Tools.EPSILON2) {
 			returnedValue = 1;
@@ -939,10 +936,10 @@ public class DelaunayTriangle extends Element implements Serializable, Comparabl
 	protected void displayObjectCircles(Graphics g, int decalageX, int decalageY) {
 		double r = Math.sqrt(radius);
 		g.setColor(Color.red);
-		g.drawOval((int) (x_center) + decalageX, decalageY - (int) (y_center),
+		g.drawOval((int) (xCenter) + decalageX, decalageY - (int) (yCenter),
 				1, 1);//FIXME not good position
-		g.drawOval((int) (x_center - r) + decalageX, decalageY
-				- (int) (y_center + r), (int) r * 2, (int) r * 2);//FIXME not good position
+		g.drawOval((int) (xCenter - r) + decalageX, decalageY
+				- (int) (yCenter + r), (int) r * 2, (int) r * 2);//FIXME not good position
 	}
 
 	@Override
