@@ -426,8 +426,8 @@ public class HydroNetwork {
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
 					// Connect it to the surface
-					double ZValue = referenceTriangle.softInterpolateZ(aPoint);
-					aPoint.setZ(ZValue);
+					double zValue = referenceTriangle.softInterpolateZ(aPoint);
+					aPoint.setZ(zValue);
 
 					theMesh.addPoint(referenceTriangle, aPoint);
 				} else {
@@ -446,15 +446,15 @@ public class HydroNetwork {
 				aPoint.setMarked(0, true);//TODO check me
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
-					double ZValue = referenceTriangle.softInterpolateZ(aPoint);
+					double zValue = referenceTriangle.softInterpolateZ(aPoint);
 					if (connectToSurface) {
 						// Connect it to the surface
-						aPoint.setZ(ZValue);
+						aPoint.setZ(zValue);
 
 						theMesh.addPoint(referenceTriangle, aPoint);
 					} else {
-						if (aPoint.getZ() > ZValue) {
-							aPoint.setZ(ZValue - 1.0);
+						if (aPoint.getZ() > zValue) {
+							aPoint.setZ(zValue - 1.0);
 						}
 					}
 				} else if (connectToSurface) {
@@ -472,8 +472,8 @@ public class HydroNetwork {
 				referenceTriangle = theMesh.getTriangle(aPoint);
 				if (referenceTriangle != null) {
 					// Connect it to the surface
-					double ZValue = referenceTriangle.softInterpolateZ(aPoint);
-					aPoint.setZ(ZValue);
+					double zValue = referenceTriangle.softInterpolateZ(aPoint);
+					aPoint.setZ(zValue);
 
 					theMesh.addPoint(referenceTriangle, aPoint);
 				} else {

@@ -304,7 +304,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	/**
 	 * get 3D length
 	 */
-	public double get3DLength(Point p) {
+	public double get3DLength() {
 		return Math.sqrt(getSquared3DLength());
 	}
 
@@ -484,8 +484,10 @@ public class Edge extends Element implements Comparable<Edge> {
 		double vx = c.x - p1.getX();
 		double vy = c.y - p1.getY();
 		double res = ux * vy - uy * vx;
-		boolean px = (ux >= 0 ? (p1.getX() <= c.x && c.x <= p2.getX()) : (p2.getX() <= c.x && c.x <= p1.getX()));/* px is in [p1x, p2x]*/
-		boolean py = (uy >= 0 ? (p1.getY() <= c.y && c.y <= p2.getY()) : (p2.getY() <= c.y && c.y <= p1.getY()));/* py is in [p1y, p2y]*/
+		boolean px = (ux >= 0 ? (p1.getX() - Tools.EPSILON <= c.x && c.x <= p2.getX() + Tools.EPSILON) :
+			(p2.getX() - Tools.EPSILON <= c.x && c.x <= p1.getX() + Tools.EPSILON));/* px is in [p1x, p2x]*/
+		boolean py = (uy >= 0 ? (p1.getY() - Tools.EPSILON <= c.y && c.y <= p2.getY() + Tools.EPSILON) : (
+			p2.getY() - Tools.EPSILON <= c.y && c.y <= p1.getY() + Tools.EPSILON));/* py is in [p1y, p2y]*/
 		return res <= Tools.EPSILON && res >= -Tools.EPSILON/* p is on p1, p2 line */
 			&& px && py;
 	}
@@ -848,7 +850,8 @@ public class Edge extends Element implements Comparable<Edge> {
 	}
 
 	/**
-	 * check if the point is colinear to the edge in the XY plane
+	 * check if the point is colinear to the edge in the XY plane, ie if it lies
+	 * on the line defined by this edge.
 	 *
 	 * @param p
 	 * @return isColinear2D

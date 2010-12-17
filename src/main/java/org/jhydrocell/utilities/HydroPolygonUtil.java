@@ -151,11 +151,11 @@ public class HydroPolygonUtil {
 
 		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
 		// sur e
-		Coordinate A = pt1.getCoordinate();
-		Coordinate B = pt2.getCoordinate();
+		Coordinate a = pt1.getCoordinate();
+		Coordinate b = pt2.getCoordinate();
 		int i = 0;
-		while (!(i == 4 || (!p.getCoordinates()[i].equals3D(A) && !p
-				.getCoordinates()[i].equals3D(B)))) {
+		while (!(i == 4 || (!p.getCoordinates()[i].equals3D(a) && !p
+				.getCoordinates()[i].equals3D(b)))) {
 			i++;
 		}
 		// Assert.isTrue(i!=4,"edge n'appartenant pas au triangle");
@@ -164,21 +164,21 @@ public class HydroPolygonUtil {
 		} // e n'appartient pas au triangle
 
 		Coordinate C = p.getCoordinates()[i];
-		Coordinate AB = MathUtil.differenceVectoriel(B, A);
-		Coordinate AC = MathUtil.differenceVectoriel(C, A);
+		Coordinate ab = MathUtil.differenceVectoriel(b, a);
+		Coordinate ac = MathUtil.differenceVectoriel(C, a);
 		// orientation CCW
-		if (MathUtil.produitVectoriel(AB, AC).z < 0) {
+		if (MathUtil.produitVectoriel(ab, ac).z < 0) {
 			// echange A et B
-			Coordinate D = A;
-			A = B;
-			B = D;
-			AB = MathUtil.differenceVectoriel(B, A);
-			AC = MathUtil.differenceVectoriel(C, A);
+			Coordinate d = a;
+			a = b;
+			b = d;
+			ab = MathUtil.differenceVectoriel(b, a);
+			ac = MathUtil.differenceVectoriel(C, a);
 		}
 		// test d'intersection entre AB et P
 		Coordinate P = this.get3DVector();
 
-		res = MathUtil.produitVectoriel(AB, P).z < 0;
+		res = MathUtil.produitVectoriel(ab, P).z < 0;
 
 		return res;
 	}
@@ -215,13 +215,13 @@ public class HydroPolygonUtil {
 			}
 			// l'ordre des coordonnees correspond a l'orientation de l'arc
 			// "sommet haut vers sommet bas"
-			double angleAxeX_rad = Angle.angle(c1, c2);
+			double angleAxeXrad = Angle.angle(c1, c2);
 			// on considere que l'axe nord correspond a l'axe Y positif
-			double angleAxeNord_rad = Angle.PI_OVER_2 - angleAxeX_rad;
-			double angleAxeNord_deg = Angle.toDegrees(angleAxeNord_rad);
+			double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
+			double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
 			// on renvoie toujours une valeur d'angle >= 0
-			orientationPente = angleAxeNord_deg < 0.0 ? 360.0 + angleAxeNord_deg
-					: angleAxeNord_deg;
+			orientationPente = angleAxeNorddeg < 0.0 ? 360.0 + angleAxeNorddeg
+					: angleAxeNorddeg;
 		}
 		return orientationPente;
 	}

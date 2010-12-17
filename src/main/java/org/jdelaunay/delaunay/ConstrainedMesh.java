@@ -980,7 +980,6 @@ public class ConstrainedMesh {
 
 					if(test)
 					{
-
 						// create triangle : take care of the order : anEdge MUST be
 						// first
 						DelaunayTriangle aTriangle = new DelaunayTriangle(current, anEdge1, anEdge2);
@@ -1007,7 +1006,6 @@ public class ConstrainedMesh {
 								badEdgesQueueList.add(anEdge2);
 							}
 						}
-
 					}
 				}
 			}

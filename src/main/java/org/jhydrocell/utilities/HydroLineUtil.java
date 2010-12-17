@@ -69,14 +69,14 @@ public class HydroLineUtil {
 			Coordinate c2 = this.geom.getCoordinates()[this.geom.getNumPoints() - 1];
 			// l'ordre des coordonnees correspond a l'orientation de l'arc
 			// "sommet haut vers sommet bas"
-			double angleAxeX_rad = c1.z >= c2.z ? Angle.angle(c1, c2) : Angle
+			double angleAxeXrad = c1.z >= c2.z ? Angle.angle(c1, c2) : Angle
 					.angle(c2, c1);
 			// on considere que l'axe nord correspond a l'axe Y positif
-			double angleAxeNord_rad = Angle.PI_OVER_2 - angleAxeX_rad;
-			double angleAxeNord_deg = Angle.toDegrees(angleAxeNord_rad);
+			double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
+			double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
 			// on renvoie toujours une valeur d'angle >= 0
-			orientationPente = angleAxeNord_deg < 0.0 ? 360.0 + angleAxeNord_deg
-					: angleAxeNord_deg;
+			orientationPente = angleAxeNorddeg < 0.0 ? 360.0 + angleAxeNorddeg
+					: angleAxeNorddeg;
 		}
 		return orientationPente;
 	}

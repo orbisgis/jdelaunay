@@ -5,6 +5,8 @@
 
 package org.jdelaunay.delaunay;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 /**
  * Tests some of the methods defined in Edge.
  * @author alexis
@@ -283,6 +285,61 @@ public class TestEdges extends BaseUtility {
 		assertTrue(edge.point(0).equals(new Point(1,2,0)));
 		assertTrue(edge.point(1).equals(new Point(4,9,5)));
 		assertTrue(edge.point(42).equals(new Point(4,9,5)));
+
+	}
+
+	/**
+	 * Tests that we are able to effectively set start and end point of an edge
+	 */
+	public void testSetStartEnd() throws DelaunayError{
+		Edge edge = new Edge(0,0,0,2,2,5);
+		edge.setStartPoint(new Point(0.5,0.5,0));
+		assertEquals(edge, new Edge(0.5,0.5,0,2,2,5));
+		edge.setStart(new Point(0,0,0));
+		assertEquals(edge, new Edge(0,0,0,2,2,5));
+		edge.setEnd(new Point(3,3,4));
+		assertEquals(edge, new Edge(0,0,0,3,3,4));
+		edge.setEndPoint(new Point(4,4,5));
+		assertEquals(edge, new Edge(0,0,0,4,4,5));
+	}
+
+	/**
+	 * Test the computing of this edge's length
+	 */
+	public void testLength() throws DelaunayError{
+		Edge edge = new Edge(0,0,0,2,2,2);
+		assertEquals(edge.getSquared2DLength(),8.0);
+		assertEquals(edge.getSquared3DLength(),12.0);
+		assertEquals(edge.get2DLength(),2*Math.sqrt(2), Tools.EPSILON);
+		assertEquals(edge.get3DLength(),2*Math.sqrt(3),Tools.EPSILON);
+	}
+
+	/**
+	 * Tests the methods which check that a point or a coordinate lies on
+	 * an edge or not.
+	 * @throws DelaunayError
+	 */
+	public void testContainsPoint() throws DelaunayError{
+		Edge edge = new Edge(0,0,0,4,0,0);
+		Point pt = new Point(2,0,0);
+		assertTrue(edge.contains(pt));
+		assertTrue(edge.contains(new Coordinate(2,0,0)));
+		assertTrue(edge.contains(new Point(2,0.000000001,0)));
+		assertFalse(edge.contains(new Point(2,2,2)));
+	}
+
+	/**
+	 * Test the method isColinear
+	 * @throws DelaunayError
+	 */
+	public void testIsColinear() throws DelaunayError {
+		Edge edge = new Edge (0,0,0,2,2,0);
+		Point pt = new Point (3,3,0);
+		assertTrue(edge.isColinear(pt));
+		pt = new Point (3,3.000000000000001,0);
+		assertTrue(edge.isColinear(pt));
+		pt = new Point (3,8,0);
+		assertFalse(edge.isColinear(pt));
 
 	}
 }
