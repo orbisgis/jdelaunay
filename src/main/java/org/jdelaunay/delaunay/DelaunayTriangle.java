@@ -254,7 +254,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2)) {
+		if ((p3.equals(p1))||(p3.equals(p2))) {
 			p3 = edges[1].getEndPoint();
 		}
 		aBox.alterBox( p1);
@@ -285,7 +285,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2)) {
+		if ((p3.equals(p1))||(p3.equals(p2))) {
 			p3 = edges[1].getEndPoint();
 		}
 
@@ -414,7 +414,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2)) {
+		if ((p3.equals(p1))||(p3.equals(p2))) {
 			p3 = edges[1].getEndPoint();
 		}
 
@@ -481,7 +481,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		p3 = edges[1].getStartPoint();
-		if ((p3==p1)||(p3==p2)) {
+		if ((p3.equals(p1))||(p3.equals(p2))) {
 			p3 = edges[1].getEndPoint();
 		}
 
@@ -696,13 +696,13 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param p2
 	 * @return alterPoint
 	 */
-	protected Point getAlterPoint(Point p1, Point p2) {
+	protected final Point getAlterPoint(Point p1, Point p2) {
 		Point alterPoint = null;
 
 		if (p1 == edges[0].getStartPoint()) {
 			if (p2 == edges[0].getEndPoint()) {
 				alterPoint = edges[1].getStartPoint();
-				if ((alterPoint== p1) || (alterPoint==p2)) {
+				if ((alterPoint.equals(p1)) || (alterPoint.equals(p2))) {
 					alterPoint = edges[1].getEndPoint();
 				}
 			}
@@ -713,7 +713,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		else if (p2 == edges[0].getStartPoint()) {
 			if (p1 == edges[0].getEndPoint()) {
 				alterPoint = edges[1].getStartPoint();
-				if ((alterPoint== p1) || (alterPoint==p2)) {
+				if ((alterPoint.equals(p1)) || (alterPoint.equals(p2))) {
 					alterPoint = edges[1].getEndPoint();
 				}
 			}
@@ -741,10 +741,10 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 			Edge testEdge = edges[i];
 			test1 = testEdge.getStartPoint();
 			test2 = testEdge.getEndPoint();
-			if ((test1 == p1) && (test2 == p2)) {
+			if ((test1.equals(p1)) && (test2.equals(p2))) {
 				alterEdge = testEdge;
 			}
-			else if ((test1 == p2) && (test2 == p1)) {
+			else if ((test1.equals(p2)) && (test2.equals(p1))) {
 				alterEdge = testEdge;
 			}
 			else {
@@ -768,10 +768,10 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 			Edge testEdge = edges[i];
 			test1 = testEdge.getStartPoint();
 			test2 = testEdge.getEndPoint();
-			if ((test1 == p1) && (test2 == p2)) {
+			if ((test1.equals(p1)) && (test2.equals(p2))) {
 				edgePosition = i;
 			}
-			else if ((test1 == p2) && (test2 == p1)) {
+			else if ((test1.equals(p2)) && (test2.equals(p1))) {
 				edgePosition = i;
 			}
 			else {

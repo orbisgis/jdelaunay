@@ -31,10 +31,28 @@ package org.jhydrocell.utilities;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class MathUtil {
+/**
+ * utility class that contains basic mathematical methods.
+ * We use coordinates here to represent vectors.
+ * @author alexis, jean-yves
+ */
+public final class MathUtil {
 
 	private static final double EPSILON = 1.0E-8;
 
+	/**
+	 * The default constructor must not be used on this class.
+	 */
+	private MathUtil(){
+
+	}
+
+	/**
+	 * get the vector which results from the points v1 and v2
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
 	public static Coordinate getVector(Coordinate v1, Coordinate v2) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = v2.x - v1.x;
@@ -44,7 +62,13 @@ public class MathUtil {
 		return v3;
 	}
 
-	public static Coordinate produitVectoriel(Coordinate v1, Coordinate v2) {
+	/**
+	 * Compute the vector product from the vectors v1 and v2
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	public static Coordinate vectorProduct(Coordinate v1, Coordinate v2) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = v1.y * v2.z - v1.z * v2.y;
 		v3.y = v1.z * v2.x - v1.x * v2.z;
@@ -52,6 +76,12 @@ public class MathUtil {
 		return v3;
 	}
 
+	/**
+	 * Checks that the vectors resulting from v1 and v2 are colinear.
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
 	public static boolean isColinear(Coordinate v1, Coordinate v2) {
 		double res = 0;
 		res += Math.abs(v1.y * v2.z - v1.z * v2.y);
@@ -81,7 +111,13 @@ public class MathUtil {
 		return v3;
 	}
 
-	public static double produitScalaire(Coordinate v1, Coordinate v2) {
+	/**
+	 * Compute the scalar product of v1 and v2.
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	public static double scalarProduct(Coordinate v1, Coordinate v2) {
 		double p;
 		p = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 		return p;
@@ -95,6 +131,11 @@ public class MathUtil {
 		return v3;
 	}
 
+	/**
+	 * Describes the sign of the double given in argument.
+	 * @param d
+	 * @return 0 if d ==0, 1 if d>0, -1 otherwise.
+	 */
 	public static int sign(double d) {
 		if (d > 0) {
 			return 1;
@@ -107,11 +148,16 @@ public class MathUtil {
 		}
 	}
 
+	/**
+	 *
+	 * @param d1
+	 * @param d2
+	 * @return
+	 */
 	public static double min(double d1, double d2) {
 		if (d1 < d2) {
 			return d1;
-		}
-		else {
+		} else {
 			return d2;
 		}
 	}
@@ -119,8 +165,7 @@ public class MathUtil {
 	public static double max(double d1, double d2) {
 		if (d1 > d2) {
 			return d1;
-		}
-		else {
+		} else {
 			return d2;
 		}
 	}
@@ -182,7 +227,7 @@ public class MathUtil {
 	 * @return v arrondi a p chiffre apres la virgule
 	 */
 
-	public static double round_double(double v, int p) {
+	public static double roundDouble(double v, int p) {
 		double vRounded = v;
 		double m = 1.0;
 		for (int i = 0; i < p; i++) {

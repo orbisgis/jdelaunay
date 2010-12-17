@@ -323,7 +323,7 @@ public class MyQuadTree<T extends Element> {
 		for(i=0;i<theList[sector].size()
                         && ( theList[sector].get(i).getBoundingBox().maxx > element.getBoundingBox().maxx
 				);i++
-			);
+			){}
 
 		theList[sector].add(i,element);
 
@@ -1117,8 +1117,9 @@ public class MyQuadTree<T extends Element> {
 							&& theQuadTree[i].theQuadTree[1]==null
 							&& theQuadTree[i].theQuadTree[2]==null
 							&& theQuadTree[i].theQuadTree[3]==null
-							)
-						theQuadTree[i]=null;
+							) {
+						theQuadTree[i] = null;
+					}
 				}
 			}
 			i++;

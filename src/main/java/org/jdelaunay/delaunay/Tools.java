@@ -7,10 +7,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class Tools {
+public final class Tools {
 
 	protected static final double EPSILON = 0.0000001;
 	protected static final double EPSILON2 = EPSILON * EPSILON;
+
+	/**
+	 * Default constructor is private : it is not supposed to be used !
+	 */
+	private Tools(){
+		
+	}
 
 	/**
 	 * swap two elements
@@ -204,7 +211,7 @@ public class Tools {
 	 * @param minIndex
 	 * @param maxIndex
 	 */
-	protected static void quickSort_Edges(ArrayList<Edge> edges, int minIndex,
+	protected static void quickSortEdges(ArrayList<Edge> edges, int minIndex,
 			int maxIndex, boolean switchPoints) {
 		int i, j;
 		int enregRef;
@@ -387,11 +394,11 @@ public class Tools {
 		// Recurrent calls
 		if (minIndex < j) {
 			// if left side is not empty
-			quickSort_Edges(edges, minIndex, j, switchPoints);
+			quickSortEdges(edges, minIndex, j, switchPoints);
 		}
 		if (maxIndex > i) {
 			// if right side is not empty
-			quickSort_Edges(edges, i, maxIndex, switchPoints);
+			quickSortEdges(edges, i, maxIndex, switchPoints);
 		}
 	}
 
@@ -418,22 +425,22 @@ public class Tools {
 	 * 
 	 * @param p1
 	 * @param p2
-	 * @param EdgeList
+	 * @param edgeList
 	 * @return theEdge
 	 */
 	protected static Edge checkTwoPointsEdge(Point p1, Point p2,
-			LinkedList<Edge> EdgeList) {
+			LinkedList<Edge> edgeList) {
 		// Check if the two points already lead to an existing edge.
 		// If the edge exists it must be in the non-processed edges
 		Edge theEdge = null;
 		Point test1, test2;
-		ListIterator<Edge> iter1 = EdgeList.listIterator();
+		ListIterator<Edge> iter1 = edgeList.listIterator();
 		while (iter1.hasNext() && (theEdge == null)) {
 			Edge anEdge = iter1.next();
 			test1 = anEdge.getStartPoint();
 			test2 = anEdge.getEndPoint();
-			if (((test1 == p1) && (test2 == p2))
-					|| ((test1 == p2) && (test2 == p1))) {
+			if (((test1.equals(p1)) && (test2.equals(p2)))
+					|| ((test1.equals(p2)) && (test2.equals(p1)))) {
 				theEdge = anEdge;
 			}
 		}

@@ -163,22 +163,22 @@ public class HydroPolygonUtil {
 			return res;
 		} // e n'appartient pas au triangle
 
-		Coordinate C = p.getCoordinates()[i];
+		Coordinate c = p.getCoordinates()[i];
 		Coordinate ab = MathUtil.differenceVectoriel(b, a);
-		Coordinate ac = MathUtil.differenceVectoriel(C, a);
+		Coordinate ac = MathUtil.differenceVectoriel(c, a);
 		// orientation CCW
-		if (MathUtil.produitVectoriel(ab, ac).z < 0) {
+		if (MathUtil.vectorProduct(ab, ac).z < 0) {
 			// echange A et B
 			Coordinate d = a;
 			a = b;
 			b = d;
 			ab = MathUtil.differenceVectoriel(b, a);
-			ac = MathUtil.differenceVectoriel(C, a);
+			ac = MathUtil.differenceVectoriel(c, a);
 		}
 		// test d'intersection entre AB et P
-		Coordinate P = this.get3DVector();
+		Coordinate pt = this.get3DVector();
 
-		res = MathUtil.produitVectoriel(ab, P).z < 0;
+		res = MathUtil.vectorProduct(ab, pt).z < 0;
 
 		return res;
 	}
@@ -231,19 +231,19 @@ public class HydroPolygonUtil {
 
 
 	public Coordinate getPenteEdgeIntersect(LineString e, Coordinate p) {
-		Coordinate I = null;
+		Coordinate i = null;
 
 		Coordinate eVector = MathUtil.getVector(e.getStartPoint()
 				.getCoordinate(), e.getEndPoint().getCoordinate());
 
 		// Coordinate AB = MathUtil.DifferenceVectoriel(B, A);
-		Coordinate P = this.get3DVector();
-		I = MathUtil.calculIntersection(e.getStartPoint().getCoordinate(),
-				eVector, p, P);
-		Assert.isTrue(I != null,
+		Coordinate p1 = this.get3DVector();
+		i = MathUtil.calculIntersection(e.getStartPoint().getCoordinate(),
+				eVector, p, p1);
+		Assert.isTrue(i != null,
 				"Intersection detectee mais non verifiee par calcul");
 
-		return I;
+		return i;
 	}
 
 }

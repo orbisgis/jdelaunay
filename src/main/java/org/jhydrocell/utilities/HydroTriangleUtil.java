@@ -7,9 +7,16 @@ import org.jdelaunay.delaunay.DelaunayTriangle;
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class HydroTriangleUtil {
+public final class HydroTriangleUtil {
 
 //	private GeometryFactory gf = new GeometryFactory();
+
+	/**
+	 * Empty default constructor, it is not supposed to be called.
+	 */
+	private HydroTriangleUtil(){
+
+	}
 
 	/**
 	 *
@@ -101,7 +108,7 @@ public class HydroTriangleUtil {
 		Coordinate ab = MathUtil.differenceVectoriel(b, a);
 		Coordinate ac = MathUtil.differenceVectoriel(c, a);
 		// orientation CCW
-		if (MathUtil.produitVectoriel(ab, ac).z < 0) {
+		if (MathUtil.vectorProduct(ab, ac).z < 0) {
 			// echange A et B
 			Coordinate d = a;
 			a = b;
@@ -112,7 +119,7 @@ public class HydroTriangleUtil {
 		// test d'intersection entre AB et P
 		Coordinate p = get3DVector(triangle);
 
-		res = MathUtil.produitVectoriel(ab, p).z < 0;
+		res = MathUtil.vectorProduct(ab, p).z < 0;
 
 		return res;
 	}

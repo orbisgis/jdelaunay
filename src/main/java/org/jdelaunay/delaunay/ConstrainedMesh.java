@@ -797,7 +797,9 @@ public class ConstrainedMesh {
 			DelaunayTriangle aTriangle;
 			Point p1, p2, p3;
 			Edge e1, e2, e3;
-			p1 = p2 = p3 = null;
+			p1 = null;
+			p2 = null;
+			p3 = null;
 
 
 			p1 = iterPoint.next();
@@ -925,7 +927,6 @@ public class ConstrainedMesh {
 		for(int i=0; i<boundaryEdges.size(); i++){
 			current=boundaryEdges.get(i);
 
-
 			// as the boundary edge anEdge already exists, we check if the
 			// point is on the left for the reverse order of the edge
 			// So, the point must be on the right of the BoundaryEdge
@@ -942,28 +943,21 @@ public class ConstrainedMesh {
 
 				// triangle points order is p1, p2, aPoint
 				// check if there is an edge between p2 and aPoint
-
-
 				anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, newEdges);
-
 
 				if (anEdge1 == null) {
 					anEdge1 = new Edge(p2, aPoint);
 					if(!intersectsExistingEdges(anEdge1)){
 						addEdgeToLeftSortedList(edges,anEdge1);
 						newEdges.add(anEdge1);
-					}
-					else {
+					} else {
 						test = false;
 					}
 				}
 
-				if(test)
-				{
+				if(test) {
 					// check if there is an edge between aPoint and p1
-
 					anEdge2 = Tools.checkTwoPointsEdge(aPoint, p1, newEdges);
-
 
 					if (anEdge2 == null) {
 						anEdge2 = new Edge(aPoint, p1);
@@ -971,15 +965,13 @@ public class ConstrainedMesh {
 						if(!intersectsExistingEdges(anEdge2)){
 							addEdgeToLeftSortedList(edges,anEdge2);
 							newEdges.add(anEdge2);
-						}
-						else {
+						} else {
 							test = false;
 						}
 					}
 
 
-					if(test)
-					{
+					if(test) {
 						// create triangle : take care of the order : anEdge MUST be
 						// first
 						DelaunayTriangle aTriangle = new DelaunayTriangle(current, anEdge1, anEdge2);
@@ -1020,8 +1012,7 @@ public class ConstrainedMesh {
 
 		// add the newEdges to the boundary list
 		for (Edge anEdge : newEdges){
-			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
-			{
+			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null)){
 				boundaryEdges.add(anEdge);
 			}
                 }
@@ -1125,7 +1116,8 @@ public class ConstrainedMesh {
 			p1 = anEdge.getStartPoint();
 			p2 = anEdge.getEndPoint();
 
-			p3 = p4 = null;
+			p3 = null;
+			p4 = null;
 
 			// Test for each triangle if the remaining point of the
 			// other triangle is inside or not

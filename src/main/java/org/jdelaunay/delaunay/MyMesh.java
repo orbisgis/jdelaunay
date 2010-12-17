@@ -2529,7 +2529,7 @@ public class MyMesh {
 	private ArrayList<Edge> processEdges(ArrayList<Edge> constraintsEdges) throws DelaunayError {
 		int nbEdges2 = constraintsEdges.size();
 		if (nbEdges2 > 0) {
-			Tools.quickSort_Edges(constraintsEdges, 0, nbEdges2 - 1, false);
+			Tools.quickSortEdges(constraintsEdges, 0, nbEdges2 - 1, false);
 		}
 		
 		ArrayList<Edge> remain2 =new ArrayList<Edge>();
@@ -2577,7 +2577,7 @@ public class MyMesh {
 		// Process remaining edges
 		int nbEdges4 = remain2.size();
 		if (nbEdges4 > 0) {
-			Tools.quickSort_Edges(remain2, 0, nbEdges4 - 1, true);
+			Tools.quickSortEdges(remain2, 0, nbEdges4 - 1, true);
 		}
 
 
