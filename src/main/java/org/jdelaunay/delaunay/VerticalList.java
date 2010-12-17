@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,14 +35,31 @@ public class VerticalList {
 	}
 
 	/**
+	 * get the absciss where the comparison is currently performed.
+	 * @return
+	 */
+	public double getAbs(){
+		return comp.getAbs();
+	}
+
+	/**
 	 * Change the absciss where we want our edges to be sorted
 	 * @param abs
 	 */
 	public void setAbs(double abs) throws DelaunayError{
-		if(abs-comp.getAbs()<Tools.EPSILON){
+		if(Math.abs(abs-comp.getAbs())>Tools.EPSILON){
 			comp.setAbs(abs);
 			sort();
 		}
+	}
+
+	/**
+	 * Change the absciss where we want our edges to be sorted. For this task,
+	 * we use the absciss of the point given in parameter.
+	 * @param abs
+	 */
+	public void setAbs(Point pt) throws DelaunayError{
+		setAbs(pt.getX());
 	}
 
 	/**
@@ -64,11 +77,26 @@ public class VerticalList {
 	 * to the boundary of the current mesh.
 	 * @param constraint
 	 */
-	protected void addEdge(Edge constraint){
+	public int addEdge(Edge constraint){
 		if(constraintsList == null){
 			constraintsList = new ArrayList<Edge>();
 		}
-		Tools.addToSortedList(constraint, constraintsList, comp);
+		return Tools.addToSortedList(constraint, constraintsList, comp);
+	}
+
+	/**
+	 * Remove an edge in this vertical list. Do nothing if the edge is not present.
+	 * @param constr
+	 */
+	public void removeEdge(Edge constr){
+		int index = Collections.binarySearch(constraintsList, constr, comp);
+		if(index >= 0){
+			constraintsList.remove(constr);
+		}
+	}
+
+	public Edge remove(int index){
+		return constraintsList.remove(index);
 	}
 
 	/**
@@ -76,8 +104,8 @@ public class VerticalList {
 	 * @param edge
 	 * @param abs
 	 */
-	protected void searchEdgeLinkedToEnv(Edge edge, double abs){
-		Tools.sortedListContains(constraintsList, edge, comp);
+	protected int searchEdge(Edge edge){
+		return Tools.sortedListContains(constraintsList, edge, comp);
 	}
 
 	/**
@@ -112,5 +140,13 @@ public class VerticalList {
 			}
 		}
 		
+	}
+
+	/**
+	 * Gets the current size of this vertical list.
+	 * @return
+	 */
+	public int size(){
+		return this.constraintsList.size();
 	}
 }

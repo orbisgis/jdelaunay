@@ -440,8 +440,6 @@ public class Tools {
 		return theEdge;
 	}
 
-
-
 	/**
 	 * Add an element to the list. This method takes care to ensure that we don't
 	 * insert duplicated items in the list.
@@ -476,7 +474,7 @@ public class Tools {
 		//binarySearch will return the index of the element if it is found
 		//(-insertPosition -1) otherwise. Consequently, if index > 0
 		//we are sure that elt is in the list.
-		return (index < 0 ? -1 : index);
+		return index;
 	}
 
 

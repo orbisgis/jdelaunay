@@ -2,7 +2,6 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -283,7 +282,7 @@ public class ConstrainedMesh {
 		return triangleList;
 	}
 
-	/**y
+	/**
 	 * Set the list of triangles already computed in this mesh.
 	 * @param triangleList
 	 */
@@ -420,7 +419,7 @@ public class ConstrainedMesh {
 		//we are about to perform the sweepline algorithm
 		Point currentEvent = null;
 		//edgeBuffer will contain the edges sorted vertically
-		ArrayList<Edge> edgeBuffer = new ArrayList<Edge>();
+		VerticalList edgeBuffer = new VerticalList(0);
 		//We keep a shallow copy of constraintEdges...
 		List<Edge> edgeMemory = constraintEdges;
 		//...and we empty it
@@ -452,7 +451,7 @@ public class ConstrainedMesh {
 			abs = currentEvent.getX();
 			//We've reached a new event, we must be sure that our vertical
 			//list is still sorted.
-			sortEdgesVertically(edgeBuffer, abs);
+			edgeBuffer.setAbs(abs);
 			if (currentMemEdge == null) {
 				currentMemEdge = edgeMemory.get(0);
 			}
@@ -463,7 +462,7 @@ public class ConstrainedMesh {
 				//value of eventPoints.get(i)
 				currentMemEdge = edgeMemory.get(memoryPos);
 				if (currentEvent.equals2D(currentMemEdge.getPointLeft())) {
-					insertEdgeVerticalList(currentMemEdge, edgeBuffer, abs);
+					edgeBuffer.addEdge(currentMemEdge);
 				} else {
 					break;
 				}
@@ -498,7 +497,7 @@ public class ConstrainedMesh {
 										throw new RuntimeException("problem while removing an edge");
 									}
 									inter4 = new Edge(e2.getPointRight(), newEvent);
-									insertEdgeVerticalList(inter4, edgeBuffer, abs);
+									edgeBuffer.addEdge(inter4);
 									rmCount++;
 								} else if (newEvent.equals2D(e2.getPointRight())) {
 									addConstraintEdge(e2);
@@ -516,7 +515,7 @@ public class ConstrainedMesh {
 										throw new RuntimeException("problem while removing an edge");
 									}
 									inter3 = new Edge(e1.getPointRight(), newEvent);
-									insertEdgeVerticalList(inter3, edgeBuffer, abs);
+									edgeBuffer.addEdge(inter3);
 									rmCount++;
 								} else if (newEvent.equals2D(e1.getPointRight())) {
 									addConstraintEdge(e1);
@@ -594,13 +593,13 @@ public class ConstrainedMesh {
 								if (inter1.getPointRight().compareTo2D(currentEvent) == 1) {
 									addConstraintEdge(inter1);
 								} else {
-									mem = insertEdgeVerticalList(inter1, edgeBuffer, abs);
+									mem = edgeBuffer.addEdge(inter1);
 									j = j <= mem ? j : mem;
 								}
 							}
 							if (inter2.getPointRight().compareTo2D(currentEvent) == 1) {
 								//inter2 has to be processed for further intersections
-								mem = insertEdgeVerticalList(inter2, edgeBuffer, abs);
+								mem = edgeBuffer.addEdge(inter2);
 								j = j <= mem ? j : mem;
 
 							} else {
