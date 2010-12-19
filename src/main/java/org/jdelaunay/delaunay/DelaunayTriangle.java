@@ -640,15 +640,13 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	public boolean checkDelaunay(ArrayList<Point> thePoints) {
 		boolean correct = true;
 		ListIterator<Point> iterPoint = thePoints.listIterator();
-		while ((iterPoint.hasNext()) && (correct)) {
+		while (iterPoint.hasNext() && correct) {
 			Point aPoint = iterPoint.next();
-			if (inCircle(aPoint) == 1) {
-				// Check if it is one of the points of the triangle
-				if ((aPoint != getPoint(0))
-						&& (aPoint != getPoint(1))
-						&& (aPoint != getPoint(2))) {
-					correct = false;
-				}
+			if (inCircle(aPoint) == 1 && !aPoint.equals(getPoint(0))
+                                        && !aPoint.equals(getPoint(1))
+                                        && !aPoint.equals(getPoint(2))) {
+                                // Check if it is one of the points of the triangle
+                                correct = false;
 			}
 		}
 

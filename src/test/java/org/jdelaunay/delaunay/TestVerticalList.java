@@ -129,4 +129,50 @@ public class TestVerticalList extends BaseUtility{
 		assertEquals(4, vList.searchEdge(new Edge(2,5,0,5,8,4)));
 		assertEquals(-3, vList.searchEdge(new Edge(6,3,0,8,1,0)));
 	}
+
+        /**
+         * Test the methods that searches the edge that is directly upper to the
+         * specified point
+         * @throws DelaunayError
+         */
+        public void testGetUpperEdge() throws DelaunayError{
+		VerticalList vList = new VerticalList(1);
+		vList.setAbs(new Point(5,4,0));
+		vList.addEdge(new Edge(0,0,0,4,4,4));
+		vList.addEdge(new Edge(3,3,4,6,6,4));
+		vList.addEdge(new Edge(3,1,0,6,1,4));
+		vList.addEdge(new Edge(2,5,0,5,8,4));
+		vList.addEdge(new Edge(4,3,0,6,1,0));
+                Edge upper = vList.getUpperEdge(new Point(4,2,0));
+                assertTrue(upper.equals(new Edge(4,3,0,6,1,0)));
+                upper = vList.getUpperEdge(new Point(4,4,0));
+                assertTrue(upper.equals(new Edge(2,5,0,5,8,4)));
+                upper = vList.getUpperEdge(new Point(4,15,0));
+                assertNull(upper);
+                upper = vList.getUpperEdge(new Point(4,7,0));
+                assertNull(upper);
+
+        }
+
+        /**
+         * Tests that the retrieval of the edge lower than a given point in a
+         * vertical list works well.
+         * @throws DelaunayError
+         */
+        public void testGetLowerEdge() throws DelaunayError{
+		VerticalList vList = new VerticalList(1);
+		vList.setAbs(new Point(5,4,0));
+		vList.addEdge(new Edge(0,0,0,4,4,4));
+		vList.addEdge(new Edge(3,3,4,6,6,4));
+		vList.addEdge(new Edge(3,1,0,6,1,4));
+		vList.addEdge(new Edge(2,5,0,5,8,4));
+		vList.addEdge(new Edge(4,3,0,6,1,0));
+                Edge lower = vList.getLowerEdge(new Point(4,2,0));
+                assertTrue(lower.equals(new Edge(3,1,0,6,1,4)));
+                lower = vList.getLowerEdge(new Point(4,0,0));
+                assertNull(lower);
+                lower = vList.getLowerEdge(new Point(4,4,0));
+                assertTrue(lower.equals(new Edge(4,3,0,6,1,0)));
+
+        }
 }

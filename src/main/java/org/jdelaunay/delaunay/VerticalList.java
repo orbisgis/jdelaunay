@@ -149,4 +149,112 @@ public class VerticalList {
 	public int size(){
 		return this.constraintsList.size();
 	}
+
+        /**
+         * Search the edge that will be just upper to the point in the sorted list.
+         * The list is sorted according to the abscissa of point. Consequently,
+         * this method is able to change the sorting absciss of the list.
+         *
+         * Note that we don't use the vertical sort here : an Edge edge is said to be
+         * "upper" than point if and only if edge.getPointFromItsX(point.getX())>point.getY()
+         *
+         * This method is used to determine which points of the mesh boundary are
+         * visible from the point to be added.
+         *
+         * @param point
+         * @return The edge of which the ordinate is directly greater that the one
+         * of point. Null if such an edge does not exist.
+         */
+        public Edge getUpperEdge(Point point) throws DelaunayError{
+                if(constraintsList == null || constraintsList.isEmpty()){
+                        return null;
+                }
+                int size = constraintsList.size();
+                double abs = point.getX();
+                if(Tools.EPSILON < Math.abs(abs-getAbs())){
+                        //We must change the x-coordinate where we are working
+                        setAbs(abs);
+                }
+                Edge search = new Edge(point, new Point(point.getX()+1, point.getY(), point.getZ()));
+                int index = Collections.binarySearch(constraintsList, search, comp);
+                index = (index < 0 ? -index -1 : index);
+                //We've checked that the list is neither null nor empty. We can perform
+                //the operation in the loop at least once.
+                double edgeOrd;
+                if(index == size){
+                        return null;
+                }
+                edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
+                do{
+                        edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
+                        index ++;
+                } while(Math.abs(edgeOrd - point.getY())<Tools.EPSILON && index < size);
+                //We've gone one place too far
+                index --;
+                edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
+                //We must check that the last edge is really upper than point, ie that
+                //point and constraintsEdge.get(size -1) are not colinear.
+                //If they are, we return null
+                if(index < size && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
+                        return constraintsList.get(index);
+                } else {
+                        return null;
+                }
+        }
+
+        /**
+         * Get the edge that is directly lower to the point in the sorted list.
+         * The list is sorted according to the abscissa of point. Consequently,
+         * this method is able to change the sorting absciss of the list.
+         *
+         * Note that we don't use the vertical sort here : an Edge edge is said to be
+         * "lower" than point if and only if edge.getPointFromItsX(point.getX())<point.getY()
+         *
+         * This method is used to determine which points of the mesh boundary are
+         * visible from the point to be added.
+         *
+         * @param point
+         * @return The edge of which the ordinate is directly greater that the one
+         * of point. Null if such an edge does not exist.
+         */
+        public Edge getLowerEdge(Point point) throws DelaunayError{
+                if(constraintsList == null || constraintsList.isEmpty()){
+                        return null;
+                }
+                int size = constraintsList.size();
+                double abs = point.getX();
+                if(Tools.EPSILON < Math.abs(abs-getAbs())){
+                        //We must change the x-coordinate where we are working
+                        setAbs(abs);
+                }
+                Edge search = new Edge(point, new Point(point.getX()+1, point.getY(), point.getZ()));
+                int index = Collections.binarySearch(constraintsList, search, comp);
+                index = (index < 0 ? -index -1 : index);
+                //we are searching for the edge that is lower. The insertionPoint is
+                //the place where we would put the searchEdge, so the first potentially
+                //lower edge is the one we find just befor it in the list.
+                index--;
+                //We've checked that the list is neither null nor empty. We can perform
+                //the operation in the loop at least once.
+                double edgeOrd;
+                //if index<0, there is no edge lower than point.
+                if(index < 0){
+                        return null;
+                }
+                do{
+                        edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
+                        index --;
+                } while(Math.abs(edgeOrd - point.getY())<Tools.EPSILON && index >=0);
+                //We've gone one place too far
+                index ++;
+                edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
+                //We must check that the last edge is really lower than point, ie that
+                //point and constraintsEdge.get(size -1) are not colinear.
+                //If they are, we return null
+                if(index >=0 && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
+                        return constraintsList.get(index);
+                } else {
+                        return null;
+                }
+        }
 }

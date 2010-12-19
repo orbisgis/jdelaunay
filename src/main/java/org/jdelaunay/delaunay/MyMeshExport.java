@@ -16,7 +16,6 @@ import org.gdms.data.values.Value;
 import org.gdms.data.values.ValueFactory;
 import org.gdms.driver.DriverException;
 import org.gdms.driver.ObjectDriver;
-import org.gdms.driver.driverManager.DriverLoadException;
 import org.grap.utilities.EnvelopeUtil;
 import org.jhydrocell.utilities.HydroTriangleUtil;
 

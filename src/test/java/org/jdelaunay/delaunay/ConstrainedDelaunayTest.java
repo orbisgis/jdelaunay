@@ -666,7 +666,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                 assertTrue(sillyCheckIntersection(edgeList));
 
 //                mesh = new ConstrainedMesh();
-//                List<Edge> randomEdges = getRandomEdges(1000);
+//                List<Edge> randomEdges = getRandomEdges(100);
 //                for(Edge edge : randomEdges){
 //                        mesh.addConstraintEdge(edge);
 //                }
@@ -679,7 +679,8 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 //		double t2 = System.currentTimeMillis();
 //		System.out.println("time used : "+(t2 - t1) );
 //		edgeList = mesh.getConstraintEdges();
-////		System.out.println("number of intersections : " +edgeList.size());
+//                mesh.forceConstraintIntegrity();
+//		System.out.println("number of intersections : " +edgeList.size());
 ////		edgeList = mesh.getConstraintEdges();
 ////		System.out.println("number of intersections : " +edgeList.size());
 //                e1 = edgeList.get(0);
