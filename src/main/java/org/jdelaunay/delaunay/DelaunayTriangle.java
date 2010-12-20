@@ -5,7 +5,7 @@ package org.jdelaunay.delaunay;
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU, Alexis GUEGANNO
  * @date 2009-01-12
- * @revision 2010-11-08
+ * @revision 2010-12-20
  * @version 2.12-16
  */
 
@@ -16,6 +16,10 @@ import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+/**
+ * This is the class representing a Triangle in th DelaunayTriangulation.
+ * @author alexis
+ */
 public class DelaunayTriangle extends Element implements Comparable<DelaunayTriangle>{
 
 	/**
@@ -23,6 +27,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * The array of edges that constitute this triangle
+	 */
 	protected Edge[] edges;
 
 	private double xCenter, yCenter;
@@ -45,12 +52,6 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * Create a new triangle with points and edges
 	 *
-	 * @param p1
-	 * @param p2
-	 * @param p3
-	 * @param e1
-	 * @param e2
-	 * @param e3
 	 */
 	public DelaunayTriangle() {
 		super();
@@ -63,6 +64,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param e1
 	 * @param e2
 	 * @param e3
+	 * @throws DelaunayError
 	 */
 	public DelaunayTriangle(Edge e1, Edge e2, Edge e3) throws DelaunayError {
 		super();
@@ -493,6 +495,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * check if one of the triangle's angle is less than minimum
 	 *
+	 * @param tolarance
 	 * @return minAngle
 	 */
 	protected int badAngle(double tolarance) {
@@ -676,6 +679,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * Get the point of the triangle that is not belong to the edge
 	 *
+	 * @param anEdge
 	 * @return alterPoint
 	 */
 	public final Point getAlterPoint(Edge anEdge) {
@@ -729,6 +733,8 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * Get the edge of the triangle that includes the two point
 	 *
+	 * @param p1
+	 * @param p2
 	 * @return alterEdge
 	 */
 	protected Edge getEdgeFromPoints(Point p1, Point p2) {
@@ -756,6 +762,8 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * Get the position of edge of the triangle that includes the two point
 	 *
+	 * @param p1 
+	 * @param p2
 	 * @return postion -1 if not found.
 	 */
 	protected int getEdgePositionFromPoints(Point p1, Point p2) {
@@ -783,6 +791,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * Check if the point belongs to the triangle
 	 *
+	 * @param aPoint
 	 * @return belongs
 	 */
 	public boolean belongsTo(Point aPoint) {
@@ -810,6 +819,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * Check if the point is closed to one of the triangle's points
 	 *
+	 * @param aPoint
 	 * @return closedTo
 	 */
 	public boolean isClosedFromPoints(Point aPoint) {
@@ -857,10 +867,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		return new Point(x, y, z);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#toString()
+	/**
+	 * Gives a rperesentation of this triangle as a String.
+	 * @return Triangle "+gid+": ["+getPoint(0).toString()+", "+getPoint(1).toString()+", "+getPoint(2).toString()+"]
 	 */
 	@Override
 	public String toString() {
