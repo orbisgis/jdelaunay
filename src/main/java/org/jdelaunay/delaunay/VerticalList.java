@@ -247,6 +247,10 @@ public class VerticalList {
          * This method is used to determine which points of the mesh boundary are
          * visible from the point to be added.
          *
+         * Be careful that the edge returned is the one found using thee verticl sort.
+         * It may not be "vertically upper" than point : we can't be sure that there
+         * is a point of x-coordinate point.getX() on this edge.
+         *
          * @param point
          * @return The edge of which the ordinate is directly greater that the one
          * of point. Null if such an edge does not exist.
@@ -306,6 +310,10 @@ public class VerticalList {
          * This method is used to determine which points of the mesh boundary are
          * visible from the point to be added.
          *
+         * Be careful that the edge returned is the one found using thee verticl sort.
+         * It may not be "vertically upper" than point : we can't be sure that there
+         * is a point of x-coordinate point.getX() on this edge.
+         *
          * @param point
          * @return The edge of which the ordinate is directly greater that the one
          * of point. Null if such an edge does not exist.
@@ -362,6 +370,7 @@ public class VerticalList {
 	 * constraints that are linked to the boundary intersect the edge ed given
 	 * in parameter.
 	 * Intersection must not be an extremity point of the two evaluated edges.
+         * We don't deal with edges that intersect and that are colinear.
 	 * @param pRef
 	 * @param ed
 	 * @return
@@ -373,14 +382,14 @@ public class VerticalList {
 		int inter;
 		if(upper!=null){
 			inter = upper.intersects(ed);
-			if(inter == 1 || inter == 4){
+			if(inter == 1){
 				return true;
 			}
 		}
 		Edge lower = getLowerEdge(pRef);
 		if(lower!=null){
-			inter = lower.intersects(lower);
-			if(inter == 1 || inter == 4){
+			inter = lower.intersects(ed);
+			if(inter == 1){
 				return true;
 			}
 		}

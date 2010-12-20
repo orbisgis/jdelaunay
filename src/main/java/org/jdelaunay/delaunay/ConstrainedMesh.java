@@ -856,12 +856,6 @@ public class ConstrainedMesh {
 				badPointList.add(p3);
 
 				p3 = iterPoint.next();
-				upper = cstrLinkedToEnv.getUpperEdge(p3);
-				lower = cstrLinkedToEnv.getLowerEdge(p3);
-				interCount = upper.intersects(e1);
-				interUpper =  interCount==1 || interCount==4;
-				interCount = upper.intersects(e2);
-				interLower =  interCount==1 || interCount==4;
 //				while (p3.isLocked()){
 //					p3 = iterPoint.next();
 //                                }
@@ -990,7 +984,7 @@ public class ConstrainedMesh {
 				//if anEdge1 is null, it does not already exist in newEdges.
 				if (anEdge1 == null) {
 					anEdge1 = new Edge(p2, aPoint);
-					if(!intersectsExistingEdges(anEdge1)){
+					if(!intersectsExistingEdges(anEdge1) && !cstrLinkedToEnv.intersectsUpperOrLower(aPoint, anEdge1)){
 						addEdgeToLeftSortedList(edges,anEdge1);
 						newEdges.add(anEdge1);
 					} else {
@@ -1005,7 +999,9 @@ public class ConstrainedMesh {
 					if (anEdge2 == null) {
 						anEdge2 = new Edge(aPoint, p1);
 
-						if(!intersectsExistingEdges(anEdge2)){
+						if(!intersectsExistingEdges(anEdge2)
+                                                        &&!cstrLinkedToEnv.intersectsUpperOrLower(aPoint, anEdge1)){
+                                                        
 							addEdgeToLeftSortedList(edges,anEdge2);
 							newEdges.add(anEdge2);
 						} else {

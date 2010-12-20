@@ -175,6 +175,8 @@ public class TestVerticalList extends BaseUtility{
                 assertNull(lower);
                 lower = vList.getLowerEdge(new Point(4,4,0));
                 assertTrue(lower.equals(new Edge(4,3,0,6,1,0)));
+                lower = vList.getLowerEdge(new Point(4,15,0));
+                assertTrue(lower.equals(new Edge(2,5,0,5,8,4)));
 
         }
 
@@ -215,8 +217,15 @@ public class TestVerticalList extends BaseUtility{
 		assertTrue(vList.getLastUpperPt().equals(pRef));
 		assertTrue(vList.getLastLowerPt().equals(pRef));
 		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0)));
-		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,6,0,5,3,0)));
-		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,6,0,5,3,0)));
+                //for the next edge, the upper edge is (0,0,0,4,4,4), not (4,4,4,6,6,6)
+                //It the result of the vertical sort. Consequently, we don't have any
+                //intersection between (4,6,0,5,3,0) and the edges directly upper and
+                //lower than point
+		assertFalse(vList.intersectsUpperOrLower(pRef, new Edge(4,6,0,5,3,0)));
+		assertFalse(vList.intersectsUpperOrLower(pRef, new Edge(4,6,0,5,3,0)));
+                //The intersection occurs with (0,0,0,4,4,4)
+		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(3,4,0,5,3,0)));
+
 	}
 
 	/**
