@@ -761,6 +761,27 @@ public class ConstrainedMesh {
 		}
 	}
 
+	/**
+	 * Get the list of constraint edges whose left point is left.
+	 * @param left
+	 * @return
+	 */
+	public List<Edge> getConstraintsFromLeftPoint(Point left){
+		//The edge left-left is the minimum edge whose leftpoint is left.
+		List<Edge> retList = new ArrayList();
+		if(constraintEdges == null || constraintEdges.isEmpty()){
+			return retList;
+		}
+		int size = constraintEdges.size();
+		Edge leftSearch = new Edge(left, left);
+		int index =Collections.binarySearch(constraintEdges, leftSearch);
+		index = index < 0 ? -index -1 : index;
+		while(index<size && constraintEdges.get(index).getPointLeft().equals(left)){
+			retList.add(constraintEdges.get(index));
+			index++;
+		}
+		return retList;
+	}
 	// ------------------------------------------------------------------------------------------
 	/**
 	 * Generate the Delaunay's triangularization with a flip-flop algorithm.
@@ -803,6 +824,7 @@ public class ConstrainedMesh {
 
 
 			p1 = iterPoint.next();
+			constraintsLinkedToEnv.setAbs(p1);
 			while (p1.isLocked()){
 				p1 = iterPoint.next();
                         }
