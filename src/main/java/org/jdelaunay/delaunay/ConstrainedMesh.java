@@ -28,7 +28,7 @@ public class ConstrainedMesh {
 	//The constraint edges which are currently linked to the envelop during the
 	//triangulation, ie the edges whose one point is in the mesh and the other one
 	//is outside.
-	private VerticalList constraintsLinkedToEnv;
+	private VerticalList cstrLinkedToEnv;
 	//A list of polygons that will be emptied after the triangulation
 	protected List<ConstraintPolygon> polygons;
 	//
@@ -64,7 +64,7 @@ public class ConstrainedMesh {
 		constraintEdges = new ArrayList<Edge>();
 		points = new ArrayList<Point>();
 		polygons = new ArrayList<ConstraintPolygon>();
-		constraintsLinkedToEnv = new VerticalList(0);
+		cstrLinkedToEnv = new VerticalList(0);
 		meshComputed = false;
 		precision = 0;
 		tolerance = 0.00001;
@@ -237,9 +237,8 @@ public class ConstrainedMesh {
 	 * @param edge
 	 * @return
 	 */
-	public int searchEdge(Edge edge){
-		int index = Collections.binarySearch(edges, edge);
-		return index;
+	public final int searchEdge(Edge edge){
+		return Collections.binarySearch(edges, edge);
 	}
 
 	/**
@@ -494,7 +493,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(inter2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
-										throw new DelaunayError("problem while removing an edge");
+										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									inter4 = new Edge(e2.getPointRight(), newEvent);
 									edgeBuffer.addEdge(inter4);
@@ -503,7 +502,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(e2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
-										throw new DelaunayError("problem while removing an edge");
+										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									rmCount++;
 								}
@@ -512,7 +511,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(inter1);
 									rm = edgeBuffer.remove(j - 1);
 									if (!rm.equals(e1)) {
-										throw new DelaunayError("problem while removing an edge");
+										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									inter3 = new Edge(e1.getPointRight(), newEvent);
 									edgeBuffer.addEdge(inter3);
@@ -521,7 +520,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(e1);
 									rm = edgeBuffer.remove(j - 1);
 									if (!rm.equals(e1)) {
-										throw new DelaunayError("problem while removing an edge");
+										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									rmCount++;
 								}
@@ -535,7 +534,7 @@ public class ConstrainedMesh {
 								addConstraintEdge(e2);
 								rm = edgeBuffer.remove(j);
 								if (!rm.equals(e2)) {
-									throw new DelaunayError("problem while removing an edge");
+									throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 								}
 								rmCount++;
 							}
@@ -543,7 +542,7 @@ public class ConstrainedMesh {
 								addConstraintEdge(e1);
 								rm = edgeBuffer.remove(j - 1);
 								if (!rm.equals(e1)) {
-									throw new DelaunayError("problem while removing an edge");
+									throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 								}
 								rmCount++;
 							}
@@ -575,11 +574,11 @@ public class ConstrainedMesh {
 							//new edges will be inserted if necessary.
 							rm = edgeBuffer.remove(j);
 							if (!rm.equals(e2)) {
-								throw new DelaunayError("problem while removing an edge");
+								throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 							}
 							rm = edgeBuffer.remove(j - 1);
 							if (!rm.equals(e1)) {
-								throw new DelaunayError("problem while removing an edge");
+								throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 							}
 							j--;
 							if (leftMost.compareTo2D(newEvent) == -1) {
@@ -622,7 +621,7 @@ public class ConstrainedMesh {
 							addConstraintEdge(e1);
 							rm = edgeBuffer.remove(j - 1);
 							if (!rm.equals(e1)) {
-								throw new DelaunayError("problem while removing an edge");
+								throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 							}
 							j--;
 							j = j-1 < 0 ? 0 : j-1;
@@ -793,15 +792,13 @@ public class ConstrainedMesh {
 	public void processDelaunay() throws DelaunayError {
 		if (isMeshComputed()) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
-		}
-		else if (points.size() < 3) {
+		} else if (points.size() < 3) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
-		}
-		else {
+		} else {
 			// general data structures
 			badEdgesQueueList = new LinkedList<Edge>();
 			boundaryEdges = new ArrayList<Edge>();
-			constraintsLinkedToEnv = new VerticalList();
+			cstrLinkedToEnv = new VerticalList();
 			LinkedList<Point> badPointList = new LinkedList<Point>();
 
 			// sort points
@@ -818,36 +815,56 @@ public class ConstrainedMesh {
 			DelaunayTriangle aTriangle;
 			Point p1, p2, p3;
 			Edge e1, e2, e3;
+			Edge upper;
+			Edge lower;
+			int interCount;
+			boolean interUpper;
+			boolean interLower;
 			p1 = null;
 			p2 = null;
 			p3 = null;
 
 
 			p1 = iterPoint.next();
-			constraintsLinkedToEnv.setAbs(p1);
-			while (p1.isLocked()){
-				p1 = iterPoint.next();
-                        }
-
+			//we add the constraints that are linked to p1
+			cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(p1));
+//			while (p1.isLocked()){
+//				p1 = iterPoint.next();
+//                        }
 			p2 = iterPoint.next();
-			while (p2.isLocked()){
-				p2 = iterPoint.next();
-                        }
+			//We add the constraints that are linked to p2
+			cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(p2));
+//			while (p2.isLocked()){
+//				p2 = iterPoint.next();
+//                        }
 			e1 = new Edge(p1, p2);
+			//we remove e1 from the constraints linked to the boundary
+			//Indeed, e1 will be part of the boundary...
+			cstrLinkedToEnv.removeEdge(e1);
 
 			//The 3 points MUST NOT be colinear
 			p3 = iterPoint.next();
-			while (p3.isLocked()){
-				p3 = iterPoint.next();
-                        }
+			e2 = new Edge(p2, p3);
+			e3 = new Edge(p3, p1);
 
-			while ((e1.isColinear2D(p3)) && (iterPoint.hasNext())) {
+			//We must check that p3 is not colinear to e1, that e2 or e3 does not
+			//intersect an existing constraint edge that is linked to the mesh,
+			//and that we still have points to add to the mesh.
+			while ((e1.isColinear2D(p3) || cstrLinkedToEnv.intersectsUpperOrLower(p3, e2)
+				|| cstrLinkedToEnv.intersectsUpperOrLower(p3, e3) )
+				&& iterPoint.hasNext()) {
 				badPointList.add(p3);
 
 				p3 = iterPoint.next();
-				while (p3.isLocked()){
-					p3 = iterPoint.next();
-                                }
+				upper = cstrLinkedToEnv.getUpperEdge(p3);
+				lower = cstrLinkedToEnv.getLowerEdge(p3);
+				interCount = upper.intersects(e1);
+				interUpper =  interCount==1 || interCount==4;
+				interCount = upper.intersects(e2);
+				interLower =  interCount==1 || interCount==4;
+//				while (p3.isLocked()){
+//					p3 = iterPoint.next();
+//                                }
 			}
 
 			// The triangle's edges MUST be in the right direction
@@ -870,7 +887,7 @@ public class ConstrainedMesh {
 			aTriangle = new DelaunayTriangle(e1, e2, e3);
 			addTriangle(aTriangle);
 
-			// Then process the other points - order don't care
+			// Then process the other points - order doesn't matter
 			boundaryEdges.add(e1);
 			boundaryEdges.add(e2);
 			boundaryEdges.add(e3);
@@ -879,20 +896,23 @@ public class ConstrainedMesh {
 			boolean ended = false;
 			Point aPoint=null;
 			Point lastTestedPoint=null;
-			int count = 0;
 			while (! ended) {
 				boolean hasGotPoint = false;
 				if (! badPointList.isEmpty()) {
+					//We must try to process the points that have been referenced as "bad"
 					aPoint = badPointList.getFirst();
 					if (lastTestedPoint != aPoint) {
+						//we've tested another point since last time
+						//we tried with the first point of the bad
+						//point list. Let's try again...
 						badPointList.removeFirst();
 						hasGotPoint = true;
 					}
 				}
-
+				//If we've retried a point in the badPointList, we
+				//don't need to take one in the points list.
 				if (! hasGotPoint) {
 					if (iterPoint.hasNext()) {
-						count++;
 						aPoint = iterPoint.next();
 					} else {
 						ended = true;
@@ -945,8 +965,9 @@ public class ConstrainedMesh {
 		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
 		LinkedList<Edge> newEdges = new LinkedList<Edge>();
 		Edge current;
-
+		
 		for(int i=0; i<boundaryEdges.size(); i++){
+			//We change the current edge.
 			current=boundaryEdges.get(i);
 
 			// as the boundary edge anEdge already exists, we check if the
@@ -959,14 +980,14 @@ public class ConstrainedMesh {
 			anEdge2=null;
 			test = current.isRight(aPoint);
 			if (test) {
-				// We have the edge and the 2 point, in reverse order
+				// We have the edge and the 2 points, in reverse order
 				p2 = current.getStartPoint();
 				p1 = current.getEndPoint();
 
 				// triangle points order is p1, p2, aPoint
 				// check if there is an edge between p2 and aPoint
 				anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, newEdges);
-
+				//if anEdge1 is null, it does not already exist in newEdges.
 				if (anEdge1 == null) {
 					anEdge1 = new Edge(p2, aPoint);
 					if(!intersectsExistingEdges(anEdge1)){

@@ -198,4 +198,76 @@ public class TestVerticalList extends BaseUtility{
 		assertTrue(vList.getVerticallySortedEdges().contains(new Edge(2,5,0,5,8,4)));
 		assertTrue(vList.getVerticallySortedEdges().contains(new Edge(4,3,0,6,1,0)));
 	}
+
+	/**
+	 * checks if the method which search for intersection between an edge and
+	 * the edges upper and lower than a point works well.
+	 */
+	public void testIntersectsUpperOrLower() throws DelaunayError{
+		VerticalList vList = new VerticalList(1);
+		vList.addEdge(new Edge(0,0,0,4,4,4));
+		vList.addEdge(new Edge(4,4,4,6,6,4));
+		vList.addEdge(new Edge(3,1,0,6,1,4));
+		vList.addEdge(new Edge(2,5,0,5,8,4));
+		vList.addEdge(new Edge(4,3,0,6,1,0));
+		Point pRef = new Point(5,3,0);
+		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0)));
+		assertTrue(vList.getLastUpperPt().equals(pRef));
+		assertTrue(vList.getLastLowerPt().equals(pRef));
+		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0)));
+		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,6,0,5,3,0)));
+		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,6,0,5,3,0)));
+	}
+
+	/**
+	 * We check that the volatile attributes (lastUpperPt, etc...) are well
+	 * removed when changing a valuable information in the list.
+	 */
+	public void testVolatileAttributes() throws DelaunayError{
+		VerticalList vList = new VerticalList(1);
+		vList.addEdge(new Edge(0,0,0,4,4,4));
+		vList.addEdge(new Edge(4,4,4,6,6,4));
+		vList.addEdge(new Edge(3,1,0,6,1,4));
+		vList.addEdge(new Edge(2,5,0,5,8,4));
+		vList.addEdge(new Edge(4,3,0,6,1,0));
+		Point pRef = new Point(5,3,0);
+		assertTrue(vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0)));
+		assertTrue(vList.getLastUpperPt().equals(pRef));
+		assertTrue(vList.getLastLowerPt().equals(pRef));
+		vList.setAbs(0);
+		assertNull(vList.getLastLowerEd());
+		assertNull(vList.getLastUpperEd());
+		assertNull(vList.getLastLowerPt());
+		assertNull(vList.getLastLowerPt());
+		vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0));
+		assertTrue(vList.getLastUpperPt().equals(pRef));
+		assertTrue(vList.getLastLowerPt().equals(pRef));
+		vList.addEdge(new Edge(10,10,10,11,11,11));
+		assertNull(vList.getLastLowerEd());
+		assertNull(vList.getLastUpperEd());
+		assertNull(vList.getLastLowerPt());
+		assertNull(vList.getLastLowerPt());
+		vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0));
+		assertTrue(vList.getLastUpperPt().equals(pRef));
+		assertTrue(vList.getLastLowerPt().equals(pRef));
+		vList.removeEdge(new Edge(10,10,10,11,11,11));
+		assertNull(vList.getLastLowerEd());
+		assertNull(vList.getLastUpperEd());
+		assertNull(vList.getLastLowerPt());
+		assertNull(vList.getLastLowerPt());
+		vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0));
+		assertTrue(vList.getLastUpperPt().equals(pRef));
+		assertTrue(vList.getLastLowerPt().equals(pRef));
+		ArrayList<Edge> edgeList = new ArrayList<Edge>();
+		edgeList.add(new Edge(10,10,10,11,11,11));
+		edgeList.add(new Edge(12,12,12,11,11,11));
+		vList.addEdges(edgeList);
+		assertNull(vList.getLastLowerEd());
+		assertNull(vList.getLastUpperEd());
+		assertNull(vList.getLastLowerPt());
+		assertNull(vList.getLastLowerPt());
+		vList.intersectsUpperOrLower(pRef, new Edge(4,2,0,5,3,0));
+		assertTrue(vList.getLastUpperPt().equals(pRef));
+		assertTrue(vList.getLastLowerPt().equals(pRef));
+	}
 }

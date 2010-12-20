@@ -26,6 +26,7 @@ public class DelaunayError extends Throwable {
 	public final static int DELAUNAY_ERROR_NON_INSERTED_POINT = 200;
 	public final static int DELAUNAY_ERROR_INCORRECT_TOPOLOGY = 201;
 	public final static int DELAUNAY_ERROR_OUTSIDE_TRIANGLE = 202;
+	public final static int DELAUNAY_ERROR_REMOVING_EDGE = 203;
 	
 	public final static int DELAUNAY_ERROR_ERROR_POINT_XYZ = 300;
 	
@@ -79,7 +80,8 @@ public class DelaunayError extends Throwable {
 			return "Incorrect topology";
 		case DELAUNAY_ERROR_OUTSIDE_TRIANGLE:
 			return "point is outside the triangle";
-		
+		case DELAUNAY_ERROR_REMOVING_EDGE:
+			return "Problem while removing an edge";
 		case DELAUNAY_ERROR_ERROR_POINT_XYZ:
 			return "point should have X, Y and Z coordinates";
 			

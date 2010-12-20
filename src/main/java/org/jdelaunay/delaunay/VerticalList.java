@@ -16,6 +16,22 @@ public class VerticalList {
 	//The comparator used by this VerticalList
 	private VerticalComparator comp;
 
+	/*****************************************************/
+	/*The following attributes are used to prevent the   */
+	/*library to perform many times the same comparisons */
+	/*(getUpper and getLower)                            */
+	/*They are here for efficiency reasons               */
+	/*****************************************************/
+
+	//The last point used for a getUpperEdge
+	private Point lastUpperPt;
+	//The last returned upper edge
+	private Edge lastUpperEd;
+	//The last point used for a getLowerEdge
+	private Point lastLowerPt;
+	//The last returned lower edge
+	private Edge lastLowerEd;
+
 	/**
 	 * The default constructor. The inner comparator is instanciated with
 	 * value 0.
@@ -23,6 +39,7 @@ public class VerticalList {
 	public VerticalList(){
 		constraintsList = new ArrayList<Edge>();
 		comp = new VerticalComparator((0));
+		resetVolatileAttributes();
 	}
 
 	/**
@@ -32,6 +49,7 @@ public class VerticalList {
 	public VerticalList(double abs){
 		constraintsList = new ArrayList<Edge>();
 		comp=new VerticalComparator(abs);
+		resetVolatileAttributes();
 	}
 
 	/**
@@ -56,6 +74,7 @@ public class VerticalList {
 	 * @param abs
 	 */
 	public final void setAbs(double abs) throws DelaunayError{
+		resetVolatileAttributes();
 		if(Math.abs(abs-comp.getAbs())>Tools.EPSILON){
 			comp.setAbs(abs);
 			sort();
@@ -86,8 +105,9 @@ public class VerticalList {
 	 * @param constraints
 	 */
 	public final void addEdges(List<Edge> constraints){
+		resetVolatileAttributes();
 		for(Edge edge : constraints){
-			addEdge(edge);
+			Tools.addToSortedList(edge, constraintsList, comp);
 		}
 	}
 
@@ -97,6 +117,7 @@ public class VerticalList {
 	 * @param constraint
 	 */
 	public final int addEdge(Edge constraint){
+		resetVolatileAttributes();
 		if(constraintsList == null){
 			constraintsList = new ArrayList<Edge>();
 		}
@@ -108,13 +129,20 @@ public class VerticalList {
 	 * @param constr
 	 */
 	public final void removeEdge(Edge constr){
+		resetVolatileAttributes();
 		int index = Collections.binarySearch(constraintsList, constr, comp);
 		if(index >= 0){
 			constraintsList.remove(constr);
 		}
 	}
 
+	/**
+	 * Remove the edge at index index in this vertical list.
+	 * @param index
+	 * @return
+	 */
 	public final Edge remove(int index){
+		resetVolatileAttributes();
 		return constraintsList.remove(index);
 	}
 
@@ -134,13 +162,40 @@ public class VerticalList {
 	public final List<Edge> getVerticallySortedEdges(){
 		return constraintsList;
 	}
-	
+
+	/**
+	 * get the last evaluated lower edge
+	 * @return
+	 */
+	public Edge getLastLowerEd() {
+		return lastLowerEd;
+	}
+
+	/**
+	 * get the last point evaluate to perform et getLowerPoint operation
+	 * @return
+	 */
+	public Point getLastLowerPt() {
+		return lastLowerPt;
+	}
+
+	public Edge getLastUpperEd() {
+		return lastUpperEd;
+	}
+
+	public Point getLastUpperPt() {
+		return lastUpperPt;
+	}
+
+
+
 	/**
 	 * This method will sort the list using the abs of the current comparator.
 	 * It's a bubble sort, not a merge sort, as it will be more efficient in 
 	 * most cases when using sweep line.
 	 */
 	protected final void sort() throws DelaunayError{
+		resetVolatileAttributes();
 		int s = constraintsList.size();
 		int i = 0;
 		int c = 0;
@@ -169,6 +224,18 @@ public class VerticalList {
 		return this.constraintsList.size();
 	}
 
+	/**
+	 * This method resets the attributes lastUpperPt, lastUpperEd, lastLowerPt
+	 * and lastLowerEd. It must be called each time a change occurs in the
+	 * underlying list (add or removal, new sorting absciss)
+	 */
+	private void resetVolatileAttributes(){
+		lastUpperEd=null;
+		lastUpperPt=null;
+		lastLowerEd=null;
+		lastLowerPt=null;
+	}
+
         /**
          * Search the edge that will be just upper to the point in the sorted list.
          * The list is sorted according to the abscissa of point. Consequently,
@@ -186,14 +253,19 @@ public class VerticalList {
          */
         public final Edge getUpperEdge(Point point) throws DelaunayError{
                 if(constraintsList == null || constraintsList.isEmpty()){
+			lastUpperEd = null;
                         return null;
                 }
+		if(lastUpperPt != null && lastUpperPt.equals(point)){
+			return lastUpperEd;
+		}
                 int size = constraintsList.size();
                 double abs = point.getX();
                 if(Tools.EPSILON < Math.abs(abs-getAbs())){
                         //We must change the x-coordinate where we are working
                         setAbs(abs);
                 }
+		lastUpperPt=point;
                 Edge search = new Edge(point, new Point(point.getX()+1, point.getY(), point.getZ()));
                 int index = Collections.binarySearch(constraintsList, search, comp);
                 index = (index < 0 ? -index -1 : index);
@@ -201,6 +273,7 @@ public class VerticalList {
                 //the operation in the loop at least once.
                 double edgeOrd;
                 if(index == size){
+			lastUpperEd = null;
                         return null;
                 }
                 do{
@@ -214,8 +287,10 @@ public class VerticalList {
                 //point and constraintsEdge.get(size -1) are not colinear.
                 //If they are, we return null
                 if(index < size && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
-                        return constraintsList.get(index);
+			lastUpperEd = constraintsList.get(index);
+                        return lastUpperEd;
                 } else {
+			lastUpperEd = null;
                         return null;
                 }
         }
@@ -237,13 +312,18 @@ public class VerticalList {
          */
         public final Edge getLowerEdge(Point point) throws DelaunayError{
                 if(constraintsList == null || constraintsList.isEmpty()){
+			lastLowerEd=null;
                         return null;
                 }
+		if(lastLowerPt != null && lastLowerPt.equals(point)){
+			return lastLowerEd;
+		}
                 double abs = point.getX();
                 if(Tools.EPSILON < Math.abs(abs-getAbs())){
                         //We must change the x-coordinate where we are working
                         setAbs(abs);
                 }
+		lastLowerPt=point;
                 Edge search = new Edge(point, new Point(point.getX()+1, point.getY(), point.getZ()));
                 int index = Collections.binarySearch(constraintsList, search, comp);
                 index = (index < 0 ? -index -1 : index);
@@ -256,6 +336,7 @@ public class VerticalList {
                 double edgeOrd;
                 //if index<0, there is no edge lower than point.
                 if(index < 0){
+			lastLowerEd=null;
                         return null;
                 }
                 do{
@@ -271,7 +352,38 @@ public class VerticalList {
                 if(index >=0 && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
                         return constraintsList.get(index);
                 } else {
+			lastLowerEd=null;
                         return null;
                 }
         }
+
+	/**
+	 * Checks if the edges that are upper and lower then pRef in the list of
+	 * constraints that are linked to the boundary intersect the edge ed given
+	 * in parameter.
+	 * Intersection must not be an extremity point of the two evaluated edges.
+	 * @param pRef
+	 * @param ed
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public boolean intersectsUpperOrLower(Point pRef, Edge ed) throws DelaunayError{
+		setAbs(pRef);
+		Edge upper = getUpperEdge(pRef);
+		int inter;
+		if(upper!=null){
+			inter = upper.intersects(ed);
+			if(inter == 1 || inter == 4){
+				return true;
+			}
+		}
+		Edge lower = getLowerEdge(pRef);
+		if(lower!=null){
+			inter = lower.intersects(lower);
+			if(inter == 1 || inter == 4){
+				return true;
+			}
+		}
+		return false;
+	}
 }
