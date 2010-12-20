@@ -814,6 +814,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.addConstraintEdge(new Edge(0,0,0,2,2,0));
 		mesh.addConstraintEdge(new Edge(2,4,0,2,2,0));
 		mesh.addConstraintEdge(new Edge(4,2,0,2,2,0));
+		mesh.addConstraintEdge(new Edge(2,0,0,2,2,0));
 		mesh.addConstraintEdge(new Edge(0,-1,0,3,-1,0));
 		mesh.addConstraintEdge(new Edge(3,3,0,5,4,0));
 		fromLeft = mesh.getConstraintsFromLeftPoint(new Point(0,0,0));
@@ -824,6 +825,9 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(fromLeft.contains(new Edge(4,2,0,2,2,0)));
 		assertTrue(fromLeft.size()==2);
 		fromLeft = mesh.getConstraintsFromLeftPoint(new Point(10,10,0));
+		assertTrue(fromLeft.isEmpty());
+		mesh.setConstraintEdges(new ArrayList<Edge>());
+		fromLeft = mesh.getConstraintsFromLeftPoint(new Point(2,2,0));
 		assertTrue(fromLeft.isEmpty());
 	}
 	

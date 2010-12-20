@@ -5,6 +5,8 @@
 
 package org.jdelaunay.delaunay;
 
+import java.util.ArrayList;
+
 /**
  * Perform tests on the VerticalList class
  * @author alexis
@@ -175,4 +177,25 @@ public class TestVerticalList extends BaseUtility{
                 assertTrue(lower.equals(new Edge(4,3,0,6,1,0)));
 
         }
+
+	/**
+	 * tests the method that add a whole list of edges in the vertical list.
+	 */
+	public void testAddList() throws DelaunayError{
+		VerticalList vList = new VerticalList(1);
+		vList.setAbs(new Point(5,4,0));
+		ArrayList<Edge> edges = new ArrayList<Edge>();
+		edges.add(new Edge(0,0,0,4,4,4));
+		edges.add(new Edge(3,3,4,6,6,4));
+		edges.add(new Edge(3,1,0,6,1,4));
+		edges.add(new Edge(2,5,0,5,8,4));
+		edges.add(new Edge(4,3,0,6,1,0));
+		vList.addEdges(edges);
+		assertTrue(vList.size()==5);
+		assertTrue(vList.getVerticallySortedEdges().contains(new Edge(0,0,0,4,4,4)));
+		assertTrue(vList.getVerticallySortedEdges().contains(new Edge(3,3,4,6,6,4)));
+		assertTrue(vList.getVerticallySortedEdges().contains(new Edge(3,1,0,6,1,4)));
+		assertTrue(vList.getVerticallySortedEdges().contains(new Edge(2,5,0,5,8,4)));
+		assertTrue(vList.getVerticallySortedEdges().contains(new Edge(4,3,0,6,1,0)));
+	}
 }

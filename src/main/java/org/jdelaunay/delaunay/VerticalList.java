@@ -80,6 +80,16 @@ public class VerticalList {
 		return constraintsList.get(i);
 	}
 
+	/**
+	 * Add each of the edge in the list given in argument in this vertical
+	 * list.
+	 * @param constraints
+	 */
+	public final void addEdges(List<Edge> constraints){
+		for(Edge edge : constraints){
+			addEdge(edge);
+		}
+	}
 
 	/**
 	 * Add an edge to the list of constraints that are considered to be linked
