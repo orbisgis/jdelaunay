@@ -17,6 +17,15 @@ public class VerticalList {
 	private VerticalComparator comp;
 
 	/**
+	 * The default constructor. The inner comparator is instanciated with
+	 * value 0.
+	 */
+	public VerticalList(){
+		constraintsList = new ArrayList<Edge>();
+		comp = new VerticalComparator((0));
+	}
+
+	/**
 	 * Public constructor. It uses the double abs to instanciate the comparator
 	 * @param abs
 	 */
@@ -38,7 +47,7 @@ public class VerticalList {
 	 * get the absciss where the comparison is currently performed.
 	 * @return
 	 */
-	public double getAbs(){
+	public final double getAbs(){
 		return comp.getAbs();
 	}
 
@@ -46,7 +55,7 @@ public class VerticalList {
 	 * Change the absciss where we want our edges to be sorted
 	 * @param abs
 	 */
-	public void setAbs(double abs) throws DelaunayError{
+	public final void setAbs(double abs) throws DelaunayError{
 		if(Math.abs(abs-comp.getAbs())>Tools.EPSILON){
 			comp.setAbs(abs);
 			sort();
@@ -58,7 +67,7 @@ public class VerticalList {
 	 * we use the absciss of the point given in parameter.
 	 * @param abs
 	 */
-	public void setAbs(Point pt) throws DelaunayError{
+	public final void setAbs(Point pt) throws DelaunayError{
 		setAbs(pt.getX());
 	}
 
@@ -67,7 +76,7 @@ public class VerticalList {
 	 * @param i
 	 * @return
 	 */
-	public Edge get(int i){
+	public final Edge get(int i){
 		return constraintsList.get(i);
 	}
 
@@ -77,7 +86,7 @@ public class VerticalList {
 	 * to the boundary of the current mesh.
 	 * @param constraint
 	 */
-	public int addEdge(Edge constraint){
+	public final int addEdge(Edge constraint){
 		if(constraintsList == null){
 			constraintsList = new ArrayList<Edge>();
 		}
@@ -88,14 +97,14 @@ public class VerticalList {
 	 * Remove an edge in this vertical list. Do nothing if the edge is not present.
 	 * @param constr
 	 */
-	public void removeEdge(Edge constr){
+	public final void removeEdge(Edge constr){
 		int index = Collections.binarySearch(constraintsList, constr, comp);
 		if(index >= 0){
 			constraintsList.remove(constr);
 		}
 	}
 
-	public Edge remove(int index){
+	public final Edge remove(int index){
 		return constraintsList.remove(index);
 	}
 
@@ -104,7 +113,7 @@ public class VerticalList {
 	 * @param edge
 	 * @param abs
 	 */
-	protected int searchEdge(Edge edge){
+	protected final int searchEdge(Edge edge){
 		return Tools.sortedListContains(constraintsList, edge, comp);
 	}
 
@@ -112,7 +121,7 @@ public class VerticalList {
 	 * Get the list of constraints linked to the boundary of the current mesh.
 	 * @return
 	 */
-	public List<Edge> getVerticallySortedEdges(){
+	public final List<Edge> getVerticallySortedEdges(){
 		return constraintsList;
 	}
 	
@@ -121,7 +130,7 @@ public class VerticalList {
 	 * It's a bubble sort, not a merge sort, as it will be more efficient in 
 	 * most cases when using sweep line.
 	 */
-	protected void sort() throws DelaunayError{
+	protected final void sort() throws DelaunayError{
 		int s = constraintsList.size();
 		int i = 0;
 		int c = 0;
@@ -146,7 +155,7 @@ public class VerticalList {
 	 * Gets the current size of this vertical list.
 	 * @return
 	 */
-	public int size(){
+	public final int size(){
 		return this.constraintsList.size();
 	}
 
@@ -165,7 +174,7 @@ public class VerticalList {
          * @return The edge of which the ordinate is directly greater that the one
          * of point. Null if such an edge does not exist.
          */
-        public Edge getUpperEdge(Point point) throws DelaunayError{
+        public final Edge getUpperEdge(Point point) throws DelaunayError{
                 if(constraintsList == null || constraintsList.isEmpty()){
                         return null;
                 }
@@ -184,7 +193,6 @@ public class VerticalList {
                 if(index == size){
                         return null;
                 }
-                edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
                 do{
                         edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
                         index ++;
@@ -217,11 +225,10 @@ public class VerticalList {
          * @return The edge of which the ordinate is directly greater that the one
          * of point. Null if such an edge does not exist.
          */
-        public Edge getLowerEdge(Point point) throws DelaunayError{
+        public final Edge getLowerEdge(Point point) throws DelaunayError{
                 if(constraintsList == null || constraintsList.isEmpty()){
                         return null;
                 }
-                int size = constraintsList.size();
                 double abs = point.getX();
                 if(Tools.EPSILON < Math.abs(abs-getAbs())){
                         //We must change the x-coordinate where we are working

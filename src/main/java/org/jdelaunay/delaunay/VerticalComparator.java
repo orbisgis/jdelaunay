@@ -5,6 +5,7 @@
 
 package org.jdelaunay.delaunay;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import org.apache.log4j.Logger;
 
@@ -14,7 +15,7 @@ import org.apache.log4j.Logger;
  * as it is already used for the "left-right" method.
  * @author alexis
  */
-public class VerticalComparator implements Comparator<Edge> {
+public class VerticalComparator implements Comparator<Edge>, Serializable {
 
 	private static Logger log = Logger.getLogger(VerticalComparator.class);
 
@@ -33,7 +34,7 @@ public class VerticalComparator implements Comparator<Edge> {
 	 * Set the absciss where we are going to work.
 	 * @param x
 	 */
-	public void setAbs(double x){
+	public final void setAbs(double x){
 		abs = x;
 	}
 
@@ -41,7 +42,7 @@ public class VerticalComparator implements Comparator<Edge> {
 	 * get the absciss where we are currently working.
 	 * @return
 	 */
-	public double getAbs(){
+	public final double getAbs(){
 		return abs;
 	}
 
@@ -62,7 +63,7 @@ public class VerticalComparator implements Comparator<Edge> {
 	 * @return
 	 */
 	@Override
-	public int compare(Edge edge1, Edge edge2) {
+	public final int compare(Edge edge1, Edge edge2) {
 		int c;
 		Point pEdge1 = null;
 		Point pEdge2 = null;

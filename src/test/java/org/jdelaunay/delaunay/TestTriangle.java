@@ -264,4 +264,36 @@ public class TestTriangle extends BaseUtility {
 		assertTrue(t1.isInside(new Point(1,0,0)));
 
 	}
+
+	/**
+	 * Performs equality tests between triangles.
+	 */
+	public void testTrianglesEquality() throws DelaunayError{
+		Point p1 = new Point(0,0,0);
+		Point p2 = new Point(4,5,0);
+		Point p3 = new Point(3,0,0);
+		Edge e1 = new Edge(p1,p2);
+		Edge e2 = new Edge(p2,p3);
+		Edge e3 = new Edge(p3,p1);
+		DelaunayTriangle t1 =new DelaunayTriangle(e1, e2, e3);
+		DelaunayTriangle t2 =new DelaunayTriangle(e1, e2, e3);
+		assertEquals(t1,t2);
+		t2 =new DelaunayTriangle(e2, e1, e3);
+		assertEquals(t1,t2);
+		t2 =new DelaunayTriangle(e2, e1, e3);
+		assertEquals(t1,t2);
+		t2 =new DelaunayTriangle(e2, e3, e1);
+		assertEquals(t1,t2);
+		t2 =new DelaunayTriangle(e1, e3, e2);
+		assertEquals(t1,t2);
+		t2 =new DelaunayTriangle(e3, e2, e1);
+		assertEquals(t1,t2);
+		t2 =new DelaunayTriangle(e3, e1, e2);
+		assertEquals(t1,t2);
+		Point p4 = new Point(8,0,0);
+		Edge e4 = new Edge(p4,p1);
+		Edge e5 = new Edge(p4,p2);
+		t2 =new DelaunayTriangle(e4, e1, e5);
+		assertFalse(t2.equals(t1));
+	}
 }

@@ -11,10 +11,11 @@ package org.jdelaunay.delaunay;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.List;
 
 /**
  * This is the class representing a Triangle in th DelaunayTriangulation.
@@ -115,7 +116,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param i
 	 * @return aPoint
 	 */
-	public Point getPoint(int i) {
+	public final Point getPoint(int i) {
 		Point p;
 		if (i==0) {
 			p = edges[0].getStartPoint();
@@ -139,7 +140,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param i
 	 * @return anEdge
 	 */
-	public Edge getEdge(int i) {
+	public final Edge getEdge(int i) {
 		if ((0<=i) && (i<=2)) {
 			return edges[i];
 		}
@@ -152,7 +153,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * Return the edges that form this triangle in an array.
 	 * @return
 	 */
-	public Edge[] getEdges(){
+	public final Edge[] getEdges(){
 		return this.edges;
 	}
 
@@ -162,7 +163,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param i
 	 * @param anEdge
 	 */
-	public void setEdge(int i, Edge anEdge) {
+	public final void setEdge(int i, Edge anEdge) {
 		if ((0<=i) && (i<=2)) {
 			edges[i] = anEdge;
 		}
@@ -173,7 +174,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 *
 	 * @return radius
 	 */
-	public double getRadius() {
+	public final double getRadius() {
 		return Math.sqrt(radius);
 	}
 
@@ -187,18 +188,18 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 	
 	@Override
-	public int getIndicator() {
+	public final int getIndicator() {
 		return indicator;
 	}
 	
 	@Override
-	public int setIndicator(int indicator) {
+	public final int setIndicator(int indicator) {
 		this.indicator=indicator;
 		return 0;
 	}
 	
 	@Override
-	public void removeIndicator() {
+	public final void removeIndicator() {
 		indicator = 0;
 	}
 	
@@ -232,7 +233,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param byteNumber
 	 * @return marked
 	 */
-	public boolean isMarked(int byteNumber) {
+	public final boolean isMarked(int byteNumber) {
 		return testBit(3+byteNumber);
 	}
 
@@ -241,7 +242,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param byteNumber
 	 * @param marked
 	 */
-	public void setMarked(int byteNumber, boolean marked) {
+	public final void setMarked(int byteNumber, boolean marked) {
 		setBit(3+byteNumber, marked);
 	}
 
@@ -249,7 +250,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
-	public BoundaryBox getBoundingBox() {
+	public final BoundaryBox getBoundingBox() {
 		BoundaryBox aBox = new BoundaryBox();
 
 		Point p1,p2,p3;
@@ -270,12 +271,12 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
 	 */
 	@Override
-	public boolean contains(Point aPoint) {
+	public final boolean contains(Point aPoint) {
 		return isInside(aPoint);
 	}
 	
 	@Override
-	public boolean contains(Coordinate c) throws DelaunayError {
+	public final boolean contains(Coordinate c) throws DelaunayError {
 		return isInside(new Point(c));
 	}
 
@@ -357,7 +358,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return position 0 = outside 1 = inside 2 = on the circle
 	 */
-	public int inCircle(Point aPoint) {
+	public final int inCircle(Point aPoint) {
 		// default is outside the circle
 		int returnedValue = 0;
 
@@ -381,7 +382,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return isInside
 	 */
-	public boolean isInside(Point aPoint) {
+	public final boolean isInside(Point aPoint) {
 		boolean isInside = true;
 
 		int k = 0;
@@ -409,7 +410,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return ZValue
 	 */
-	public double interpolateZ(Point aPoint) {
+	public final double interpolateZ(Point aPoint) {
 		double zValue = 0;
 
 		Point p1,p2,p3;
@@ -478,7 +479,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 *
 	 * @return area
 	 */
-	public double computeArea() {
+	public final double computeArea() {
 		Point p1,p2,p3;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
@@ -562,11 +563,11 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
-	 * Check if triangle topology is correct / not
+	 * Check if triangle topology is correct or not
 	 *
 	 * @return correct
 	 */
-	public boolean checkTopology() {
+	public final boolean checkTopology() {
 		boolean correct = true;
 		int i, j, k;
 
@@ -640,7 +641,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param thePoints
 	 * @return
 	 */
-	public boolean checkDelaunay(ArrayList<Point> thePoints) {
+	public boolean checkDelaunay(List<Point> thePoints) {
 		boolean correct = true;
 		ListIterator<Point> iterPoint = thePoints.listIterator();
 		while (iterPoint.hasNext() && correct) {
@@ -949,14 +950,47 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 				- (int) (yCenter + r), (int) r * 2, (int) r * 2);//FIXME not good position
 	}
 
+	/**
+	 * Test if this triangle is used by a polygon or not
+	 * @return
+	 */
 	@Override
 	public boolean isUseByPolygon() {
 		return testBit(4);
 	}
 
+	/**
+	 * Used to specify when a triangle is used by a polygon.
+	 * @param useByPolygon
+	 */
 	@Override
 	public void setUseByPolygon(boolean useByPolygon) {
 		setBit(4, useByPolygon);
+	}
+
+	/**
+	 * Used to check if this is equal to other.
+	 * This and other are equal if and only if other is an instance of DelaunayTriangle
+	 * and their points are the same (whatever their order in the triangle).
+	 * @param other
+	 * @return
+	 */
+	@Override
+	public boolean equals(Object other){
+		if(other instanceof DelaunayTriangle){
+			DelaunayTriangle otherTri = (DelaunayTriangle) other;
+			return belongsTo(otherTri.getPoint(0)) && belongsTo(otherTri.getPoint(1))
+				&& belongsTo(otherTri.getPoint(2));
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 97 * hash + Arrays.deepHashCode(this.edges);
+		return hash;
 	}
 
 	/**
@@ -964,6 +998,10 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * the middle of their bounding box.
 	 * As we work on a triangulation where triangles' intersection can only be an edge, a point
 	 * or void, the Bounding boxes are unique.
+	 *
+	 * BE CAREFUL : this method is not consistent with equals ! We are making a comparison
+	 * on the bounding box of two triangles, they could be equal even if the triangle
+	 * are different !!!
 	 * @param t
 	 * @return
 	 */

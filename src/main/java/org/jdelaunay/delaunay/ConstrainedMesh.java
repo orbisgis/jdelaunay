@@ -494,7 +494,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(inter2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
-										throw new RuntimeException("problem while removing an edge");
+										throw new DelaunayError("problem while removing an edge");
 									}
 									inter4 = new Edge(e2.getPointRight(), newEvent);
 									edgeBuffer.addEdge(inter4);
@@ -503,7 +503,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(e2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
-										throw new RuntimeException("problem while removing an edge");
+										throw new DelaunayError("problem while removing an edge");
 									}
 									rmCount++;
 								}
@@ -512,7 +512,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(inter1);
 									rm = edgeBuffer.remove(j - 1);
 									if (!rm.equals(e1)) {
-										throw new RuntimeException("problem while removing an edge");
+										throw new DelaunayError("problem while removing an edge");
 									}
 									inter3 = new Edge(e1.getPointRight(), newEvent);
 									edgeBuffer.addEdge(inter3);
@@ -521,7 +521,7 @@ public class ConstrainedMesh {
 									addConstraintEdge(e1);
 									rm = edgeBuffer.remove(j - 1);
 									if (!rm.equals(e1)) {
-										throw new RuntimeException("problem while removing an edge");
+										throw new DelaunayError("problem while removing an edge");
 									}
 									rmCount++;
 								}
@@ -535,7 +535,7 @@ public class ConstrainedMesh {
 								addConstraintEdge(e2);
 								rm = edgeBuffer.remove(j);
 								if (!rm.equals(e2)) {
-									throw new RuntimeException("problem while removing an edge");
+									throw new DelaunayError("problem while removing an edge");
 								}
 								rmCount++;
 							}
@@ -543,7 +543,7 @@ public class ConstrainedMesh {
 								addConstraintEdge(e1);
 								rm = edgeBuffer.remove(j - 1);
 								if (!rm.equals(e1)) {
-									throw new RuntimeException("problem while removing an edge");
+									throw new DelaunayError("problem while removing an edge");
 								}
 								rmCount++;
 							}
@@ -575,11 +575,11 @@ public class ConstrainedMesh {
 							//new edges will be inserted if necessary.
 							rm = edgeBuffer.remove(j);
 							if (!rm.equals(e2)) {
-								throw new RuntimeException("problem while removing an edge");
+								throw new DelaunayError("problem while removing an edge");
 							}
 							rm = edgeBuffer.remove(j - 1);
 							if (!rm.equals(e1)) {
-								throw new RuntimeException("problem while removing an edge");
+								throw new DelaunayError("problem while removing an edge");
 							}
 							j--;
 							if (leftMost.compareTo2D(newEvent) == -1) {
@@ -622,7 +622,7 @@ public class ConstrainedMesh {
 							addConstraintEdge(e1);
 							rm = edgeBuffer.remove(j - 1);
 							if (!rm.equals(e1)) {
-								throw new RuntimeException("problem while removing an edge");
+								throw new DelaunayError("problem while removing an edge");
 							}
 							j--;
 							j = j-1 < 0 ? 0 : j-1;
@@ -711,7 +711,6 @@ public class ConstrainedMesh {
 				log.error(e.getCause());
 			}
 		}
-
 		return true;
 	}
 
@@ -781,6 +780,7 @@ public class ConstrainedMesh {
 			// general data structures
 			badEdgesQueueList = new LinkedList<Edge>();
 			boundaryEdges = new ArrayList<Edge>();
+			constraintsLinkedToEnv = new VerticalList();
 			LinkedList<Point> badPointList = new LinkedList<Point>();
 
 			// sort points
