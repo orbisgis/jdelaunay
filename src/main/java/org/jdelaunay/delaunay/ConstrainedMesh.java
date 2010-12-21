@@ -8,7 +8,8 @@ import java.util.ListIterator;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * This class is used to compute the constrained delaunay triangulation on a set of
+ * points and constraint edges. The constraints can be validated before the triangulation.
  * @author alexis
  */
 public class ConstrainedMesh {
@@ -30,7 +31,7 @@ public class ConstrainedMesh {
 	//is outside.
 	private VerticalList cstrLinkedToEnv;
 	//A list of polygons that will be emptied after the triangulation
-	protected List<ConstraintPolygon> polygons;
+	private List<ConstraintPolygon> polygons;
 	//
 	private double precision;
 	//The minimum distance between two distinct points
@@ -67,7 +68,7 @@ public class ConstrainedMesh {
 		cstrLinkedToEnv = new VerticalList(0);
 		meshComputed = false;
 		precision = 0;
-		tolerance = 0.00001;
+		tolerance = EPSILON;
 
 		pointGID = 0;
 		edgeGID = 0;
@@ -82,7 +83,7 @@ public class ConstrainedMesh {
 	 * Get the list of edges that are to be processed by the flip flap algorithm
 	 * @return
 	 */
-	public List<Edge> getBadEdgesQueueList() {
+	public final List<Edge> getBadEdgesQueueList() {
 		return badEdgesQueueList;
 	}
 
@@ -90,7 +91,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges that are to be processed by the flip flap algorithm
 	 * @param badEdgesQueueList
 	 */
-	public void setBadEdgesQueueList(LinkedList<Edge> badEdgesQueueList) {
+	public final void setBadEdgesQueueList(LinkedList<Edge> badEdgesQueueList) {
 		this.badEdgesQueueList = badEdgesQueueList;
 	}
 
@@ -98,7 +99,7 @@ public class ConstrainedMesh {
 	 * Get the list of edges that form the current convex hull of the triangulation
 	 * @return
 	 */
-	public List<Edge> getBoundaryEdges() {
+	public final List<Edge> getBoundaryEdges() {
 		return boundaryEdges;
 	}
 
@@ -106,7 +107,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges that form the current convex hull of the triangulation
 	 * @param boundaryEdges
 	 */
-	public void setBoundaryEdges(ArrayList<Edge> boundaryEdges) {
+	public final void setBoundaryEdges(ArrayList<Edge> boundaryEdges) {
 		this.boundaryEdges = boundaryEdges;
 	}
 
@@ -114,7 +115,7 @@ public class ConstrainedMesh {
 	 * Get the list of edges that are used as constraints during triangulation
 	 * @return
 	 */
-	public List<Edge> getConstraintEdges() {
+	public final List<Edge> getConstraintEdges() {
 		return constraintEdges;
 	}
 
@@ -124,7 +125,7 @@ public class ConstrainedMesh {
 	 * and add all the corresponding points to the point list.
 	 * @param constraintEdges
 	 */
-	public void setConstraintEdges(ArrayList<Edge> constraint) {
+	public final void setConstraintEdges(ArrayList<Edge> constraint) {
 		this.constraintEdges = new ArrayList<Edge>();
 		for (Edge e : constraint) {
 			addPoint(e.getStart());
@@ -141,7 +142,7 @@ public class ConstrainedMesh {
 	 * @param e
 	 *	the edge we want to add
 	 */
-	public void addConstraintEdge(Edge e) {
+	public final void addConstraintEdge(Edge e) {
 		if (constraintEdges == null) {
 			constraintEdges = new ArrayList<Edge>();
 		}
@@ -155,7 +156,7 @@ public class ConstrainedMesh {
 	 * Get the list of edges
 	 * @return
 	 */
-	public List<Edge> getEdges() {
+	public final List<Edge> getEdges() {
 		return edges;
 	}
 
@@ -163,7 +164,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges
 	 * @param constraintEdges
 	 */
-	public void setEdges(List<Edge> constraint) {
+	public final void setEdges(List<Edge> constraint) {
 		this.edges = new ArrayList<Edge>();
 		for (Edge e : constraint) {
 			addPoint(e.getStart());
@@ -177,7 +178,7 @@ public class ConstrainedMesh {
 	 * @param e
 	 *	the edge we want to add
 	 */
-	public void addEdge(Edge e) {
+	public final void addEdge(Edge e) {
 		if (edges == null) {
 			edges = new ArrayList<Edge>();
 		}
@@ -195,7 +196,7 @@ public class ConstrainedMesh {
 	 * Remove an Edge from the list of edges.
 	 * @param e
 	 */
-	public void removeEdge(Edge e) {
+	public final void removeEdge(Edge e) {
 		//edges is a sorted list, using the left right sort. We are supposed
 		//to ensure unicity of objects in it, so we can use the binarysearch directly.
 		int index = Collections.binarySearch(edges, e);
@@ -210,7 +211,7 @@ public class ConstrainedMesh {
 	 * of the edges.
 	 * @return
 	 */
-	public List<Edge> sortEdgesLeft(List<Edge> inputList) {
+	public final List<Edge> sortEdgesLeft(List<Edge> inputList) {
 		ArrayList<Edge> outputList = new ArrayList<Edge>();
 		for (Edge e : inputList) {
 			addEdgeToLeftSortedList(outputList, e);
@@ -245,7 +246,7 @@ public class ConstrainedMesh {
 	 * Get the precision
 	 * @return
 	 */
-	public double getPrecision() {
+	public final double getPrecision() {
 		return precision;
 	}
 
@@ -253,7 +254,7 @@ public class ConstrainedMesh {
 	 * Set the precision
 	 * @param precision
 	 */
-	public void setPrecision(double precision) {
+	public final void setPrecision(double precision) {
 		this.precision = precision;
 	}
 
@@ -261,7 +262,7 @@ public class ConstrainedMesh {
 	 * Get the value used to compute the minimum distance between two points
 	 * @return
 	 */
-	public double getTolerance() {
+	public final double getTolerance() {
 		return tolerance;
 	}
 
@@ -269,7 +270,7 @@ public class ConstrainedMesh {
 	 * Set the value used to compute the minimum distance between two points
 	 * @param tolerance
 	 */
-	public void setTolerance(double tolerance) {
+	public final void setTolerance(double tolerance) {
 		this.tolerance = tolerance;
 	}
 
@@ -277,7 +278,7 @@ public class ConstrainedMesh {
 	 * Get the list of triangles already computed and added in this mesh
 	 * @return
 	 */
-	public List<DelaunayTriangle> getTriangleList() {
+	public final List<DelaunayTriangle> getTriangleList() {
 		return triangleList;
 	}
 
@@ -285,12 +286,12 @@ public class ConstrainedMesh {
 	 * Set the list of triangles already computed in this mesh.
 	 * @param triangleList
 	 */
-	public void setTriangleList(List<DelaunayTriangle> triangleList) {
+	public final void setTriangleList(List<DelaunayTriangle> triangleList) {
 		Collections.sort(triangleList);
 		this.triangleList = triangleList;
 	}
 
-	public void addTriangle(DelaunayTriangle triangle){
+	public final void addTriangle(DelaunayTriangle triangle){
 		addToSortedList(triangle, triangleList);
 	}
 
@@ -298,7 +299,7 @@ public class ConstrainedMesh {
 	 * Get the points contained in this mesh
 	 * @return
 	 */
-	public List<Point> getPoints() {
+	public final List<Point> getPoints() {
 		return points;
 	}
 
@@ -306,7 +307,7 @@ public class ConstrainedMesh {
 	 * Can be used to know if the mesh has been computed or not
 	 * @return
 	 */
-	public boolean isMeshComputed(){
+	public final boolean isMeshComputed(){
 		return meshComputed;
 	}
 
@@ -314,7 +315,7 @@ public class ConstrainedMesh {
 	 * Change the status of this mesh computation
 	 * @param comp
 	 */
-	public void setMeshComputed(boolean comp){
+	public final void setMeshComputed(boolean comp){
 		meshComputed = comp;
 	}
 
@@ -322,7 +323,7 @@ public class ConstrainedMesh {
 	 * Says if the verbose mode is activated or not
 	 * @return
 	 */
-	public boolean isVerbose(){
+	public final boolean isVerbose(){
 		return verbose;
 	}
 
@@ -330,14 +331,14 @@ public class ConstrainedMesh {
 	 * Set the verbosity level
 	 * @param verb
 	 */
-	public void setVerbose(boolean verb){
+	public final void setVerbose(boolean verb){
 		verbose = verb;
 	}
 	/**
 	 * Set the list of points to be used during the triangulation
 	 * @param points
 	 */
-	public void setPoints(ArrayList<Point> points) {
+	public final void setPoints(ArrayList<Point> points) {
 		this.points = points;
 	}
 
@@ -346,7 +347,7 @@ public class ConstrainedMesh {
 	 * The list of points is supposed to be sorted.
 	 * @param point
 	 */
-	public void addPoint(Point point) {
+	public final void addPoint(Point point) {
 		if(points == null){
 			points = new ArrayList<Point>();
 		}
@@ -377,7 +378,7 @@ public class ConstrainedMesh {
 	 * @param p
 	 * @return the index of p, -1 if it's not in the list
 	 */
-	public int listContainsPoint(Point p){
+	public final int listContainsPoint(Point p){
 		return sortedListContains(points, p);
 	}
 
@@ -405,7 +406,7 @@ public class ConstrainedMesh {
 	 *  * intersection points are added to the mesh points
 	 *  * secant edges are split
 	 */
-	public void forceConstraintIntegrity() throws DelaunayError {
+	public final void forceConstraintIntegrity() throws DelaunayError {
 		//The event points are the extremities and intersections of the
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
@@ -644,7 +645,7 @@ public class ConstrainedMesh {
 	 * @param p
 	 * @throws DelaunayError
 	 */
-	public void sortEdgesVertically(List<Edge> edgeList, Point p) throws DelaunayError{
+	public final void sortEdgesVertically(List<Edge> edgeList, Point p) throws DelaunayError{
 		sortEdgesVertically(edgeList, p.getX());
 	}
 
@@ -655,7 +656,7 @@ public class ConstrainedMesh {
 	 * @param edgeList
 	 * @param x
 	 */
-	public void sortEdgesVertically(List<Edge> edgeList, double abs) throws DelaunayError {
+	public final void sortEdgesVertically(List<Edge> edgeList, double abs) throws DelaunayError {
 		int s = edgeList.size();
 		int i = 0;
 		int c = 0;
@@ -683,7 +684,7 @@ public class ConstrainedMesh {
 	 * @param edge
 	 * @param edgeList
 	 */
-	public int insertEdgeVerticalList(Edge edge, List<Edge> edgeList, double abs) throws DelaunayError {
+	public final int insertEdgeVerticalList(Edge edge, List<Edge> edgeList, double abs) throws DelaunayError {
 		if (edgeList.isEmpty()) {
 			edgeList.add(edge);
 		}
@@ -696,7 +697,7 @@ public class ConstrainedMesh {
 	 * @param edgeList
 	 * @return
 	 */
-	public boolean isVerticallySorted(List<Edge> edgeList, double abs) {
+	public final boolean isVerticallySorted(List<Edge> edgeList, double abs) {
 		Edge e1, e2;
 		e2 = edgeList.get(0);
 		for (int i = 1; i < edgeList.size(); i++) {
@@ -719,7 +720,7 @@ public class ConstrainedMesh {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public boolean intersectsExistingEdges(Edge edge) throws DelaunayError{
+	public final boolean intersectsExistingEdges(Edge edge) throws DelaunayError{
 		int inter;
 		for(Edge ed : edges){
 			inter = ed.intersects(edge);
@@ -736,7 +737,7 @@ public class ConstrainedMesh {
 	 * the eventList.
 	 * @param edgeList
 	 */
-	public void addPointsFromNeighbourEdges(List<Edge> edgeList, List<Point> eventList) throws DelaunayError {
+	public final void addPointsFromNeighbourEdges(List<Edge> edgeList, List<Point> eventList) throws DelaunayError {
 		Edge e1;
 		Edge e2;
 		Element inter = null;
@@ -765,7 +766,7 @@ public class ConstrainedMesh {
 	 * @param left
 	 * @return
 	 */
-	public List<Edge> getConstraintsFromLeftPoint(Point left){
+	public final List<Edge> getConstraintsFromLeftPoint(Point left){
 		//The edge left-left is the minimum edge whose leftpoint is left.
 		List<Edge> retList = new ArrayList();
 		if(constraintEdges == null || constraintEdges.isEmpty()){
@@ -789,7 +790,7 @@ public class ConstrainedMesh {
 	 *
 	 * @throws DelaunayError
 	 */
-	public void processDelaunay() throws DelaunayError {
+	public final void processDelaunay() throws DelaunayError {
 		if (isMeshComputed()) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
 		} else if (points.size() < 3) {
@@ -953,13 +954,13 @@ public class ConstrainedMesh {
 	 */
 	private Edge replaceByConstraint(Edge edge){
 		int index = sortedListContains(constraintEdges, edge);
+		Edge tempEdge = edge;
 		if(index >= 0){
-			Edge tempEdge = constraintEdges.get(index);
+			tempEdge = constraintEdges.get(index);
 			tempEdge.setStart(edge.getStart());
 			tempEdge.setEnd(edge.getEnd());
-			edge=tempEdge;
 		}
-		return edge;
+		return tempEdge;
 	}
 
 	/**
@@ -1110,30 +1111,24 @@ public class ConstrainedMesh {
 					// We check if the two triangles around the edge are ok
 					DelaunayTriangle aTriangle1 = anEdge.getLeft();
 					DelaunayTriangle aTriangle2 = anEdge.getRight();
-					if ((aTriangle1 != null) && (aTriangle2 != null)) {
-
-						if (swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
-							// Add the triangle"s edges to the bad edges list
-							Edge addEdge;
-							for (int j = 0; j < 3; j++) {
-								addEdge = aTriangle1.edges[j];
-								if ((addEdge.getLeft() != null)
-										&& (addEdge.getRight() != null)) {
-									if (addEdge != anEdge){
-										if (!badEdgesQueueList.contains(addEdge)){
-											badEdgesQueueList.add(addEdge);
-                                                                                }
-                                                                        }
-								}
-								addEdge = aTriangle2.edges[j];
-								if ((addEdge.getLeft() != null)
-										&& (addEdge.getRight() != null)) {
-									if (addEdge != anEdge){
-										if (!badEdgesQueueList.contains(addEdge)){
-											badEdgesQueueList.add(addEdge);
-                                                                                }
-                                                                        }
-								}
+					if ((aTriangle1 != null) && (aTriangle2 != null)
+							&& swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
+						// Add the triangle"s edges to the bad edges list
+						Edge addEdge;
+						for (int j = 0; j < 3; j++) {
+							addEdge = aTriangle1.edges[j];
+							if ((addEdge.getLeft() != null)
+									&& (addEdge.getRight() != null)
+									&& !addEdge.equals(anEdge)
+									&&!badEdgesQueueList.contains(addEdge)){
+								badEdgesQueueList.add(addEdge);
+							}
+							addEdge = aTriangle2.edges[j];
+							if ((addEdge.getLeft() != null)
+									&& (addEdge.getRight() != null)
+									&& !addEdge.equals(anEdge)
+									&& !badEdgesQueueList.contains(addEdge)){
+								badEdgesQueueList.add(addEdge);
 							}
 						}
 					}
@@ -1183,63 +1178,57 @@ public class ConstrainedMesh {
 			// other triangle is inside or not
 			// DelaunayTriangle 1 is p1, p2, p3 or p2, p1, p3
 			p3 = aTriangle1.getAlterPoint(p1, p2);
-			if (p3 != null) {
-				if (aTriangle2.inCircle(p3) == 1) {
-					exchange = true;
-				}
+			if (p3 != null && aTriangle2.inCircle(p3) == 1) {
+				exchange = true;
 			}
 
 			// DelaunayTriangle 2 is p2, p1, p4 or p1, p2, p4
 			p4 = aTriangle2.getAlterPoint(p1, p2);
-			if (p4 != null) {
-				if (aTriangle1.inCircle(p4) == 1) {
-					exchange = true;
-				}
+			if (p4 != null && aTriangle1.inCircle(p4) == 1) {
+				exchange = true;
 			}
 
-			if (p3 != p4) {
-				if ((exchange) || (forced)) {
-					anEdge10 = anEdge;
-					anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
-					anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
-					anEdge20 = anEdge;
-					anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
-					anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
-					if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
-						log.error("ERROR");
+			if (p3 != p4 && (exchange || forced)) {
+				anEdge10 = anEdge;
+				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
+				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
+				anEdge20 = anEdge;
+				anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
+				anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
+				if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
+					log.error("ERROR");
+				} else {
+					removeEdge(anEdge);
+					anEdge.setStartPoint(p3);
+					anEdge.setEndPoint(p4);
+					edgeGID++;
+					anEdge.setGID(edgeGID);
+					addEdgeToLeftSortedList(edges, anEdge);
+					aTriangle1.edges[0] = anEdge10;
+					aTriangle1.edges[1] = anEdge11;
+					aTriangle1.edges[2] = anEdge12;
+					aTriangle2.edges[0] = anEdge20;
+					aTriangle2.edges[1] = anEdge21;
+					aTriangle2.edges[2] = anEdge22;
+					if (anEdge12.getLeft() == aTriangle2) {
+						anEdge12.setLeft(aTriangle1);
 					} else {
-						removeEdge(anEdge);
-						anEdge.setStartPoint(p3);
-						anEdge.setEndPoint(p4);
-						edgeGID++;
-						anEdge.setGID(edgeGID);
-						addEdgeToLeftSortedList(edges, anEdge);
-						aTriangle1.edges[0] = anEdge10;
-						aTriangle1.edges[1] = anEdge11;
-						aTriangle1.edges[2] = anEdge12;
-						aTriangle2.edges[0] = anEdge20;
-						aTriangle2.edges[1] = anEdge21;
-						aTriangle2.edges[2] = anEdge22;
-						if (anEdge12.getLeft() == aTriangle2) {
-							anEdge12.setLeft(aTriangle1);
-						} else {
-							anEdge12.setRight(aTriangle1);
-						}
-						if (anEdge22.getLeft() == aTriangle1) {
-							anEdge22.setLeft(aTriangle2);
-						} else {
-							anEdge22.setRight(aTriangle2);
-						}
-						if (anEdge.isLeft(p1)) {
-							anEdge.setLeft(aTriangle1);
-							anEdge.setRight(aTriangle2);
-						} else {
-							anEdge.setLeft(aTriangle2);
-							anEdge.setRight(aTriangle1);
-						}
-						aTriangle1.recomputeCenter();
-						aTriangle2.recomputeCenter();
+						anEdge12.setRight(aTriangle1);
 					}
+					if (anEdge22.getLeft() == aTriangle1) {
+						anEdge22.setLeft(aTriangle2);
+					} else {
+						anEdge22.setRight(aTriangle2);
+					}
+					if (anEdge.isLeft(p1)) {
+						anEdge.setLeft(aTriangle1);
+						anEdge.setRight(aTriangle2);
+					} else {
+						anEdge.setLeft(aTriangle2);
+						anEdge.setRight(aTriangle1);
+					}
+					aTriangle1.recomputeCenter();
+					aTriangle2.recomputeCenter();
 				}
 			}
 		}
