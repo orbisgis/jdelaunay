@@ -95,7 +95,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * Get X coordinate
 	 * @return x
 	 */
-	public double getX() {
+	public final double getX() {
 		return this.coord.x;
 	}
 
@@ -103,7 +103,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * Get Y coordinate
 	 * @return y
 	 */
-	public double getY() {
+	public final double getY() {
 		return this.coord.y;
 	}
 
@@ -111,7 +111,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * Get Z coordinate
 	 * @return z
 	 */
-	public double getZ() {
+	public final double getZ() {
 		return this.coord.z;
 	}
 
@@ -119,38 +119,38 @@ public class Point extends Element implements Comparable<Point> {
 	 * Set X coordinate
 	 * @param z
 	 */
-	public void setX(double x) {
+	public final void setX(double x) {
 		this.coord.x = x;
 	}
 	/**
 	 * Set Y coordinate
 	 * @param z
 	 */
-	public void setY(double y) {
+	public final void setY(double y) {
 		this.coord.y = y;
 	}
 	/**
 	 * Set Z coordinate
 	 * @param z
 	 */
-	public void setZ(double z) {
+	public final void setZ(double z) {
 		this.coord.z = z;
 	}
 
 
 	@Override
-	public int getIndicator() {
+	public final int getIndicator() {
 		return indicator;
 	}
 	
 	@Override
-	public int setIndicator(int indicator) {
+	public final int setIndicator(int indicator) {
 		this.indicator=indicator;
 		return 0;
 	}
 	
 	@Override
-	public void removeIndicator() {
+	public final void removeIndicator() {
 		indicator = 0;
 	}
 	
@@ -183,7 +183,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param byteNumber
 	 * @return marked
 	 */
-	public boolean isMarked(int byteNumber) {
+	public final boolean isMarked(int byteNumber) {
 		return testBit(6+byteNumber);
 	}
 
@@ -192,7 +192,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param byteNumber
 	 * @param marked
 	 */
-	public void setMarked(int byteNumber, boolean marked) {
+	public final void setMarked(int byteNumber, boolean marked) {
 		setBit(6+byteNumber, marked);
 	}
 	
@@ -203,7 +203,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param byteNumber
 	 * @param marked
 	 */
-	public void setMarkedByEdge(int byteNumber, boolean marked) {
+	public final void setMarkedByEdge(int byteNumber, boolean marked) {
 		setBit(byteNumber, marked);
 	}
 
@@ -211,7 +211,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * get the mark of the point
 	 * @return marked
 	 */
-	public boolean isLocked() {
+	public final boolean isLocked() {
 		return testBit(2);
 	}
 
@@ -219,7 +219,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * set the mark of the point
 	 * @param marked
 	 */
-	public void setLocked(boolean locked) {
+	public final void setLocked(boolean locked) {
 		setBit(2, locked);
 	}
 	
@@ -228,7 +228,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * check if point is use by a level edge.
 	 * @return useByLevelEdge
 	 */
-	public boolean isUseByLevelEdge(){
+	public final boolean isUseByLevelEdge(){
 		return testBit(3);
 	}
 	
@@ -236,7 +236,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * set if point is use by a level edge.
 	 * @param useByLevelEdge
 	 */
-	public void setUseByLevelEdge(boolean useByLevelEdge){
+	public final void setUseByLevelEdge(boolean useByLevelEdge){
 		setBit(3, useByLevelEdge);
 	}
 	
@@ -245,7 +245,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @return useByPolygon
 	 */
 	@Override
-	public boolean isUseByPolygon(){
+	public final boolean isUseByPolygon(){
 		return testBit(4);
 	}
 	
@@ -254,7 +254,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param useByPolygon
 	 */
 	@Override
-	public void setUseByPolygon(boolean useByPolygon){
+	public final void setUseByPolygon(boolean useByPolygon){
 		setBit(4, useByPolygon);
 	}
 	
@@ -262,7 +262,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * check if Z coordinate is use.
 	 * @return useZ
 	 */
-	public boolean isZUse(){
+	public final boolean isZUse(){
 		return testBit(5);
 	}
 	
@@ -270,7 +270,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * set if Z coordinate is use.
 	 * @param useByPolygon
 	 */
-	public void setUseZ(boolean useZ){
+	public final void setUseZ(boolean useZ){
 		setBit(5, useZ);
 	}
 	
@@ -279,7 +279,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * return jts Coordinate
 	 * @return
 	 */
-	public Coordinate getCoordinate() {
+	public final Coordinate getCoordinate() {
 		return coord;
 	}
 
@@ -287,7 +287,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
-	public BoundaryBox getBoundingBox() {
+	public final BoundaryBox getBoundingBox() {
 		BoundaryBox aBox = new BoundaryBox();
 		aBox.alterBox( this);
 		
@@ -298,12 +298,12 @@ public class Point extends Element implements Comparable<Point> {
 	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
 	 */
 	@Override
-	public boolean contains(Point aPoint) {
+	public final boolean contains(Point aPoint) {
 		return squareDistance(aPoint) < Tools.EPSILON2;
 	}
 	
 	@Override
-	public boolean contains(Coordinate c) {
+	public final boolean contains(Coordinate c) {
 		return squareDistance(c.x, c.y, c.z) < Tools.EPSILON2;
 	}
 	
@@ -313,7 +313,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance1D(Point aPoint) {
+	protected final double squareDistance1D(Point aPoint) {
 		return (coord.x - aPoint.coord.x) * (coord.x - aPoint.coord.x);
 	}
 
@@ -323,7 +323,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance2D(Point aPoint) {
+	protected final double squareDistance2D(Point aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y);
 	}
 
@@ -334,7 +334,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param y
 	 * @return distance
 	 */
-	protected double squareDistance2D(double x, double y) {
+	protected final double squareDistance2D(double x, double y) {
 		return squareDistance(x, y);
 	}
 
@@ -344,7 +344,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected double squareDistance(Point aPoint) {
+	protected final double squareDistance(Point aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
 	}
 
@@ -355,7 +355,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param y
 	 * @return distance
 	 */
-	protected double squareDistance(double x, double y) {
+	protected final double squareDistance(double x, double y) {
 		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y);
 	}
 
@@ -367,7 +367,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param z
 	 * @return distance
 	 */
-	protected double squareDistance(double x, double y, double z) {
+	protected final double squareDistance(double x, double y, double z) {
 		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y)
 				+ (z - this.coord.z) * (z - this.coord.z);
 	}
@@ -379,7 +379,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param tolarence
 	 * @return closedTo
 	 */
-	protected boolean closedTo(Point aPoint, double tolerence) {
+	protected final boolean closedTo(Point aPoint, double tolerence) {
 		return (squareDistance(aPoint) < tolerence*tolerence);
 	}
 
@@ -423,7 +423,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param y
 	 * @return
 	 */
-	public boolean equals2D(Point y){
+	public final boolean equals2D(Point y){
 		if(y==null){
 			return false;
 		} else {
@@ -439,7 +439,7 @@ public class Point extends Element implements Comparable<Point> {
 	 *	0 : if this.x == p.x && this.y == p.y
 	 *	1 otherwise.
 	 */
-	public int compareTo2D(Point p){
+	public final int compareTo2D(Point p){
                 double dx = (getX() - p.getX());
                 if(dx*dx*2 < Tools.EPSILON2){
                         double dy = (getY() - p.getY());
@@ -466,7 +466,7 @@ public class Point extends Element implements Comparable<Point> {
 	 *	1 otherwise.
 	 */
 	@Override
-	public int compareTo(Point p){
+	public final int compareTo(Point p){
 		return compareTo2D(p);
 	}
 	
@@ -475,7 +475,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * 
 	 * @param g
 	 */
-	protected void setColor(Graphics g) {
+	protected final void setColor(Graphics g) {
 		g.setColor(Color.black);
 	}
 
@@ -487,7 +487,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param decalageX
 	 * @param decalageY
 	 */
-	protected void displayObject(Graphics g, int decalageX, int decalageY,
+	protected final void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
 		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,

@@ -3375,121 +3375,6 @@ public class MyMesh {
 	}
 
 	
-	
-//	/**
-//	 * Insert a point to the current triangularization
-//	 * 
-//	 * @param aPoint
-//	 * @param property Property for the new triangle.
-//	 */
-//	private DelaunayTriangle myInsertPoint(Point aPoint, int property) {
-//		DelaunayTriangle foundTriangle = null;
-//		// We build triangles with all boundary edges for which the point is on
-//		// the left
-//		Point p1, p2;
-//		Edge anEdge1, anEdge2;
-//		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
-//		LinkedList<Edge> newEdges = new LinkedList<Edge>();
-//
-//		
-//		for (Edge anEdge : boundaryEdges) {
-//			// as the boundary edge anEdge already exists, we check if the
-//			// point is on the left for the reverse order of the edge
-//			// So, the point must be on the right of the BoundaryEdge
-//			boolean test = false;
-//			p1 = null;
-//			p2 = null;
-//			anEdge1=anEdge2=null;
-//			test = anEdge.isRight(aPoint);
-//			if (test) {
-//				// We have the edge and the 2 point, in reverse order
-//				p2 = anEdge.getStartPoint();
-//				p1 = anEdge.getEndPoint();
-//
-//				// triangle points order is p1, p2, aPoint
-//				// check if there is an edge between p2 and aPoint
-//
-//				if(!tempEdges.isEmpty())
-//					anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, tempEdges);
-//				
-//				if(anEdge1==null)
-//					anEdge1 = Tools.checkTwoPointsEdge(p2, aPoint, newEdges);
-//				
-//				if (anEdge1 == null) {
-//					anEdge1 = new Edge(p2, aPoint);
-//					addEdgeToQuadTree(anEdge1);
-//					newEdges.add(anEdge1);
-//				} else {
-//					// second use of the edge => remove it from the list
-//					newEdges.remove(anEdge1);
-//				}
-//				
-//				
-//				
-//				// check if there is an edge between aPoint and p1
-//				if(!tempEdges.isEmpty())
-//					anEdge2 = Tools.checkTwoPointsEdge(aPoint, p1, tempEdges);
-//			
-//				if(anEdge2==null)
-//				anEdge2 = Tools.checkTwoPointsEdge(aPoint, p1, newEdges);
-//				
-//
-//				if (anEdge2 == null) {
-//
-//					anEdge2 = new Edge(aPoint, p1);
-//					addEdgeToQuadTree(anEdge2);
-//					newEdges.add(anEdge2);
-//					
-//				} else {
-//					// second use of the edge => remove it from the list
-//					newEdges.remove(anEdge2);
-//				}
-//
-//				
-//				// create triangle : take care of the order : anEdge MUST be
-//				// first
-//				DelaunayTriangle aTriangle = new DelaunayTriangle(anEdge, anEdge1, anEdge2);
-//				aTriangle.setProperty(property);
-//				addTriangleToQuadTree(aTriangle);
-//
-//				// We say we founded a first triangle
-//				if (foundTriangle == null)
-//					foundTriangle = aTriangle;
-//
-//				// Mark the edge to be removed
-//				oldEdges.add(anEdge);
-//
-//				// add the edges to the bad edges list
-//				if (!isMeshComputed()) {
-//					if (!badEdgesQueueList.contains(anEdge))
-//						badEdgesQueueList.add(anEdge);
-//					if (!badEdgesQueueList.contains(anEdge1))
-//						badEdgesQueueList.add(anEdge1);
-//					if (!badEdgesQueueList.contains(anEdge2))
-//						badEdgesQueueList.add(anEdge2);
-//				}
-//			}
-//		}
-//
-//		
-//		
-//		// remove old edges
-//		for (Edge anEdge : oldEdges)
-//			boundaryEdges.remove(anEdge);
-//
-//		// add the newEdges to the boundary list
-//		for (Edge anEdge : newEdges)
-//			if ((anEdge.getLeft() == null) || (anEdge.getRight() == null))
-//				boundaryEdges.add(anEdge);
-//
-//	
-//		// Process badTriangleQueueList
-//		processBadEdges();
-//
-//		return foundTriangle;
-//	}
-
-	
 	/**
 	 * Insert a point to the current triangularization
 	 * 
@@ -4286,76 +4171,6 @@ public class MyMesh {
 		}
 	}
 	
-//	/**
-//	 * Remove the flat triangles and their neighbors.
-//	 * @param aTriangle
-//	 * @return 
-//	 * @throws DelaunayError 
-//	 */
-//	private ArrayList<Edge> findAndChangeFlatTriangle(DelaunayTriangle aTriangle) throws DelaunayError
-//	{
-//		LinkedList<DelaunayTriangle> flatTriangles = new LinkedList<DelaunayTriangle>();
-//		flatTriangles.add(aTriangle);
-//		ListIterator<DelaunayTriangle> flatTrianglesIt=flatTriangles.listIterator();
-//
-//		DelaunayTriangle aFlatTriangle;
-//		DelaunayTriangle unknowTriangle;
-//		Edge aEdge;
-//		
-//		ArrayList<Edge> skeletonEdges = new ArrayList<Edge>();
-//		
-//		aTriangle.setMarked(0, true);
-//		while (flatTrianglesIt.hasNext()) { // process flat triangles and their neighbors.
-//			aFlatTriangle = flatTrianglesIt.next();
-//			
-//			
-//			
-//			for(int i=0; i<3;i++)// for all edges of triangle
-//			{
-//				aEdge= aFlatTriangle.getEdge(i);
-//				if(!aEdge.isLevelEdge())// if aEdge is a level edge, do not thing
-//				{
-//					skeletonEdges.add(aEdge);
-//					
-//					unknowTriangle = aEdge.getLeft();
-//					if(aFlatTriangle.equals(unknowTriangle))
-//						unknowTriangle = aEdge.getRight();
-//					
-//					if(unknowTriangle!=null && !unknowTriangle.isMarked(0))
-//					{
-//						aFlatTriangle.setMarked(0, true);
-//						
-//						if(unknowTriangle.isFlatSlope())
-//						{
-//							// a flat triangle
-//							flatTrianglesIt.add(unknowTriangle);
-//							flatTrianglesIt.previous();
-//						}
-////						else
-////						{
-////							// not a flat triangle
-////							//TODO
-////						}
-//					}
-//				}
-//			}
-//			
-//		}
-//
-//
-//		
-//		//TODO use 
-////		for(Point aPoint:skeletonPoints)
-////		{
-////			aPoint.setZ(aPoint.getZ()+1);//FIXME
-////			addPoint(aPoint);
-////		
-////		}
-//		// for adding point of skeleton
-//		
-//		return skeletonEdges;
-//	}
-	
 	
 	/**
 	 * Remove a triangle from the Mesh.
@@ -4699,7 +4514,7 @@ public class MyMesh {
 	 * 
 	 * @throws DelaunayError
 	 */
-	public void checkTriangularization() throws DelaunayError {
+	public void checkTriangulation() throws DelaunayError {
 		if (!isMeshComputed()){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 }

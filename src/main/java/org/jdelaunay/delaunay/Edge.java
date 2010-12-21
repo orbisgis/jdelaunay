@@ -124,7 +124,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param i
 	 * @return If i==0, return startPoint else return endPoint.
 	 */
-	public Point point(int i) {
+	public final Point point(int i) {
 		if (i == 0) {
 			return this.startPoint;
 		} else {
@@ -135,14 +135,14 @@ public class Edge extends Element implements Comparable<Edge> {
 	/**
 	 * @return DelaunayTriangle at the left of edge.
 	 */
-	public DelaunayTriangle getLeft() {
+	public final DelaunayTriangle getLeft() {
 		return this.left;
 	}
 
 	/**
 	 * @return DelaunayTriangle at the right of edge.
 	 */
-	public DelaunayTriangle getRight() {
+	public final DelaunayTriangle getRight() {
 		return this.right;
 	}
 
@@ -151,7 +151,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * 
 	 * @param aTriangle A triangle at left of edge.
 	 */
-	public void setLeft(DelaunayTriangle aTriangle) {
+	public final void setLeft(DelaunayTriangle aTriangle) {
 		this.left = aTriangle;
 	}
 
@@ -160,35 +160,35 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * 
 	 * @param aTriangle A triangle at right of edge.
 	 */
-	public void setRight(DelaunayTriangle aTriangle) {
+	public final void setRight(DelaunayTriangle aTriangle) {
 		this.right = aTriangle;
 	}
 
 	/**
 	 * @return start point of edge.
 	 */
-	public Point getStart() {
+	public final Point getStart() {
 		return this.startPoint;
 	}
 
 	/**
 	 * @return start point of edge.
 	 */
-	public Point getStartPoint() {
+	public final Point getStartPoint() {
 		return this.startPoint;
 	}
 
 	/**
 	 * @return end point of edge.
 	 */
-	public Point getEnd() {
+	public final Point getEnd() {
 		return this.endPoint;
 	}
 
 	/**
 	 * @return end point of edge.
 	 */
-	public Point getEndPoint() {
+	public final Point getEndPoint() {
 		return this.endPoint;
 	}
 
@@ -197,7 +197,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 *
 	 * @param p Start point.
 	 */
-	public void setStart(Point p) {
+	public final void setStart(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -211,7 +211,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 *
 	 * @param p Start point.
 	 */
-	public void setStartPoint(Point p) {
+	public final void setStartPoint(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -225,7 +225,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 *
 	 * @param p End point.
 	 */
-	public void setEnd(Point p) {
+	public final void setEnd(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -239,7 +239,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 *
 	 * @param p End point.
 	 */
-	public void setEndPoint(Point p) {
+	public final void setEndPoint(Point p) {
 		if (isUseByPolygon()) {
 			p.setUseByPolygon(true);
 		}
@@ -255,7 +255,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * y).
 	 * @return
 	 */
-	public Point getPointLeft() {
+	public final Point getPointLeft() {
 		int c = endPoint.compareTo2D(startPoint);
 		switch (c) {
 			case -1:
@@ -270,7 +270,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * We use the order relation defined in Point.
 	 * @return
 	 */
-	public Point getPointRight() {
+	public final Point getPointRight() {
 		int c = endPoint.compareTo2D(startPoint);
 		switch (c) {
 			case 1:
@@ -283,44 +283,44 @@ public class Edge extends Element implements Comparable<Edge> {
 	/**
 	 * get squared 2D length
 	 */
-	protected double getSquared2DLength() {
+	protected final double getSquared2DLength() {
 		return startPoint.squareDistance2D(endPoint);
 	}
 
 	/**
 	 * get 2D length
 	 */
-	public double get2DLength() {
+	public final double get2DLength() {
 		return Math.sqrt(getSquared2DLength());
 	}
 
 	/**
 	 * get squared 3D length
 	 */
-	protected double getSquared3DLength() {
+	protected final double getSquared3DLength() {
 		return startPoint.squareDistance(endPoint);
 	}
 
 	/**
 	 * get 3D length
 	 */
-	public double get3DLength() {
+	public final double get3DLength() {
 		return Math.sqrt(getSquared3DLength());
 	}
 
 	@Override
-	public int getIndicator() {
+	public final int getIndicator() {
 		return indicator;
 	}
 
 	@Override
-	public int setIndicator(int indicator) {
+	public final int setIndicator(int indicator) {
 		this.indicator = indicator;
 		return 0;
 	}
 
 	@Override
-	public void removeIndicator() {
+	public final void removeIndicator() {
 		indicator = 0;
 	}
 
@@ -355,7 +355,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param byteNumber
 	 * @return marked
 	 */
-	public boolean isMarked(int byteNumber) {
+	public final boolean isMarked(int byteNumber) {
 		return testBit(6 + byteNumber);
 	}
 
@@ -364,7 +364,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param byteNumber
 	 * @param marked
 	 */
-	public void setMarked(int byteNumber, boolean marked) {
+	public final void setMarked(int byteNumber, boolean marked) {
 		setBit(6 + byteNumber, marked);
 	}
 
@@ -372,7 +372,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * get the mark of the edge
 	 * @return marked
 	 */
-	public boolean isLocked() {
+	public final boolean isLocked() {
 		return testBit(2);
 	}
 
@@ -380,7 +380,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * set the mark of the edge
 	 * @param marked
 	 */
-	public void setLocked(boolean locked) {
+	public final void setLocked(boolean locked) {
 		setBit(2, locked);
 	}
 
@@ -388,7 +388,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * check if edge is taken into account in the triangularization
 	 * @return outsideMesh
 	 */
-	public boolean isOutsideMesh() {
+	public final boolean isOutsideMesh() {
 		return testBit(1);
 	}
 
@@ -396,7 +396,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * set the edge in the triangularization or not
 	 * @param outsideMesh
 	 */
-	public void setOutsideMesh(boolean outsideMesh) {
+	public final void setOutsideMesh(boolean outsideMesh) {
 		setBit(1, outsideMesh);
 	}
 
@@ -404,7 +404,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * check if edge is a level edge. 
 	 * @return levelEdge
 	 */
-	public boolean isLevelEdge() {
+	public final boolean isLevelEdge() {
 		return testBit(3);
 	}
 
@@ -412,7 +412,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * set if edge is a level edge.
 	 * @param levelEdge
 	 */
-	public void setLevelEdge(boolean levelEdge) {
+	public final void setLevelEdge(boolean levelEdge) {
 		setBit(3, levelEdge);
 	}
 
@@ -421,7 +421,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return useByPolygon
 	 */
 	@Override
-	public boolean isUseByPolygon() {
+	public final boolean isUseByPolygon() {
 		return testBit(4);
 	}
 
@@ -430,7 +430,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param useByPolygon
 	 */
 	@Override
-	public void setUseByPolygon(boolean useByPolygon) {
+	public final void setUseByPolygon(boolean useByPolygon) {
 		setBit(4, useByPolygon);
 	}
 
@@ -438,7 +438,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * check if Z coordinate is use.
 	 * @return useZ
 	 */
-	public boolean isZUse() {
+	public final boolean isZUse() {
 		return testBit(5);
 	}
 
@@ -446,7 +446,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * set if Z coordinate is use.
 	 * @param useByPolygon
 	 */
-	public void setUseZ(boolean useZ) {
+	public final void setUseZ(boolean useZ) {
 		setBit(5, useZ);
 	}
 
@@ -454,7 +454,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
 	 */
 	@Override
-	public BoundaryBox getBoundingBox() {
+	public final BoundaryBox getBoundingBox() {
 
 		BoundaryBox box = new BoundaryBox();
 		box.alterBox(this.startPoint);
@@ -467,7 +467,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
 	 */
 	@Override
-	public boolean contains(Point aPoint) {
+	public final boolean contains(Point aPoint) {
 		return contains(aPoint.getCoordinate());
 //		if (intersects(aPoint, aPoint) > 0)
 //			return true;
@@ -476,7 +476,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	}
 
 	@Override
-	public boolean contains(Coordinate c) {
+	public final boolean contains(Coordinate c) {
 		Point p1 = this.startPoint;
 		Point p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
@@ -505,7 +505,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * is not one of the extremities of the other edge, this method
 	 * returns 1
 	 */
-	public int intersects(Edge other) throws DelaunayError{
+	public final int intersects(Edge other) throws DelaunayError{
 		return intersects(other.getStart(), other.getEnd());
 	}
 
@@ -524,7 +524,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * is not one of the extremities of the other edge, this method
 	 * returns 1
 	 */
-	public int intersects(Point p1, Point p2) throws DelaunayError {
+	public final int intersects(Point p1, Point p2) throws DelaunayError {
 		int result = 0;
 		Point p3 = this.startPoint;
 		Point p4 = this.endPoint;
@@ -575,7 +575,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public Element getIntersection(Point p1, Point p2) throws DelaunayError {
+	public final Element getIntersection(Point p1, Point p2) throws DelaunayError {
 		return getIntersection(p1, p2, false);
 	}
 
@@ -590,7 +590,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public Element getIntersection(Point point1, Point point2, boolean useCoordZOfp1p2) throws DelaunayError {
+	public final Element getIntersection(Point point1, Point point2, boolean useCoordZOfp1p2) throws DelaunayError {
 		Element intersection = null;
 		Point p3 = getPointLeft();
 		Point p4 = getPointRight();
@@ -765,7 +765,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public Element getIntersection(Edge anEdge) throws DelaunayError {
+	public final Element getIntersection(Edge anEdge) throws DelaunayError {
 		return getIntersection(anEdge.startPoint, anEdge.endPoint);
 	}
 
@@ -773,7 +773,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return Z coordinate of point p on the edge.
 	 */
-	public double getZOnEdge(Point p) {
+	public final double getZOnEdge(Point p) {
 		Point p1 = this.startPoint;
 		Point p2 = this.endPoint;
 
@@ -795,7 +795,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return isInside
 	 */
-	public boolean isInside(Point p) {
+	public final boolean isInside(Point p) {
 		boolean isInside = false;
 
 		Point p1 = this.startPoint;
@@ -856,7 +856,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return isColinear2D
 	 */
-	public boolean isColinear2D(Point p) {
+	public final boolean isColinear2D(Point p) {
 		boolean isColinear2D = false;
 
 		Point p1 = this.startPoint;
@@ -880,7 +880,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return isColinear2D
 	 */
-	public boolean isColinear(Point p) {
+	public final boolean isColinear(Point p) {
 		boolean isColinear = false;
 
 		Point p1 = this.startPoint;
@@ -907,7 +907,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param anEdge
 	 * @return True if points are the same.
 	 */
-	public boolean haveSamePoint(Edge anEdge) {
+	public final boolean haveSamePoint(Edge anEdge) {
 		return (getStartPoint().equals(anEdge.getStartPoint())
 			&& getEndPoint().equals(anEdge.getEndPoint()))
 			|| (getStartPoint().equals(anEdge.getEndPoint())
@@ -919,7 +919,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param anEdge
 	 * @return True if points are the same.
 	 */
-	public boolean haveSamePoint(Point p1, Point p2) {
+	public final boolean haveSamePoint(Point p1, Point p2) {
 		return (getStartPoint().getCoordinate().equals(p1.getCoordinate())
 			&& getEndPoint().getCoordinate().equals(p2.getCoordinate()))
 			|| (getStartPoint().getCoordinate().equals(p2.getCoordinate())
@@ -933,7 +933,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return isInside
 	 */
-	public boolean isExtremity(Point p) {
+	public final boolean isExtremity(Point p) {
 		return (startPoint.equals2D(p) ) || (endPoint.equals2D(p) );
 	}
 
@@ -943,7 +943,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return
 	 */
-	public boolean isLeft(Point p) {
+	public final boolean isLeft(Point p) {
 		double ux = this.endPoint.getX() - this.startPoint.getX();
 		double uy = this.endPoint.getY() - this.startPoint.getY();
 		double vx = p.getX() - this.startPoint.getX();
@@ -958,7 +958,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return
 	 */
-	public boolean isRight(Point p) {
+	public final boolean isRight(Point p) {
 		double ux = this.endPoint.getX() - this.startPoint.getX();
 		double uy = this.endPoint.getY() - this.startPoint.getY();
 		double vx = p.getX() - this.startPoint.getX();
@@ -972,7 +972,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p
 	 * @return True if the point is on edge.
 	 */
-	public boolean isOnEdge(Point p) {
+	public final boolean isOnEdge(Point p) {
 		Point p1 = this.startPoint;
 		Point p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
@@ -1004,7 +1004,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * Returns true if the two points of this edge have the same x coordinate.
 	 * @return
 	 */
-	public boolean isVertical() {
+	public final boolean isVertical() {
 		double dx = (startPoint.getX() - endPoint.getX());
 		double delta = (dx < 0 ? -dx : dx);
 		return delta < Tools.EPSILON;
@@ -1020,7 +1020,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public Point getPointFromItsX(double abs) throws DelaunayError {
+	public final Point getPointFromItsX(double abs) throws DelaunayError {
 		double deltaX = (startPoint.getX() - endPoint.getX());
 		double dX = (deltaX < 0 ? -deltaX : deltaX);
 		double p = (abs - startPoint.getX()) / (endPoint.getX() - startPoint.getX());
@@ -1043,7 +1043,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * Swap the 2 points of the edge
 	 * also swap connected triangles
 	 */
-	public void swap() {
+	public final void swap() {
 		// swap points
 		Point aPoint = this.endPoint;
 		this.endPoint = this.startPoint;
@@ -1060,7 +1060,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 *
 	 * @return isFlat
 	 */
-	public boolean isFlatSlope() {
+	public final boolean isFlatSlope() {
 		boolean isFlat = true;
 		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > Tools.EPSILON) {
 			isFlat = false;
@@ -1074,7 +1074,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return barycenter point.
 	 * @throws DelaunayError 
 	 */
-	public Point getBarycenter() throws DelaunayError {
+	public final Point getBarycenter() throws DelaunayError {
 		double x = (this.startPoint.getX() + this.endPoint.getX()) / 2.0;
 		double y = (this.startPoint.getY() + this.endPoint.getY()) / 2.0;
 		double z = (this.startPoint.getZ() + this.endPoint.getZ()) / 2.0;
@@ -1126,7 +1126,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 *
 	 * @param g
 	 */
-	protected void setColor(Graphics g) {
+	protected final void setColor(Graphics g) {
 		((Graphics2D) g).setStroke(new BasicStroke(1));
 		if (getProperty() != 0) {
 			g.setColor(Color.red);
@@ -1150,7 +1150,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param scaleX
 	 * @param scaleY
 	 */
-	protected void displayObject(Graphics g, int decalageX, int decalageY,
+	protected final void displayObject(Graphics g, int decalageX, int decalageY,
 		double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
 		g.drawLine((int) ((this.startPoint.getX() - minX) * scaleX + decalageX),
@@ -1174,7 +1174,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param edge
 	 * @return
 	 */
-	public int sortLeftRight(Edge edge) {
+	public final int sortLeftRight(Edge edge) {
 		Point p1 = getPointLeft();
 		Point p2 = edge.getPointLeft();
 		int c = p1.compareTo2D(p2);
@@ -1193,7 +1193,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return
 	 */
 	@Override
-	public int compareTo(Edge edge){
+	public final int compareTo(Edge edge){
 		return sortLeftRight(edge);
 	}
 
@@ -1208,7 +1208,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param edge
 	 * @return
 	 */
-	public int verticalSort(Edge edge, double abs) throws DelaunayError {
+	public final int verticalSort(Edge edge, double abs) throws DelaunayError {
 		Point pThis = this.getPointFromItsX(abs);
 		Point pEdge = edge.getPointFromItsX(abs);
 		if (pThis == null || pEdge == null) {
@@ -1245,7 +1245,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	/**
 	 * @return gradient
 	 */
-	public int getGradient() {
+	public final int getGradient() {
 		int gradient;
 		if (getStart().getZ() > getEnd().getZ()) {
 			gradient = Edge.DOWNSLOPE;

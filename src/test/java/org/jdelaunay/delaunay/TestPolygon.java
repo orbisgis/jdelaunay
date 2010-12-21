@@ -26,7 +26,7 @@ public class TestPolygon  extends BaseUtility  {
 //		show(aMesh);
 		System.out.println(aMesh.setPropertyToTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle()));
 		System.out.println("fin 01");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	public void testPolygon_01_2() throws DelaunayError, IOException, ParseException {
@@ -49,7 +49,7 @@ public class TestPolygon  extends BaseUtility  {
 //		show(aMesh);
 		System.out.println(aMesh.setPropertyToTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle()));
 		System.out.println("fin 01");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	public void testPolygon_01bis() throws DelaunayError, IOException, ParseException {
@@ -70,7 +70,7 @@ public class TestPolygon  extends BaseUtility  {
 		
 //		show(aMesh);
 		System.out.println("fin 01bis");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	
@@ -91,7 +91,7 @@ public class TestPolygon  extends BaseUtility  {
 		aMesh.processDelaunay();
 		
 //		show(aMesh);
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	public void testPolygon_02bis() throws DelaunayError, IOException, ParseException {
@@ -112,7 +112,7 @@ public class TestPolygon  extends BaseUtility  {
 		aMesh.removeTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle());
 		
 //		show(aMesh);
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	public void testPolygon_03() throws DelaunayError, IOException, ParseException {
@@ -138,7 +138,7 @@ public class TestPolygon  extends BaseUtility  {
 //		show(aMesh);
 		System.out.println(aMesh.setPropertyToTriangleInPolygon(aMesh.getPolygon(0), aMesh.getPolygon(0).getRefTriangle()));
 		System.out.println("end");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	public void testPolygon_04() throws DelaunayError, IOException, ParseException {
@@ -169,7 +169,7 @@ public class TestPolygon  extends BaseUtility  {
 //		show(aMesh);
 		aMesh.VRMLexport();
 		System.out.println("end");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	public void testPolygon_05() throws DelaunayError, IOException, ParseException {
@@ -202,7 +202,7 @@ public class TestPolygon  extends BaseUtility  {
 		
 //		show(aMesh);
 		System.out.println("end");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 	
 	public void testPolygon_06() throws DelaunayError, IOException, ParseException {
@@ -236,7 +236,7 @@ public class TestPolygon  extends BaseUtility  {
 		
 //		show(aMesh);
 		System.out.println("end");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 
 	
@@ -278,6 +278,6 @@ public class TestPolygon  extends BaseUtility  {
 //		aMesh.VRMLexport("testPolygon_07-2.wrl");
 			aMesh.saveMeshXML();
 		System.out.println("end");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 	}
 }

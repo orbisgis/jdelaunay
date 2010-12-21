@@ -51,7 +51,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -61,7 +61,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_01-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_01-meshRef.bin");
@@ -94,7 +94,7 @@ public class TestCheckMesh  extends BaseUtility {
 			aMesh.processDelaunay();
 
 			System.out.println("First check");
-			aMesh.checkTriangularization();
+			aMesh.checkTriangulation();
 			checkMeshTopo(aMesh);
 			System.out.println("Next");
 			
@@ -105,7 +105,7 @@ public class TestCheckMesh  extends BaseUtility {
 //			show(aMesh);
 			
 			System.out.println("Second check");
-			aMesh.checkTriangularization();
+			aMesh.checkTriangulation();
 			checkMeshTopo(aMesh);
 //			saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_02-meshRef.bin");
 //			checkMesh(aMesh, "dataForTest/TestCheckMesh-test_02-meshRef.bin");
@@ -146,7 +146,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -157,7 +157,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		System.in.read();	
 		
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_03-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_03-meshRef.bin");
@@ -197,7 +197,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 		
 
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_04-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_04-meshRef.bin");
@@ -282,7 +282,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 
 		
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_05-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_05-meshRef.bin");
@@ -317,7 +317,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -327,7 +327,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 		
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		
 		aMesh.VRMLexport("dataForTest/TestCheckMesh-test_06.wrl");
@@ -362,7 +362,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -388,7 +388,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 		
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_07-meshRef.bin");
@@ -424,7 +424,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -451,7 +451,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_08-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_08-meshRef.bin");
@@ -485,7 +485,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -500,7 +500,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 		
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 		checkMeshTopo(aMesh);
 		
@@ -538,7 +538,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		show(aMesh);
 		
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 		checkMeshTopo(aMesh);
 		
@@ -586,7 +586,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -600,7 +600,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 		
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 		checkMeshTopo(aMesh);
 		
@@ -655,7 +655,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		show(aMesh);
 		
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 		checkMeshTopo(aMesh);
 		
@@ -701,7 +701,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("First check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -716,7 +716,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 		
 		System.out.println("Second check");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 		checkMeshTopo(aMesh);
 		
@@ -788,7 +788,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		assertEquals("Number edges", 13, aMesh.getNbEdges());
 		
 		
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 		
 //		checkMeshTopo(aMesh);
 		
@@ -830,7 +830,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.processDelaunay();
 		
 		System.out.println("check 1");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -845,7 +845,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		
 		System.out.println("check 2");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -857,7 +857,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		
 		System.out.println("check 3");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -869,7 +869,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		
 		System.out.println("check 4");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		System.out.println("Next");
 		
@@ -880,7 +880,7 @@ public class TestCheckMesh  extends BaseUtility {
 		aMesh.addPolygon(aPolygon);
 		
 		System.out.println("check 5");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_15-meshRef.bin");
@@ -935,7 +935,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		show(aMesh);
 		
 		System.out.println("check 1");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_16-meshRef.bin");
@@ -987,7 +987,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		System.in.read();
 		
 		System.out.println("check 1");
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		checkMeshTopo(aMesh);
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_17-meshRef.bin");
@@ -1039,7 +1039,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		System.out.println("check");
 		checkMeshTopo(aMesh);
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_18-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_18-meshRef.bin");
@@ -1246,7 +1246,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		System.out.println("check all");
 		checkMeshTopo(aMesh);
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_OrbisGIS-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_OrbisGIS-meshRef.bin");
@@ -1320,7 +1320,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("\ncheck the O");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 //		System.out.println("\n");
 		
 		
@@ -1347,7 +1347,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("\ncheck the r2");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 //		System.out.println("\n");
 
 		// b
@@ -1360,7 +1360,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		System.out.println("\ncheck the b1");
 		checkMeshTopo(aMesh);
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		System.out.println("\n");
 		
 		aMesh.showDebug=true;
@@ -1386,7 +1386,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		System.out.println("\ncheck the b");
 		checkMeshTopo(aMesh);
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		System.out.println("\n");
 		
 		// i
@@ -1416,7 +1416,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 		System.out.println("\ncheck the i");
 		checkMeshTopo(aMesh);
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		System.out.println("\n");
 		
 		// s
@@ -1435,7 +1435,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("\ncheck the s");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 //		System.out.println("\n");
 		
 		
@@ -1462,7 +1462,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		
 //		System.out.println("\ncheck the G");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 //		System.out.println("\n");
 //		
 //		// I
@@ -1480,7 +1480,7 @@ public class TestCheckMesh  extends BaseUtility {
 //		
 //		System.out.println("\ncheck the I");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 //		System.out.println("\n");
 //		
 //		// S
@@ -1500,7 +1500,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("check all");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_OrbisGIS2-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_OrbisGIS2-meshRef.bin");
@@ -1621,7 +1621,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("check all");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_OrbisGIS3-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_OrbisGIS3-meshRef.bin");
@@ -1670,7 +1670,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("check");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge-meshRef.bin");
@@ -1721,7 +1721,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("check");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge2-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge2-meshRef.bin");
@@ -1770,7 +1770,7 @@ public class TestCheckMesh  extends BaseUtility {
 		
 //		System.out.println("check");
 //		checkMeshTopo(aMesh);
-//		aMesh.checkTriangularization();
+//		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge2_2-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge2_2-meshRef.bin");
@@ -1821,7 +1821,7 @@ public class TestCheckMesh  extends BaseUtility {
 		System.out.println("check");
 		assertTrue("Duplicate edges", checkNoDuplicateEdge(aMesh.getEdges()));
 		assertTrue("Triangle of edge not found", checkEdgeTriangleExiste(aMesh));
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 //		saveRefMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge3_G-meshRef.bin");
 //		checkMesh(aMesh, "dataForTest/TestCheckMesh-test_bridge3_G-meshRef.bin");
@@ -2075,7 +2075,7 @@ public class TestCheckMesh  extends BaseUtility {
 		//
 		// 		checking triangulation
 		//
-		aMesh.checkTriangularization();
+		aMesh.checkTriangulation();
 		
 		
 		System.out.println("Checking mesh done.\n");

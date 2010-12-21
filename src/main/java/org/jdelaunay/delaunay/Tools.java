@@ -9,8 +9,8 @@ import java.util.ListIterator;
 
 public final class Tools {
 
-	protected static final double EPSILON = 0.0000001;
-	protected static final double EPSILON2 = EPSILON * EPSILON;
+	public static final double EPSILON = 0.0000001;
+	public static final double EPSILON2 = EPSILON * EPSILON;
 
 	/**
 	 * Default constructor is private : it is not supposed to be used !

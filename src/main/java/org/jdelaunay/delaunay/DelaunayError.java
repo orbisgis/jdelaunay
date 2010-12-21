@@ -15,24 +15,24 @@ public class DelaunayError extends Throwable {
 	private int code;
 
 	// error codes
-	public final static int DELAUNAY_ERROR_NO_ERROR = 0;
-	public final static int DELAUNAY_ERROR_NO_MESH = 100;
-	public final static int DELAUNAY_ERROR_NOT_GENERATED = 101;
-	public final static int DELAUNAY_ERROR_GENERATED = 102;
-	public final static int DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND = 103;
-	public final static int DELAUNAY_ERROR_PROXIMITY = 104;
-	public final static int DELAUNAY_ERROR_POINT_NOT_FOUND = 105;
+	public static final int DELAUNAY_ERROR_NO_ERROR = 0;
+	public static final int DELAUNAY_ERROR_NO_MESH = 100;
+	public static final int DELAUNAY_ERROR_NOT_GENERATED = 101;
+	public static final int DELAUNAY_ERROR_GENERATED = 102;
+	public static final int DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND = 103;
+	public static final int DELAUNAY_ERROR_PROXIMITY = 104;
+	public static final int DELAUNAY_ERROR_POINT_NOT_FOUND = 105;
 	
-	public final static int DELAUNAY_ERROR_NON_INSERTED_POINT = 200;
-	public final static int DELAUNAY_ERROR_INCORRECT_TOPOLOGY = 201;
-	public final static int DELAUNAY_ERROR_OUTSIDE_TRIANGLE = 202;
-	public final static int DELAUNAY_ERROR_REMOVING_EDGE = 203;
+	public static final int DELAUNAY_ERROR_NON_INSERTED_POINT = 200;
+	public static final int DELAUNAY_ERROR_INCORRECT_TOPOLOGY = 201;
+	public static final int DELAUNAY_ERROR_OUTSIDE_TRIANGLE = 202;
+	public static final int DELAUNAY_ERROR_REMOVING_EDGE = 203;
 	
-	public final static int DELAUNAY_ERROR_ERROR_POINT_XYZ = 300;
+	public static final int DELAUNAY_ERROR_ERROR_POINT_XYZ = 300;
 	
-	public final static int DELAUNAY_ERROR_INVALID_CALL = 998;
-	public final static int DELAUNAY_ERROR_INTERNAL_ERROR = 999;
-	public final static int DELAUNAY_ERROR_MISC = 1000;
+	public static final int DELAUNAY_ERROR_INVALID_CALL = 998;
+	public static final int DELAUNAY_ERROR_INTERNAL_ERROR = 999;
+	public static final int DELAUNAY_ERROR_MISC = 1000;
 
 	private String message="";
 
@@ -58,7 +58,7 @@ public class DelaunayError extends Throwable {
 	 * @see java.lang.Throwable#getMessage()
 	 */
 	@Override
-	public String getMessage() {
+	public final String getMessage() {
 		switch (code) {
 		case DELAUNAY_ERROR_NO_ERROR:
 			return "no error";
