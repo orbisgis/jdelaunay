@@ -824,15 +824,9 @@ public class ConstrainedMesh {
 			p1 = iterPoint.next();
 			//we add the constraints that are linked to p1
 			cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(p1));
-//			while (p1.isLocked()){
-//				p1 = iterPoint.next();
-//                        }
 			p2 = iterPoint.next();
 			//We add the constraints that are linked to p2
 			cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(p2));
-//			while (p2.isLocked()){
-//				p2 = iterPoint.next();
-//                        }
 			e1 = new Edge(p1, p2);
 			e1 = replaceByConstraint(e1);
 			//we remove e1 from the constraints linked to the boundary
@@ -853,9 +847,6 @@ public class ConstrainedMesh {
 				badPointList.add(p3);
 
 				p3 = iterPoint.next();
-//				while (p3.isLocked()){
-//					p3 = iterPoint.next();
-//                                }
 			}
 
 			// The triangle's edges MUST be in the right direction
