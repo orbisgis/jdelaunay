@@ -281,13 +281,14 @@ public class VerticalList {
                 Edge search = new Edge(point, new Point(point.getX()+1, point.getY(), point.getZ()));
                 int index = Collections.binarySearch(constraintsList, search, comp);
                 index = (index < 0 ? -index -1 : index);
-                //We've checked that the list is neither null nor empty. We can perform
-                //the operation in the loop at least once.
-                double edgeOrd;
+		//if index == size, there is no edge upper than pRef
                 if(index == size){
 			lastUpperEd = null;
                         return null;
                 }
+                //We've checked that the list is neither null nor empty. We can perform
+                //the operation in the loop at least once.
+                double edgeOrd;
                 do{
                         edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
                         index ++;
@@ -350,29 +351,48 @@ public class VerticalList {
                 //We've checked that the list is neither null nor empty. We can perform
                 //the operation in the loop at least once.
                 double edgeOrd;
-                //if index<0, there is no edge lower than point.
+		 //if index<0, there is no edge lower than point.
+		//It can be <0 if the index returned by our research was 0 (or rather -1)
                 if(index < 0){
 			lastLowerEd=null;
                         return null;
                 }
+		Edge edgeTmp;
+		Point pointTmp;
+		//we need to handle a boolean to be able to manage vertical edges
+		boolean cont = true;
                 do{
-                        edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
+			edgeTmp = constraintsList.get(index);
+			pointTmp = edgeTmp.getPointFromItsX(abs);
+			if(pointTmp == null){
+				//We are dealing with a vertical edge.
+				cont=true;
+			} else {
+				edgeOrd = pointTmp.getY();
+				cont = Math.abs(edgeOrd - point.getY())<Tools.EPSILON;
+			}
                         index --;
-                } while(Math.abs(edgeOrd - point.getY())<Tools.EPSILON && index >=0);
-                //We've gone one place too far
-                index ++;
-                edgeOrd = constraintsList.get(index).getPointFromItsX(abs).getY();
-                //We must check that the last edge is really lower than point, ie that
-                //point and constraintsEdge.get(size -1) are not colinear.
-                //If they are, we return null
-                if(index >=0 && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
-			lastLowerEd=constraintsList.get(index);
-                        return lastLowerEd;
-                } else {
+                } while(cont && index >=0);
+		//We've gone one place too far
+		index ++;
+		pointTmp = constraintsList.get(index).getPointFromItsX(abs);
+		if(pointTmp == null){
 			lastLowerEd=null;
-                        return null;
-                }
-        }
+			return null;
+		} else {
+			edgeOrd = pointTmp.getY();
+			//We must check that the last edge is really lower than point, ie that
+			//point and constraintsEdge.get(size -1) are not colinear.
+			//If they are, we return null
+			if(index >=0 && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
+				lastLowerEd=constraintsList.get(index);
+				return lastLowerEd;
+			} else {
+				lastLowerEd=null;
+				return null;
+			}
+		}
+	}
 
 	/**
 	 * Checks if the edges that are upper and lower then pRef in the list of

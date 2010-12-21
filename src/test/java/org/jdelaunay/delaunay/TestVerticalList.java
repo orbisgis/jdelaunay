@@ -279,4 +279,20 @@ public class TestVerticalList extends BaseUtility{
 		assertTrue(vList.getLastUpperPt().equals(pRef));
 		assertTrue(vList.getLastLowerPt().equals(pRef));
 	}
+
+	/**
+	 * Performs a simple test with a unique vertical constraint. We must be careful with
+	 * this case, as a vertical edge will be reported as lower (resp. upper)
+	 * than a point if it is on its left (resp. right) according to the
+	 * vertical sort. This cases (that are false positive, and must be reported
+	 * as negatives, consquently) must be especially managed.
+	 */
+	public void testVerticalConstraint() throws DelaunayError{
+		VerticalList vList = new VerticalList();
+		vList.addEdge(new Edge(3,0,0,3,8,0));
+		assertNull(vList.getLowerEdge(new Point(4,0,0)));
+		assertNull(vList.getUpperEdge(new Point(4,0,0)));
+		assertNull(vList.getLowerEdge(new Point(2,0,0)));
+		assertNull(vList.getUpperEdge(new Point(2,0,0)));
+	}
 }
