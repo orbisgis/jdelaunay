@@ -43,19 +43,19 @@ public class HydroProperties {
 	 * @return
 	 */
 	public static String toString(int aType) {
-		String returned = "";
+		StringBuilder builder = new StringBuilder();
 		for (int i=0; i<64; i++) {
 			int property = 1 << i;
 			
 			if ((aType & property) != 0) {
 				// Property is valid
-				if (! returned.equals("")) {
-					returned += ",";
+				if (! builder.toString().equals("")) {
+					builder.append(",");
 				}
-				returned += propertyToString(property);
+				builder.append(propertyToString(property));
 			}
 		}
-		return returned;
+		return builder.toString();
 	}
 
 	/**

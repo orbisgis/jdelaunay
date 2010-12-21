@@ -167,7 +167,7 @@ public class VerticalList {
 	 * get the last evaluated lower edge
 	 * @return
 	 */
-	public Edge getLastLowerEd() {
+	public final Edge getLastLowerEd() {
 		return lastLowerEd;
 	}
 
@@ -175,15 +175,23 @@ public class VerticalList {
 	 * get the last point evaluate to perform et getLowerPoint operation
 	 * @return
 	 */
-	public Point getLastLowerPt() {
+	public final Point getLastLowerPt() {
 		return lastLowerPt;
 	}
 
-	public Edge getLastUpperEd() {
+	/**
+	 * Get the last evaluated upper edge
+	 * @return
+	 */
+	public final Edge getLastUpperEd() {
 		return lastUpperEd;
 	}
 
-	public Point getLastUpperPt() {
+	/**
+	 * Get the last evaluated upper point
+	 * @return
+	 */
+	public final Point getLastUpperPt() {
 		return lastUpperPt;
 	}
 
@@ -358,7 +366,8 @@ public class VerticalList {
                 //point and constraintsEdge.get(size -1) are not colinear.
                 //If they are, we return null
                 if(index >=0 && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
-                        return constraintsList.get(index);
+			lastLowerEd=constraintsList.get(index);
+                        return lastLowerEd;
                 } else {
 			lastLowerEd=null;
                         return null;
@@ -376,7 +385,7 @@ public class VerticalList {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public boolean intersectsUpperOrLower(Point pRef, Edge ed) throws DelaunayError{
+	public final boolean intersectsUpperOrLower(Point pRef, Edge ed) throws DelaunayError{
 		setAbs(pRef);
 		Edge upper = getUpperEdge(pRef);
 		int inter;

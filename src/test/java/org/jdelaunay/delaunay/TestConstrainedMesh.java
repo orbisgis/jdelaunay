@@ -5,6 +5,8 @@
 
 package org.jdelaunay.delaunay;
 
+import java.util.List;
+
 /**
  * This class chacks that the constrained triangulation is well performed.
  * @author alexis
@@ -27,6 +29,7 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.processDelaunay();
 		DelaunayTriangle tri1 = new DelaunayTriangle(constr, new Edge(0,3,0,4,5,0), new Edge(4,5,0,8,3,0));
 		DelaunayTriangle tri2 = new DelaunayTriangle(constr, new Edge(0,3,0,4,1,0), new Edge(4,1,0,8,3,0));
+		List<DelaunayTriangle> list = mesh.getTriangleList();
 		assertTrue(mesh.getTriangleList().contains(tri1));
 		assertTrue(mesh.getTriangleList().contains(tri2));
 	}

@@ -815,11 +815,6 @@ public class ConstrainedMesh {
 			DelaunayTriangle aTriangle;
 			Point p1, p2, p3;
 			Edge e1, e2, e3;
-			Edge upper;
-			Edge lower;
-			int interCount;
-			boolean interUpper;
-			boolean interLower;
 			p1 = null;
 			p2 = null;
 			p3 = null;
@@ -838,6 +833,7 @@ public class ConstrainedMesh {
 //				p2 = iterPoint.next();
 //                        }
 			e1 = new Edge(p1, p2);
+			e1 = replaceByConstraint(e1);
 			//we remove e1 from the constraints linked to the boundary
 			//Indeed, e1 will be part of the boundary...
 			cstrLinkedToEnv.removeEdge(e1);
@@ -865,12 +861,16 @@ public class ConstrainedMesh {
 			if (e1.isLeft(p3)) {
 				e2 = new Edge(p2, p3);
 				e3 = new Edge(p3, p1);
+				e2 = replaceByConstraint(e2);
+				e3 = replaceByConstraint(e3);
 			} else {
 				e1.setStartPoint(p2);
 				e1.setEndPoint(p1);
 
 				e2 = new Edge(p1, p3);
 				e3 = new Edge(p3, p2);
+				e2 = replaceByConstraint(e2);
+				e3 = replaceByConstraint(e3);
 			}
 
 			addEdge(e1);
@@ -888,14 +888,14 @@ public class ConstrainedMesh {
 
 			// flip-flop on a list of points
 			boolean ended = false;
-			Point aPoint=null;
+			Point currentPoint=null;
 			Point lastTestedPoint=null;
 			while (! ended) {
 				boolean hasGotPoint = false;
 				if (! badPointList.isEmpty()) {
 					//We must try to process the points that have been referenced as "bad"
-					aPoint = badPointList.getFirst();
-					if (lastTestedPoint != aPoint) {
+					currentPoint = badPointList.getFirst();
+					if (lastTestedPoint != currentPoint) {
 						//we've tested another point since last time
 						//we tried with the first point of the bad
 						//point list. Let's try again...
@@ -907,16 +907,16 @@ public class ConstrainedMesh {
 				//don't need to take one in the points list.
 				if (! hasGotPoint) {
 					if (iterPoint.hasNext()) {
-						aPoint = iterPoint.next();
+						currentPoint = iterPoint.next();
 					} else {
 						ended = true;
-						aPoint = null;
+						currentPoint = null;
 					}
 				}
-				lastTestedPoint = aPoint;
+				lastTestedPoint = currentPoint;
 				//And here we add the point in the mesh (cf insertPointIntoMesh)
-				if (aPoint!= null && aPoint.isLocked() && insertPointIntoMesh(aPoint) == null) {
-					badPointList.addFirst(aPoint);
+				if (currentPoint!= null && insertPointIntoMesh(currentPoint) == null) {
+					badPointList.addFirst(currentPoint);
                                 }
 
 			}
@@ -941,6 +941,25 @@ public class ConstrainedMesh {
 				log.trace("  Triangles : " + triangleList.size());
 			}
 		}
+	}
+
+	/**
+	 * This method checks if edge is present in the constraint edges, and return
+	 * the corresponding constraint edge if it is found.
+	 *
+	 * It reorders the points as in the edge given in parameter.
+	 *
+	 * @param edge
+	 */
+	private Edge replaceByConstraint(Edge edge){
+		int index = sortedListContains(constraintEdges, edge);
+		if(index >= 0){
+			Edge tempEdge = constraintEdges.get(index);
+			tempEdge.setStart(edge.getStart());
+			tempEdge.setEnd(edge.getEnd());
+			edge=tempEdge;
+		}
+		return edge;
 	}
 
 	/**
@@ -984,7 +1003,9 @@ public class ConstrainedMesh {
 				//if anEdge1 is null, it does not already exist in newEdges.
 				if (anEdge1 == null) {
 					anEdge1 = new Edge(p2, aPoint);
-					if(!intersectsExistingEdges(anEdge1) && !cstrLinkedToEnv.intersectsUpperOrLower(aPoint, anEdge1)){
+					if(!intersectsExistingEdges(anEdge1)
+							&& !cstrLinkedToEnv.intersectsUpperOrLower(aPoint, anEdge1)){
+						anEdge1 = replaceByConstraint(anEdge1);
 						addEdgeToLeftSortedList(edges,anEdge1);
 						newEdges.add(anEdge1);
 					} else {
@@ -1000,8 +1021,8 @@ public class ConstrainedMesh {
 						anEdge2 = new Edge(aPoint, p1);
 
 						if(!intersectsExistingEdges(anEdge2)
-                                                        &&!cstrLinkedToEnv.intersectsUpperOrLower(aPoint, anEdge1)){
-                                                        
+								&&!cstrLinkedToEnv.intersectsUpperOrLower(aPoint, anEdge1)){
+							anEdge2 = replaceByConstraint(anEdge2);
 							addEdgeToLeftSortedList(edges,anEdge2);
 							newEdges.add(anEdge2);
 						} else {
