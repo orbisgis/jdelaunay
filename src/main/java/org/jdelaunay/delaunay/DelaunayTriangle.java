@@ -798,18 +798,18 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	public boolean belongsTo(Point aPoint) {
 		boolean belongs = false;
 		Edge anEdge = this.getEdge(0);
-		if (anEdge.getStartPoint() == aPoint) {
+		if (anEdge.getStartPoint().equals(aPoint)) {
 			belongs = true;
 		}
-		else if (anEdge.getEndPoint() == aPoint) {
+		else if (anEdge.getEndPoint().equals(aPoint)) {
 			belongs = true;
 		}
 		else {
 			anEdge = this.getEdge(1);
-			if (anEdge.getStartPoint() == aPoint) {
+			if (anEdge.getStartPoint().equals(aPoint)) {
 				belongs = true;
 			}
-			else if (anEdge.getEndPoint() == aPoint) {
+			else if (anEdge.getEndPoint().equals(aPoint)) {
 				belongs = true;
 			}
 		}
