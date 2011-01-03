@@ -46,7 +46,7 @@ public class TestConstrainedMesh extends BaseUtility {
 
 	/**
 	 * Performs a test with many constraints and input points.
-	 * The inpu constraints does not intersect here.
+	 * The input constraints does not intersect here.
 	 */
 	public void testManyConstraints() throws DelaunayError{
 		ConstrainedMesh mesh = new ConstrainedMesh();
@@ -66,6 +66,8 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addPoint(new Point(4,1,0));
 		mesh.addPoint(new Point(10,3,0));
 		mesh.addPoint(new Point(12,12,0));
+		mesh.processDelaunay();
+                show(mesh);
 		assertTrue(true);
 
 	}

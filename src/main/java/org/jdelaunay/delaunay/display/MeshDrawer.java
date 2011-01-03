@@ -1,4 +1,4 @@
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.display;
 /**
  * Delaunay Package.
  *
@@ -8,14 +8,19 @@ package org.jdelaunay.delaunay;
  */
 
 import java.awt.Graphics;
-
 import javax.swing.JFrame;
 
-public class MyDrawing extends JFrame {
-        private static final long serialVersionUID = 1L;
-        private MyMesh myMesh;
+import org.jdelaunay.delaunay.ConstrainedMesh;
 
-        public MyDrawing() {
+
+public class MeshDrawer extends JFrame {
+        private static final long serialVersionUID = 1L;
+        private ConstrainedMesh myMesh;
+
+        /**
+         * Default constructor.
+         */
+        public MeshDrawer() {
                 super("Display Panel");
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 setSize(1200, 720);
@@ -24,10 +29,18 @@ public class MyDrawing extends JFrame {
                 this.myMesh = null;
         }
 
-        public void add(MyMesh myMesh) {
+        /**
+         * Set thhe mesh to be displayed by this frame.
+         * @param myMesh
+         */
+        public void add(ConstrainedMesh myMesh) {
                 this.myMesh = myMesh;
         }
 
+        /**
+         * Paint the frame
+         * @param g
+         */
 	@Override
         public void paint(Graphics g) {
                 if (myMesh != null) {
@@ -35,8 +48,13 @@ public class MyDrawing extends JFrame {
 		}
         }
 
+        /**
+         * Refresh (redraw) the frame.
+         */
         public void refresh() {
                 this.invalidate();
                 this.repaint();
         }
+
+        
 }

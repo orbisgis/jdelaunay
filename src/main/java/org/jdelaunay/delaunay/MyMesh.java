@@ -9,6 +9,7 @@ package org.jdelaunay.delaunay;
  * @version 2.2
  */
 
+import org.jdelaunay.delaunay.display.MeshDrawer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.BufferedReader;
@@ -31,7 +32,7 @@ public class MyMesh {
 	
 	// for debugging
 	public boolean showDebug=false;
-	protected MyDrawing aff2;
+	protected MeshDrawer aff2;
 	
 	protected LinkedList<Edge> tempEdges;
 	
@@ -74,7 +75,7 @@ public class MyMesh {
 	private long duration;
 	//Retrieve the timer for time computation
 	private long startComputation;
-	private MyDrawing affiche;
+	private MeshDrawer affiche;
 	//
 	private boolean usePolygonZ;
 //	private boolean isBoundingBoxInit;
@@ -513,7 +514,7 @@ public class MyMesh {
 	 * 
 	 * @return
 	 */
-	public MyDrawing getAffiche() {
+	public MeshDrawer getAffiche() {
 		return affiche;
 	}
 
@@ -522,7 +523,7 @@ public class MyMesh {
 	 * 
 	 * @param affiche
 	 */
-	public void setAffiche(MyDrawing affiche) {
+	public void setAffiche(MeshDrawer affiche) {
 		this.affiche = affiche;
 	}
 

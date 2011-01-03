@@ -41,9 +41,9 @@ public class Test {
 		aMesh.addRefinment(MyMesh.REFINEMENT_SOFT_INTERPOLATE);
 		aMesh.refineMesh();
 		
-		MyDrawing aff2 = new MyDrawing();
-		aff2.add(aMesh);
-		aMesh.setAffiche(aff2);
+//		MeshDrawer aff2 = new MeshDrawer();
+//		aff2.add(aMesh);
+//		aMesh.setAffiche(aff2);
 
 		aMesh.VRMLexport();
 		System.out.println("I'm in your main !");

@@ -1,5 +1,8 @@
 package org.jdelaunay.delaunay;
 
+import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -318,6 +321,18 @@ public class ConstrainedMesh {
 	public final void setMeshComputed(boolean comp){
 		meshComputed = comp;
 	}
+
+        /**
+         * Get the bounding box of this mesh.
+         * @return
+         */
+        public Envelope getBoundingBox(){
+                Envelope env = new Envelope();
+                for(Point p :  points){
+                        env.expandToInclude(p.getCoordinate());
+                }
+                return env;
+        }
 
 	/**
 	 * Says if the verbose mode is activated or not
@@ -1254,5 +1269,85 @@ public class ConstrainedMesh {
 			}
 		}
 		return theEdge;
+	}
+
+        /**
+	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
+	 * also display it Must be used only when using package drawing
+	 *
+	 * @param g
+	 */
+	public void displayObject(Graphics g) {
+		try{
+			Envelope theBox =getBoundingBox();
+			double scaleX, scaleY;
+			double minX, minY;
+			int XSize = 1200;
+			int YSize = 600;
+			int decalageX = 10;
+			int decalageY = YSize + 30;
+			int legende = YSize + 60;
+			int bordure = 10;
+
+			scaleX = XSize / (theBox.getMaxX() - theBox.getMinX());
+			scaleY = YSize / (theBox.getMaxY()  - theBox.getMinY());
+			if (scaleX > scaleY) {
+				scaleX = scaleY;
+			}
+			else {
+				scaleY = scaleX;
+			}
+			minX = theBox.getMinX();
+			// minY = theBox.maxy;// coordinate 0 in Y is at top of screen (don't
+			// forget make change in sub method)
+			minY = theBox.getMinY();// coordinate 0 in Y is at bottom of screen
+			scaleY = -scaleY;
+
+			g.setColor(Color.white);
+			g.fillRect(decalageX - bordure, decalageY - YSize - bordure, 2
+					* bordure + XSize, 2 * bordure + YSize);
+			g.fillRect(decalageX - bordure, legende - bordure, 2 * bordure + XSize,
+					2 * bordure + 50);
+
+			g.setColor(Color.black);
+
+			// Draw triangles
+			if (!triangleList.isEmpty()) {
+				for (DelaunayTriangle aTriangle : triangleList) {
+					aTriangle.displayObject(g, decalageX, decalageY, minX, minY,
+							scaleX, scaleY);
+				}
+
+//				if (displayCircles) {
+//					for (DelaunayTriangle aTriangle : trianglesQuadTree.getAll()) {
+//						aTriangle.displayObjectCircles(g, decalageX, decalageY);
+//					}
+//				}
+			}
+
+			// Draw lines
+			if (!constraintEdges.isEmpty()) {
+				for (Edge aVertex : constraintEdges) {
+					aVertex.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
+				}
+			}
+
+			if (!edges.isEmpty()) {
+				for (Edge aVertex : edges) {
+					aVertex.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
+				}
+			}
+
+			if ((points.size() > 0) && (points.size() < 100)) {
+				for (Point aPoint : points){
+					aPoint.displayObject(g, decalageX, decalageY, minX, minY,
+							scaleX, scaleY);
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			//TODO
+		}
 	}
 }
