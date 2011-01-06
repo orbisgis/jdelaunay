@@ -296,4 +296,105 @@ public class TestTriangle extends BaseUtility {
 		t2 =new DelaunayTriangle(e4, e1, e5);
 		assertFalse(t2.equals(t1));
 	}
+
+	/**
+	 * The equality between two triangles in the mesh can't be determined just by
+	 * using the envelope of two triangles. this test presents a case where
+	 * two triangles sharing an edge would be reported as equals if we performed
+	 * our equality operation just by using the envelopes. But they are different...
+	 */
+	public void testTooCloseTrianglesEquality() throws DelaunayError{
+		Edge common = new Edge(0,2,0,5,6,0);
+		DelaunayTriangle t1 = new DelaunayTriangle(common, new Edge(0,2,0,3,6,0), new Edge(3,6,0,5,6,0));
+		DelaunayTriangle t2 = new DelaunayTriangle(common, new Edge(0,2,0,2,3,0), new Edge(2,3,0,5,6,0));
+		assertFalse(t1.equals(t2));
+		assertTrue(t1.compareTo(t2)!=0);
+		
+	}
+
+	/**
+	 * tests that we effectively retrieve the leftmost point of a triangle.
+	 * @throws DelaunayError
+	 */
+	public void testGetLeftMost() throws DelaunayError{
+		Point p1 = new Point(0,0,0);
+		Point p2 = new Point(4,5,0);
+		Point p3 = new Point(3,0,0);
+		Edge e1 = new Edge(p1,p2);
+		Edge e2 = new Edge(p2,p3);
+		Edge e3 = new Edge(p3,p1);
+		DelaunayTriangle t1 =new DelaunayTriangle(e1, e2, e3);
+		Point left = t1.getLeftMost();
+		assertTrue(left.equals(new Point(0,0,0)));
+		p2 = new Point(0,3,0);
+		e1 = new Edge(p1,p2);
+		e2 = new Edge(p2,p3);
+		e3 = new Edge(p3,p1);
+		t1 =new DelaunayTriangle(e3, e2, e1);
+		left = t1.getLeftMost();
+		assertTrue(left.equals(new Point(0,0,0)));
+		p2 = new Point(-1,3,0);
+		e1 = new Edge(p1,p2);
+		e2 = new Edge(p2,p3);
+		e3 = new Edge(p3,p1);
+		t1 =new DelaunayTriangle(e3, e2, e1);
+		left = t1.getLeftMost();
+		assertTrue(left.equals(new Point(-1,3,0)));
+
+	}
+
+	/**
+	 * Tests that we retrieve the good edge when searching the edge opposed
+	 * to a point in a triangle.
+	 * @throws DelaunayError
+	 */
+	public void testGetOppositeEdge() throws DelaunayError{
+		Point p1 = new Point(0,0,0);
+		Point p2 = new Point(4,5,0);
+		Point p3 = new Point(3,0,0);
+		Edge e1 = new Edge(p1,p2);
+		Edge e2 = new Edge(p2,p3);
+		Edge e3 = new Edge(p3,p1);
+		DelaunayTriangle t1 =new DelaunayTriangle(e1, e2, e3);
+		Edge oppos = t1.getOppositeEdge(p1);
+		assertTrue(oppos.equals(new Edge(p2,p3)));
+		oppos = t1.getOppositeEdge(p2);
+		assertTrue(oppos.equals(new Edge(p3,p1)));
+		oppos = t1.getOppositeEdge(p3);
+		assertTrue(oppos.equals(new Edge(p1,p2)));
+		oppos = t1.getOppositeEdge(new Point(8,8,8));
+		assertNull(oppos);
+
+	}
+
+	/**
+	 * Test that we know how to retrieve an edge from a triangle, given the two
+	 * other ones that form it.
+	 * @throws DelaunayError
+	 */
+	public void testGetLastEdge() throws DelaunayError{
+		Point p1 = new Point(0,0,0);
+		Point p2 = new Point(4,5,0);
+		Point p3 = new Point(3,0,0);
+		Edge e1 = new Edge(p1,p2);
+		Edge e2 = new Edge(p2,p3);
+		Edge e3 = new Edge(p3,p1);
+		DelaunayTriangle t1 =new DelaunayTriangle(e1, e2, e3);
+		Edge last;
+		last = t1.getLastEdge(e1, e2);
+		assertTrue(last.equals(e3));
+		last = t1.getLastEdge(e1, e3);
+		assertTrue(last.equals(e2));
+		last = t1.getLastEdge(e3, e1);
+		assertTrue(last.equals(e2));
+		last = t1.getLastEdge(e3, e2);
+		assertTrue(last.equals(e1));
+		last = t1.getLastEdge(e3, new Edge(5,5,5,4,3,0));
+		assertNull(last);
+		last = t1.getLastEdge(new Edge(5,5,5,4,3,0), e3);
+		assertNull(last);
+		last = t1.getLastEdge(new Edge(5,5,5,4,3,0), new Edge(9,8,7,6,5,4));
+		assertNull(last);
+
+	}
 }

@@ -1725,7 +1725,7 @@ public class MyMesh {
 			
 			// then split anEdge
 			remainEdge = new Edge(anEdge);
-			remainEdge.setStartPoint(aPoint);		
+			remainEdge.setStartPoint(aPoint);
 			anEdge.setEndPoint(aPoint);
 
 			edge_GID++;

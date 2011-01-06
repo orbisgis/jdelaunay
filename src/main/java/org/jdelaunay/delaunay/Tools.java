@@ -3,7 +3,6 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -429,7 +428,7 @@ public final class Tools {
 	 * @return theEdge
 	 */
 	protected static Edge checkTwoPointsEdge(Point p1, Point p2,
-			LinkedList<Edge> edgeList) {
+			List<Edge> edgeList) {
 		// Check if the two points already lead to an existing edge.
 		// If the edge exists it must be in the non-processed edges
 		Edge theEdge = null;

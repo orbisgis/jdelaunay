@@ -16,9 +16,11 @@ import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * This is the class representing a Triangle in th DelaunayTriangulation.
+ * This is the class representing a Triangle in the DelaunayTriangulation.
  * @author alexis
  */
 public class DelaunayTriangle extends Element implements Comparable<DelaunayTriangle>{
@@ -128,7 +130,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		}
 		else {
 			p = edges[1].getStartPoint();
-			if ((p==edges[0].getStartPoint()) || (p==edges[0].getEndPoint())) {
+			if ((p.equals(edges[0].getStartPoint())) || (p.equals(edges[0].getEndPoint()))) {
 				p = edges[1].getEndPoint();
 			}
 		}
@@ -267,6 +269,46 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		aBox.alterBox( pptNb);
 		
 		return aBox;
+	}
+
+	/**
+	 * Get the leftmostp oint of this triangle.
+	 * @return
+	 */
+	public final Point getLeftMost(){
+		Point p1 = edges[0].getPointLeft();
+		Point p2 = edges[1].getPointLeft();
+		return (p1.compareTo(p2) < 1 ? p1 : p2);
+	}
+
+	/**
+	 * Get the last edge that form, with e1 and e2, this triangle. If e1 or e2
+	 * do not belong to this triangle, return null.
+	 * @param e1
+	 * @param e2
+	 * @return
+	 */
+	public final Edge getLastEdge(Edge e1, Edge e2){
+		if(e1.equals(edges[0])){
+			if(e2.equals(edges[1])){
+				return edges[2];
+			} else if(e2.equals(edges[2])){
+				return edges[1];
+			}
+		} else if(e1.equals(edges[1])){
+			if(e2.equals(edges[0])){
+				return edges[2];
+			} else if(e2.equals(edges[2])){
+				return edges[0];
+			}
+		}else if(e1.equals(edges[2])){
+			if(e2.equals(edges[0])){
+				return edges[1];
+			} else if(e2.equals(edges[1])){
+				return edges[0];
+			}
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -692,6 +734,27 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
+	 * Return the edge that is not linked to pt, or null if pt is not a
+	 * point of this triangle.
+	 * @param pt
+	 */
+	public final Edge getOppositeEdge(Point pt){
+		if(!contains(pt)){
+			return null;
+		}
+		if(!edges[0].contains(pt)){
+			return edges[0];
+		}
+		else if(!edges[1].contains(pt)){
+			return edges[1];
+		}
+		else {
+			return edges[2];
+		} 
+
+	}
+
+	/**
 	 * Get the point of the triangle that is not one of the 2 points given
 	 * in argument.
 	 * If one of these argument is not part of this triangle, this method will
@@ -981,8 +1044,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	public boolean equals(Object other){
 		if(other instanceof DelaunayTriangle){
 			DelaunayTriangle otherTri = (DelaunayTriangle) other;
-			return belongsTo(otherTri.getPoint(0)) && belongsTo(otherTri.getPoint(1))
+			boolean ret = belongsTo(otherTri.getPoint(0)) && belongsTo(otherTri.getPoint(1))
 				&& belongsTo(otherTri.getPoint(2));
+			return ret;
 		} else {
 			return false;
 		}
@@ -1011,7 +1075,15 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	public int compareTo(DelaunayTriangle t) {
 		Coordinate midT = getBoundingBox().getMiddle();
 		Coordinate midO = t.getBoundingBox().getMiddle();
-		return midT.compareTo(midO);
+		int c = midT.compareTo(midO);
+		if(c==0){
+			try {
+				c = getBarycenter().compareTo(t.getBarycenter());
+			} catch (DelaunayError ex) {
+				Logger.getLogger(DelaunayTriangle.class.getName()).log(Level.WARNING, null, ex);
+			}
+		}
+		return c;
 	}
 
 

@@ -27,6 +27,11 @@ public class Edge extends Element implements Comparable<Edge> {
 	private Point startPoint, endPoint;
 	private DelaunayTriangle left, right;
 	private BoundaryBox aBox;
+	//An edge is considered to be degenerated if it is connected to the boundary
+	//of the mesh, but is not part of any triangle. It is the case when adding 
+	//a point to the mesh that can't see any point of the boundary, because of
+	//the existing constraints.
+	private transient boolean degenerated;
 	/**
 	 * bit number  | function :
 	 * 1			| isOutsideMesh / setOutsideMesh
@@ -45,11 +50,12 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * Initialize data.
 	 */
 	private void init() {
-		this.startPoint = null;
-		this.endPoint = null;
-		this.left = null;
-		this.right = null;
-		this.indicator = 0;
+		startPoint = null;
+		endPoint = null;
+		left = null;
+		right = null;
+		indicator = 0;
+		degenerated=false;
 //		aBox=null;
 	}
 
@@ -147,6 +153,24 @@ public class Edge extends Element implements Comparable<Edge> {
 	}
 
 	/**
+	 * Return the left triangle if tri is the right one, the right triangle
+	 * if tri is the left one, and null otherwise.
+	 * @param tri
+	 * @return
+	 */
+	public final DelaunayTriangle getOtherTriangle(DelaunayTriangle tri){
+		if(tri == null){
+			return null;
+		} else if(tri.equals(right)){
+			return left;
+		} else if(tri.equals(left)){
+			return right;
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Set DelaunayTriangle at left of edge.
 	 * 
 	 * @param aTriangle A triangle at left of edge.
@@ -193,17 +217,20 @@ public class Edge extends Element implements Comparable<Edge> {
 	}
 
 	/**
-	 * Set edge start point.
-	 *
-	 * @param p Start point.
+	 * Checks if this edge is "degenerated" or not. An edge is marked as degenerated
+	 * when connecting to the mesh, but not implied in the buildingof any triangle.
+	 * @return
 	 */
-	public final void setStart(Point p) {
-		if (isUseByPolygon()) {
-			p.setUseByPolygon(true);
-		}
+	public final boolean isDegenerated(){
+		return degenerated;
+	}
 
-		this.startPoint = p;
-		updateBox();
+	/**
+	 * Determines if this edge must be considered as degenerated or not.
+	 * @param degen
+	 */
+	public final void setDegenerated(boolean degen){
+		degenerated=degen;
 	}
 
 	/**
@@ -217,20 +244,6 @@ public class Edge extends Element implements Comparable<Edge> {
 		}
 
 		this.startPoint = p;
-		updateBox();
-	}
-
-	/**
-	 * Set edge end point.
-	 *
-	 * @param p End point.
-	 */
-	public final void setEnd(Point p) {
-		if (isUseByPolygon()) {
-			p.setUseByPolygon(true);
-		}
-
-		this.endPoint = p;
 		updateBox();
 	}
 

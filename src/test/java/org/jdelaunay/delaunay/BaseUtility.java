@@ -57,11 +57,11 @@ public class BaseUtility extends TestCase {
 		MeshDrawer aff2 = new MeshDrawer();
 		aff2.add(myMesh);
                 aff2.setVisible(true);
-//                try {
-//                        System.in.read();
-//                } catch (IOException ex) {
-//                        Logger.getLogger(BaseUtility.class.getName()).log(Level.WARNING, null, ex);
-//                }
+                try {
+                        System.in.read();
+                } catch (IOException ex) {
+                        Logger.getLogger(BaseUtility.class.getName()).log(Level.WARNING, null, ex);
+                }
 	}
 
 	// ---------------------------------------------------------------------------

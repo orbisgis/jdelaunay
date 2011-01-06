@@ -319,7 +319,7 @@ public class VerticalList {
          * This method is used to determine which points of the mesh boundary are
          * visible from the point to be added.
          *
-         * Be careful that the edge returned is the one found using thee verticl sort.
+         * Be careful that the edge returned is the one found using the vertical sort.
          * It may not be "vertically upper" than point : we can't be sure that there
          * is a point of x-coordinate point.getX() on this edge.
          *

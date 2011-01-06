@@ -40,7 +40,6 @@ public class TestEdges extends BaseUtility {
 		Edge e1 = new Edge(4,4,0,8,8,0);
 		Edge e2 = new Edge(8,4,0,4,8,0);
                 Element intersection;
-		int c = e1.intersects(e2);
 		assertTrue(e1.intersects(e2)==1);
                 intersection = e1.getIntersection(e2);
                 assertTrue(intersection.equals(new Point(6,6,0)));
@@ -295,9 +294,9 @@ public class TestEdges extends BaseUtility {
 		Edge edge = new Edge(0,0,0,2,2,5);
 		edge.setStartPoint(new Point(0.5,0.5,0));
 		assertEquals(edge, new Edge(0.5,0.5,0,2,2,5));
-		edge.setStart(new Point(0,0,0));
+		edge.setStartPoint(new Point(0,0,0));
 		assertEquals(edge, new Edge(0,0,0,2,2,5));
-		edge.setEnd(new Point(3,3,4));
+		edge.setEndPoint(new Point(3,3,4));
 		assertEquals(edge, new Edge(0,0,0,3,3,4));
 		edge.setEndPoint(new Point(4,4,5));
 		assertEquals(edge, new Edge(0,0,0,4,4,5));
@@ -341,5 +340,53 @@ public class TestEdges extends BaseUtility {
 		pt = new Point (3,8,0);
 		assertFalse(edge.isColinear(pt));
 
+	}
+
+	/**
+	 * Tests that we are able to retrieve the triangle linked to an edge that
+	 * is opposite to the one we already know.
+	 * @throws DelaunayError
+	 */
+	public void testGetOhterTriangle() throws DelaunayError{
+		Edge edgeb = new Edge (4,4,0,2,2,0);
+		Edge et11b = new Edge(4,4,0,0,2,0);
+		Edge et12b = new Edge(2,2,0,0,2,0);
+		Edge edge = new Edge(0,0,0,2,2,0);
+		DelaunayTriangle t1b = new DelaunayTriangle(edgeb, et11b, et12b);
+		assertNull(edge.getOtherTriangle(t1b));
+		assertNull(edge.getOtherTriangle(null));
+		Edge et11 = new Edge(0,0,0,0,2,0);
+		Edge et12 = new Edge(2,2,0,0,2,0);
+		DelaunayTriangle t1 = new DelaunayTriangle(edge, et11, et12);
+		Edge et21 = new Edge(0,0,0,2,0,0);
+		Edge et22 = new Edge(2,2,0,2,0,0);
+		DelaunayTriangle t2 = new DelaunayTriangle(edge, et21, et22);
+		edge.setLeft(t2);
+		edge.setRight(t1);
+		assertTrue(edge.getLeft().equals(new DelaunayTriangle(edge, et21, et22)));
+		assertTrue(edge.getRight().equals(new DelaunayTriangle(edge, et11, et12)));
+		assertTrue(edge.getOtherTriangle(t2).equals(t1));
+		assertTrue(edge.getOtherTriangle(t1).equals(t2));
+		assertNull(edge.getOtherTriangle(t1b));
+		assertNull(edge.getOtherTriangle(null));
+	}
+
+	/**
+	 * Tests that the swap operation on edges works well.
+	 * @throws DelaunayError
+	 */
+	public void testSwapPoints() throws DelaunayError{
+		Edge ed = new Edge(0,4,0,4,4,0);
+		DelaunayTriangle tri = new DelaunayTriangle(ed, new Edge(4,4,0,2,0,0), new Edge(2,0,0,0,4,0));
+		DelaunayTriangle tribis = new DelaunayTriangle(ed, new Edge(4,4,0,2,8,0), new Edge(2,8,0,0,4,0));
+		assertTrue(ed.getStartPoint().equals(new Point(0,4,0)));
+		assertTrue(ed.getEndPoint().equals(new Point(4,4,0)));
+		assertTrue(tri.equals(ed.getRight()));
+		assertTrue(tribis.equals(ed.getLeft()));
+		ed.swap();
+		assertTrue(ed.getEndPoint().equals(new Point(0,4,0)));
+		assertTrue(ed.getStartPoint().equals(new Point(4,4,0)));
+		assertTrue(tribis.equals(ed.getRight()));
+		assertTrue(tri.equals(ed.getLeft()));
 	}
 }
