@@ -295,4 +295,46 @@ public class TestVerticalList extends BaseUtility{
 		assertNull(vList.getLowerEdge(new Point(2,0,0)));
 		assertNull(vList.getUpperEdge(new Point(2,0,0)));
 	}
+
+	/**
+	 * Try to remove edges from a vertical list just by knowing their
+	 * right most point.
+	 * @throws DelaunayError
+	 */
+	public void testRemoveFromRightPoint() throws DelaunayError {
+		VerticalList vList = new VerticalList();
+		vList.addEdge(new Edge(3,3,0,5,6,0));
+		vList.addEdge(new Edge(3,0,0,6,0,0));
+		vList.addEdge(new Edge(2,2,0,4,2,0));
+		vList.addEdge(new Edge(2,3,0,4,2,0));
+		vList.addEdge(new Edge(2,1,0,4,2,0));
+		vList.removeEdgeFromRightPoint(new Point(4,2,0));
+		assertTrue(vList.size()==2);
+		assertTrue(vList.searchEdge(new Edge(3,3,0,5,6,0))>=0);
+		assertTrue(vList.searchEdge(new Edge(3,0,0,6,0,0))>=0);
+		vList = new VerticalList();
+		vList.addEdge(new Edge(2,2,0,4,2,0));
+		vList.addEdge(new Edge(2,3,0,4,2,0));
+		vList.addEdge(new Edge(2,1,0,4,2,0));
+		vList.removeEdgeFromRightPoint(new Point(4,2,0));
+		assertTrue(vList.size()==0);
+		vList = new VerticalList();
+		vList.addEdge(new Edge(3,3,0,5,6,0));
+		vList.addEdge(new Edge(2,2,0,4,2,0));
+		vList.addEdge(new Edge(2,3,0,4,2,0));
+		vList.addEdge(new Edge(2,1,0,4,2,0));
+		vList.removeEdgeFromRightPoint(new Point(4,2,0));
+		assertTrue(vList.size()==1);
+		assertTrue(vList.searchEdge(new Edge(3,3,0,5,6,0))>=0);
+		vList = new VerticalList();
+		vList.addEdge(new Edge(3,0,0,6,0,0));
+		vList.addEdge(new Edge(2,2,0,4,2,0));
+		vList.addEdge(new Edge(2,3,0,4,2,0));
+		vList.addEdge(new Edge(2,1,0,4,2,0));
+		vList.removeEdgeFromRightPoint(new Point(4,2,0));
+		assertTrue(vList.size()==1);
+		assertTrue(vList.searchEdge(new Edge(3,0,0,6,0,0))>=0);
+
+		
+	}
 }

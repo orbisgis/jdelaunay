@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdelaunay.delaunay.display.MeshDrawer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import junit.framework.TestCase;
@@ -47,6 +48,24 @@ public class BaseUtility extends TestCase {
 		edges.add(new Edge(new Point(120, 10, 2), new Point(102, 10, 1)));
 
 		return edges;
+	}
+
+	/**
+	 * Get a list of number points, randomly generated.
+	 * @param number
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public static List<Point> getRandomPoints(int number) throws DelaunayError {
+		ArrayList<Point> rand = new ArrayList<Point>();
+		double abs;
+		double ord;
+		for(int i =0; i< number; i++){
+			abs = Math.random()*100;
+			ord = Math.random()*100;
+			rand.add(new Point(abs, ord, 0));
+		}
+		return rand;
 	}
 
 	/**
@@ -125,16 +144,16 @@ public class BaseUtility extends TestCase {
 		// Assert
 		for (Point aPoint : aMesh.getPoints()) {
 			// point must belong to an edge
-			int GID = aPoint.getGid();
+			int GID = aPoint.getGID();
 			
 			boolean found = false;
 			Edge myEdge;
 			ListIterator<Edge> iterEdge = aMesh.getEdges().listIterator();
 			while ((! found) && (iterEdge.hasNext())) {
 				myEdge = iterEdge.next();
-				if (GID == myEdge.getStart().getGid()) {
+				if (GID == myEdge.getStart().getGID()) {
 					found = true;
-				} else if (GID == myEdge.getEnd().getGid()) {
+				} else if (GID == myEdge.getEnd().getGID()) {
 					found = true;
 				}
 			}
@@ -151,7 +170,7 @@ public class BaseUtility extends TestCase {
 		// Assert
 		for (Edge anEdge : aMesh.getEdges()) {
 			// point must belong to an edge
-			int GID = anEdge.getGid();
+			int GID = anEdge.getGID();
 			
 			boolean found = false;
 			DelaunayTriangle myTriangle;
@@ -159,7 +178,7 @@ public class BaseUtility extends TestCase {
 			while ((! found) && (iterTriangle.hasNext())) {
 				myTriangle = iterTriangle.next();
 				for (int i=0; i<3; i++) {
-					if (GID == myTriangle.getEdge(i).getGid()) {
+					if (GID == myTriangle.getEdge(i).getGID()) {
 						found = true;
 					}
 				}
@@ -189,7 +208,7 @@ public class BaseUtility extends TestCase {
 		// Test points
 		gids = new ArrayList<Integer>();
 		for (Point myPoint : aMesh.getPoints()) {
-			int gid = myPoint.getGid();
+			int gid = myPoint.getGID();
 
 			if ((gids.contains(gid)) || (gid < 0)) {
 				assertTrue(false);
@@ -201,7 +220,7 @@ public class BaseUtility extends TestCase {
 		// Test edges
 		gids = new ArrayList<Integer>();
 		for (Edge myEdge : aMesh.getEdges()) {
-			int gid = myEdge.getGid();
+			int gid = myEdge.getGID();
 
 			if ((gids.contains(gid)) || (gid < 0)) {
 				assertTrue(false);
@@ -213,7 +232,7 @@ public class BaseUtility extends TestCase {
 		// Test triangles
 		gids= new ArrayList<Integer>();
 		for (DelaunayTriangle myTriangle : aMesh.getTriangles()) {
-			int gid = myTriangle.getGid();
+			int gid = myTriangle.getGID();
 
 			if ((gids.contains(gid)) || (gid < 0)) {
 				assertTrue(false);

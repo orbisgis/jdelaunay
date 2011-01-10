@@ -397,4 +397,90 @@ public class TestTriangle extends BaseUtility {
 		assertNull(last);
 
 	}
+
+	/**
+	 * Tests that we are able to retrieve triangle in a sorted list. The input points
+	 * are the same that those used in TestConstrainedMesh.testManyConstraints().
+	 * @throws DelaunayError
+	 */
+	public void testLargerTriangleSort() throws DelaunayError{
+		List<DelaunayTriangle> triangleList = new ArrayList<DelaunayTriangle>();
+		triangleList.add(new DelaunayTriangle(
+			new Edge(0,3,0,8,3,0),
+			new Edge(0,3,0,5,4,0),
+			new Edge(5,4,0,8,3,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(0,3,0,8,3,0),
+			new Edge(8,3,0,4,1,0),
+			new Edge(4,1,0,0,3,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(0,3,0,5,4,0),
+			new Edge(5,4,0,4,5,0),
+			new Edge(4,5,0,0,3,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(0,3,0,12,12,0),
+			new Edge(12,12,0,4,5,0),
+			new Edge(4,5,0,0,3,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(8,7,0,12,12,0),
+			new Edge(12,12,0,4,5,0),
+			new Edge(4,5,0,8,7,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(8,7,0,5,4,0),
+			new Edge(5,4,0,4,5,0),
+			new Edge(4,5,0,8,7,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(8,7,0,9,6,0),
+			new Edge(9,6,0,8,3,0),
+			new Edge(8,3,0,8,7,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(8,7,0,5,4,0),
+			new Edge(5,4,0,8,3,0),
+			new Edge(8,3,0,8,7,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(9,0,0,9,6,0),
+			new Edge(9,6,0,8,3,0),
+			new Edge(8,3,0,9,0,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(9,0,0,9,6,0),
+			new Edge(9,6,0,10,3,0),
+			new Edge(10,3,0,9,0,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(9,0,0,12,6,0),
+			new Edge(12,6,0,10,3,0),
+			new Edge(10,3,0,9,0,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(9,6,0,12,6,0),
+			new Edge(12,6,0,10,3,0),
+			new Edge(10,3,0,9,6,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(9,6,0,12,6,0),
+			new Edge(12,6,0,8,7,0),
+			new Edge(8,7,0,9,6,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(12,7,0,12,6,0),
+			new Edge(12,6,0,8,7,0),
+			new Edge(8,7,0,12,7,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(12,7,0,11,9,0),
+			new Edge(11,9,0,12,12,0),
+			new Edge(12,12,0,12,7,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(12,12,0,11,9,0),
+			new Edge(11,9,0,8,7,0),
+			new Edge(8,7,0,12,12,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(9,0,0,8,3,0),
+			new Edge(8,3,0,4,1,0),
+			new Edge(4,1,0,9,0,0)));
+		triangleList.add(new DelaunayTriangle(
+			new Edge(11,9,0,8,7,0),
+			new Edge(12,7,0,11,9,0),
+			new Edge(8,7,0,12,7,0)));
+		ArrayList<DelaunayTriangle> sorted = new ArrayList<DelaunayTriangle>(triangleList);
+		Collections.sort(sorted);
+		for(DelaunayTriangle tri : triangleList){
+			assertTrue(Collections.binarySearch(sorted, tri)>=0);
+		}
+	}
 }

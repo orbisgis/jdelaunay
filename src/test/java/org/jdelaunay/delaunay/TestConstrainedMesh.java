@@ -8,7 +8,7 @@ package org.jdelaunay.delaunay;
 import java.util.List;
 
 /**
- * This class chacks that the constrained triangulation is well performed.
+ * This class checks that the constrained triangulation is well performed.
  * @author alexis
  */
 public class TestConstrainedMesh extends BaseUtility {
@@ -114,20 +114,88 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(constr);
 		constr = new Edge(8,3,0,9,6,0);
 		mesh.addConstraintEdge(constr);
+		constr = new Edge(8,7,0,12,12,0);
+		mesh.addConstraintEdge(constr);
 		mesh.addPoint(new Point(4,5,0));
 		mesh.addPoint(new Point(4,1,0));
 		mesh.addPoint(new Point(10,3,0));
-		mesh.addPoint(new Point(12,12,0));
+		mesh.addPoint(new Point(11,9,0));
 		mesh.processDelaunay();
+		List<DelaunayTriangle> triangles = mesh.getTriangleList();
 //                show(mesh);
-		assertTrue(mesh.containsTriangle(new DelaunayTriangle(
+		assertTrue(triangles.contains(new DelaunayTriangle(
 			new Edge(0,3,0,8,3,0),
 			new Edge(0,3,0,5,4,0),
-			new Edge(5,4,0,8,3,0))) >=0);
-		assertTrue(mesh.containsTriangle(new DelaunayTriangle(
-			new Edge(0,3,0,-1,2,0),
-			new Edge(-1,2,0,4,1,0),
-			new Edge(4,1,0,0,3,0))) < 0);
+			new Edge(5,4,0,8,3,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(0,3,0,8,3,0),
+			new Edge(8,3,0,4,1,0),
+			new Edge(4,1,0,0,3,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(0,3,0,5,4,0),
+			new Edge(5,4,0,4,5,0),
+			new Edge(4,5,0,0,3,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(0,3,0,12,12,0),
+			new Edge(12,12,0,4,5,0),
+			new Edge(4,5,0,0,3,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(8,7,0,12,12,0),
+			new Edge(12,12,0,4,5,0),
+			new Edge(4,5,0,8,7,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(8,7,0,5,4,0),
+			new Edge(5,4,0,4,5,0),
+			new Edge(4,5,0,8,7,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(8,7,0,5,4,0),
+			new Edge(5,4,0,8,3,0),
+			new Edge(8,3,0,8,7,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(8,7,0,9,6,0),
+			new Edge(9,6,0,8,3,0),
+			new Edge(8,3,0,8,7,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(9,0,0,9,6,0),
+			new Edge(9,6,0,8,3,0),
+			new Edge(8,3,0,9,0,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(9,0,0,9,6,0),
+			new Edge(9,6,0,10,3,0),
+			new Edge(10,3,0,9,0,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(9,0,0,12,6,0),
+			new Edge(12,6,0,10,3,0),
+			new Edge(10,3,0,9,0,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(9,6,0,12,6,0),
+			new Edge(12,6,0,10,3,0),
+			new Edge(10,3,0,9,6,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(9,6,0,12,6,0),
+			new Edge(12,6,0,8,7,0),
+			new Edge(8,7,0,9,6,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(12,7,0,12,6,0),
+			new Edge(12,6,0,8,7,0),
+			new Edge(8,7,0,12,7,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(12,7,0,11,9,0),
+			new Edge(11,9,0,12,12,0),
+			new Edge(12,12,0,12,7,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(12,12,0,11,9,0),
+			new Edge(11,9,0,8,7,0),
+			new Edge(8,7,0,12,12,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(9,0,0,8,3,0),
+			new Edge(8,3,0,4,1,0),
+			new Edge(4,1,0,9,0,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(
+			new Edge(11,9,0,8,7,0),
+			new Edge(12,7,0,11,9,0),
+			new Edge(8,7,0,12,7,0))));
+
 	}
 
 	/**
@@ -161,6 +229,64 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,1,0,3,2,0), new Edge(3,2,0,3,4,0), new Edge(3,4,0,1,1,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,1,0,3,6,0), new Edge(3,6,0,3,4,0), new Edge(3,4,0,1,1,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,1,0,3,8,0), new Edge(3,8,0,3,6,0), new Edge(3,6,0,1,1,0))));
+	}
+
+	/**
+	 * Checks that the objects (points and edges, to be accurate) are not duplicated
+	 * in the mesh.
+	 * @throws DelaunayError
+	 */
+	public void testObjectsUnicity() throws DelaunayError{
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		Edge constr = new Edge(0,3,0,8,3,0);
+		mesh.addConstraintEdge(constr);
+		constr = new Edge(9,0,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new Edge(12,6,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new Edge(5,4,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new Edge(12,6,0,12,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new Edge(8,3,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new Edge(8,7,0,12,12,0);
+		mesh.addConstraintEdge(constr);
+		mesh.addPoint(new Point(4,5,0));
+		mesh.addPoint(new Point(4,1,0));
+		mesh.addPoint(new Point(10,3,0));
+		mesh.addPoint(new Point(11,9,0));
+		mesh.processDelaunay();
+		List<DelaunayTriangle> triangles = mesh.getTriangleList();
+		int index;
+		Edge comp;
+		List<Edge> edges = mesh.getEdges();
+		List<Point> points = mesh.getPoints();
+		Point pt;
+		for(DelaunayTriangle tri : triangles){
+			index = mesh.searchEdge(tri.getEdge(0));
+			comp = edges.get(index) ;
+			assertTrue(tri.getEdge(0)==comp);
+			pt=points.get(points.indexOf(tri.getPoint(0)));
+			assertTrue(tri.getPoint(0) == pt);
+			index = mesh.searchEdge(tri.getEdge(1));
+			comp = edges.get(index) ;
+			assertTrue(tri.getEdge(1)==comp);
+			pt=points.get(points.indexOf(tri.getPoint(1)));
+			assertTrue(tri.getPoint(1) == pt);
+			index = mesh.searchEdge(tri.getEdge(2));
+			comp = edges.get(index) ;
+			assertTrue(tri.getEdge(2)==comp);
+			pt=points.get(points.indexOf(tri.getPoint(2)));
+			if(tri.getPoint(2) == pt){
+				assertTrue(true);
+			} else {
+				System.out.println(pt);
+				System.out.println(tri.getPoint(2));
+				assertTrue(false);
+			}
+		}
+
 	}
 
 	/**
@@ -237,6 +363,45 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(mesh.getTriangleList().contains(tri1));
 		assertTrue(mesh.getTriangleList().contains(tri2));
 
+	}
+
+
+	/**
+	 * Performs a delaunay triangulation with an input without constraints.
+	 */
+	public void testSwapEdgesBis() throws DelaunayError{
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		Point p1=new Point(0,1,0);
+		Point p3=new Point(4,0,0);
+		Point p4=new Point(4,1,0);
+		Point p2=new Point(3,3,0);
+		mesh.addPoint(p1);
+		mesh.addPoint(p2);
+		mesh.addPoint(p3);
+		mesh.addPoint(p4);
+		mesh.processDelaunay();
+//		show(mesh);
+		DelaunayTriangle tri1 = new DelaunayTriangle(new Edge(p1, p2), new Edge(p2, p4), new Edge(p4, p1));
+		DelaunayTriangle tri2 = new DelaunayTriangle(new Edge(p1, p3), new Edge(p3, p4), new Edge(p4, p1));
+		assertTrue(mesh.getTriangleList().contains(tri1));
+		assertTrue(mesh.getTriangleList().contains(tri2));
+	}
+
+	/**
+	 * Make a classical triangulation on a random set of points. For benchmark purposes.
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayTriangulationRandomPoints() throws DelaunayError{
+		List<Point> randomPoint = BaseUtility.getRandomPoints(10000);
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		for(Point pt : randomPoint){
+			mesh.addPoint(pt);
+		}
+		double t = System.currentTimeMillis();
+		mesh.processDelaunay();
+		double t2 = System.currentTimeMillis();
+		System.out.println("Needed time : "+(t2 - t));
+		assertTrue(true);
 	}
 
 }

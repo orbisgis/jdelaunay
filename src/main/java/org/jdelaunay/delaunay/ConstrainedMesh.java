@@ -128,8 +128,6 @@ public class ConstrainedMesh {
 	public final void setConstraintEdges(ArrayList<Edge> constraint) {
 		this.constraintEdges = new ArrayList<Edge>();
 		for (Edge e : constraint) {
-			addPoint(e.getStart());
-			addPoint(e.getEnd());
 			//We lock the edge. It will not be supposed to be switched
 			//during a flip flap.
 			e.setLocked(true);
@@ -148,8 +146,18 @@ public class ConstrainedMesh {
 		}
 		e.setLocked(true);
 		addEdgeToLeftSortedList(constraintEdges, e);
-		addPoint(e.getStart());
-		addPoint(e.getEnd());
+		int index = Collections.binarySearch(points, e.getStartPoint());
+		if(index < 0 ){
+			points.add(-index -1, e.getStartPoint());
+		} else {
+			e.setStartPoint(points.get(index));
+		}
+		index = Collections.binarySearch(points, e.getEndPoint());
+		if(index < 0 ){
+			points.add(-index -1, e.getEndPoint());
+		} else {
+			e.setEndPoint(points.get(index));
+		}
 	}
 
 	/**
@@ -230,7 +238,7 @@ public class ConstrainedMesh {
 	 * @param edge
 	 */
 	private void addEdgeToLeftSortedList(List<Edge> sorted, Edge edge) {
-		addToSortedList(edge, sorted);
+		addToSortedList(edge, sorted, edgeGID);
 	}
 
 	/**
@@ -296,7 +304,7 @@ public class ConstrainedMesh {
 	 * @param triangle
 	 */
 	public final void addTriangle(DelaunayTriangle triangle) {
-		addToSortedList(triangle, triangleList);
+		addToSortedList(triangle, triangleList, triangleGID);
 	}
 
 	/**
@@ -315,10 +323,6 @@ public class ConstrainedMesh {
 	 */
 	public final void removeTriangle(DelaunayTriangle tri) {
 //		//first we search it
-//		int index = sortedListContains(triangleList, tri);
-//		if (index >= 0) {
-//			triangleList.remove(tri);
-//		}
 		triangleList.remove(tri);
 	}
 
@@ -350,7 +354,7 @@ public class ConstrainedMesh {
 	 * Get the bounding box of this mesh.
 	 * @return
 	 */
-	public Envelope getBoundingBox() {
+	public final Envelope getBoundingBox() {
 		Envelope env = new Envelope();
 		for (Point p : points) {
 			env.expandToInclude(p.getCoordinate());
@@ -378,8 +382,12 @@ public class ConstrainedMesh {
 	 * Set the list of points to be used during the triangulation
 	 * @param points
 	 */
-	public final void setPoints(ArrayList<Point> points) {
-		this.points = points;
+	public final void setPoints(List<Point> pts) {
+		if(pts == null){
+			pts = new ArrayList<Point>();
+		}
+		Collections.sort(pts);
+		this.points = pts;
 	}
 
 	/**
@@ -391,7 +399,7 @@ public class ConstrainedMesh {
 		if (points == null) {
 			points = new ArrayList<Point>();
 		}
-		addToSortedList(point, points);
+		addToSortedList(point, points, pointGID);
 	}
 
 	/**
@@ -401,15 +409,19 @@ public class ConstrainedMesh {
 	 * @param elt
 	 * @param sortedList
 	 */
-	private <T extends Element & Comparable<? super T>> void addToSortedList(T elt, List<T> sortedList) {
+	private <T extends Element & Comparable<? super T>> void addToSortedList(T elt, List<T> sortedList, int GID) {
 		//We make a binary search, as divides and conquers rules...
 		int index = Collections.binarySearch(sortedList, elt);
 		if (index < 0) {
 			//The position where we want to insert elt is -index-1, as the
 			//value retruned by binary search is equal to (-insertPos -1)
-			//(cf java.util.Collections javadoc)
+			//(cf java.util.Collections javadoc
+			//we don't process the insertion if an element equals to elt
+			//is already contained in the list.
 			int insertPos = -index - 1;
 			sortedList.add(insertPos, elt);
+			GID++;
+			elt.setGID(GID);
 		}
 	}
 
@@ -453,8 +465,8 @@ public class ConstrainedMesh {
 		ArrayList<Point> eventPoints = new ArrayList<Point>();
 		//We fill the list.
 		for (Edge edge : constraintEdges) {
-			addToSortedList(edge.getStart(), eventPoints);
-			addToSortedList(edge.getEnd(), eventPoints);
+			addToSortedList(edge.getStart(), eventPoints, -2);
+			addToSortedList(edge.getEnd(), eventPoints, -2);
 		}
 		//we are about to perform the sweepline algorithm
 		Point currentEvent = null;
@@ -567,7 +579,7 @@ public class ConstrainedMesh {
 								}
 								j = (j - rmCount < 0 ? 0 : j - rmCount);
 							} else { // the intersection will be processed later.
-								addToSortedList(newEvent, eventPoints);
+								addToSortedList(newEvent, eventPoints, -2);
 							}
 						} else {
 							//in this case, we have e1.isExtremity(newEvent) && e2.isExtremity(newEvent)
@@ -770,7 +782,6 @@ public class ConstrainedMesh {
 		}
 		return false;
 	}
-
 	/**
 	 * This method simply travels the list given in argument. If edges edgelist.get(i)
 	 * and edgeList.get(i+1) intersect, then we add the intersection point in
@@ -1016,51 +1027,30 @@ public class ConstrainedMesh {
 				// as the boundary edge anEdge already exists, we check if the
 				// point is on the left for the reverse order of the edge
 				// So, the point must be on the right of the BoundaryEdge
-				boolean test = false;
 				p1 = null;
 				p2 = null;
 				anEdge1 = null;
 				anEdge2 = null;
-				test = current.isRight(ptToAdd);
-				if (test) {
+				if (current.isRight(ptToAdd)) {
 					// We have the edge and the 2 points, in reverse order
 					p2 = current.getStartPoint();
 					p1 = current.getEndPoint();
 
 					// triangle points order is p1, p2, aPoint
 					// check if there is an edge between p2 and aPoint
-					anEdge1 = Tools.checkTwoPointsEdge(p2, ptToAdd, newEdges);
-					//if anEdge1 is null, it does not already exist in newEdges.
-					if (anEdge1 == null) {
-						anEdge1 = new Edge(p2, ptToAdd);
-						if (!intersectsExistingEdges(anEdge1)
-								&& !cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge1)) {
-							anEdge1 = replaceByConstraint(anEdge1);
+					anEdge1 = new Edge(p2, ptToAdd);
+
+					if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge1)) {
+						// check if there is an edge between aPoint and p1
+						anEdge2 = new Edge(ptToAdd, p1);
+						
+						if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)) {
+							anEdge1 = getEligibleEdge(p2, ptToAdd, newEdges);
+							anEdge2 = getEligibleEdge(ptToAdd, p1, newEdges);
 							addEdgeToLeftSortedList(edges, anEdge1);
 							newEdges.add(anEdge1);
-						} else {
-							test = false;
-						}
-					}
-
-					if (test) {
-						// check if there is an edge between aPoint and p1
-						anEdge2 = Tools.checkTwoPointsEdge(ptToAdd, p1, newEdges);
-
-						if (anEdge2 == null) {
-							anEdge2 = new Edge(ptToAdd, p1);
-
-							if (!intersectsExistingEdges(anEdge2)
-								&& !cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)) {
-								anEdge2 = replaceByConstraint(anEdge2);
-								addEdgeToLeftSortedList(edges, anEdge2);
-								newEdges.add(anEdge2);
-							} else {
-								test = false;
-							}
-						}
-
-						if (test) {
+							addEdgeToLeftSortedList(edges, anEdge2);
+							newEdges.add(anEdge2);
 							// create triangle : take care of the order : anEdge MUST be
 							// first
 							aTriangle = new DelaunayTriangle(current, anEdge1, anEdge2);
@@ -1105,38 +1095,29 @@ public class ConstrainedMesh {
 				degenerated=new Edge(cstrLow.getPointLeft(),ptToAdd);
 				if(cstrUp==null){
 					degenerated = replaceByConstraint(degenerated);
-					degenerated.setDegenerated(true);
-					newEdges.add(degenerated);
 				} else if(cstrUp.getPointLeft().equals(cstrLow.getPointLeft())){
 					//we create a new degenerated edge, and link it
 					//directly to the boundary edges.
 					degenerated=new Edge(cstrLow.getPointLeft(),ptToAdd);
-					degenerated.setDegenerated(true);
-					//We add it to the list of new edges, it will be added later
-					//to the boundary
-					newEdges.add(degenerated);
 				} else {
 					tmp = new Edge(cstrUp.getPointLeft(), cstrLow.getPointLeft());
 					int inter = degenerated.intersects(tmp);
 					if(inter == 1 || inter == 4){
 						degenerated = new Edge(cstrUp.getPointLeft(), ptToAdd);
 						degenerated = replaceByConstraint(degenerated);
-						degenerated.setDegenerated(true);
-						newEdges.add(degenerated);
 					} else {
 						degenerated = replaceByConstraint(degenerated);
-						degenerated.setDegenerated(true);
-						newEdges.add(degenerated);
 					}
 				}
 			} else if(cstrUp != null){
 				degenerated=new Edge(cstrUp.getPointLeft(),ptToAdd);
 				degenerated = replaceByConstraint(degenerated);
-				degenerated.setDegenerated(true);
-				newEdges.add(degenerated);
 			} else {
 				throw new DelaunayError("we failed at linking this point to the mesh : "+ptToAdd.toString());
 			}
+			newEdges.add(degenerated);
+			degenerated.setDegenerated(true);
+			addEdge(degenerated);
 			foundTriangle = new DelaunayTriangle();
 			
 		}
@@ -1152,7 +1133,8 @@ public class ConstrainedMesh {
 			}
 		}
 
-
+		cstrLinkedToEnv.removeEdgeFromRightPoint(ptToAdd);
+		cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(ptToAdd));
 		// Process badTriangleQueueList
 		processBadEdges();
 
@@ -1440,8 +1422,8 @@ public class ConstrainedMesh {
 		int max = (edgeQueueList.length < size ? edgeQueueList.length : size);
 		while ((i < max) && (theEdge == null)) {
 			Edge anEdge = edgeQueueList[i];
-			if (((anEdge.getStartPoint() == p1) && (anEdge.getEndPoint() == p2))
-				|| ((anEdge.getStartPoint() == p2) && (anEdge.getEndPoint() == p1))) {
+			if (((anEdge.getStartPoint().equals(p1)) && (anEdge.getEndPoint().equals( p2)))
+				|| ((anEdge.getStartPoint().equals(p2)) && (anEdge.getEndPoint().equals(p1)))) {
 				theEdge = anEdge;
 			} else {
 				i++;
@@ -1461,15 +1443,15 @@ public class ConstrainedMesh {
 			Envelope theBox = getBoundingBox();
 			double scaleX, scaleY;
 			double minX, minY;
-			int XSize = 1200;
-			int YSize = 600;
+			int xSize = 1200;
+			int ySize = 600;
 			int decalageX = 10;
-			int decalageY = YSize + 30;
-			int legende = YSize + 60;
+			int decalageY = ySize + 30;
+			int legende = ySize + 60;
 			int bordure = 10;
 
-			scaleX = XSize / (theBox.getMaxX() - theBox.getMinX());
-			scaleY = YSize / (theBox.getMaxY() - theBox.getMinY());
+			scaleX = xSize / (theBox.getMaxX() - theBox.getMinX());
+			scaleY = ySize / (theBox.getMaxY() - theBox.getMinY());
 			if (scaleX > scaleY) {
 				scaleX = scaleY;
 			} else {
@@ -1482,9 +1464,9 @@ public class ConstrainedMesh {
 			scaleY = -scaleY;
 
 			g.setColor(Color.white);
-			g.fillRect(decalageX - bordure, decalageY - YSize - bordure, 2
-				* bordure + XSize, 2 * bordure + YSize);
-			g.fillRect(decalageX - bordure, legende - bordure, 2 * bordure + XSize,
+			g.fillRect(decalageX - bordure, decalageY - ySize - bordure, 2
+				* bordure + xSize, 2 * bordure + ySize);
+			g.fillRect(decalageX - bordure, legende - bordure, 2 * bordure + xSize,
 				2 * bordure + 50);
 
 			g.setColor(Color.black);
@@ -1523,7 +1505,7 @@ public class ConstrainedMesh {
 				}
 			}
 		} catch (Exception e) {
-			//TODO
+			log.warn("Problem during rendering\n", e);
 		}
 	}
 }

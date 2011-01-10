@@ -68,28 +68,12 @@ public abstract class Element  implements Serializable {
 	public void setGID(int gid) {
 		this.gid = gid;
 	}
-	
-	/**
-	 * set GID value
-	 * @param gid
-	 */
-	public void setGid(int gid) {
-		this.gid = gid;
-	}
 
 	/**
 	 * get GID value
 	 * @param gid
 	 */
 	public int getGID() {
-		return this.gid;
-	}
-
-	/**
-	 * get GID value
-	 * @param gid
-	 */
-	public int getGid() {
 		return this.gid;
 	}
 

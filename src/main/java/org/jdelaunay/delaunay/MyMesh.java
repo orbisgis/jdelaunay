@@ -3882,8 +3882,8 @@ public class MyMesh {
 			LinkedList<DelaunayTriangle> badTrianglesList = new LinkedList<DelaunayTriangle>();
 			LinkedList<DelaunayTriangle> veryBadTrianglesList = new LinkedList<DelaunayTriangle>();
 			for (DelaunayTriangle aTriangle : trianglesQuadTree.getAll()) {
-				if (aTriangle.getGid() > maxGID) {
-					maxGID = aTriangle.getGid();
+				if (aTriangle.getGID() > maxGID) {
+					maxGID = aTriangle.getGID();
 				}
 				if (aTriangle.isFlatSlope()) {
 					// Check if we can remove flatness (there might be at least
@@ -4865,7 +4865,7 @@ public class MyMesh {
 			// Write points
 			writer.write("\t<Points>\n");
 			for (Point aPoint : pointsQuadTree.getAll()) {
-				writer.write("\t\t<Point id=\"" + aPoint.getGid() + "\">\n");
+				writer.write("\t\t<Point id=\"" + aPoint.getGID() + "\">\n");
 				writer.write("\t\t\t<X>" + aPoint.getX() + "</X>\n");
 				writer.write("\t\t\t<Y>" + aPoint.getY() + "</Y>\n");
 				writer.write("\t\t\t<Z>" + aPoint.getZ() + "</Z>\n");
@@ -4884,10 +4884,10 @@ public class MyMesh {
 			// Write edges
 			writer.write("\t<Edges>\n");
 			for (Edge anEdge : edgesQuadTree.getAll()) {
-				writer.write("\t\t<Segment id=\"" + anEdge.getGid() + "\">\n");
-				writer.write("\t\t\t<Start>" + anEdge.getStartPoint().getGid()
+				writer.write("\t\t<Segment id=\"" + anEdge.getGID() + "\">\n");
+				writer.write("\t\t\t<Start>" + anEdge.getStartPoint().getGID()
 						+ "</Start>\n");
-				writer.write("\t\t\t<End>" + anEdge.getEndPoint().getGid()
+				writer.write("\t\t\t<End>" + anEdge.getEndPoint().getGID()
 						+ "</End>\n");
 				if (anEdge.getProperty() == 0){
 					writer.write("\t\t\t<Type />\n");
@@ -4900,14 +4900,14 @@ public class MyMesh {
 					writer.write("\t\t\t<Left>-1</Left>\n");
                                 }
 				else{
-					writer.write("\t\t\t<Left>" + anEdge.getLeft().getGid()
+					writer.write("\t\t\t<Left>" + anEdge.getLeft().getGID()
 							+ "</Left>\n");
                                 }
 				if (anEdge.getRight() == null){
 					writer.write("\t\t\t<Right>-1</Right>\n");
                                 }
 				else{
-					writer.write("\t\t\t<Right>" + anEdge.getRight().getGid()
+					writer.write("\t\t\t<Right>" + anEdge.getRight().getGID()
 							+ "</Right>\n");
                                 }
 				writer.write("\t\t</Segment>\n");
@@ -4918,10 +4918,10 @@ public class MyMesh {
 			// Write triangles
 			writer.write("\t<Triangles>\n");
 			for (DelaunayTriangle aTriangle : trianglesQuadTree.getAll()) {
-				writer.write("\t\t<Triangle id=\"" + aTriangle.getGid()
+				writer.write("\t\t<Triangle id=\"" + aTriangle.getGID()
 						+ "\">\n");
 				for (int i = 0; i < 3; i++){
-					writer.write("\t\t\t<Edge>" + aTriangle.edges[i].getGid()
+					writer.write("\t\t\t<Edge>" + aTriangle.edges[i].getGID()
 							+ "</Edge>\n");
                                 }
 				writer.write("\t\t</Triangle>\n");
@@ -5460,16 +5460,16 @@ public class MyMesh {
 		// set a GID to every element
 		int maxGID = 0;
 		for (Object anObject : elements) {
-			int value = ((Element) anObject).getGid();
+			int value = ((Element) anObject).getGID();
 			if (value > maxGID){
 				maxGID = value;
                         }
 		}
 
 		for (Object anObject : elements) {
-			if (((Element) anObject).getGid() == -1) {
+			if (((Element) anObject).getGID() == -1) {
 				maxGID++;
-				((Element) anObject).setGid(maxGID);
+				((Element) anObject).setGID(maxGID);
 			}
 		}
 
@@ -5480,7 +5480,7 @@ public class MyMesh {
 		maxGID = 0;
 		for (Object anObject : elements) {
 			maxGID++;
-			((Element) anObject).setGid(maxGID);
+			((Element) anObject).setGID(maxGID);
 		}
 	}
 }

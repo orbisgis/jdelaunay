@@ -195,7 +195,35 @@ public class VerticalList {
 		return lastUpperPt;
 	}
 
+	/**
+	 * Sort the list to the x-coordinate of rightPt, and remove the edges of the
+	 * list whose right point is equal to rightPt.
+	 * @param rightPt
+	 */
+	public final void removeEdgeFromRightPoint(Point rightPt) throws DelaunayError {
+		setAbs(rightPt);
+		Edge ed = new Edge(rightPt, rightPt);
+		int index = searchEdge(ed);
+		index = index < 0 ? -index -1: index ;
+		int i = index;
+		while (i < constraintsList.size()){
+			if(constraintsList.get(i).getPointRight().equals(rightPt)){
+				constraintsList.remove(i);
+			} else {
+				break;
+			}
+		}
+		i = index - 1;
+		while(i>=0){
+			if(constraintsList.get(i).getPointRight().equals(rightPt)){
+				constraintsList.remove(i);
+				i--;
+			} else {
+				break;
+			}
 
+		}
+	}
 
 	/**
 	 * This method will sort the list using the abs of the current comparator.

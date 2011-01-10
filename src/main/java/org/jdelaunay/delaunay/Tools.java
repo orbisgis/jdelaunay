@@ -53,7 +53,7 @@ public final class Tools {
 		j = maxIndex;
 		enregRef = (maxIndex + minIndex) / 2;
 		anElement = (Element)elements.get(enregRef);
-		cleRef = anElement.getGid();
+		cleRef = anElement.getGID();
 		do {
 			// first : increasing index
 			found = false;
@@ -63,7 +63,7 @@ public final class Tools {
 				}
 				else {
 					anElement = (Element)elements.get(i);
-					valGid = anElement.getGid();
+					valGid = anElement.getGID();
 					if (valGid > cleRef) {
 						found = true;
 					}
@@ -80,7 +80,7 @@ public final class Tools {
 				}
 				else {
 					anElement = (Element)elements.get(j);
-					valGid = anElement.getGid();
+					valGid = anElement.getGID();
 					if (valGid <= cleRef) {
 						found = true;
 					}
