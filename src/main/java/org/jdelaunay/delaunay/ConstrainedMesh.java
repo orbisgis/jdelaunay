@@ -384,10 +384,11 @@ public class ConstrainedMesh {
 	 */
 	public final void setPoints(List<Point> pts) {
 		if(pts == null){
-			pts = new ArrayList<Point>();
+			points = new ArrayList<Point>();
+		} else {
+			Collections.sort(pts);
+			this.points = pts;
 		}
-		Collections.sort(pts);
-		this.points = pts;
 	}
 
 	/**
@@ -409,7 +410,7 @@ public class ConstrainedMesh {
 	 * @param elt
 	 * @param sortedList
 	 */
-	private <T extends Element & Comparable<? super T>> void addToSortedList(T elt, List<T> sortedList, int GID) {
+	private <T extends Element & Comparable<? super T>> void addToSortedList(T elt, List<T> sortedList, int gid) {
 		//We make a binary search, as divides and conquers rules...
 		int index = Collections.binarySearch(sortedList, elt);
 		if (index < 0) {
@@ -420,8 +421,8 @@ public class ConstrainedMesh {
 			//is already contained in the list.
 			int insertPos = -index - 1;
 			sortedList.add(insertPos, elt);
-			GID++;
-			elt.setGID(GID);
+			gid++;
+			elt.setGID(gid);
 		}
 	}
 
