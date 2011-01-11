@@ -6,6 +6,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * Delaunay Package.
+ *
+ * @author Jean-Yves MARTIN, Alexis GUEGANNO
+ * @date 2009-01-12
+ * @revision 2011-11-01
+ * @version 2.1
+ */
+
 public final class Tools {
 
 	public static final double EPSILON = 0.0000001;
@@ -414,9 +423,13 @@ public final class Tools {
 		double z = p2.getZ() - p1.getZ();
 
 		double d = aPoint.squareDistance(p1);
-		double factor = d / dist;
-		return p1.getZ() + (factor * z);
-
+		if (Math.abs(dist) > Tools.EPSILON2) {
+			double factor = d / dist;
+			return p1.getZ() + (factor * z);
+		}
+		else {
+			return (p2.getZ() + p1.getZ()) / 2.0;
+		}
 	}
 
 	/**
