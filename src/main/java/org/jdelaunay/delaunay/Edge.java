@@ -1041,7 +1041,7 @@ public class Edge extends Element implements Comparable<Edge> {
 			//the edge is vertical
 			if (abs == startPoint.getX()) {//x is the absciss of every points in this edge
 				//We return the minimum point.
-				return ((endPoint.compareTo2D(startPoint) == -1) ? endPoint : startPoint);
+				return getPointRight();
 			} else {//There is not any point of absciss X on this edge.
 				return null;
 			}
@@ -1224,8 +1224,11 @@ public class Edge extends Element implements Comparable<Edge> {
 	public final int verticalSort(Edge edge, double abs) throws DelaunayError {
 		Point pThis = this.getPointFromItsX(abs);
 		Point pEdge = edge.getPointFromItsX(abs);
-		if (pThis == null || pEdge == null) {
-			throw new DelaunayError("You shouldn't try to sort vertical edges where x != abs !!!!");
+		if (pThis == null ) {
+			throw new DelaunayError("Trying to sort vertical edge, edge : "+this+", abs : "+abs);
+		}
+		if( pEdge == null){
+			throw new DelaunayError("Trying to sort vertical edge, edge : "+edge+", abs : "+abs);
 		}
 		int c = pThis.compareTo2D(pEdge);
 		if (c == 0) {
