@@ -423,7 +423,7 @@ public class VerticalList {
 	}
 
 	/**
-	 * Checks if the edges that are upper and lower then pRef in the list of
+	 * Checks if the edges that are upper and lower than pRef in the list of
 	 * constraints that are linked to the boundary intersect the edge ed given
 	 * in parameter.
 	 * Intersection must not be an extremity point of the two evaluated edges.

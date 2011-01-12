@@ -962,6 +962,10 @@ public class ConstrainedMesh {
 		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
 		LinkedList<Edge> newEdges = new LinkedList<Edge>();
 		Edge current;
+		//We remove the constraints linked to the boundary that have ptToAdd as
+		//right point. Indeed, we know that this edges will be put in the
+		//mesh, or at its boundary.
+		cstrLinkedToEnv.removeEdgeFromRightPoint(ptToAdd);
 		for (int i = 0; i < boundaryEdges.size(); i++) {
 			//We change the current edge.
 			current = boundaryEdges.get(i);
@@ -993,7 +997,9 @@ public class ConstrainedMesh {
 					//have an intersection with an existing constraint linked to
 					//the boundary.
 					if(!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge1)
-							&& !cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)){
+							&& !cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)
+							&& !intersectsBoundary(anEdge1)
+							&& !intersectsBoundary(anEdge2)){
 					//We can create a new triangle in this part of the mesh.
 					//Let's do it !
 						p1 = current.getStart();
@@ -1048,11 +1054,13 @@ public class ConstrainedMesh {
 					// check if there is an edge between p2 and aPoint
 					anEdge1 = new Edge(p2, ptToAdd);
 
-					if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge1)) {
+					if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge1)
+							&& !intersectsBoundary(anEdge1)) {
 						// check if there is an edge between aPoint and p1
 						anEdge2 = new Edge(ptToAdd, p1);
 						
-						if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)) {
+						if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)
+							&& !intersectsBoundary(anEdge2)) {
 							anEdge1 = getEligibleEdge(p2, ptToAdd, newEdges);
 							anEdge2 = getEligibleEdge(ptToAdd, p1, newEdges);
 							addEdgeToLeftSortedList(edges, anEdge1);
@@ -1147,7 +1155,6 @@ public class ConstrainedMesh {
 			}
 		}
 
-		cstrLinkedToEnv.removeEdgeFromRightPoint(ptToAdd);
 		cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(ptToAdd));
 		// Process badTriangleQueueList
 		processBadEdges();
@@ -1328,6 +1335,22 @@ public class ConstrainedMesh {
 		}
 	}
 
+	/**
+	 * Check if the edge given in argument intersects the current boundary.
+	 * @param edge
+	 * @return
+	 * @throws DelaunayError
+	 */
+	private boolean intersectsBoundary(Edge edge) throws DelaunayError{
+		int inter;
+		for(Edge ed : boundaryEdges){
+			inter = ed.intersects(edge);
+			if(inter == 1 || inter == 4 ){
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Insert a point to the current triangularization
 	 *
