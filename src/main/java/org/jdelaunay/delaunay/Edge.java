@@ -1249,9 +1249,22 @@ public class Edge extends Element implements Comparable<Edge> {
 						c = getPointLeft().compareTo2D(edge.getPointLeft());
 					}
 				} else if(cT < cO){
-					c = -1;
+		//We are in the case where the two edges intersect at the given X-coordinate.
+		//The one with the higher determinant has been the lower one until now, unless
+		//we are only seeing its lef point.
+					if(edge.getPointLeft().getX()==abs
+						&& this.getPointLeft().getX()!=abs){
+						c = -1;
+					} else {
+						c = 1;
+					}
 				} else {
-					c=1;
+					if(edge.getPointLeft().getX()!=abs
+						&& this.getPointLeft().getX()==abs){
+						c = 1;
+					} else {
+						c = -1;
+					}
 				}
 			}
 		}

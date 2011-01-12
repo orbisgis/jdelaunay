@@ -497,13 +497,35 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(new Edge(0,10,0,1,13,0));
 		mesh.addConstraintEdge(new Edge(3,14,0,1,13,0));
 		mesh.processDelaunay();
-		show(mesh);
+//		show(mesh);
 		List<DelaunayTriangle> triangles = mesh.getTriangleList();
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,2,0,2,4,0), new Edge(2,4,0,0,10,0), new Edge(0,10,0,0,2,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(3,8,0,2,4,0), new Edge(2,4,0,0,10,0), new Edge(0,10,0,3,8,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(3,8,0,1,13,0), new Edge(1,13,0,0,10,0), new Edge(0,10,0,3,8,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(3,8,0,1,13,0), new Edge(1,13,0,3,14,0), new Edge(3,14,0,3,8,0))));
 		assertTrue(triangles.size()==4);
+
+
+	}
+
+	/**
+	 * An extension of the previous case.
+	 * @throws DelaunayError
+	 */
+	public void testTwistedConstraint() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge(0,10,0,3,8,0));
+		mesh.addConstraintEdge(new Edge(0,10,0,1,13,0));
+		mesh.addConstraintEdge(new Edge(3,14,0,1,13,0));
+		mesh.addConstraintEdge(new Edge(3,14,0,2,15,0));
+		mesh.addConstraintEdge(new Edge(6,10,0,3,8,0));
+		mesh.processDelaunay();
+		show(mesh);
+		List<DelaunayTriangle> triangles = mesh.getTriangleList();
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,10,0,3,8,0), new Edge(3,8,0,1,13,0), new Edge(1,13,0,0,10,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6,10,0,3,8,0), new Edge(3,8,0,1,13,0), new Edge(1,13,0,6,10,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6,10,0,3,14,0), new Edge(3,14,0,1,13,0), new Edge(1,13,0,6,10,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(2,15,0,3,14,0), new Edge(3,14,0,1,13,0), new Edge(1,13,0,2,15,0))));
 
 
 	}
