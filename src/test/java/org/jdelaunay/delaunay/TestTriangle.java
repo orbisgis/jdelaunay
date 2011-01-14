@@ -225,10 +225,6 @@ public class TestTriangle extends BaseUtility {
 		e2 = new Edge(p7,p9);
 		e3 = new Edge(p9,p5);
 		DelaunayTriangle t1=new DelaunayTriangle(e1, e2, e3);
-		ConstrainedMesh mesh = new ConstrainedMesh();
-		mesh.setTriangleList(triangleList);
-		mesh.addTriangle(t1);
-		isTriangleListSorted(triangleList);
 	}
 
 	private void isTriangleListSorted(List<DelaunayTriangle> list){

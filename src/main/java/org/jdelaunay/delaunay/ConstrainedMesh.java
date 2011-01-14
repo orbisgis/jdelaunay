@@ -193,8 +193,6 @@ public class ConstrainedMesh {
 		int constraintIndex = sortedListContains(constraintEdges, e);
 		if (constraintIndex < 0) {
 			addEdgeToLeftSortedList(edges, e);
-			addPoint(e.getStart());
-			addPoint(e.getEnd());
 		} else {
 			addEdgeToLeftSortedList(edges, constraintEdges.get(constraintIndex));
 		}
@@ -304,7 +302,9 @@ public class ConstrainedMesh {
 	 * @param triangle
 	 */
 	public final void addTriangle(DelaunayTriangle triangle) {
-		addToSortedList(triangle, triangleList, triangleGID);
+		triangleList.add(triangle);
+		triangleGID++;
+		triangle.setGID(triangleGID);
 	}
 
 	/**
@@ -851,6 +851,8 @@ public class ConstrainedMesh {
 		} else {
 			// general data structures
 			badEdgesQueueList = new LinkedList<Edge>();
+			edges = new ArrayList<Edge>();
+			triangleList = new ArrayList<DelaunayTriangle>();
 			boundaryEdges = new ArrayList<Edge>();
 			cstrLinkedToEnv = new VerticalList();
 			LinkedList<Point> badPointList = new LinkedList<Point>();
