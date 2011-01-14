@@ -985,7 +985,10 @@ public class ConstrainedMesh {
  					anEdge1 = getEligibleEdge(current.getPointRight(), ptToAdd, newEdges);
 
 					anEdge1.setDegenerated(true);
-					if(!newEdges.contains(anEdge1)){
+					if(overlapsContent(anEdge1, newEdges)){
+						newEdges = new LinkedList<Edge>();
+						newEdges.add(anEdge1);
+					} else if(!newEdges.contains(anEdge1) ){
 						newEdges.add(anEdge1);
 					}
 					addEdge(anEdge1);
@@ -1220,10 +1223,15 @@ public class ConstrainedMesh {
 		//The 3 points MUST NOT be colinear
 		p3 = iterPoint.next();
 
-		//We must check that p3 is not colinear to e1, that e2
-		while(e1.isColinear2D(p3) && iterPoint.hasNext()){
-			badPoints.add(p3);
-			p3 = iterPoint.next();
+		if(e1.isColinear2D(p3)){
+			e2 = new Edge(p2,p3);
+			e1.setDegenerated(true);
+			e2.setDegenerated(true);
+			boundaryEdges.add(e1);
+			boundaryEdges.add(e2);
+			cstrLinkedToEnv.removeEdgeFromRightPoint(p3);
+			cstrLinkedToEnv.removeEdgeFromRightPoint(p2);
+			return;
 		}
 		e2 = new Edge(p2, p3);
 		e3 = new Edge(p3, p1);
@@ -1361,6 +1369,15 @@ public class ConstrainedMesh {
 	 */
 	private DelaunayTriangle insertPointIntoMesh(Point aPoint) throws DelaunayError {
 		return insertPoint(aPoint, 0);
+	}
+
+	private boolean overlapsContent(Edge ed, List<Edge> edges) throws DelaunayError{
+		for(Edge edge : edges){
+			if(ed.intersects(edge)==4){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

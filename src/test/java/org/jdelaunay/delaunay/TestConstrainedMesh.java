@@ -451,6 +451,20 @@ public class TestConstrainedMesh extends BaseUtility {
 
 	}
 
+	public void test4verticalPoint() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addPoint(new Point(0,1,0));
+		mesh.addPoint(new Point(0,4,0));
+		mesh.addPoint(new Point(0,9,0));
+		mesh.addPoint(new Point(0,12,0));
+		mesh.addPoint(new Point(2,1,0));
+		mesh.processDelaunay();
+//		show(mesh);
+		List<DelaunayTriangle> triangles = mesh.getTriangleList();
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,1,0,2,1,0),new Edge(2,1,0,0,4,0),new Edge(0,4,0,0,1,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,9,0,2,1,0),new Edge(2,1,0,0,4,0),new Edge(0,4,0,0,9,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,9,0,2,1,0),new Edge(2,1,0,0,12,0),new Edge(0,12,0,0,9,0))));
+	}
 	/**
 	 * Test case where we have three constraints 
 	 * @throws DelaunayError
@@ -466,8 +480,9 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addPoint(new Point(0,12,0));
 		mesh.addPoint(new Point(6,6,0));
 		mesh.addPoint(new Point(6,7,0));
-		mesh.processDelaunay();
 //		show(mesh);
+		mesh.processDelaunay();
+		show(mesh);
 		List<DelaunayTriangle> triangles = mesh.getTriangleList();
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,1,0,3,0,0),new Edge(3,0,0,3,3,0),new Edge(3,3,0,0,1,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,1,0,0,4,0),new Edge(0,4,0,3,3,0),new Edge(3,3,0,0,1,0))));
@@ -593,6 +608,34 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6, 4.0, 80.0, 4, -4.0, 80.0), new Edge(4, -4.0, 80.0, 16.0, 6, 80.0), new Edge(16.0, 6, 80.0, 6, 4.0, 80.0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6, 4.0, 80.0, 12.0, 7, 80.0), new Edge(12.0, 7, 80.0, 11.0, 14, 80.0), new Edge(11.0, 14, 80.0, 6, 4.0, 80.0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6, 4.0, 80.0, 7, 16.0, 80.0), new Edge(7, 16.0, 80.0, 11.0, 14, 80.0), new Edge(11.0, 14, 80.0, 6, 4.0, 80.0))));
+
+	}
+
+	/**
+	 * A second test whose configuration comes from the chezine data.
+	 * It tests that the triangulation is well performed when the first three points are colinear.
+	 */
+	public void testFromChezineBis() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (0, 0.6, 10, 13, -4, 10));
+
+		mesh.addConstraintEdge(new Edge (0, 63, 10.0, 17, 42, 10.0));
+
+		mesh.addConstraintEdge(new Edge (0, 77, 10.0, 3.0, 92.0, 10.0));
+		mesh.addConstraintEdge(new Edge (0, 118, 10.0, 13.0, 125, 10.0));
+		mesh.addConstraintEdge(new Edge (3.0, 92.0, 10.0, 13.0, 99, 10.0));
+		mesh.processDelaunay();
+//		show(mesh);
+		List<DelaunayTriangle> triangles = mesh.getTriangleList();
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, 0.6, 10, 13, -4, 10), new Edge(13, -4, 10,17, 42, 10.0), new Edge(17, 42, 10.0,0, 0.6, 10))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, 0.6, 10, 0, 63, 10.0), new Edge(0, 63, 10.0 ,17, 42, 10.0), new Edge(17, 42, 10.0,0, 0.6, 10))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, 77, 10.0, 0, 63, 10.0), new Edge(0, 63, 10.0 ,17, 42, 10.0), new Edge(17, 42, 10.0, 0, 77, 10.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, 77, 10.0, 13.0, 99, 10.0), new Edge(13.0, 99, 10.0 ,17, 42, 10.0), new Edge(17, 42, 10.0, 0, 77, 10.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, 77, 10.0, 13.0, 99, 10.0), new Edge(13.0, 99, 10.0 ,3.0, 92.0, 10.0), new Edge(3.0, 92.0, 10.0, 0, 77, 10.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, 77, 10.0, 0, 118, 10.0), new Edge(0, 118, 10.0,3.0, 92.0, 10.0), new Edge(3.0, 92.0, 10.0, 0, 77, 10.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(13.0, 99, 10.0, 0, 118, 10.0), new Edge(0, 118, 10.0,3.0, 92.0, 10.0), new Edge(3.0, 92.0, 10.0, 13.0, 99, 10.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(13.0, 99, 10.0, 0, 118, 10.0), new Edge(0, 118, 10.0,13.0, 125, 10.0), new Edge(13.0, 125, 10.0, 13.0, 99, 10.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(13.0, 99, 10.0, 17, 42, 10.0), new Edge(17, 42, 10.0,13.0, 125, 10.0), new Edge(13.0, 125, 10.0, 13.0, 99, 10.0))));
 
 	}
 }
