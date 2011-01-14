@@ -482,7 +482,7 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addPoint(new Point(6,7,0));
 //		show(mesh);
 		mesh.processDelaunay();
-		show(mesh);
+//		show(mesh);
 		List<DelaunayTriangle> triangles = mesh.getTriangleList();
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,1,0,3,0,0),new Edge(3,0,0,3,3,0),new Edge(3,3,0,0,1,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,1,0,0,4,0),new Edge(0,4,0,3,3,0),new Edge(3,3,0,0,1,0))));
