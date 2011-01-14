@@ -328,7 +328,31 @@ public class VerticalList {
                 //point and constraintsEdge.get(size -1) are not colinear.
                 //If they are, we return null
                 if(index < size && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
-			lastUpperEd = constraintsList.get(index);
+			search = constraintsList.get(index);
+			if(index < size -1){
+				//The vertical sort is designed for the intersection algorithm.
+				//More accurately, , it is designed to detect intersections that
+				//occur after the processing x-coordinate.
+				//For our goals here, we need to travel through the list when
+				//some edges have the same getPointFromItsX. Indeed, we want
+				//here to detect intersections that occur before the current
+				//x-coordinate.
+				Edge next;
+				Point rightSearch;
+				Point rightNext;
+				do{
+					next = constraintsList.get(index+1);
+					rightSearch = search.getPointFromItsX(abs);
+					rightNext = next.getPointFromItsX(abs);
+					if(rightSearch.equals(rightNext)){
+						search = next;
+						index++;
+					} else {
+						break;
+					}
+				} while(index < size - 1);
+			}
+			lastUpperEd = search;
                         return lastUpperEd;
                 } else {
 			lastUpperEd = null;
@@ -413,6 +437,29 @@ public class VerticalList {
 			//point and constraintsEdge.get(size -1) are not colinear.
 			//If they are, we return null
 			if(index >=0 && Math.abs(edgeOrd - point.getY())>=Tools.EPSILON){
+				if(index >0){
+					//The vertical sort is designed for the intersection algorithm.
+					//More accurately, , it is designed to detect intersections that
+					//occur after the processing x-coordinate.
+					//For our goals here, we need to travel through the list when
+					//some edges have the same getPointFromItsX. Indeed, we want
+					//here to detect intersections that occur before the current
+					//x-coordinate.
+					Edge prev;
+					Point rightSearch;
+					Point rightPrev;
+					do{
+						prev = constraintsList.get(index-1);
+						rightSearch = search.getPointFromItsX(abs);
+						rightPrev = prev.getPointFromItsX(abs);
+						if(rightSearch.equals(rightPrev)){
+							search = prev;
+							index--;
+						} else {
+							break;
+						}
+					} while(index > 0);
+				}
 				lastLowerEd=constraintsList.get(index);
 				return lastLowerEd;
 			} else {
