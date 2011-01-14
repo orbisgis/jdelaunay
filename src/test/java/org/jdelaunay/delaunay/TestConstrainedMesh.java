@@ -580,8 +580,19 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(new Edge (6.0, 21.0, 80.0, 10, 26.0, 80.0));
 		mesh.addConstraintEdge(new Edge (7, 16.0, 80.0, 11.0, 14, 80.0));
 		mesh.processDelaunay();
-		show(mesh);
+//		show(mesh);
 		List<DelaunayTriangle> triangles = mesh.getTriangleList();
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, -5, 80.0, 4, -4.0, 80.0), new Edge(4, -4.0, 80.0, 6, 4.0, 80.0), new Edge(6, 4.0, 80.0, 0, -5, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, -5, 80.0, 7, 16.0, 80.0), new Edge(7, 16.0, 80.0, 6, 4.0, 80.0), new Edge(6, 4.0, 80.0, 0, -5, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0, -5, 80.0, 7, 16.0, 80.0), new Edge(7, 16.0, 80.0, 6.0, 21.0, 80.0), new Edge(6.0, 21.0, 80.0, 0, -5, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(11.0, 14, 80.0, 7, 16.0, 80.0), new Edge(7, 16.0, 80.0, 6.0, 21.0, 80.0), new Edge(6.0, 21.0, 80.0, 11.0, 14, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(11.0, 14, 80.0, 10, 26.0, 80.0), new Edge(10, 26.0, 80.0, 6.0, 21.0, 80.0), new Edge(6.0, 21.0, 80.0, 11.0, 14, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(11.0, 14, 80.0, 10, 26.0, 80.0), new Edge(10, 26.0, 80.0, 16.0, 6, 80.0), new Edge(16.0, 6, 80.0, 11.0, 14, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(11.0, 14, 80.0, 12.0, 7, 80.0), new Edge(12.0, 7, 80.0, 16.0, 6, 80.0), new Edge(16.0, 6, 80.0, 11.0, 14, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6, 4.0, 80.0, 12.0, 7, 80.0), new Edge(12.0, 7, 80.0, 16.0, 6, 80.0), new Edge(16.0, 6, 80.0, 6, 4.0, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6, 4.0, 80.0, 4, -4.0, 80.0), new Edge(4, -4.0, 80.0, 16.0, 6, 80.0), new Edge(16.0, 6, 80.0, 6, 4.0, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6, 4.0, 80.0, 12.0, 7, 80.0), new Edge(12.0, 7, 80.0, 11.0, 14, 80.0), new Edge(11.0, 14, 80.0, 6, 4.0, 80.0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6, 4.0, 80.0, 7, 16.0, 80.0), new Edge(7, 16.0, 80.0, 11.0, 14, 80.0), new Edge(11.0, 14, 80.0, 6, 4.0, 80.0))));
 
 	}
 }
