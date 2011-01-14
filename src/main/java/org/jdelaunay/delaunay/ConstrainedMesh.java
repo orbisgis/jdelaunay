@@ -1277,6 +1277,8 @@ public class ConstrainedMesh {
 			boundaryEdges.add(e1);
 			boundaryEdges.add(e2);
 			boundaryEdges.add(e3);
+			cstrLinkedToEnv.removeEdgeFromRightPoint(p3);
+			cstrLinkedToEnv.removeEdgeFromRightPoint(p2);
 		}
 	}
 

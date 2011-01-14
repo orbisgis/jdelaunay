@@ -539,7 +539,7 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addPoint(new Point(0,4,0));
 		mesh.addPoint(new Point(6,0,0));
 		mesh.processDelaunay();
-		show(mesh);
+//		show(mesh);
 		List<DelaunayTriangle> triangles = mesh.getTriangleList();
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,3,0,6,3,0), new Edge(6,3,0,6,0,0), new Edge(6,0,0,0,3,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(8,1,0,6,3,0), new Edge(6,3,0,6,0,0), new Edge(6,0,0,8,1,0))));
@@ -548,6 +548,40 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,3,0,10,6,0), new Edge(10,6,0,8,5,0), new Edge(8,5,0,0,3,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,3,0,10,6,0), new Edge(10,6,0,0,4,0), new Edge(0,4,0,0,3,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,3,0,6,3,0), new Edge(6,3,0,8,5,0), new Edge(8,5,0,0,3,0))));
+
+	}
+
+	/**
+	 * This test contains a set of data that have been obtained from the chezine data.
+	 * The points have been modified, in order to simplify the coordinate and
+	 * help the understanding of the test.
+	 * @throws DelaunayError
+	 */
+	public void testFromChezine() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		/*
+		 * The points we use are, sorted :
+		 * 0, -5, 80.0
+		 * 4, -4.0, 80.0
+		 * 6, 4.0, 80.0
+		 * 6.0, 21.0, 80.0
+		 * 7, 16.0, 80.0
+		 * 10, 26.0, 80.0
+		 * 11.0, 14, 80.0
+		 * 12.0, 7, 80.0
+		 * 16.0, 6, 80.0
+		 */
+		mesh.addConstraintEdge(new Edge (0, -5, 80.0, 4, -4.0, 80.0));
+		mesh.addConstraintEdge(new Edge (4, -4.0, 80.0, 6, 4.0, 80.0));
+		mesh.addConstraintEdge(new Edge (6, 4.0, 80.0, 12.0, 7, 80.0));
+		mesh.addConstraintEdge(new Edge (12.0, 7, 80.0, 16.0, 6, 80.0));
+		
+		mesh.addConstraintEdge(new Edge (6.0, 21.0, 80.0, 7, 16.0, 80.0));
+		mesh.addConstraintEdge(new Edge (6.0, 21.0, 80.0, 10, 26.0, 80.0));
+		mesh.addConstraintEdge(new Edge (7, 16.0, 80.0, 11.0, 14, 80.0));
+		mesh.processDelaunay();
+		show(mesh);
+		List<DelaunayTriangle> triangles = mesh.getTriangleList();
 
 	}
 }
