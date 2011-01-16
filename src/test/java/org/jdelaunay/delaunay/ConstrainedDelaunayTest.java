@@ -723,6 +723,62 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 	}
 
+        /**
+         * This test represents a special configuration with 4 edges. They all intersect
+         * in a really small area, and that can cause some problems when computing
+         * thee intersection.
+         * @throws DelaunayError
+         */
+        public void testAnotherIntersection() throws DelaunayError{
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		ArrayList<Edge> edges = new ArrayList<Edge>();
+                edges.add(new Edge(3.055669878287226, 73.03246145782423, 0, 43.70557626947108, 35.35995458365234, 0));
+                edges.add(new Edge(3.2192640691458885, 98.57692790324268, 0, 19.81947056963683, 13.613537224055394, 0));
+                edges.add(new Edge(5.981788531239529, 17.432917460384022, 0, 9.21484373199296, 90.49887456765843, 0));
+                edges.add(new Edge(6.399806805909236, 67.72788939942218, 0, 74.23296927832122, 86.61091383261046, 0));
+
+                mesh.setConstraintEdges(edges);
+//                show(mesh);
+                mesh.forceConstraintIntegrity();
+//                show(mesh);
+                edges = new ArrayList<Edge>();
+                
+
+        }
+
+        /**
+         * A test where three edges intersect in a common point, and then are cut
+         * again, with a vertical edge.
+         * @throws DelaunayError
+         */
+        public void testIntersection() throws DelaunayError{
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                ArrayList<Edge> cstr = new ArrayList<Edge>();
+                cstr.add(new Edge(0,0,0,4,6,0));
+                cstr.add(new Edge(0,6,0,4,0,0));
+                cstr.add(new Edge(0,3,0,4,3,0));
+                cstr.add(new Edge(3,0,0,3,6,0));
+                mesh.setConstraintEdges(cstr);
+                mesh.forceConstraintIntegrity();
+//                show(mesh);
+                List<Edge> edges = mesh.getConstraintEdges();
+                assertTrue(edges.contains(new Edge(0,0,0,2,3,0)));
+                assertTrue(edges.contains(new Edge(0,6,0,2,3,0)));
+                assertTrue(edges.contains(new Edge(0,3,0,2,3,0)));
+                assertTrue(edges.contains(new Edge(2,3,0,3,4.5,0)));
+                assertTrue(edges.contains(new Edge(3,3,0,3,4.5,0)));
+                assertTrue(edges.contains(new Edge(3,6,0,3,4.5,0)));
+                assertTrue(edges.contains(new Edge(2,3,0,3,3,0)));
+                assertTrue(edges.contains(new Edge(2,3,0,3,1.5,0)));
+                assertTrue(edges.contains(new Edge(3,0,0,3,1.5,0)));
+                assertTrue(edges.contains(new Edge(3,3,0,3,1.5,0)));
+                assertTrue(edges.contains(new Edge(3,3,0,4,3,0)));
+                assertTrue(edges.contains(new Edge(3,1.5,0,4,0,0)));
+                assertTrue(edges.contains(new Edge(3,4.5,0,4,6,0)));
+                assertTrue(edges.size()==13);
+
+        }
+
 	/**
 	 * When adding a new Edge to the list of edges of the triangulation, we must
 	 * check before that this edge is not already referenced as a constraint. If

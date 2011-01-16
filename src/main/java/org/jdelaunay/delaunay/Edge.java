@@ -1041,7 +1041,7 @@ public class Edge extends Element implements Comparable<Edge> {
 			//the edge is vertical
 			if (abs == startPoint.getX()) {//x is the absciss of every points in this edge
 				//We return the minimum point.
-				return getPointRight();
+				return getPointLeft();
 			} else {//There is not any point of absciss X on this edge.
 				return null;
 			}
