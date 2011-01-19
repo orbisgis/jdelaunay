@@ -1,11 +1,12 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jdelaunay</groupId>
-  <artifactId>jdelaunay</artifactId>
-  <version>0.3</version>
-  <name>jdelaunay</name>
-  <dependencies>
-  <dependency>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.jdelaunay</groupId>
+	<artifactId>jdelaunay</artifactId>
+	<version>0.3</version>
+	<name>jdelaunay</name>
+	<dependencies>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
@@ -26,7 +27,7 @@
 			<artifactId>grap</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-	</dependencies>	
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -39,11 +40,18 @@
 			</plugin>
 		</plugins>
 	</build>
-  <repositories>
+	<repositories>
 		<repository>
 			<id>geosysin</id>
 			<name>Geosysin repository</name>
 			<url>http://geosysin.iict.ch/irstv-web/maven-repo</url>
-		</repository>				
+		</repository>
 	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>geosysin</id>
+			<name>Geosysin repository</name>
+			<url>scp://irstv@geosysin.iict.ch:/var/www/geosysin.iict.ch/irstv/trac/htdocs/maven-repo</url>
+		</repository>
+	</distributionManagement>
 </project>
