@@ -633,6 +633,7 @@ public class Edge extends Element implements Comparable<Edge> {
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = deltaXT * deltaYO - deltaYT * deltaXO;
 		if (Math.abs(d) > Tools.EPSILON2) {
+			//The two edges are not colinear.
 			if(p1.compareTo2D(p4)==1 || p3.compareTo2D(p2)==1){
 				return null;
 			}
@@ -642,16 +643,16 @@ public class Edge extends Element implements Comparable<Edge> {
 			double t1 = (c2 * deltaXT - c1 * deltaYT) / d;
 			double t2 = (deltaXO * c2 - deltaYO * c1) / d;
 
-			if ((-Tools.EPSILON <= t1) && (t1 <= 1 + Tools.EPSILON) && (-Tools.EPSILON <= t2)
-				&& (t2 <= 1 + Tools.EPSILON)) {
+			if ((-Tools.EPSILON2 <= t1) && (t1 <= 1 + Tools.EPSILON2) && (-Tools.EPSILON2 <= t2)
+				&& (t2 <= 1 + Tools.EPSILON2)) {
 				// it intersects
-				if (t2 <= Tools.EPSILON) {
+				if (t2 <= Tools.EPSILON2) {
 					intersection = p3;
-				} else if (t2 >= 1 - Tools.EPSILON) {
+				} else if (t2 >= 1 - Tools.EPSILON2) {
 					intersection = p4;
-				} else if (t1 <= Tools.EPSILON) {
+				} else if (t1 <= Tools.EPSILON2) {
 					intersection = p1;
-				} else if (t1 >= 1 - Tools.EPSILON) {
+				} else if (t1 >= 1 - Tools.EPSILON2) {
 					intersection = p2;
 				} else {
 					// x = x2 t1 + (1 - t1) x1
@@ -676,39 +677,39 @@ public class Edge extends Element implements Comparable<Edge> {
 			}
 		} else { //d==0 : the two edges are colinear
 			double test;
-			if (Math.abs(deltaXO) < Tools.EPSILON) {
+			if (Math.abs(deltaXO) < Tools.EPSILON2) {
 				test = c1 / deltaXT - c2 / deltaYT;
 			} else {
 				test = c1 / deltaXO - c2 / deltaYO;
 			}
-			if (Math.abs(test) > Tools.EPSILON) {//the two supporting lines are different
+			if (Math.abs(test) > Tools.EPSILON2) {//the two supporting lines are different
 				intersection = null;
 			} else {//we have one supporting line
 				//t13 is the position of the point three on the edge 1->2
 				double t13, t14, t21, t22;
-				if (Math.abs(deltaXO) < Tools.EPSILON) {
+				if (Math.abs(deltaXO) < Tools.EPSILON2) {
 					t13 = c2 / deltaYO;
 					t14 = (p4.getY() - p1.getY()) / (deltaYO);
 				} else {
 					t13 = c1 / deltaXO;
 					t14 = (p4.getX() - p1.getX()) / (deltaXO);
 				}
-				if (Math.abs(deltaXT) > Tools.EPSILON) {
+				if (Math.abs(deltaXT) > Tools.EPSILON2) {
 					t21 = -c1 / deltaXT;
 					t22 = (p2.getX() - p3.getX()) / deltaXT;
 				} else {
 					t21 = -c2 / deltaYT;
 					t22 = (p2.getY() - p3.getY()) / (deltaYT);
 				}
-				if (-Tools.EPSILON < t13 && t13 < 1 + Tools.EPSILON) {
-					if (-Tools.EPSILON < t14 && t14 < 1 + Tools.EPSILON) {
+				if (-Tools.EPSILON2 < t13 && t13 < 1 + Tools.EPSILON2) {
+					if (-Tools.EPSILON2 < t14 && t14 < 1 + Tools.EPSILON2) {
                                                 //p3 and p4 are both on the edge [p1 p2]
 						intersection = new Edge(p3, p4);
 					} else {
                                                 //p4 is not on [p1 p2]
 						if (p3.squareDistance2D(p1) < Tools.EPSILON2) {
                                                         //p3 and p1 are equal
-							if (-Tools.EPSILON < t22 && t22 < 1 + Tools.EPSILON) {
+							if (-Tools.EPSILON2 < t22 && t22 < 1 + Tools.EPSILON2) {
                                                                 //p2 is on [p3 p4]
 								intersection = new Edge(p1, p2);
 							} else {
@@ -717,7 +718,7 @@ public class Edge extends Element implements Comparable<Edge> {
 							}
 						} else if (p3.squareDistance2D(p2) < Tools.EPSILON2) {
                                                         //p3 and p2 are equals
-							if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
+							if (-Tools.EPSILON2 < t21 && t21 < 1 + Tools.EPSILON2) {
                                                                 //p1 is on [p3 p4]
 								intersection = new Edge(p1, p2);
 							} else {
@@ -725,18 +726,18 @@ public class Edge extends Element implements Comparable<Edge> {
 								intersection = p3;
 							}
 
-						} else if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
+						} else if (-Tools.EPSILON2 < t21 && t21 < 1 + Tools.EPSILON2) {
                                                         //p1 is on [p3 p4]
 							intersection = new Edge(p1, p3);
 						} else {
 							intersection = new Edge(p2, p3);
 						}
 					}
-				} else if (-Tools.EPSILON < t14 && t14 < 1 + Tools.EPSILON) {
+				} else if (-Tools.EPSILON2 < t14 && t14 < 1 + Tools.EPSILON2) {
                                 //p3 is not on [p1 p2], but p4 is on it
 					if (p4.squareDistance2D(p1) < Tools.EPSILON2) {
                                                 //p4 and p1 are equal
-						if (-Tools.EPSILON < t22 && t22 < 1 + Tools.EPSILON) {
+						if (-Tools.EPSILON2 < t22 && t22 < 1 + Tools.EPSILON2) {
                                                         //p2 is on [p3 p4]
 							intersection = new Edge(p1, p2);
 						} else {
@@ -745,7 +746,7 @@ public class Edge extends Element implements Comparable<Edge> {
 						}
 					} else if (p4.squareDistance2D(p2) < Tools.EPSILON2) {
                                                 //p4 and p1 are equal
-						if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
+						if (-Tools.EPSILON2 < t21 && t21 < 1 + Tools.EPSILON2) {
                                                         //p1  is on [p3 p4]
 							intersection = new Edge(p1, p2);
 						} else {
@@ -753,13 +754,13 @@ public class Edge extends Element implements Comparable<Edge> {
 							intersection = p4;
 						}
 
-					} else if (-Tools.EPSILON < t21 && t21 < 1 + Tools.EPSILON) {
+					} else if (-Tools.EPSILON2 < t21 && t21 < 1 + Tools.EPSILON2) {
                                                 //p1 is on [p3 p4]
 						intersection = new Edge(p1, p4);
 					} else {
 						intersection = new Edge(p2, p4);
 					}
-				} else if (Tools.EPSILON < t21 && t21 < 1 - Tools.EPSILON) {
+				} else if (Tools.EPSILON2 < t21 && t21 < 1 - Tools.EPSILON2) {
                                         //p1 is on [p3 p4]. As we've seen, nor p4 neither p3 are
                                         // on [p1 p2], so we can conclude that the intersection is [p1 p2]
 					intersection = new Edge(p1, p2);

@@ -540,16 +540,23 @@ public class ConstrainedMesh {
 							//We must check that this intersection point is not
 							//the current event point. If it is, we must process the
 							//intersection.
-							if (newEvent.equals2D(currentEvent)) {//We process the intersection.
+							if (newEvent.equals2D(currentEvent)) {
+								//We process the intersection.
 								if (!newEvent.equals2D(e2.getPointLeft()) && !newEvent.equals2D(e2.getPointRight())) {
 									//newEvent lies on e2, and is not an extremity
-									inter2 = new Edge(e2.getPointLeft(), newEvent);
+									if(newEvent.equals2D(e1.getPointLeft())){
+										newEvent = e1.getPointLeft();
+									}
+									if(newEvent.equals2D(e1.getPointRight())){
+										newEvent = e1.getPointRight();
+									}
+									inter2 = new Edge(newEvent, e2.getPointLeft() );
 									addConstraintEdge(inter2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
-									inter4 = new Edge(e2.getPointRight(), newEvent);
+									inter4 = new Edge(newEvent, e2.getPointRight());
 									edgeBuffer.addEdge(inter4);
 									rmCount++;
 								} else if (newEvent.equals2D(e2.getPointRight())) {
@@ -561,6 +568,12 @@ public class ConstrainedMesh {
 									rmCount++;
 								}
 								if (!newEvent.equals2D(e1.getPointLeft()) && !newEvent.equals2D(e1.getPointRight())) {
+									if(newEvent.equals2D(e2.getPointLeft())){
+										newEvent = e2.getPointLeft();
+									}
+									if(newEvent.equals2D(e2.getPointRight())){
+										newEvent = e2.getPointRight();
+									}
 									inter1 = new Edge(e1.getPointLeft(), newEvent);
 									addConstraintEdge(inter1);
 									rm = edgeBuffer.remove(j - 1);
@@ -682,6 +695,13 @@ public class ConstrainedMesh {
 						}
 					}
 					j++;
+					if(j>=edgeBuffer.size()){
+						e2 = edgeBuffer.get(edgeBuffer.size()-1);
+						if(e2.getPointRight().equals(currentEvent)){
+							edgeBuffer.remove(edgeBuffer.size()-1);
+							addConstraintEdge(e2);
+						}
+					}
 				}
 			} else if (edgeBuffer.size() == 1 && edgeBuffer.get(0).getPointRight().equals2D(currentEvent)) {
 				addConstraintEdge(edgeBuffer.get(0));

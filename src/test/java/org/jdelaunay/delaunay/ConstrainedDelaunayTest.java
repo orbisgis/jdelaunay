@@ -740,9 +740,10 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                 mesh.setConstraintEdges(edges);
 //                show(mesh);
                 mesh.forceConstraintIntegrity();
-//                show(mesh);
-                edges = new ArrayList<Edge>();
-                
+                List<Edge> edgesB = mesh.getConstraintEdges();
+//			System.out.println("INSERT INTO edgester VALUES (ST_GEOMFROMTEXT('LINESTRING ("+ptL.getX()+" "+ptL.getY()+" 0,"+ptR.getX()+" "+ptR.getY()+" 0)'));");
+		
+		assertTrue(edgesB.size()==16);
 
         }
 
