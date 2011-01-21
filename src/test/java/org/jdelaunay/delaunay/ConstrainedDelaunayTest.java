@@ -815,7 +815,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	/**
 	 * Checks that the searchEdge method works well.
 	 */
-	public void testSearchEdge(){
+	public void testSearchEdge() throws DelaunayError{
 		List<Edge> list = new ArrayList<Edge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		list.add(new Edge(0,0,0,2,2,2));
@@ -834,7 +834,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	/**
 	 * Checks that the searchEdge method works well.
 	 */
-	public void testRemoveEdge(){
+	public void testRemoveEdge() throws DelaunayError{
 		List<Edge> list = new ArrayList<Edge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		list.add(new Edge(0,0,0,2,2,2));
@@ -887,7 +887,64 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		fromLeft = mesh.getConstraintsFromLeftPoint(new Point(2,2,0));
 		assertTrue(fromLeft.isEmpty());
 	}
-	
+
+	public void testUpdateExtensionPoints() throws DelaunayError{
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		Point ext1, ext2;
+		List<Point> extensions;
+		mesh.addPoint(new Point(0,0,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		assertTrue(ext1.equals(new Point(-1,1,0)));
+		assertTrue(ext2.equals(new Point(-1,-1,0)));
+		mesh.addPoint(new Point(0,0.5,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		assertTrue(ext1.equals(new Point(-1,1.5,0)));
+		assertTrue(ext2.equals(new Point(-1,-1,0)));
+		mesh.addPoint(new Point(0,-0.5,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		assertTrue(ext1.equals(new Point(-1,1.5,0)));
+		assertTrue(ext2.equals(new Point(-1,-1.5,0)));
+		mesh.addPoint(new Point(0,-0.25,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		assertTrue(ext1.equals(new Point(-1,1.5,0)));
+		assertTrue(ext2.equals(new Point(-1,-1.5,0)));
+		mesh.addPoint(new Point(10,-0.25,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		assertTrue(ext1.equals(new Point(-1,1.5,0)));
+		assertTrue(ext2.equals(new Point(-1,-1.5,0)));
+		mesh.addPoint(new Point(-2,-0.25,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		assertTrue(ext1.equals(new Point(-3,1.5,0)));
+		assertTrue(ext2.equals(new Point(-3,-1.5,0)));
+		mesh.addPoint(new Point(-3,3,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		System.out.println(ext1);
+		assertTrue(ext1.equals(new Point(-4,4,0)));
+		assertTrue(ext2.equals(new Point(-4,-1.5,0)));
+		mesh.addPoint(new Point(-4,-3,0));
+		extensions = mesh.getExtensionPoints();
+		ext1 = extensions.get(0);
+		ext2 = extensions.get(1);
+		assertTrue(ext1.equals(new Point(-5,4,0)));
+		assertTrue(ext2.equals(new Point(-5,-4,0)));
+		
+		
+	}
+
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number

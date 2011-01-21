@@ -60,6 +60,13 @@ public class ConstrainedMesh {
 	public static final int REFINEMENT_SOFT_INTERPOLATE = 4;
 	public static final int REFINEMENT_OBTUSE_ANGLE = 8;
 
+	//The two points that will be used to extend the mesh, and to reduce the number
+	//of edges in the boundary. They will be removed when the mesh will be comuted,
+	//and the mesh will be fixed.
+	private Double extMinX = null;
+	private Double extMaxY = null;
+	private Double extMinY = null;
+
 	public ConstrainedMesh() {
 		triangleList = new ArrayList<DelaunayTriangle>();
 		edges = new ArrayList<Edge>();
@@ -125,7 +132,7 @@ public class ConstrainedMesh {
 	 * and add all the corresponding points to the point list.
 	 * @param constraintEdges
 	 */
-	public final void setConstraintEdges(ArrayList<Edge> constraint) {
+	public final void setConstraintEdges(ArrayList<Edge> constraint) throws DelaunayError {
 		this.constraintEdges = new ArrayList<Edge>();
 		for (Edge e : constraint) {
 			//We lock the edge. It will not be supposed to be switched
@@ -140,7 +147,7 @@ public class ConstrainedMesh {
 	 * @param e
 	 *	the edge we want to add
 	 */
-	public final void addConstraintEdge(Edge e) {
+	public final void addConstraintEdge(Edge e) throws DelaunayError {
 		if (constraintEdges == null) {
 			constraintEdges = new ArrayList<Edge>();
 		}
@@ -148,12 +155,14 @@ public class ConstrainedMesh {
 		addEdgeToLeftSortedList(constraintEdges, e);
 		int index = Collections.binarySearch(points, e.getStartPoint());
 		if(index < 0 ){
+			updateExtensionPoints(e.getStartPoint());
 			points.add(-index -1, e.getStartPoint());
 		} else {
 			e.setStartPoint(points.get(index));
 		}
 		index = Collections.binarySearch(points, e.getEndPoint());
 		if(index < 0 ){
+			updateExtensionPoints(e.getEndPoint());
 			points.add(-index -1, e.getEndPoint());
 		} else {
 			e.setEndPoint(points.get(index));
@@ -172,7 +181,7 @@ public class ConstrainedMesh {
 	 * Set the list of edges
 	 * @param constraintEdges
 	 */
-	public final void setEdges(List<Edge> constraint) {
+	public final void setEdges(List<Edge> constraint) throws DelaunayError {
 		this.edges = new ArrayList<Edge>();
 		for (Edge e : constraint) {
 			addPoint(e.getStart());
@@ -396,11 +405,61 @@ public class ConstrainedMesh {
 	 * The list of points is supposed to be sorted.
 	 * @param point
 	 */
-	public final void addPoint(Point point) {
+	public final void addPoint(Point point) throws DelaunayError {
 		if (points == null) {
 			points = new ArrayList<Point>();
 		}
+		updateExtensionPoints(point);
 		addToSortedList(point, points, pointGID);
+	}
+
+	/**
+	 * Get the extension points that would be added to the mesh while computing
+	 * DT or CDT with the current set of points.
+	 * @return
+	 *	A set of two points. They will share the same x-coordinate, that is
+	 *	the max x-coordinate of the mesh minus 1.
+	 *	The first one will have the max y-coordinate (ie the max y-coordinate of
+	 *	the mesh plus 1), the second will have the min y-coordinate (ie the min
+	 *	y-coordinate minux 1).
+	 * @throws DelaunayError
+	 */
+	public final List<Point> getExtensionPoints() throws DelaunayError{
+		ArrayList<Point> ret = new ArrayList();
+		ret.add(new Point(extMinX, extMaxY, 0));
+		ret.add(new Point(extMinX, extMinY, 0));
+		return ret;
+	}
+
+	/**
+	 * This method update the coordinates of the extension points that will be used
+	 * during the triangulation
+	 * @param pt
+	 * @throws DelaunayError
+	 */
+	private void updateExtensionPoints(Point pt) throws DelaunayError {
+		if(extMinX == null){
+			if(!points.isEmpty()){
+				throw new DelaunayError("we should have added this coordinate before !");
+			}
+			extMinX = pt.getX()-1;
+		} else if(pt.getX() < extMinX+1) {
+			extMinX = pt.getX() - 1;
+		}
+		if(extMinY == null){
+			if(!points.isEmpty()){
+				throw new DelaunayError("we should have added this coordinate before !");
+			}
+			extMinY = pt.getY()-1;
+			extMaxY = pt.getY()+1;
+		} else {
+			if(pt.getY() > extMaxY - 1){
+				extMaxY = pt.getY() + 1;
+			} else if (pt.getY() < extMinY + 1){
+				extMinY = pt.getY() - 1;
+			}
+		}
+		
 	}
 
 	/**
