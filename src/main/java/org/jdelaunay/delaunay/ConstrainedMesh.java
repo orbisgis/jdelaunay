@@ -426,10 +426,6 @@ public class ConstrainedMesh {
 		}
 	}
 
-	private void computeExtensionPoints(List<Point> pts){
-		
-	}
-
 	/**
 	 * Add a new point in the list that will be used to perform the triangulation.
 	 * The list of points is supposed to be sorted.
