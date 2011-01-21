@@ -278,13 +278,8 @@ public class ConstraintPolygon extends Element {
 	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
 	 */
 	@Override
-	public boolean contains(Point aPoint) { //FIXME make better code
-		boolean intersect=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
-		for(int i=0;i<edges.size() && !intersect;i++ )
-		{
-			intersect=edges.get(i).isInside(aPoint);
-		}	
-		return intersect;
+	public boolean contains(Point aPoint) {
+		return polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 	}
 	
 	public boolean contains(Edge anEdge) throws DelaunayError { //FIXME make better code
@@ -307,13 +302,9 @@ public class ConstraintPolygon extends Element {
 	 * @see org.jdelaunay.delaunay.Element#contains(com.vividsolutions.jts.geom.Coordinate)
 	 */
 	@Override
-	public boolean contains(Coordinate coordinate) throws DelaunayError {  //FIXME make better code
-		boolean intersect=polygon.contains(new GeometryFactory().createPoint(coordinate));
-		for(int i=0;i<edges.size() && !intersect;i++ )
-		{
-			intersect=edges.get(i).isInside(new Point(coordinate));
-		}
-		return intersect;
+	public boolean contains(Coordinate coordinate) throws DelaunayError {
+		return polygon.contains(new GeometryFactory().createPoint(coordinate));
+
 	}
 	
 	public boolean isIntersect(Edge anEdge) throws DelaunayError{
