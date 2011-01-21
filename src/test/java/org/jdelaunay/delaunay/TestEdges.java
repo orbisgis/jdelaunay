@@ -389,4 +389,35 @@ public class TestEdges extends BaseUtility {
 		assertTrue(tribis.equals(ed.getRight()));
 		assertTrue(tri.equals(ed.getLeft()));
 	}
+
+	/**
+	 * Basic test to check if a point is inside an Edge or not.
+	 * @throws DelaunayError
+	 */
+	public void testIsInside() throws DelaunayError {
+		Edge ed = new Edge(0,0,0,4,4,0);
+		Point p = new Point(2,2,0);
+		assertTrue(ed.isInside(p));
+		p = new Point(8,3,0);
+		assertFalse(ed.isInside(p));
+		
+	}
+
+	/**
+	 * Test if two edges share the same points.
+	 * @throws DelaunayError
+	 */
+	public void testHaveSamePoint() throws DelaunayError {
+		Edge ed = new Edge(0,0,0,4,4,0);
+		assertTrue(ed.haveSamePoint(new Edge(0,0,0,4,4,0)));
+		assertFalse(ed.haveSamePoint(new Edge(0,4,0,4,4,0)));
+		assertFalse(ed.haveSamePoint(new Edge(0,0,0,0,4,0)));
+		assertFalse(ed.haveSamePoint(new Edge(0,4,0,0,3,0)));
+	}
+
+	public void testGetBarycenter() throws DelaunayError {
+		Edge ed = new Edge(0,0,0,4,6,8);
+		Point pt = new Point (2,3,4);
+		assertTrue(pt.equals(ed.getBarycenter()));
+	}
 }

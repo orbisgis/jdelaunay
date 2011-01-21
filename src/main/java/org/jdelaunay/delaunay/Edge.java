@@ -925,18 +925,6 @@ public class Edge extends Element implements Comparable<Edge> {
 	}
 
 	/**
-	 * Check if two edges have the same points.
-	 * @param anEdge
-	 * @return True if points are the same.
-	 */
-	public final boolean haveSamePoint(Point p1, Point p2) {
-		return (getStartPoint().getCoordinate().equals(p1.getCoordinate())
-			&& getEndPoint().getCoordinate().equals(p2.getCoordinate()))
-			|| (getStartPoint().getCoordinate().equals(p2.getCoordinate())
-			&& getEndPoint().getCoordinate().equals(p1.getCoordinate()));
-	}
-
-	/**
 	 * check if the point is one of the extremities of the edge (on the
 	 * xy-plane)
 	 *
@@ -1079,7 +1067,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	}
 
 	/**
-	 * Get the barycenter of the triangle.
+	 * Get the barycenter of the Edge.
 	 *
 	 * @return barycenter point.
 	 * @throws DelaunayError 
