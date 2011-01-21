@@ -641,6 +641,10 @@ public class TestConstrainedMesh extends BaseUtility {
 
 	}
 
+	/**
+	 * A test inherited from the former delaunay implementation.
+	 * @throws DelaunayError
+	 */
 	public void testProcessStar() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addPoint(new Point(0, 0, 0));
@@ -676,5 +680,35 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6,4,2,4,6,2), new Edge(4,6,2,6,6,2), new Edge(6,6,2,6,4,2))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(5,9,2,4,6,2), new Edge(4,6,2,6,6,2), new Edge(6,6,2,5,9,2))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(6,4,2,9,5,2), new Edge(9,5,2,6,6,2), new Edge(6,6,2,6,4,2))));
+	}
+
+	public void testBoundaryIntegrity() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addPoint(new Point(1,6,0));
+		mesh.addPoint(new Point(2,3,0));
+		mesh.addPoint(new Point(4,7,0));
+		mesh.addPoint(new Point(6,1,0));
+		mesh.addPoint(new Point(7,5,0));
+		mesh.addPoint(new Point(7,9,0));
+		mesh.addPoint(new Point(9,11,0));
+		mesh.addPoint(new Point(10,2,0));
+		mesh.addPoint(new Point(12,10,0));
+		mesh.addPoint(new Point(13,4,0));
+		mesh.addPoint(new Point(13,7,0));
+		mesh.processDelaunay();
+//		show(mesh);
+		List<DelaunayTriangle> triangles = mesh.getTriangleList();
+		assertTrue(triangles.size()==12);
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,6,0,2,3,0), new Edge(2,3,0,4,7,0),new Edge(4,7,0,1,6,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,6,0,7,9,0), new Edge(7,9,0,4,7,0),new Edge(4,7,0,1,6,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,6,0,7,9,0), new Edge(7,9,0,9,11,0),new Edge(9,11,0,1,6,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(12,10,0,7,9,0), new Edge(7,9,0,9,11,0),new Edge(9,11,0,12,10,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(12,10,0,7,9,0), new Edge(7,9,0,13,7,0),new Edge(13,7,0,12,10,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,7,9,0), new Edge(7,9,0,13,7,0),new Edge(13,7,0,7,5,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,13,4,0), new Edge(13,4,0,13,7,0),new Edge(13,7,0,7,5,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,13,4,0), new Edge(13,4,0,10,2,0),new Edge(10,2,0,7,5,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,6,1,0), new Edge(6,1,0,10,2,0),new Edge(10,2,0,7,5,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,4,7,0), new Edge(4,7,0,2,3,0),new Edge(2,3,0,7,5,0))));
+		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,4,7,0), new Edge(4,7,0,7,9,0),new Edge(7,9,0,7,5,0))));
 	}
 }
