@@ -482,10 +482,6 @@ public class Edge extends Element implements Comparable<Edge> {
 	@Override
 	public final boolean contains(Point aPoint) {
 		return contains(aPoint.getCoordinate());
-//		if (intersects(aPoint, aPoint) > 0)
-//			return true;
-//		else
-//			return false;
 	}
 
 	@Override

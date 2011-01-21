@@ -679,15 +679,16 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
-	 * Check if the triangles respects Delaunay's constraints. the parameter
-	 * thePoints is the list of points of the mesh
+	 * Check if this triangle and the list of points given in argument respect
+	 * the Delaunay criterium : This method returns true if none of the points of pts
+	 * lie inside the circumcircle of this triangle.
 	 *
-	 * @param thePoints
+	 * @param pts
 	 * @return
 	 */
-	public final boolean checkDelaunay(List<Point> thePoints) {
+	public final boolean checkDelaunay(List<Point> pts) {
 		boolean correct = true;
-		ListIterator<Point> iterPoint = thePoints.listIterator();
+		ListIterator<Point> iterPoint = pts.listIterator();
 		while (iterPoint.hasNext() && correct) {
 			Point aPoint = iterPoint.next();
 			if (inCircle(aPoint) == 1 && !aPoint.equals(getPoint(0))
@@ -724,12 +725,12 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * Get the point of the triangle that is not belong to the edge
 	 *
-	 * @param anEdge
+	 * @param ed
 	 * @return alterPoint
 	 */
-	public final Point getAlterPoint(Edge anEdge) {
-		Point start = anEdge.getStartPoint();
-		Point end = anEdge.getEndPoint();
+	public final Point getAlterPoint(Edge ed) {
+		Point start = ed.getStartPoint();
+		Point end = ed.getEndPoint();
 		return getAlterPoint(start, end);
 	}
 
@@ -765,35 +766,29 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @return alterPoint
 	 */
 	protected final Point getAlterPoint(Point p1, Point p2) {
-		Point alterPoint = null;
-
-		if (p1 == edges[0].getStartPoint()) {
-			if (p2 == edges[0].getEndPoint()) {
-				alterPoint = edges[1].getStartPoint();
-				if ((alterPoint.equals(p1)) || (alterPoint.equals(p2))) {
-					alterPoint = edges[1].getEndPoint();
-				}
+		Point t1 = getPoint(0);
+		Point t2 = getPoint(1);
+		Point t3 = getPoint(2);
+		if(p1.equals(t1)){
+			if(p2.equals(t2)){
+				return t3;
+			} else if(p2.equals(t3)){
+				return t2;
 			}
-			else {
-				alterPoint = edges[0].getEndPoint();
+		} else if(p1.equals(t2)) {
+			if(p2.equals(t1)){
+				return t3;
+			} else if (p2.equals(t3)) {
+				return t1;
 			}
-		}
-		else if (p2 == edges[0].getStartPoint()) {
-			if (p1 == edges[0].getEndPoint()) {
-				alterPoint = edges[1].getStartPoint();
-				if ((alterPoint.equals(p1)) || (alterPoint.equals(p2))) {
-					alterPoint = edges[1].getEndPoint();
-				}
-			}
-			else {
-				alterPoint = edges[0].getEndPoint();
+		} else if(p1.equals(t3)) {
+			if(p2.equals(t1)){
+				return t2;
+			} else if (p2.equals(t2)) {
+				return t1;
 			}
 		}
-		else {
-			alterPoint = edges[0].getStartPoint();
-		}
-
-		return alterPoint;
+		return null;
 	}
 
 	/**
@@ -824,35 +819,6 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 
 		return alterEdge;
 	}
-	
-	/**
-	 * Get the position of edge of the triangle that includes the two point
-	 *
-	 * @param p1 
-	 * @param p2
-	 * @return postion -1 if not found.
-	 */
-	protected final int getEdgePositionFromPoints(Point p1, Point p2) {
-		int edgePosition = -1;
-		Point test1, test2;
-		int i = 0;
-		while ((i < PT_NB) && (edgePosition == -1)) {
-			Edge testEdge = edges[i];
-			test1 = testEdge.getStartPoint();
-			test2 = testEdge.getEndPoint();
-			if ((test1.equals(p1)) && (test2.equals(p2))) {
-				edgePosition = i;
-			}
-			else if ((test1.equals(p2)) && (test2.equals(p1))) {
-				edgePosition = i;
-			}
-			else {
-				i++;
-			}
-		}
-
-		return edgePosition;
-	}
 
 	/**
 	 * Check if the point belongs to the triangle
@@ -880,34 +846,6 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		}
 
 		return belongs;
-	}
-
-	/**
-	 * Check if the point is closed to one of the triangle's points
-	 *
-	 * @param aPoint
-	 * @return closedTo
-	 */
-	public final boolean isClosedFromPoints(Point aPoint) {
-		boolean closedTo = false;
-		Edge anEdge = this.getEdge(0);
-		if (anEdge.getStartPoint() == aPoint) {
-			closedTo = true;
-		}
-		else if (anEdge.getEndPoint() == aPoint) {
-			closedTo = true;
-		}
-		else {
-			anEdge = this.getEdge(1);
-			if (anEdge.getStartPoint() == aPoint) {
-				closedTo = true;
-			}
-			else if (anEdge.getEndPoint() == aPoint) {
-				closedTo = true;
-			}
-		}
-
-		return closedTo;
 	}
 	
 	/**

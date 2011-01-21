@@ -379,6 +379,8 @@ public class TestTriangle extends BaseUtility {
 		Edge last;
 		last = t1.getLastEdge(e1, e2);
 		assertTrue(last.equals(e3));
+		last = t1.getLastEdge(e2, e1);
+		assertTrue(last.equals(e3));
 		last = t1.getLastEdge(e1, e3);
 		assertTrue(last.equals(e2));
 		last = t1.getLastEdge(e3, e1);
@@ -478,5 +480,82 @@ public class TestTriangle extends BaseUtility {
 		for(DelaunayTriangle tri : triangleList){
 			assertTrue(Collections.binarySearch(sorted, tri)>=0);
 		}
+	}
+
+	/**
+	 * Tests that we correctly manage the indicator associated to a triangle
+	 */
+	public void testIndicator() throws DelaunayError{
+		DelaunayTriangle dt = new DelaunayTriangle(new Edge(0,0,0,2,2,0), new Edge(2,2,0,2,0,0), new Edge(2,0,0,0,0,0));
+		assertTrue(dt.getIndicator() == 0);
+		dt.setIndicator(1);
+		assertTrue(dt.getIndicator() == 1);
+		dt.removeIndicator();
+		assertTrue(dt.getIndicator() == 0);
+	}
+
+	/**
+	 * getEdgeFromPoints is supposed to retrieve a reference to an edge of the
+	 * triangle, if the two points are coordinates that are used to define the triangle.
+	 * @throws DelaunayError
+	 */
+	public void testGetEdgeFromPoints() throws DelaunayError {
+		Edge e1 = new Edge(0,0,0,2,2,0);
+		Edge e2 = new Edge(2,2,0,2,0,0);
+		Edge e3 = new Edge(2,0,0,0,0,0);
+		DelaunayTriangle dt = new DelaunayTriangle(e1, e2, e3);
+		Edge test = dt.getEdgeFromPoints(new Point(0,0,0), new Point(2,2,0));
+		assertTrue(e1 == test);
+		test = dt.getEdgeFromPoints(new Point(2,2,0), new Point(0,0,0));
+		assertTrue(e1 == test);
+		test = dt.getEdgeFromPoints(new Point(2,0,0), new Point(2,2,0));
+		assertTrue(e2 == test);
+		test = dt.getEdgeFromPoints(new Point(2,2,0), new Point(2,0,0));
+		assertTrue(e2 == test);
+		test = dt.getEdgeFromPoints(new Point(0,0,0), new Point(2,0,0));
+		assertTrue(e3 == test);
+		test = dt.getEdgeFromPoints(new Point(2,0,0), new Point(0,0,0));
+		assertTrue(e3 == test);
+		test = dt.getEdgeFromPoints(new Point(0,0,0), new Point(9,9,9));
+		assertNull(test);
+		test = dt.getEdgeFromPoints(new Point(3,4,0), new Point(9,9,9));
+		assertNull(test);
+
+	}
+
+	public void testGetAlterPoint() throws DelaunayError {
+		Edge e1 = new Edge(0,0,0,2,2,0);
+		Edge e2 = new Edge(2,2,0,2,0,0);
+		Edge e3 = new Edge(2,0,0,0,0,0);
+		DelaunayTriangle dt = new DelaunayTriangle(e1, e2, e3);
+		Point pt1 = new Point(0,0,0);
+		Point pt2 = new Point(2,2,0);
+		Point pt3 = new Point(2,0,0);
+		Point pt = dt.getAlterPoint(pt1, pt2);
+		assertTrue(pt.equals(pt3));
+		pt = dt.getAlterPoint(pt2, pt1);
+		assertTrue(pt.equals(pt3));
+		pt = dt.getAlterPoint(pt2, pt3);
+		assertTrue(pt.equals(pt1));
+		pt = dt.getAlterPoint(pt3, pt2);
+		assertTrue(pt.equals(pt1));
+		pt = dt.getAlterPoint(pt3, pt1);
+		assertTrue(pt.equals(pt2));
+		pt = dt.getAlterPoint(pt1, pt3);
+		assertTrue(pt.equals(pt2));
+		pt = dt.getAlterPoint(new Point(4,4,4), pt3);
+		assertNull(pt);
+		pt = dt.getAlterPoint(pt3,new Point(4,4,4));
+		assertNull(pt);
+		pt = dt.getAlterPoint(pt1, pt1);
+		assertNull(pt);
+		pt = dt.getAlterPoint(pt2, pt2);
+		assertNull(pt);
+		pt = dt.getAlterPoint(pt3, pt3);
+		assertNull(pt);
+		pt = dt.getAlterPoint(new Point(4,4,4),new Point(4,4,4));
+		assertNull(pt);
+		pt = dt.getAlterPoint(new Point(4,5,4),new Point(4,4,4));
+		assertNull(pt);
 	}
 }
