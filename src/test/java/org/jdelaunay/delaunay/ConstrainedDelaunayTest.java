@@ -6,72 +6,6 @@ import java.util.List;
 
 public class ConstrainedDelaunayTest extends BaseUtility {
 
-	public void testDelaunayRandomBreaklines() throws DelaunayError {
-
-		MyMesh aMesh = new MyMesh();
-		aMesh.setPrecision(1.0e-3);
-//		aMesh.setVerbose(true);
-		
-		aMesh.setMax(1300, 700);
-		aMesh.setRandomPoints(1000);
-		aMesh.setRandomEdges(50);
-
-		aMesh.processDelaunay();
-
-//		show(aMesh);
-		System.out.println();
-		assertTrue(true);
-	}
-
-	public void testDelaunayBreaklines() throws DelaunayError {
-
-		MyMesh aMesh = new MyMesh();
-		aMesh.setPrecision(1.0e-3);
-//		aMesh.setVerbose(true);
-		
-		aMesh.setPoints(getPoints());
-		aMesh.setConstraintEdges(getBreaklines());
-		
-		aMesh.processDelaunay();
-
-//		show(aMesh);
-		System.out.println();
-		assertTrue(true);
-	}
-
-	public void testGIDS() throws DelaunayError {
-
-		MyMesh aMesh = new MyMesh();
-		aMesh.setPrecision(1.0e-3);
-//		aMesh.setVerbose(true);
-		
-		aMesh.setPoints(getPoints());
-		aMesh.setConstraintEdges(getBreaklines());
-		
-		aMesh.processDelaunay();
-
-		assertGIDUnicity(aMesh);
-	}
-
-	public void testDuplicatesXYZBreakline() throws DelaunayError {
-
-		MyMesh aMesh = new MyMesh();
-		aMesh.setPrecision(1.0e-3);
-//		aMesh.setVerbose(true);
-		
-		aMesh.setPoints(getPoints());
-		ArrayList<Edge> breaklines = getBreaklines();
-		breaklines.add(new Edge(new Point(120, 10, 2), new Point(102, 10,
-				1)));
-		aMesh.setConstraintEdges(breaklines);
-
-		aMesh.processDelaunay();
-
-//		show(aMesh);
-		System.out.println();
-		assertTrue(true);
-	}
-
 	/**
 	 * This test checks that constraints which intersect are split, and than
 	 * a new point is added to the Mesh.
@@ -190,7 +124,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * sortEdgesLeft method.
 	 * It tests that duplicates are removed during the insertion
 	 */
-	public void testOrderEdgeList(){
+	public void testOrderEdgeList() throws DelaunayError {
 		ArrayList<Edge> list = new ArrayList<Edge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		list.add(new Edge(0,0,0,10,1,1));
@@ -785,7 +719,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * check before that this edge is not already referenced as a constraint. If
 	 * it is, we must add the constraint to the edge, not a new, not locked, edge.
 	 */
-	public void testAddExistingConstraintToEdges(){
+	public void testAddExistingConstraintToEdges() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		Edge e1 = new Edge(0,0,0,2,2,0);
 		e1.setLocked(true);

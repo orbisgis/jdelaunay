@@ -91,7 +91,7 @@ public class BaseUtility extends TestCase {
 	 * A DelaunayTriangle is made of 3 different edges
 	 * @param aMesh
 	 */
-	public void assertCoherence(MyMesh aMesh) {
+	public void assertCoherence(ConstrainedMesh aMesh) {
 		// Assert edges correctly defined
 		boolean correct = true;
 		Edge myEdge;
@@ -110,7 +110,7 @@ public class BaseUtility extends TestCase {
 
 		// Assert triangles correctly defined
 		DelaunayTriangle myTriangle;
-		ListIterator<DelaunayTriangle> iterTriangle = aMesh.getTriangles().listIterator();
+		ListIterator<DelaunayTriangle> iterTriangle = aMesh.getTriangleList().listIterator();
 		while ((correct) && (iterTriangle.hasNext())) {
 			myTriangle = iterTriangle.next();
 			for (int i=0; i<3; i++) {
@@ -121,7 +121,7 @@ public class BaseUtility extends TestCase {
 			assertTrue(correct);
 		}
 		
-		iterTriangle = aMesh.getTriangles().listIterator();
+		iterTriangle = aMesh.getTriangleList().listIterator();
 		while ((correct) && (iterTriangle.hasNext())) {
 			myTriangle = iterTriangle.next();
 			for (int i=0; i<3; i++) {
@@ -140,7 +140,7 @@ public class BaseUtility extends TestCase {
 	 * Check that a point belongs to one edge
 	 * @param aMesh
 	 */
-	public void assertUseEachPoint(MyMesh aMesh) {
+	public void assertUseEachPoint(ConstrainedMesh aMesh) {
 		// Assert
 		for (Point aPoint : aMesh.getPoints()) {
 			// point must belong to an edge
@@ -166,7 +166,7 @@ public class BaseUtility extends TestCase {
 	 * Check that an edge belongs to one triangle
 	 * @param aMesh
 	 */
-	public void assertUseEachEdge(MyMesh aMesh)  {
+	public void assertUseEachEdge(ConstrainedMesh aMesh)  {
 		// Assert
 		for (Edge anEdge : aMesh.getEdges()) {
 			// point must belong to an edge
@@ -174,7 +174,7 @@ public class BaseUtility extends TestCase {
 			
 			boolean found = false;
 			DelaunayTriangle myTriangle;
-			ListIterator<DelaunayTriangle> iterTriangle = aMesh.getTriangles().listIterator();
+			ListIterator<DelaunayTriangle> iterTriangle = aMesh.getTriangleList().listIterator();
 			while ((! found) && (iterTriangle.hasNext())) {
 				myTriangle = iterTriangle.next();
 				for (int i=0; i<3; i++) {
@@ -191,7 +191,7 @@ public class BaseUtility extends TestCase {
 	 * Check if 2 points are linked by two different edges 
 	 * @param aMesh
 	 */
-	public void assertDupplicateEdges(MyMesh aMesh) {
+	public void assertDupplicateEdges(ConstrainedMesh aMesh) {
 	}
 	
 	/**
@@ -202,7 +202,7 @@ public class BaseUtility extends TestCase {
 	 *
 	 * @param aMesh
 	 */
-	public void assertGIDUnicity(MyMesh aMesh) {
+	public void assertGIDUnicity(ConstrainedMesh aMesh) {
 		ArrayList<Integer> gids;
 		
 		// Test points
@@ -231,7 +231,7 @@ public class BaseUtility extends TestCase {
 
 		// Test triangles
 		gids= new ArrayList<Integer>();
-		for (DelaunayTriangle myTriangle : aMesh.getTriangles()) {
+		for (DelaunayTriangle myTriangle : aMesh.getTriangleList()) {
 			int gid = myTriangle.getGID();
 
 			if ((gids.contains(gid)) || (gid < 0)) {

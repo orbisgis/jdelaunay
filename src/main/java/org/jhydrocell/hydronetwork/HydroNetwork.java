@@ -2,11 +2,12 @@ package org.jhydrocell.hydronetwork;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.jdelaunay.delaunay.DelaunayError;
 import org.jdelaunay.delaunay.Edge;
-import org.jdelaunay.delaunay.MyMesh;
+import org.jdelaunay.delaunay.ConstrainedMesh;
 import org.jdelaunay.delaunay.Point;
 import org.jdelaunay.delaunay.DelaunayTriangle;
 import org.jhydrocell.utilities.HydroLineUtil;
@@ -16,7 +17,7 @@ import org.jhydrocell.utilities.MathUtil;
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class HydroNetwork {
-	private MyMesh theMesh;
+	private ConstrainedMesh theMesh;
 
 	private LinkedList<Point> listEntry;
 	private LinkedList<Point> listExit;
@@ -51,7 +52,7 @@ public class HydroNetwork {
 	/**
 	 * Constructor
 	 */
-	public HydroNetwork(MyMesh aMesh) {
+	public HydroNetwork(ConstrainedMesh aMesh) {
 		init();
 		theMesh = aMesh;
 	}
@@ -249,14 +250,14 @@ public class HydroNetwork {
 						|| (!edge.hasProperty(HydroProperties.RIGHTCOLINEAR))
 						|| (!edge.hasProperty(HydroProperties.DOUBLECOLINEAR))) {
 
-					Point uperPoint = theMesh.findUperPoint(edge);
+//					Point uperPoint = theMesh.findUperPoint(edge);
 
-					if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
-						if (!listPointAtraiter.contains(uperPoint)) {
-							listPointAtraiter.add(uperPoint);
-
-						}
-					}
+//					if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
+//						if (!listPointAtraiter.contains(uperPoint)) {
+//							listPointAtraiter.add(uperPoint);
+//
+//						}
+//					}
 				}
 			}
 		}
@@ -267,7 +268,7 @@ public class HydroNetwork {
 	 */
 	private void postProcessEdges() {
 		LinkedList<Edge> addedEdges = new LinkedList<Edge>();
-		ArrayList<Edge> theEdges = theMesh.getEdges();
+		List<Edge> theEdges = theMesh.getEdges();
 		for (Edge anEdge : theEdges) {
 			if (anEdge.hasProperty(HydroProperties.WALL)) {
 				// Process wall : duplicate edge and changes connections
@@ -413,94 +414,94 @@ public class HydroNetwork {
 	 * @throws DelaunayError
 	 */
 	private void branchValidate() throws DelaunayError {
-		DelaunayTriangle referenceTriangle = null;
-		ArrayList<Edge> edges = theMesh.getEdges();
-		ArrayList<Point> points = theMesh.getPoints();
-
-		// add every entry point to the mesh
-		for (Point aPoint : listEntry) {
-			if (points.contains(aPoint)) {
-				// Already in the points list => do noting
-			} else {
-				aPoint.setMarked(0, true);//TODO check me
-				referenceTriangle = theMesh.getTriangle(aPoint);
-				if (referenceTriangle != null) {
-					// Connect it to the surface
-					double zValue = referenceTriangle.softInterpolateZ(aPoint);
-					aPoint.setZ(zValue);
-
-					theMesh.addPoint(referenceTriangle, aPoint);
-				} else {
-					theMesh.addPoint(aPoint);
-				}
-			}
-		}
-
-		// add every intermediate point to the point list
-		// do not include them in the mesh
-		for (Point aPoint : listIntermediate) {
-			if (points.contains(aPoint)) {
-				// Already in the points list => do noting
-			} else {
-				points.add(aPoint);
-				aPoint.setMarked(0, true);//TODO check me
-				referenceTriangle = theMesh.getTriangle(aPoint);
-				if (referenceTriangle != null) {
-					double zValue = referenceTriangle.softInterpolateZ(aPoint);
-					if (connectToSurface) {
-						// Connect it to the surface
-						aPoint.setZ(zValue);
-
-						theMesh.addPoint(referenceTriangle, aPoint);
-					} else {
-						if (aPoint.getZ() > zValue) {
-							aPoint.setZ(zValue - 1.0);
-						}
-					}
-				} else if (connectToSurface) {
-					theMesh.addPoint(aPoint);
-				}
-			}
-		}
-
-		// add every exit point to the mesh
-		for (Point aPoint : listExit) {
-			if (points.contains(aPoint)) {
-				// Already in the points list => do noting
-			} else {
-				aPoint.setMarked(0, true);//TODO check me
-				referenceTriangle = theMesh.getTriangle(aPoint);
-				if (referenceTriangle != null) {
-					// Connect it to the surface
-					double zValue = referenceTriangle.softInterpolateZ(aPoint);
-					aPoint.setZ(zValue);
-
-					theMesh.addPoint(referenceTriangle, aPoint);
-				} else {
-					theMesh.addPoint(aPoint);
-				}
-			}
-		}
-
-		// add edges
-		for (Edge anEdge : listEdges) {
-			anEdge.setMarked(0,true); //FIXME check if it's good ( old version : anEdge.setMarked(true); )
-			if (connectToSurface) {
-				theMesh.addEdge(anEdge);
-			}
-			else {
-				anEdge.setOutsideMesh(true);
-				edges.add(anEdge);
-			}
-		}
-
-		// Reset informations
-		listEntry = new LinkedList<Point>();
-		listExit = new LinkedList<Point>();
-		listIntermediate = new LinkedList<Point>();
-		listEdges = new LinkedList<Edge>();
-		listDefinition = 0;
-		connectToSurface = true;
+//		DelaunayTriangle referenceTriangle = null;
+//		List<Edge> edges = theMesh.getEdges();
+//		List<Point> points = theMesh.getPoints();
+//
+//		// add every entry point to the mesh
+//		for (Point aPoint : listEntry) {
+//			if (points.contains(aPoint)) {
+//				// Already in the points list => do noting
+//			} else {
+//				aPoint.setMarked(0, true);//TODO check me
+//				referenceTriangle = theMesh.getTriangle(aPoint);
+//				if (referenceTriangle != null) {
+//					// Connect it to the surface
+//					double zValue = referenceTriangle.softInterpolateZ(aPoint);
+//					aPoint.setZ(zValue);
+//
+//					theMesh.addPoint(referenceTriangle, aPoint);
+//				} else {
+//					theMesh.addPoint(aPoint);
+//				}
+//			}
+//		}
+//
+//		// add every intermediate point to the point list
+//		// do not include them in the mesh
+//		for (Point aPoint : listIntermediate) {
+//			if (points.contains(aPoint)) {
+//				// Already in the points list => do noting
+//			} else {
+//				points.add(aPoint);
+//				aPoint.setMarked(0, true);//TODO check me
+//				referenceTriangle = theMesh.getTriangle(aPoint);
+//				if (referenceTriangle != null) {
+//					double zValue = referenceTriangle.softInterpolateZ(aPoint);
+//					if (connectToSurface) {
+//						// Connect it to the surface
+//						aPoint.setZ(zValue);
+//
+//						theMesh.addPoint(referenceTriangle, aPoint);
+//					} else {
+//						if (aPoint.getZ() > zValue) {
+//							aPoint.setZ(zValue - 1.0);
+//						}
+//					}
+//				} else if (connectToSurface) {
+//					theMesh.addPoint(aPoint);
+//				}
+//			}
+//		}
+//
+//		// add every exit point to the mesh
+//		for (Point aPoint : listExit) {
+//			if (points.contains(aPoint)) {
+//				// Already in the points list => do noting
+//			} else {
+//				aPoint.setMarked(0, true);//TODO check me
+//				referenceTriangle = theMesh.getTriangle(aPoint);
+//				if (referenceTriangle != null) {
+//					// Connect it to the surface
+//					double zValue = referenceTriangle.softInterpolateZ(aPoint);
+//					aPoint.setZ(zValue);
+//
+//					theMesh.addPoint(referenceTriangle, aPoint);
+//				} else {
+//					theMesh.addPoint(aPoint);
+//				}
+//			}
+//		}
+//
+//		// add edges
+//		for (Edge anEdge : listEdges) {
+//			anEdge.setMarked(0,true); //FIXME check if it's good ( old version : anEdge.setMarked(true); )
+//			if (connectToSurface) {
+//				theMesh.addEdge(anEdge);
+//			}
+//			else {
+//				anEdge.setOutsideMesh(true);
+//				edges.add(anEdge);
+//			}
+//		}
+//
+//		// Reset informations
+//		listEntry = new LinkedList<Point>();
+//		listExit = new LinkedList<Point>();
+//		listIntermediate = new LinkedList<Point>();
+//		listEdges = new LinkedList<Edge>();
+//		listDefinition = 0;
+//		connectToSurface = true;
 	}
 
 	// ----------------------------------------------------------------

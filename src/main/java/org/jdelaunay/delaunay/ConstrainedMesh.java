@@ -344,6 +344,23 @@ public class ConstrainedMesh {
 	}
 
 	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public final Point getPoint(double x, double y, double z) throws DelaunayError{
+		Point pt = new Point(x,y,z);
+		int c = listContainsPoint(pt);
+		if(c<0){
+			return null;
+		} else {
+			return points.get(c);
+		}
+	}
+
+	/**
 	 * Can be used to know if the mesh has been computed or not
 	 * @return
 	 */
@@ -389,15 +406,28 @@ public class ConstrainedMesh {
 
 	/**
 	 * Set the list of points to be used during the triangulation
+	 * If using this method, it's up to you to be sure that you don't have
+	 * any duplication in your set of points...
 	 * @param points
 	 */
-	public final void setPoints(List<Point> pts) {
+	public final void setPoints(List<Point> pts) throws DelaunayError {
 		if(pts == null){
 			points = new ArrayList<Point>();
 		} else {
 			Collections.sort(pts);
+			points = new ArrayList<Point>();
+			extMaxY = null;
+			extMinY = null;
+			extMinX = null;
+			for(Point pt : pts){
+				updateExtensionPoints(pt);
+			}
 			this.points = pts;
 		}
+	}
+
+	private void computeExtensionPoints(List<Point> pts){
+		
 	}
 
 	/**

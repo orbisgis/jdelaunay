@@ -20,33 +20,5 @@ public class Test {
 
 		return points;
 	}
-	/**
-	 * @param args
-	 * @throws DelaunayError
-	 */
-	public static void main(String[] args) throws DelaunayError {
-		MyMesh aMesh = new MyMesh();
-		aMesh.setPrecision(1.0e-3);
-		aMesh.setVerbose(true);
-		
-		// aMesh.setMax(1300, 700);
-		// aMesh.readMesh();
-		// aMesh.setRandomPoints(200000);
-		// aMesh.setRandomEdges(2);
-		aMesh.setPoints(getPoints());
-		
-		aMesh.processDelaunay();
-		
-		aMesh.addRefinment(MyMesh.REFINEMENT_MAX_AREA);
-		aMesh.addRefinment(MyMesh.REFINEMENT_SOFT_INTERPOLATE);
-		aMesh.refineMesh();
-		
-//		MeshDrawer aff2 = new MeshDrawer();
-//		aff2.add(aMesh);
-//		aMesh.setAffiche(aff2);
 
-		aMesh.VRMLexport();
-		System.out.println("I'm in your main !");
-		// aMesh.saveMesh();
-	}
 }
