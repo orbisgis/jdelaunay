@@ -2,6 +2,7 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A part of the boundary of the mesh. This class is built with :
@@ -12,7 +13,7 @@ import java.util.List;
  * and lower than the constraint Edge directly upper than C
  * @author alexis
  */
-public class BoundaryPart {
+class BoundaryPart {
 
 	//the section of the boundary contained in this BoundaryPart.
 	List<Edge> boundaryEdges;
@@ -108,5 +109,21 @@ public class BoundaryPart {
 			&& !constraint.getPointLeft().equals(left);
 
 	}
-	
+
+        /**
+         * Connect a single point to this boundary part. Travels through the boundary
+         * edges and try to build triangles from it. The boundary is, of course,
+         * updated.
+         * @param point
+         * @return
+         */
+        public  List<DelaunayTriangle> connectPoint(Point point){
+                ListIterator<Edge> iter = boundaryEdges.listIterator();
+                throw new UnsupportedOperationException();
+        }
+
+        public List<DelaunayTriangle> connectPoint(Point point, Edge nextCstr){
+                throw new UnsupportedOperationException();
+                
+        }
 }
