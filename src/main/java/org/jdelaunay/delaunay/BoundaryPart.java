@@ -117,9 +117,65 @@ class BoundaryPart {
          * @param point
          * @return
          */
-        public  List<DelaunayTriangle> connectPoint(Point point){
+        public  List<DelaunayTriangle> connectPoint(Point point) throws DelaunayError{
                 ListIterator<Edge> iter = boundaryEdges.listIterator();
-                throw new UnsupportedOperationException();
+		Edge firstFound = null;
+		Edge mem = null;
+		Edge memBis = null;
+		Edge current;
+		//If the boundaryEdges list is empty, we must add a degenerated edge.
+		if(boundaryEdges.isEmpty()){
+			firstFound = new Edge(constraint.getPointLeft(),point);
+			firstFound.setDegenerated(true);
+			boundaryEdges.add(firstFound);
+			return new ArrayList<DelaunayTriangle>();
+		}
+		List<DelaunayTriangle> triList = new ArrayList<DelaunayTriangle>();
+		DelaunayTriangle temp = null;
+		while(iter.hasNext()){
+			current = iter.next();
+			if(current.isRight(point)){
+				//we can build a triangle.
+				if(mem == null){
+					//if not already set, we must instanciate mem
+					mem = new Edge(current.getStartPoint(),point);
+					//We must insert this new edge at the right position in
+					//the boundaryEdges list. For that we come one step
+					//back and add it with the listIterator.
+					iter.previous();
+					iter.add(mem);
+					//Then we must move one step forward to continue
+					//our processing, in order not to process the
+					//same edge twice.
+					iter.next();
+				}
+				//We build the last Edge of the triangle we are about to add.
+				memBis = new Edge(point, current.getEndPoint());
+				//we can build the triangle...
+				temp = new DelaunayTriangle(current, mem, memBis);
+				//...and add it to the list we'll return.
+				triList.add(temp);
+				//memBis is the last created Edge - we put it in mem.
+				mem = memBis;
+				//and we can remove the current edge, as it is not
+				//part of the boundary anymore.
+				iter.remove();
+			} else {
+				if(mem != null){
+					//the local envelope is supposed to be convex,
+					//so we can stop here.
+					//Before that, we insert this last edge
+					//in the boundaryEdges list.
+					iter.previous();
+					iter.add(mem);
+					return triList;
+				}
+			}
+		}
+		//If we're here, the point was still visible from the last Edge of
+		//the list. We must add the last generated edge.
+		iter.add(mem);
+		return triList;
         }
 
         public List<DelaunayTriangle> connectPoint(Point point, Edge nextCstr){

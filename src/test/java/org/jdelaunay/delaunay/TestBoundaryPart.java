@@ -36,11 +36,46 @@ public class TestBoundaryPart extends BaseUtility {
                 bps.add(new Edge(1,3,0,1,5,0));
                 bps.add(new Edge(1,5,0,0,8,0));
                 BoundaryPart part = new BoundaryPart(bps);
-                part.connectPoint(new Point(3,4,0));
+		//We connect the point and retrieve the resulting triangles
+                List<DelaunayTriangle> tri = part.connectPoint(new Point(3,4,0));
+		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
                 assertTrue(bps.get(0).equals(new Edge(0,0,0,3,4,0)));
                 assertTrue(bps.get(1).equals(new Edge(0,8,0,3,4,0)));
                 assertTrue(bps.size()==2);
+		//next on the resulting trinagles.
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,1,3,0),new Edge(1,3,0,3,4,0), new Edge(3,4,0,0,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(1,5,0,1,3,0),new Edge(1,3,0,3,4,0), new Edge(3,4,0,1,5,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(1,5,0,0,8,0),new Edge(0,8,0,3,4,0), new Edge(3,4,0,1,5,0))));
+		assertTrue(tri.size()==3);
         }
+
+	/**
+	 * We make a more complicated test, were the point to be added is not on the right
+	 * of every edges in the boundary part.
+	 * @throws DelaunayError
+	 */
+	public void testConnectionPartialVisibility() throws DelaunayError{
+                //First we fill an empty boundary part
+                List<Edge> bps = new ArrayList<Edge>();
+		bps.add(new Edge(1,0,0,3,1,0));
+		bps.add(new Edge(3,1,0,4,4,0));
+		bps.add(new Edge(4,4,0,4,7,0));
+		bps.add(new Edge(4,7,0,3,9,0));
+		bps.add(new Edge(3,9,0,0,10,0));
+                BoundaryPart part = new BoundaryPart(bps);
+		//We connect the point and retrieve the resulting triangles
+                List<DelaunayTriangle> tri = part.connectPoint(new Point(8,5,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(1,0,0,3,1,0)));
+                assertTrue(bps.get(1).equals(new Edge(3,1,0,8,5,0)));
+                assertTrue(bps.get(2).equals(new Edge(8,5,0,3,9,0)));
+                assertTrue(bps.get(3).equals(new Edge(3,9,0,0,10,0)));
+                assertTrue(bps.size()==4);
+
+
+
+	}
 
 }
