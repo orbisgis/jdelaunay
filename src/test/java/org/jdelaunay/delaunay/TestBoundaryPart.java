@@ -138,9 +138,130 @@ public class TestBoundaryPart extends BaseUtility {
 		tri = part.connectPoint(new Point(5,7,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-//                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-//                assertTrue(bps.get(1).equals(new Edge(5,4,0,5,7,0)));
-//                assertTrue(bps.get(2).equals(new Edge(5,7,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new Edge(5,4,0,5,7,0)));
+                assertTrue(bps.get(2).equals(new Edge(5,7,0,0,8,0)));
+		assertTrue(bps.size()==3);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,6,0,5,4,0), new Edge(5,4,0,5,7,0), new Edge(5,7,0,3,6,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,6,0,0,8,0), new Edge(0,8,0,5,7,0), new Edge(5,7,0,3,6,0))));
+		assertTrue(tri.size()==2);
+
+	}
+
+	/**
+	 * We work on the same basis as in testConnectionNovisibility, but here we will two
+	 * points that will form two degenerated edges, and we will connect another point
+	 * to build triangles.
+	 */
+	public void testConnectiontwoDegenEdges() throws DelaunayError {
+                //First we fill an empty boundary part
+                List<Edge> bps = new ArrayList<Edge>();
+		//We make our test with only one edge
+		bps.add(new Edge(3,6,0,0,8,0));
+		Edge cstr = new Edge(3,6,0,6,0,0);
+		BoundaryPart part = new BoundaryPart(bps, cstr);
+		//We connect the point and retrieve the resulting triangles
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
+		tri = part.connectPoint(new Point(7,2,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).isDegenerated());
+                assertTrue(bps.get(1).isDegenerated());
+                assertTrue(bps.size()==3);
+		//next on the resulting triangles.
+		assertTrue(tri.isEmpty());
+		//And we check that we properly build triangles after that.
+		tri = part.connectPoint(new Point(5,7,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new Edge(7,2,0,5,7,0)));
+                assertTrue(bps.get(3).equals(new Edge(5,7,0,0,8,0)));
+		assertTrue(bps.size()==4);
+	}
+
+	/**
+	 * We work on the same basis as in testConnectionNovisibility, but here we will two
+	 * points that will form two degenerated edges, and we will connect another point
+	 * to build triangles.
+	 * In this test, one edge
+	 */
+	public void testConnectDegenEdges() throws DelaunayError {
+                //First we fill an empty boundary part
+                List<Edge> bps = new ArrayList<Edge>();
+		//We make our test with only one edge
+		bps.add(new Edge(3,6,0,0,8,0));
+		Edge cstr = new Edge(3,6,0,6,0,0);
+		BoundaryPart part = new BoundaryPart(bps, cstr);
+		//We connect the point and retrieve the resulting triangles
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
+		tri = part.connectPoint(new Point(7,2,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).isDegenerated());
+                assertTrue(bps.get(1).isDegenerated());
+                assertTrue(bps.size()==3);
+		//next on the resulting triangles.
+		assertTrue(tri.isEmpty());
+		//And we check that we properly build triangles after that.
+		tri = part.connectPoint(new Point(5,3,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,3,0)));
+                assertTrue(bps.get(1).equals(new Edge(5,3,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new Edge(7,2,0,5,4,0)));
+                assertTrue(bps.get(3).equals(new Edge(5,4,0,3,6,0)));
+                assertTrue(bps.get(4).equals(new Edge(3,6,0,0,8,0)));
+		assertTrue(bps.size()==5);
+	}
+
+	/**
+	 * We add colinear points to a boundary part without boundary edges in it.
+	 * We should obtain 3 degenerated edges.
+	 * @throws DelaunayError
+	 */
+	public void testConnectThreeColinearDegen() throws DelaunayError {
+                //First we fill an empty boundary part
+                List<Edge> bps = new ArrayList<Edge>();
+		//We make our test with only one edge
+		Edge cstr = new Edge(3,6,0,6,0,0);
+		BoundaryPart part = new BoundaryPart(bps, cstr);
+		//We connect the point and retrieve the resulting triangles
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
+		tri = part.connectPoint(new Point(7,2,0));
+		tri = part.connectPoint(new Point(9,0,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new Edge(7,2,0,9,0,0)));
+                assertTrue(bps.size()==3);
+		assertTrue(tri.isEmpty());
+	}
+
+	public void testInvisiblePoint() throws DelaunayError{
+		//We fill the boundary part :
+		List<Edge> bps = new ArrayList<Edge>();
+		bps.add(new Edge(0,4,0,4,5,0));
+		//We create the constraint.
+		Edge cstr = new Edge(0,4,0,10,0,0);
+		//We create the boundary part.
+		BoundaryPart part = new BoundaryPart(bps, cstr);
+		//We connect the point and retrieve the resulting triangles.
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(6,7,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(0,4,0,4,5,0)));
+                assertTrue(bps.get(1).equals(new Edge(4,5,0,6,7,0)));
+                assertTrue(bps.size()==2);
+		assertTrue(tri.isEmpty());
 
 	}
 
@@ -158,7 +279,8 @@ public class TestBoundaryPart extends BaseUtility {
 		//We connect the point and retrieve the resulting triangles
 		List<DelaunayTriangle> tri;
 		try{
-			//We test the exception throw
+			//We test the exception throw whent trying to connect a point to a totally
+			//empty boundaryPart.
 			tri = part.connectPoint(new Point(5,4,0));
 			assertTrue(false);
 		} catch (DelaunayError d){
@@ -168,9 +290,9 @@ public class TestBoundaryPart extends BaseUtility {
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
                 assertTrue(bps.get(0).equals(new Edge(0,0,0,2,4,0)));
+		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
 
-		
 		
 	}
 
@@ -189,8 +311,14 @@ public class TestBoundaryPart extends BaseUtility {
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
                 assertTrue(bps.get(0).equals(new Edge(0,0,0,2,2,0)));
+		//next on the resulting triangles.
+		assertTrue(tri.isEmpty());
 		tri = part.connectPoint(new Point(3,2,0));
-		
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+		assertTrue(bps.get(0).equals(new Edge(0,0,0,3,2,0)));
+		assertTrue(bps.get(1).equals(new Edge(3,2,0,2,2,0)));
+		assertTrue(bps.get(2).equals(new Edge(2,2,0,0,0,0)));
 	}
 
 	/**

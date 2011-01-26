@@ -1266,6 +1266,6 @@ public class Edge extends Element implements Comparable<Edge> {
 	 */
 	@Override
 	public String toString() {
-		return "Edge " + gid + " [" + startPoint + ", " + endPoint + "]";
+		return "Edge " + gid + " [Start : " + startPoint + ", End : " + endPoint + "]";
 	}
 }

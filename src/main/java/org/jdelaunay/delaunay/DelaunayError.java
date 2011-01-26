@@ -8,7 +8,7 @@ package org.jdelaunay.delaunay;
  */
 
 
-public class DelaunayError extends Throwable {
+public class DelaunayError extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	// error code saving

@@ -3,6 +3,7 @@ package org.jdelaunay.delaunay;
 import com.vividsolutions.jts.geom.Envelope;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  * points and constraint edges. The constraints can be validated before the triangulation.
  * @author alexis
  */
-public class ConstrainedMesh {
+public class ConstrainedMesh implements Serializable {
 
 	private static Logger log = Logger.getLogger(ConstrainedMesh.class);
 	//The list of triangles during the triangulation process.
