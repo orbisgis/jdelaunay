@@ -22,6 +22,7 @@ public class DelaunayError extends Throwable {
 	public static final int DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND = 103;
 	public static final int DELAUNAY_ERROR_PROXIMITY = 104;
 	public static final int DELAUNAY_ERROR_POINT_NOT_FOUND = 105;
+	public static final int DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT = 106;
 	
 	public static final int DELAUNAY_ERROR_NON_INSERTED_POINT = 200;
 	public static final int DELAUNAY_ERROR_INCORRECT_TOPOLOGY = 201;
@@ -74,6 +75,8 @@ public class DelaunayError extends Throwable {
 			return "distance between the two points is too small";
 		case DELAUNAY_ERROR_POINT_NOT_FOUND :
 			return "point not found";
+		case DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT:
+			return "Can't connect the point to the boundary";
 		case DELAUNAY_ERROR_NON_INSERTED_POINT:
 			return "one point is not inserted in the triangularization";
 		case DELAUNAY_ERROR_INCORRECT_TOPOLOGY:

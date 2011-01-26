@@ -73,7 +73,11 @@ class BoundaryPart {
 	 * @param boundaryEdges
 	 */
 	public void setBoundaryEdges(List<Edge> boundaryEdges) {
-		this.boundaryEdges = boundaryEdges;
+		if(boundaryEdges == null){
+			this.boundaryEdges = new ArrayList<Edge>();
+		}else {
+			this.boundaryEdges = boundaryEdges;
+		}
 	}
 
 	/**
@@ -118,6 +122,9 @@ class BoundaryPart {
          * @return
          */
         public  List<DelaunayTriangle> connectPoint(Point point) throws DelaunayError{
+		if(boundaryEdges.isEmpty() && constraint==null){
+			throw new DelaunayError(101);
+		}
                 ListIterator<Edge> iter = boundaryEdges.listIterator();
 		Edge firstFound = null;
 		Edge mem = null;
@@ -134,6 +141,10 @@ class BoundaryPart {
 		DelaunayTriangle temp = null;
 		while(iter.hasNext()){
 			current = iter.next();
+			//We must put current the right direction if it is degenerated.
+			if(current.isDegenerated() && current.isLeft(point)){
+				current.swap();
+			}
 			if(current.isRight(point)){
 				//we can build a triangle.
 				if(mem == null){
@@ -174,6 +185,17 @@ class BoundaryPart {
 		}
 		//If we're here, the point was still visible from the last Edge of
 		//the list. We must add the last generated edge.
+		//We check that mem is not null. It can be null if point can't be seen
+		//from any edges of this boundary part
+		if(mem==null){
+			//in all cases, we are sure we can connect to the start point
+			//of this.constraint. As we are here, nextBoundaryPart.constraint
+			//can't be seen, so we add a degenerated edge that is linked to the
+			//start point of this.constraint
+			mem = new Edge(constraint.getStartPoint(), point);
+			mem.setDegenerated(true);
+			iter=boundaryEdges.listIterator();
+		}
 		iter.add(mem);
 		return triList;
         }
