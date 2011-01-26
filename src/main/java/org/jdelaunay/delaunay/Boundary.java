@@ -13,7 +13,7 @@ import java.util.List;
 class Boundary {
 
         //The boundary
-        List<BoundaryPart> boundary;
+        private List<BoundaryPart> boundary;
 
         Boundary(){
                 boundary = new ArrayList<BoundaryPart>();
@@ -37,8 +37,8 @@ class Boundary {
          * in every cases, at least one BoundaryPart will be modified.
          * @param pt
          */
-        void insertPoint(Point pt){
-                
+        List<DelaunayTriangle> insertPoint(Point pt){
+                throw new UnsupportedOperationException();
         }
 
 }

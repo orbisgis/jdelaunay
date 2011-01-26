@@ -145,7 +145,7 @@ class BoundaryPart {
 			current = iter.next();
 			//We must put current the right direction if it is degenerated.
 			if(current.isDegenerated()){
-				current = iter.previous();
+				iter.previous();
 				mem = connectToDegenerated(iter, point, triList, mem);
 				rightDeg = mem==null;
 				if(mem != null && mem.isDegenerated()){

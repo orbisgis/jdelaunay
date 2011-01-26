@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
  * @author alexis
  */
 public class ConstrainedMesh implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private static Logger log = Logger.getLogger(ConstrainedMesh.class);
 	//The list of triangles during the triangulation process.

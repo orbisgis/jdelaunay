@@ -10,12 +10,12 @@ package org.jhydrocell.hydronetwork;
 
 public class HydroProperties {
 	// Constraints types
-	static final public int WALL = 1;
-	static final public int SEWER = 1 << 1;
-	static final public int ROAD = 1 << 2;
-	static final public int DITCH = 1 << 3;
-	static final public int RIVER = 1 << 4;
-	static final public int PARCEL = 1 << 5;
+	public static final int WALL = 1;
+	public static final int SEWER = 1 << 1;
+	public static final int ROAD = 1 << 2;
+	public static final int DITCH = 1 << 3;
+	public static final int RIVER = 1 << 4;
+	public static final int PARCEL = 1 << 5;
 
 	// Topographic types
 	public static final int RIDGE = 1 << 10;
@@ -33,8 +33,14 @@ public class HydroProperties {
 	public static final int BORDER = 1 << 22;
 
 	// Generalities
-	static final public int ANY = -1;
-	static final public int NONE = 0;
+	public static final int ANY = -1;
+	public static final int NONE = 0;
+
+	/**
+	 * default constructor is kept private
+	 */
+	private HydroProperties(){
+	}
 
 	/**
 	 * return string from int definition

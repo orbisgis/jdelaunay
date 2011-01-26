@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
  * @author alexis
  */
 public class VerticalComparator implements Comparator<Edge>, Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private static Logger log = Logger.getLogger(VerticalComparator.class);
 

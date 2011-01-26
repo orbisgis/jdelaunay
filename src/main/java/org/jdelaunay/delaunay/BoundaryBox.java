@@ -114,9 +114,12 @@ public class BoundaryBox implements Serializable {
 	 */
 	public void alterBox(double x, double y, double z) {
 		if (empty) {
-			minx = maxx = x;
-			miny = maxy = y;
-			minz = maxz = z;
+			minx = x;
+			maxx = x;
+			miny = y;
+			maxy = y;
+			minz = z;
+			maxz = z;
 			empty = false;
 		}
 		else {
