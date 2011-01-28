@@ -141,8 +141,8 @@ final class Boundary {
 					return ret;
 				} else if(bpo.isConstraintRightPoint(point)){
 					//We've got a positive match, let's use it.
-					ret.add(bp);
-					ret.addAll(getUpperSameRightPoint(index-1, bpo));
+					ret.addAll(getLowerSameRightPoint(index-1, bpo));
+					ret.add(bpo);
 					return ret;
 				} else {
 					delta = delta/2 > 0 ? delta/2 : 1;

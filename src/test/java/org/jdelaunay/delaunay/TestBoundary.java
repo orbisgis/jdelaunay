@@ -105,7 +105,7 @@ public class TestBoundary extends BaseUtility {
 		assertTrue(elig.size()==1);
 		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
 		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,5,0,10,5,0)));
+		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,5,0,10,4,0)));
 	}
 
 	/**
@@ -160,6 +160,29 @@ public class TestBoundary extends BaseUtility {
 		
 	}
 
+	public void testGetEligiblePartRightPoint() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<BoundaryPart> elig = bound.getEligibleParts(new Point(10,4,0));
+		assertTrue(elig.size()==2);
+		assertTrue(elig.get(0).getBoundaryEdges().size()==2);
+		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(3,2,0,5,3,0)));
+		assertTrue(elig.get(0).getBoundaryEdges().get(1).equals(new Edge(5,3,0,6,5,0)));
+		assertTrue(elig.get(0).getConstraint().equals(new Edge(3,2,0,9,0,0)));
+		assertTrue(elig.get(1).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(1).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
+		assertTrue(elig.get(1).getConstraint().equals(new Edge(6,5,0,10,4,0)));
+		//Once again
+		bound = getExampleBoundary();
+		elig = bound.getEligibleParts(new Point(10,7,0));
+		assertTrue(elig.size()==2);
+		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
+		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,5,0,10,4,0)));
+		assertTrue(elig.get(1).getBoundaryEdges().isEmpty());
+		assertTrue(elig.get(1).getConstraint().equals(new Edge(7,7,0,10,7,0)));
+
+	}
+
 	/**
 	 * Get a boundary ready to be tested.
 	 * @return
@@ -184,7 +207,7 @@ public class TestBoundary extends BaseUtility {
 		bp = new BoundaryPart(boundaryEdges, cstr);
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
-		cstr = new Edge(6,5,0,10,5,0);
+		cstr = new Edge(6,5,0,10,4,0);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(6,5,0,7,7,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
