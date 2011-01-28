@@ -88,8 +88,8 @@ final class Boundary {
 			return ret;
 		}
 		if(boundary.get(size -1).isConstraintRightPoint(point)){
-			ret.add(boundary.get(size-1));
 			ret.addAll(getLowerSameRightPoint(size-1, boundary.get(size-1)));
+			ret.add(boundary.get(size-1));
 			return ret;
 		}
 		if(boundary.get(size-1).pointIsUpper(point)){
@@ -166,7 +166,7 @@ final class Boundary {
 	 * @return
 	 */
 	private List<BoundaryPart> getUpperSameRightPoint(int index, BoundaryPart orig){
-		Point point = orig.getConstraint().getPointLeft();
+		Point point = orig.getConstraint().getPointRight();
 		List<BoundaryPart> ret = new ArrayList<BoundaryPart>();
 		BoundaryPart bp;
 		for(int i = index+1; i < boundary.size();i++){
@@ -195,7 +195,7 @@ final class Boundary {
 	 * @return
 	 */
 	private List<BoundaryPart> getLowerSameRightPoint(int index, BoundaryPart orig){
-		Point point = orig.getConstraint().getPointLeft();
+		Point point = orig.getConstraint().getPointRight();
 		List<BoundaryPart> ret = new ArrayList<BoundaryPart>();
 		BoundaryPart bp;
 		for(int i = index-1; i >=0;i--){
@@ -203,6 +203,8 @@ final class Boundary {
 			if(bp.getConstraint().getPointRight().equals(point)){
 				ret.add(bp);
 			} else {
+				//We add this last BP, as it is eligible for a connection
+				//with the new Point.
 				ret.add(bp);
 				break;
 			}
