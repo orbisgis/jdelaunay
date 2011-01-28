@@ -130,6 +130,7 @@ final class Boundary {
 				//... and finally those that are upper. We'll travel through them
 				//in the right order, so.
 				ret.addAll(getUpperSameRightPoint(index, bp));
+				return ret;
 			} else {
 				//...and finally lower.
 				bpo = boundary.get(index-1);

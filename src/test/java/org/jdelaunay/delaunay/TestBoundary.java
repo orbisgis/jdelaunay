@@ -78,6 +78,50 @@ public class TestBoundary extends BaseUtility {
 		assertTrue(elig.get(0).getBoundaryEdges().isEmpty());
 		assertTrue(elig.get(0).getConstraint().equals(new Edge(7,7,0,10,7,0)));
 	}
+
+	/**
+	 * A simple try to retrieve a boundary part.
+	 * @throws DelaunayError
+	 */
+	public void testGetEligiblePartSimple() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<BoundaryPart> elig = bound.getEligibleParts(new Point(9,6,0));
+		assertTrue(elig.size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
+		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,5,0,10,5,0)));
+	}
+
+	/**
+	 * A test with a set of BP that have the same right point for their constraint.
+	 */
+	public void testGetEligiblePartCommonRightPoint() throws DelaunayError {
+		Boundary bound = getExampleboundaryBis();
+		List<BoundaryPart> elig = bound.getEligibleParts(new Point(7,7,0));
+		assertTrue(elig.size()==5);
+		//We test the BoundaryParts.
+		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(0,4,0,0,6,0)));
+		assertTrue(elig.get(0).getConstraint().equals(new Edge(0,4,0,11,1,0)));
+		//We test the BoundaryParts.
+		assertTrue(elig.get(1).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(1).getBoundaryEdges().get(0).equals(new Edge(0,6,0,0,8,0)));
+		assertTrue(elig.get(1).getConstraint().equals(new Edge(0,6,0,7,7,0)));
+		//We test the BoundaryParts.
+		assertTrue(elig.get(2).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(2).getBoundaryEdges().get(0).equals(new Edge(0,8,0,0,10,0)));
+		assertTrue(elig.get(2).getConstraint().equals(new Edge(0,8,0,7,7,0)));
+		//We test the BoundaryParts.
+		assertTrue(elig.get(3).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(3).getBoundaryEdges().get(0).equals(new Edge(0,10,0,0,12,0)));
+		assertTrue(elig.get(3).getConstraint().equals(new Edge(0,10,0,7,7,0)));
+		//We test the BoundaryParts.
+		assertTrue(elig.get(4).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(4).getBoundaryEdges().get(0).equals(new Edge(0,12,0,0,14,0)));
+		assertTrue(elig.get(4).getConstraint().equals(new Edge(0,12,0,7,7,0)));
+		
+	}
+
 	/**
 	 * Get a boundary ready to be tested.
 	 * @return
@@ -102,7 +146,7 @@ public class TestBoundary extends BaseUtility {
 		bp = new BoundaryPart(boundaryEdges, cstr);
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
-		cstr = new Edge(6,5,0,5,10,0);
+		cstr = new Edge(6,5,0,10,5,0);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(6,5,0,7,7,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
@@ -134,6 +178,60 @@ public class TestBoundary extends BaseUtility {
 		cstr = new Edge(3,12,0,9,12,0);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(3,12,0,0,13,0));
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+
+		//We set the list of BoundaryPart in bound.
+		bound.setBoundary(bpl);
+		return bound;
+	}
+
+	private Boundary getExampleboundaryBis(){
+		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
+		BoundaryPart bp;
+		Edge cstr;
+		List<Edge> boundaryEdges;
+		Boundary bound = new Boundary();
+		//We fill a boundary part, and put it in bpl
+		cstr = null;
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,0,0,0,4,0));
+		bp = new BoundaryPart(boundaryEdges);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,4,0,11,1,0);
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,4,0,0,6,0));
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,6,0,7,7,0);
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,6,0,0,8,0));
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,8,0,7,7,0);
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,8,0,0,10,0));
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,10,0,7,7,0);
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,10,0,0,12,0));
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,12,0,7,7,0);
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,12,0,0,14,0));
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,14,0,10,16,0);
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,14,0,0,16,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
 		bpl.add(bp);
 
