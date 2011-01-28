@@ -13,7 +13,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.Triangle;
 import com.vividsolutions.jts.util.Assert;
 
-public class HydroPolygonUtil {
+public final class HydroPolygonUtil {
 
 	private double valeurPente = -1.0;
 

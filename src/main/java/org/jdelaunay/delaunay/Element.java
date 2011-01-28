@@ -65,7 +65,7 @@ public abstract class Element  implements Serializable {
 	 * set GID value
 	 * @param gid
 	 */
-	public void setGID(int gid) {
+	public final void setGID(int gid) {
 		this.gid = gid;
 	}
 
@@ -73,7 +73,7 @@ public abstract class Element  implements Serializable {
 	 * get GID value
 	 * @param gid
 	 */
-	public int getGID() {
+	public final int getGID() {
 		return this.gid;
 	}
 
@@ -81,7 +81,7 @@ public abstract class Element  implements Serializable {
 	 * set property value
 	 * @param property
 	 */
-	public void setProperty(int property) {
+	public final void setProperty(int property) {
 		this.property = property;
 	}
 
@@ -89,7 +89,7 @@ public abstract class Element  implements Serializable {
 	 * add property value
 	 * @param property
 	 */
-	public void addProperty(int property) {
+	public final void addProperty(int property) {
 		this.property |= property;
 	}
 	
@@ -97,7 +97,7 @@ public abstract class Element  implements Serializable {
 	 * check for a specific type value
 	 * @param type
 	 */
-	public boolean hasProperty(int property) {
+	public final boolean hasProperty(int property) {
 		return ((this.property & property) != 0);
 	}
 
@@ -105,7 +105,7 @@ public abstract class Element  implements Serializable {
 	 * get property value
 	 * @return property
 	 */
-	public int getProperty() {
+	public final int getProperty() {
 		return this.property;
 	}
 
@@ -113,7 +113,7 @@ public abstract class Element  implements Serializable {
 	 * Remove all properties of the element
 	 * @param type
 	 */
-	public void removeProperties() {
+	public final void removeProperties() {
 		this.property = 0;
 	}
 	

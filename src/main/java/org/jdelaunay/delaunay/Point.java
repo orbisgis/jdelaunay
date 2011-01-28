@@ -389,7 +389,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "Point "+gid+" [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
 	}
 
@@ -400,7 +400,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @return
 	 */
 	@Override
-	public boolean equals(Object p){
+	public final boolean equals(Object p){
 		if(p instanceof Point){
 			Point y = (Point) p;
                         double dist = (getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY());
@@ -412,7 +412,7 @@ public class Point extends Element implements Comparable<Point> {
 	}
 
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		int hash = 7;
 		hash = 67 * hash + (this.coord != null ? this.coord.hashCode() : 0);
 		return hash;

@@ -24,16 +24,11 @@ public class JTSUtilities {
 	 * @return The Triangle.
 	 */
 	public static Triangle createClockwiseTriangle(final Coordinate c0,
-			final Coordinate c1, final Coordinate c2) {
-		try {
-			if (CGAlgorithms.computeOrientation(c0, c1, c2) == CGAlgorithms.CLOCKWISE) {
-				return new Triangle(c0, c1, c2);
-			} else {
-				return new Triangle(c0, c2, c1);
-			}
-		} catch (IllegalStateException e) {
-			throw e;
+		final Coordinate c1, final Coordinate c2) {
+		if (CGAlgorithms.computeOrientation(c0, c1, c2) == CGAlgorithms.CLOCKWISE) {
+			return new Triangle(c0, c1, c2);
+		} else {
+			return new Triangle(c0, c2, c1);
 		}
-
 	}
 }

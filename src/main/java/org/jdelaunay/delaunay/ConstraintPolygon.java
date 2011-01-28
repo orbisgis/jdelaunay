@@ -15,7 +15,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class ConstraintPolygon extends Element {
+public final class ConstraintPolygon extends Element {
 
 	/**
 	 * 

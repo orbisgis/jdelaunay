@@ -27,6 +27,10 @@ class Boundary {
                 return boundary;
         }
 
+	/**
+	 * Set the list of BoundaryPart.
+	 * @param bound
+	 */
         void setBoundary(List<BoundaryPart> bound){
                 boundary = bound;
         }
@@ -40,6 +44,11 @@ class Boundary {
         List<DelaunayTriangle> insertPoint(Point pt){
                 throw new UnsupportedOperationException();
         }
+
+	private List<BoundaryPart> getEligibleParts(Point point){
+		
+		throw new UnsupportedOperationException();
+	}
 
 }
 

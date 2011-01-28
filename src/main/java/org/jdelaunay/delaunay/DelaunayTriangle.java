@@ -979,7 +979,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @return
 	 */
 	@Override
-	public boolean equals(Object other){
+	public final boolean equals(Object other){
 		if(other instanceof DelaunayTriangle){
 			DelaunayTriangle otherTri = (DelaunayTriangle) other;
 			boolean ret = belongsTo(otherTri.getPoint(0)) && belongsTo(otherTri.getPoint(1))
@@ -991,7 +991,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		int hash = 5;
 		hash = 97 * hash + Arrays.deepHashCode(this.edges);
 		return hash;
@@ -1010,7 +1010,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @return
 	 */
 	@Override
-	public int compareTo(DelaunayTriangle t) {
+	public final int compareTo(DelaunayTriangle t) {
 		Coordinate midT = getBoundingBox().getMiddle();
 		Coordinate midO = t.getBoundingBox().getMiddle();
 		int c = midT.compareTo(midO);

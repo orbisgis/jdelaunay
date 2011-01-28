@@ -1086,7 +1086,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return
 	 */
 	@Override
-	public boolean equals(Object other){
+	public final boolean equals(Object other){
 		if (other instanceof Edge){
 			Edge otherEdge = (Edge) other;
 			return (endPoint.equals(otherEdge.getEnd()) && startPoint.equals(otherEdge.getStart()))
@@ -1103,7 +1103,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return
 	 */
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		Point p1 = this.startPoint;
 		Point p2 = this.endPoint;
 		int hashValue = 0;
@@ -1265,7 +1265,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "Edge " + gid + " [Start : " + startPoint + ", End : " + endPoint + "]";
 	}
 }

@@ -17,14 +17,14 @@ import java.util.ListIterator;
 class BoundaryPart {
 
 	//the section of the boundary contained in this BoundaryPart.
-	List<Edge> boundaryEdges;
+	private List<Edge> boundaryEdges;
 	//The constraint that define the lower scope of this boundary part.
 	//The upper scope will be defined by the next BoundaryPart in the Boundary class.
-	Edge constraint;
+	private Edge constraint;
 	//The list of edges that could be swapped during the flip-flap.
-	List<Edge> badEdges;
+	private List<Edge> badEdges;
 	//The list of newly added Edges
-	List<Edge> addedEdges;
+	private List<Edge> addedEdges;
 
 	private void init(){
 		badEdges = new ArrayList<Edge>();
