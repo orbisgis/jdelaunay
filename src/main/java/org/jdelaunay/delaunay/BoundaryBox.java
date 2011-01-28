@@ -98,7 +98,7 @@ public class BoundaryBox implements Serializable {
 	/**
 	 * Update middle coordinate. 
 	 */
-	private void updateMiddle(){
+	private final void updateMiddle(){
 		double mx = (maxx-minx)/2;
 		double my = (maxy-miny)/2;
 		double mz = (maxz-minz)/2;
@@ -112,7 +112,7 @@ public class BoundaryBox implements Serializable {
 	 * @param y
 	 * @param z
 	 */
-	public void alterBox(double x, double y, double z) {
+	public final void alterBox(double x, double y, double z) {
 		if (empty) {
 			minx = x;
 			maxx = x;
@@ -150,7 +150,7 @@ public class BoundaryBox implements Serializable {
 	 * 
 	 * @param aPoint
 	 */
-	public void alterBox(Point aPoint) {
+	public final void alterBox(Point aPoint) {
 		double x = aPoint.getX();
 		double y = aPoint.getY();
 		double z = aPoint.getZ();
@@ -161,18 +161,18 @@ public class BoundaryBox implements Serializable {
 	/**
 	 * @return Middle coordinate of box.
 	 */
-	public Coordinate getMiddle()
+	public final Coordinate getMiddle()
 	{
 		return middle;
 	}
 	
         @Override
-	public String toString()
+	public final String toString()
 	{
 		return "min x["+minx+"] y["+miny+"] z["+minz+"] | max x["+maxx+"] y["+maxy+"] z["+maxz+"]";
 	}
 
-	public ArrayList<Point> getPoints() throws DelaunayError {
+	public final ArrayList<Point> getPoints() throws DelaunayError {
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point(minx, miny, 0));
 		points.add(new Point(minx, maxy, 0));

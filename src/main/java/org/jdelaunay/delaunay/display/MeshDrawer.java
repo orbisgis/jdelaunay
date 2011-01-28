@@ -33,7 +33,7 @@ public class MeshDrawer extends JFrame {
          * Set thhe mesh to be displayed by this frame.
          * @param myMesh
          */
-        public void add(ConstrainedMesh myMesh) {
+        public final void add(ConstrainedMesh myMesh) {
                 this.myMesh = myMesh;
         }
 
@@ -42,7 +42,7 @@ public class MeshDrawer extends JFrame {
          * @param g
          */
 	@Override
-        public void paint(Graphics g) {
+        public final void paint(Graphics g) {
                 if (myMesh != null) {
 			myMesh.displayObject(g);
 		}
@@ -51,7 +51,7 @@ public class MeshDrawer extends JFrame {
         /**
          * Refresh (redraw) the frame.
          */
-        public void refresh() {
+        public final void refresh() {
                 this.invalidate();
                 this.repaint();
         }

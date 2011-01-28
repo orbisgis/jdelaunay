@@ -16,7 +16,7 @@ import org.jhydrocell.utilities.MathUtil;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class HydroNetwork {
+public final class HydroNetwork {
 	private ConstrainedMesh theMesh;
 
 	private LinkedList<Point> listEntry;
