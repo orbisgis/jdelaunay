@@ -37,22 +37,44 @@ public class DelaunayError extends Exception {
 
 	private String message="";
 
+	/**
+	 * Default constructor, the associated message is DELAUNAY_INTERNAL_ERROR
+	 */
 	public DelaunayError() {
 		super();
 		code = DELAUNAY_ERROR_INTERNAL_ERROR;
 	}
 
+	/**
+	 * DelaunayError instanciated with a custom message. The inner error code
+	 * is DELAUNAY_EROR_MISC
+	 * @param s
+	 */
 	public DelaunayError(String s){
 		super(s);
 		message = s;
 		code = DELAUNAY_ERROR_MISC;
 	}
 
+	/**
+	 * DelaunayError created with the wanted error code.
+	 * @param errorCode
+	 */
 	public DelaunayError(int errorCode) {
 		super();
 		code = errorCode;
 	}
 
+	/**
+	 * DelaunayError created with both a custom message and a given error code.
+	 * @param errorCode
+	 * @param s
+	 */
+	public DelaunayError(int errorCode, String s) {
+		super();
+		message = s;
+		code = errorCode;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -60,41 +82,60 @@ public class DelaunayError extends Exception {
 	 */
 	@Override
 	public final String getMessage() {
+		String ret;
 		switch (code) {
 		case DELAUNAY_ERROR_NO_ERROR:
-			return "no error";
+			ret= "no error";
+			break;
 		case DELAUNAY_ERROR_NO_MESH:
-			return "no mesh found to start process";
+			ret= "no mesh found to start process";
+			break;
 		case DELAUNAY_ERROR_GENERATED:
-			return "triangulation has already been processed";
+			ret= "triangulation has already been processed";
+			break;
 		case DELAUNAY_ERROR_NOT_GENERATED:
-			return "triangulation has not yet been processed";
+			ret= "triangulation has not yet been processed";
+			break;
 		case DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND:
-			return "not enough points found to triangularize";
+			ret= "not enough points found to triangularize";
+			break;
 		case DELAUNAY_ERROR_PROXIMITY :
-			return "distance between the two points is too small";
+			ret= "distance between the two points is too small";
+			break;
 		case DELAUNAY_ERROR_POINT_NOT_FOUND :
-			return "point not found";
+			ret= "point not found";
+			break;
 		case DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT:
-			return "Can't connect the point to the boundary";
+			ret= "Can't connect the point to the boundary";
+			break;
 		case DELAUNAY_ERROR_NON_INSERTED_POINT:
-			return "one point is not inserted in the triangularization";
+			ret= "one point is not inserted in the triangularization";
+			break;
 		case DELAUNAY_ERROR_INCORRECT_TOPOLOGY:
-			return "Incorrect topology";
+			ret= "Incorrect topology";
+			break;
 		case DELAUNAY_ERROR_OUTSIDE_TRIANGLE:
-			return "point is outside the triangle";
+			ret= "point is outside the triangle";
+			break;
 		case DELAUNAY_ERROR_REMOVING_EDGE:
-			return "Problem while removing an edge";
+			ret= "Problem while removing an edge";
+			break;
 		case DELAUNAY_ERROR_ERROR_POINT_XYZ:
-			return "point should have X, Y and Z coordinates";
-			
+			ret= "point should have X, Y and Z coordinates";
+			break;
 		case DELAUNAY_ERROR_INVALID_CALL:
-			return "Invalid function call";
+			ret= "Invalid function call";
+			break;
 		case DELAUNAY_ERROR_INTERNAL_ERROR:
-			return "internal error, please call support";
-			
+			ret= "internal error, please call support";
+			break;
 		default:
 			return message;
+		}
+		if(message.isEmpty()){
+			return ret;
+		} else {
+			return ret+", "+message;
 		}
 	}
 }
