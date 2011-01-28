@@ -25,11 +25,12 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePartsLower() throws DelaunayError{
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(8,-1,0));
-		assertTrue(elig.size()==1);
-		Edge ed = elig.get(0).getBoundaryEdges().get(0);
+		List<Integer> indices = bound.getEligibleParts(new Point(8,-1,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==1);
+		Edge ed = elig.get(indices.get(0)).getBoundaryEdges().get(0);
 		assertTrue(ed.equals(new Edge(0,1,0,3,2,0)));
-		assertNull(elig.get(0).getConstraint());
+		assertNull(elig.get(indices.get(0)).getConstraint());
 	}
 
 	/**
@@ -38,14 +39,15 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePartsLowerBis() throws DelaunayError{
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(9,0,0));
-		assertTrue(elig.size()==2);
-		Edge ed = elig.get(0).getBoundaryEdges().get(0);
+		List<Integer> indices = bound.getEligibleParts(new Point(9,0,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==2);
+		Edge ed = elig.get(indices.get(0)).getBoundaryEdges().get(0);
 		assertTrue(ed.equals(new Edge(0,1,0,3,2,0)));
-		assertNull(elig.get(0).getConstraint());
-		assertTrue(elig.get(1).getBoundaryEdges().get(0).equals(new Edge(3,2,0,5,3,0)));
-		assertTrue(elig.get(1).getBoundaryEdges().get(1).equals(new Edge(5,3,0,6,5,0)));
-		assertTrue(elig.get(1).getConstraint().equals(new Edge(3,2,0,9,0,0)));
+		assertNull(elig.get(indices.get(0)).getConstraint());
+		assertTrue(elig.get(indices.get(1)).getBoundaryEdges().get(0).equals(new Edge(3,2,0,5,3,0)));
+		assertTrue(elig.get(indices.get(1)).getBoundaryEdges().get(1).equals(new Edge(5,3,0,6,5,0)));
+		assertTrue(elig.get(indices.get(1)).getConstraint().equals(new Edge(3,2,0,9,0,0)));
 	}
 
 	/**
@@ -54,11 +56,12 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePartsUpper() throws DelaunayError{
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(8,13,0));
-		assertTrue(elig.size()==1);
-		Edge ed = elig.get(0).getBoundaryEdges().get(0);
+		List<Integer> indices = bound.getEligibleParts(new Point(8,13,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==1);
+		Edge ed = elig.get(indices.get(0)).getBoundaryEdges().get(0);
 		assertTrue(ed.equals(new Edge(0,13,0,3,12,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(3,12,0,9,12,0)));
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(3,12,0,9,12,0)));
 	}
 
 	/**
@@ -67,20 +70,21 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePartsUpperBis() throws DelaunayError{
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(9,12,0));
-		assertTrue(elig.size()==4);
-		Edge ed = elig.get(0).getBoundaryEdges().get(0);
+		List<Integer> indices = bound.getEligibleParts(new Point(9,12,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==4);
+		Edge ed = elig.get(indices.get(0)).getBoundaryEdges().get(0);
 		assertTrue(ed.equals(new Edge(7,7,0,6,10,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(7,7,0,10,9,0)));
-		ed = elig.get(1).getBoundaryEdges().get(0);
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(7,7,0,10,9,0)));
+		ed = elig.get(indices.get(1)).getBoundaryEdges().get(0);
 		assertTrue(ed.equals(new Edge(6,10,0,5,11,0)));
-		assertTrue(elig.get(1).getConstraint().equals(new Edge(6,10,0,9,12,0)));
-		ed = elig.get(2).getBoundaryEdges().get(0);
+		assertTrue(elig.get(indices.get(1)).getConstraint().equals(new Edge(6,10,0,9,12,0)));
+		ed = elig.get(indices.get(2)).getBoundaryEdges().get(0);
 		assertTrue(ed.equals(new Edge(5,11,0,3,12,0)));
-		assertTrue(elig.get(2).getConstraint().equals(new Edge(5,11,0,9,12,0)));
-		ed = elig.get(3).getBoundaryEdges().get(0);
+		assertTrue(elig.get(indices.get(2)).getConstraint().equals(new Edge(5,11,0,9,12,0)));
+		ed = elig.get(indices.get(3)).getBoundaryEdges().get(0);
 		assertTrue(ed.equals(new Edge(0,13,0,3,12,0)));
-		assertTrue(elig.get(3).getConstraint().equals(new Edge(3,12,0,9,12,0)));
+		assertTrue(elig.get(indices.get(3)).getConstraint().equals(new Edge(3,12,0,9,12,0)));
 	}
 
 	/**
@@ -89,10 +93,11 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePartDegenerated() throws DelaunayError {
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(9,8,0));
-		assertTrue(elig.size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().isEmpty());
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(7,7,0,10,7,0)));
+		List<Integer> indices = bound.getEligibleParts(new Point(9,8,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().isEmpty());
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(7,7,0,10,7,0)));
 	}
 
 	/**
@@ -101,11 +106,12 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePartSimple() throws DelaunayError {
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(9,6,0));
-		assertTrue(elig.size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,5,0,10,4,0)));
+		List<Integer> indices = bound.getEligibleParts(new Point(9,6,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(6,5,0,10,4,0)));
 	}
 
 	/**
@@ -113,28 +119,29 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePartCommonRightPoint() throws DelaunayError {
 		Boundary bound = getExampleboundaryBis();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(7,7,0));
-		assertTrue(elig.size()==5);
+		List<Integer> indices = bound.getEligibleParts(new Point(7,7,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==5);
 		//We test the BoundaryParts.
-		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(0,4,0,0,6,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(0,4,0,11,1,0)));
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().get(0).equals(new Edge(0,4,0,0,6,0)));
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(0,4,0,11,1,0)));
 		//We test the BoundaryParts.
-		assertTrue(elig.get(1).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(1).getBoundaryEdges().get(0).equals(new Edge(0,6,0,0,8,0)));
-		assertTrue(elig.get(1).getConstraint().equals(new Edge(0,6,0,7,7,0)));
+		assertTrue(elig.get(indices.get(1)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(1)).getBoundaryEdges().get(0).equals(new Edge(0,6,0,0,8,0)));
+		assertTrue(elig.get(indices.get(1)).getConstraint().equals(new Edge(0,6,0,7,7,0)));
 		//We test the BoundaryParts.
-		assertTrue(elig.get(2).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(2).getBoundaryEdges().get(0).equals(new Edge(0,8,0,0,10,0)));
-		assertTrue(elig.get(2).getConstraint().equals(new Edge(0,8,0,7,7,0)));
+		assertTrue(elig.get(indices.get(2)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(2)).getBoundaryEdges().get(0).equals(new Edge(0,8,0,0,10,0)));
+		assertTrue(elig.get(indices.get(2)).getConstraint().equals(new Edge(0,8,0,7,7,0)));
 		//We test the BoundaryParts.
-		assertTrue(elig.get(3).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(3).getBoundaryEdges().get(0).equals(new Edge(0,10,0,0,12,0)));
-		assertTrue(elig.get(3).getConstraint().equals(new Edge(0,10,0,7,7,0)));
-		//We test the BoundaryParts.
-		assertTrue(elig.get(4).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(4).getBoundaryEdges().get(0).equals(new Edge(0,12,0,0,14,0)));
-		assertTrue(elig.get(4).getConstraint().equals(new Edge(0,12,0,7,7,0)));
+		assertTrue(elig.get(indices.get(3)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(3)).getBoundaryEdges().get(0).equals(new Edge(0,10,0,0,12,0)));
+		assertTrue(elig.get(indices.get(3)).getConstraint().equals(new Edge(0,10,0,7,7,0)));
+		//We test the BoundaryParts
+		assertTrue(elig.get(indices.get(4)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(4)).getBoundaryEdges().get(0).equals(new Edge(0,12,0,0,14,0)));
+		assertTrue(elig.get(indices.get(4)).getConstraint().equals(new Edge(0,12,0,7,7,0)));
 		
 	}
 
@@ -145,41 +152,43 @@ public class TestBoundary extends BaseUtility {
 	 */
 	public void testGetEligiblePart() throws DelaunayError {
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(7,11,0));
-		assertTrue(elig.size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,10,0,5,11,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,10,0,9,12,0)));
+		List<Integer> indices = bound.getEligibleParts(new Point(7,11,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().get(0).equals(new Edge(6,10,0,5,11,0)));
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(6,10,0,9,12,0)));
 		//Once again
 		bound = getExampleBoundary();
-		elig = bound.getEligibleParts(new Point(7,10,0));
-		assertTrue(elig.size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,10,0,7,7,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(7,7,0,10,9,0)));
+		indices = bound.getEligibleParts(new Point(7,10,0));
+		assertTrue(indices.size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().get(0).equals(new Edge(6,10,0,7,7,0)));
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(7,7,0,10,9,0)));
 		
 	}
 
 	public void testGetEligiblePartRightPoint() throws DelaunayError {
 		Boundary bound = getExampleBoundary();
-		List<BoundaryPart> elig = bound.getEligibleParts(new Point(10,4,0));
-		assertTrue(elig.size()==2);
-		assertTrue(elig.get(0).getBoundaryEdges().size()==2);
-		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(3,2,0,5,3,0)));
-		assertTrue(elig.get(0).getBoundaryEdges().get(1).equals(new Edge(5,3,0,6,5,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(3,2,0,9,0,0)));
-		assertTrue(elig.get(1).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(1).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
-		assertTrue(elig.get(1).getConstraint().equals(new Edge(6,5,0,10,4,0)));
+		List<Integer> indices = bound.getEligibleParts(new Point(10,4,0));
+		List<BoundaryPart> elig = bound.getBoundary();
+		assertTrue(indices.size()==2);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().size()==2);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().get(0).equals(new Edge(3,2,0,5,3,0)));
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().get(1).equals(new Edge(5,3,0,6,5,0)));
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(3,2,0,9,0,0)));
+		assertTrue(elig.get(indices.get(1)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(1)).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
+		assertTrue(elig.get(indices.get(1)).getConstraint().equals(new Edge(6,5,0,10,4,0)));
 		//Once again
 		bound = getExampleBoundary();
-		elig = bound.getEligibleParts(new Point(10,7,0));
-		assertTrue(elig.size()==2);
-		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
-		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
-		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,5,0,10,4,0)));
-		assertTrue(elig.get(1).getBoundaryEdges().isEmpty());
-		assertTrue(elig.get(1).getConstraint().equals(new Edge(7,7,0,10,7,0)));
+		indices = bound.getEligibleParts(new Point(10,7,0));
+		assertTrue(indices.size()==2);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(indices.get(0)).getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
+		assertTrue(elig.get(indices.get(0)).getConstraint().equals(new Edge(6,5,0,10,4,0)));
+		assertTrue(elig.get(indices.get(1)).getBoundaryEdges().isEmpty());
+		assertTrue(elig.get(indices.get(1)).getConstraint().equals(new Edge(7,7,0,10,7,0)));
 
 	}
 
