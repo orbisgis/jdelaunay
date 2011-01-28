@@ -486,14 +486,14 @@ public class VerticalList {
 		int inter;
 		if(upper!=null){
 			inter = upper.intersects(ed);
-			if(inter == 1){
+			if(inter == Edge.INTERSECT){
 				return true;
 			}
 		}
 		Edge lower = getLowerEdge(pRef);
 		if(lower!=null){
 			inter = lower.intersects(ed);
-			if(inter == 1){
+			if(inter == Edge.INTERSECT){
 				return true;
 			}
 		}

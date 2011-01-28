@@ -884,7 +884,7 @@ public class ConstrainedMesh implements Serializable {
 		int inter;
 		for (Edge ed : edges) {
 			inter = ed.intersects(edge);
-			if (inter == 1 || inter == 4) {
+			if (inter == Edge.INTERSECT || inter == Edge.SHARE_EDGE_PART) {
 				return true;
 			}
 		}
@@ -1234,7 +1234,7 @@ public class ConstrainedMesh implements Serializable {
 				} else {
 					tmp = new Edge(cstrUp.getPointLeft(), cstrLow.getPointLeft());
 					int inter = degenerated.intersects(tmp);
-					if(inter == 1 || inter == 4){
+					if(inter == Edge.INTERSECT || inter == Edge.SHARE_EDGE_PART){
 						degenerated = new Edge(cstrUp.getPointLeft(), ptToAdd);
 						degenerated = replaceByConstraint(degenerated);
 					} else {
@@ -1464,7 +1464,7 @@ public class ConstrainedMesh implements Serializable {
 		int inter;
 		for(Edge ed : boundaryEdges){
 			inter = ed.intersects(edge);
-			if(inter == 1 || inter == 4 ){
+			if(inter == Edge.INTERSECT || inter == Edge.SHARE_EDGE_PART ){
 				return true;
 			}
 		}
@@ -1482,7 +1482,7 @@ public class ConstrainedMesh implements Serializable {
 
 	private boolean overlapsContent(Edge ed, List<Edge> edges) throws DelaunayError{
 		for(Edge edge : edges){
-			if(ed.intersects(edge)==4){
+			if(ed.intersects(edge)==Edge.SHARE_EDGE_PART){
 				return true;
 			}
 		}

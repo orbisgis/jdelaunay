@@ -291,7 +291,7 @@ public final class ConstraintPolygon extends Element {
 			if(edges.get(i).haveSamePoint(anEdge)) {
 				edgeColinear = true;
 			}
-			else if(edges.get(i).intersects(anEdge.getStartPoint(), anEdge.getEndPoint())==1) {
+			else if(edges.get(i).intersects(anEdge.getStartPoint(), anEdge.getEndPoint())==Edge.INTERSECT) {
 				intersectEdge = true;
 			}
 		}
@@ -311,7 +311,7 @@ public final class ConstraintPolygon extends Element {
 		boolean intersect=false;
 		for(int i=0;i<edges.size() && !intersect;i++ )
 		{
-			intersect=edges.get(i).intersects(anEdge.getStartPoint(),anEdge.getEndPoint()) == 1;
+			intersect=edges.get(i).intersects(anEdge.getStartPoint(),anEdge.getEndPoint()) == Edge.INTERSECT;
 		}
 			
 		return intersect;

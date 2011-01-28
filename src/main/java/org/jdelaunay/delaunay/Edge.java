@@ -45,6 +45,32 @@ public class Edge extends Element implements Comparable<Edge> {
 	static final int UPSLOPE = -1;
 	static final int DOWNSLOPE = 1;
 	static final int FLATSLOPE = 0;
+	//Intersection constants :
+	/**
+	 * Value returned by the intersects method when the two edges don't intersect
+	 */
+	public static final int NO_INTERSECTION=0;
+	/**
+	 * Value returned by the intersects method when the two edges intersect in one point
+	 *
+	 */
+	public static final int INTERSECT=1;
+	/**
+	 * Value returned by the intersects method when the two edges are colinear and don't
+	 * intersect
+	 */
+	public static final int COLINEAR=2;
+	/**
+	 * Value returned by the intersects method when the two edges intersect in one
+	 * point that is an extremity for both of them.
+	 */
+	public static final int SHARE_EXTREMITY=3;
+	/**
+	 * Value returned by the intersects method when the two edges intersect in
+	 * more than one point (ie they are colinear and do not just share their extremities).
+	 */
+	public static final int SHARE_EDGE_PART=4;
+
 
 	/**
 	 * Initialize data.
@@ -524,17 +550,16 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param p1 the start point of the other edge
 	 * @param p2 the end point of the other edge
 	 * @return intersection :<br/>
-	 * 			0 = no intersection<br/>
-	 * 			1 = intersect<br/>
-	 * 			2 = co-linear and don't intersect<br/>
-	 * 			3 = intersects at the extremity<br/>
-	 *			4 = intersect in more than one point<br/>
+	 * 			NO_INTERSECTION = no intersection<br/>
+	 * 			INTERSECT = intersect<br/>
+	 * 			COLINEAR = co-linear and don't intersect<br/>
+	 * 			SHARE_EXTREMITY = intersects at the extremity<br/>
+	 *			SHARE_EDGE_PART = intersect in more than one point<br/>
 	 * note that if on extremity of an edge lies inside the other edge, but
 	 * is not one of the extremities of the other edge, this method
 	 * returns 1
 	 */
 	public final int intersects(Point p1, Point p2) throws DelaunayError {
-		int result = 0;
 		Point p3 = this.startPoint;
 		Point p4 = this.endPoint;
 		Element inter = getIntersection(p1, p2, false);
@@ -550,9 +575,9 @@ public class Edge extends Element implements Comparable<Edge> {
 			double d = b1 * a2 - b2 * a1;
 			if(-Tools.EPSILON2 < d && d < Tools.EPSILON2){
 				//the two edges are colinear
-				return 2;
+				return COLINEAR;
 			}else {
-				return 0;
+				return NO_INTERSECTION;
 			}
 		} else if(inter instanceof Point){
 			//intersection in one point,
@@ -563,17 +588,17 @@ public class Edge extends Element implements Comparable<Edge> {
 				(interPoint.squareDistance2D(p3)<Tools.EPSILON2||
 				interPoint.squareDistance2D(p4)<Tools.EPSILON2)){
 				//intersection at an extremity of each edge.
-				return 3;
+				return SHARE_EXTREMITY;
 			} else {
-				return 1;
+				return INTERSECT;
 			}
 			
 		} else if(inter instanceof Edge){
 			//intersection in more than
 			//one point, return 4
-			return 4;
+			return SHARE_EDGE_PART;
 		}
-		return result;
+		return NO_INTERSECTION;
 	}
 
 	/**
