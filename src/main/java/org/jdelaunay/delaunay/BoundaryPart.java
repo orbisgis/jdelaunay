@@ -21,6 +21,15 @@ class BoundaryPart {
 	//The constraint that define the lower scope of this boundary part.
 	//The upper scope will be defined by the next BoundaryPart in the Boundary class.
 	Edge constraint;
+	//The list of edges that could be swapped during the flip-flap.
+	List<Edge> badEdges;
+	//The list of newly added Edges
+	List<Edge> addedEdges;
+
+	private void init(){
+		badEdges = new ArrayList<Edge>();
+		addedEdges = new ArrayList<Edge>();
+	}
 
 	/**
 	 * default constructor is kept private.
@@ -35,6 +44,7 @@ class BoundaryPart {
 	 * @param cstr
 	 */
 	public BoundaryPart(List<Edge> bound, Edge cstr){
+		init();
 		boundaryEdges = bound;
 		constraint = cstr;
 	}
@@ -47,6 +57,7 @@ class BoundaryPart {
 	 * @param bound
 	 */
 	public BoundaryPart(List<Edge> bound){
+		init();
 		boundaryEdges = bound;
 		constraint = null;
 	}
@@ -57,6 +68,7 @@ class BoundaryPart {
 	 * @param cstr
 	 */
 	public BoundaryPart(Edge cstr){
+		init();
 		constraint = cstr;
 		boundaryEdges = new ArrayList<Edge>();
 	}
@@ -99,6 +111,22 @@ class BoundaryPart {
 	}
 
 	/**
+	 * Get the edges added to the mesh during the last insertion of a point.
+	 * @return
+	 */
+	public List<Edge> getAddedEdges(){
+		return addedEdges;
+	}
+
+	/**
+	 * Gets the edges that will need to be processed by the flip-flap algorithm
+	 * @return
+	 */
+	public List<Edge> getBadEdges(){
+		return badEdges;
+	}
+
+	/**
 	 * Check if bpo can be the next BoundaryPart of the boundary. It is true
 	 * if bpo's left point lies on the last edge of this boundary part.
 	 * @param bpo
@@ -124,8 +152,10 @@ class BoundaryPart {
          */
         public  List<DelaunayTriangle> connectPoint(Point point) throws DelaunayError{
 		if(boundaryEdges.isEmpty() && constraint==null){
-			throw new DelaunayError(101);
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
 		}
+		badEdges = new ArrayList<Edge>();
+		addedEdges = new ArrayList<Edge>();
                 ListIterator<Edge> iter = boundaryEdges.listIterator();
 		Edge firstFound = null;
 		Edge mem = null;
@@ -136,6 +166,7 @@ class BoundaryPart {
 		if(boundaryEdges.isEmpty()){
 			firstFound = new Edge(constraint.getPointLeft(),point);
 			firstFound.setDegenerated(true);
+			addedEdges.add(firstFound);
 			boundaryEdges.add(firstFound);
 			return new ArrayList<DelaunayTriangle>();
 		}
@@ -153,10 +184,16 @@ class BoundaryPart {
 				}
 			} else {
 				if(current.isRight(point)){
+					//Current is not degenerated, so it will become
+					//an inner Edge of the mesh. We must process the flip
+					//flap on it if necessary.
+					badEdges.add(current);
 					//we can build a triangle.
 					if(mem == null){
 						//if not already set, we must instanciate mem
 						mem = new Edge(current.getStartPoint(),point);
+						//We will add an Edge in the mesh.
+						addedEdges.add(mem);
 						//We must insert this new edge at the right position in
 						//the boundaryEdges list. For that we come one step
 						//back and add it with the listIterator.
@@ -169,6 +206,8 @@ class BoundaryPart {
 					}
 					//We build the last Edge of the triangle we are about to add.
 					memBis = new Edge(point, current.getEndPoint());
+					//We will add an Edge in the mesh.
+					addedEdges.add(memBis);
 					//we can build the triangle...
 					temp = new DelaunayTriangle(current, mem, memBis);
 					//...and add it to the list we'll return.
@@ -245,12 +284,14 @@ class BoundaryPart {
 				current = iter.previous();
 				ret = new Edge(current.getEndPoint(),point);
 				ret.setDegenerated(true);
+				addedEdges.add(ret);
 				iter.next();
 				iter.add(ret);
 				return ret;
 			} else {
 				ret = new Edge(current.getEndPoint(),point);
 				ret.setDegenerated(true);
+				addedEdges.add(ret);
 				iter.add(ret);
 				return ret;
 			}
@@ -297,11 +338,13 @@ class BoundaryPart {
 						//We avoid edge duplication here.
 						mem=prevAdded;
 					} else {
+						addedEdges.add(mem);
 						iter.add(mem);
 					}
 				}
 				//We build the Edge we don't know yet
 				memBis = new Edge(point, current.getStartPoint());
+				addedEdges.add(memBis);
 				//And we add the new Triangle to the list.
 				tri.add(new DelaunayTriangle(mem, memBis, current));
 				mem=memBis;

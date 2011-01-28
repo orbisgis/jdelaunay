@@ -322,6 +322,107 @@ public class TestBoundaryPart extends BaseUtility {
 	}
 
 	/**
+	 * The BoundaryPart stores the edges that was added to the mesh during the
+	 * last insertion of a point. We check we retrieve all the desired edges here.
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void testRetrieveAddedEdges() throws DelaunayError {
+		List<Edge> bps = new ArrayList<Edge>();
+		bps.add(new Edge(7,0,0,6,2,0));
+		bps.add(new Edge(6,2,0,4,4,0));
+		bps.add(new Edge(4,4,0,0,5,0));
+		BoundaryPart part = new BoundaryPart(bps);
+		part.setBoundaryEdges(bps);
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(6,5,0));
+		List<Edge> added = part.getAddedEdges();
+		assertTrue(added.size()==4);
+		assertTrue(added.contains(new Edge(7,0,0,6,5,0)));
+		assertTrue(added.contains(new Edge(6,2,0,6,5,0)));
+		assertTrue(added.contains(new Edge(4,4,0,6,5,0)));
+		assertTrue(added.contains(new Edge(0,5,0,6,5,0)));
+	}
+
+	/**
+	 * The BoundaryPart stores the edges that must be added in the badEdgeQueueList
+	 * due to the last insertion of a point. We check that we retrieve all the expected.
+	 * bad edges
+	 * @throws DelaunayError
+	 */
+	public void testRetrieveBadEdges() throws DelaunayError {
+		List<Edge> bps = new ArrayList<Edge>();
+		bps.add(new Edge(7,0,0,6,2,0));
+		bps.add(new Edge(6,2,0,4,4,0));
+		bps.add(new Edge(4,4,0,0,5,0));
+		BoundaryPart part = new BoundaryPart(bps);
+		part.setBoundaryEdges(bps);
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(6,5,0));
+		List<Edge> bad = part.getBadEdges();
+		assertTrue(bad.size()==3);
+		assertTrue(bad.contains(new Edge(7,0,0,6,2,0)));
+		assertTrue(bad.contains(new Edge(6,2,0,4,4,0)));
+		assertTrue(bad.contains(new Edge(4,4,0,0,5,0)));
+		
+	}
+
+	/**
+	 * We check that we retrieve the expected bad and added edges when 
+	 * inserting a point that create a degenerated edge.
+	 * @throws DelaunayError
+	 */
+	public void testRetrieveBadAddedEdgesDegen() throws DelaunayError{
+		List<Edge> bps = new ArrayList<Edge>();
+		Edge cstr = new Edge(0,0,0,8,1,0);
+		BoundaryPart part = new BoundaryPart(bps, cstr);
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(2,2,0));
+		assertTrue(tri.isEmpty());
+		List<Edge> bad = part.getBadEdges();
+		assertTrue(bad.isEmpty());
+		List<Edge> added = part.getAddedEdges();
+		assertTrue(added.size()==1);
+		assertTrue(added.contains(new Edge(0,0,0,2,2,0)));
+		tri = part.connectPoint(new Point(4,4,0));
+		assertTrue(tri.isEmpty());
+		bad = part.getBadEdges();
+		assertTrue(bad.isEmpty());
+		added = part.getAddedEdges();
+		assertTrue(added.size()==1);
+		assertTrue(added.contains(new Edge(2,2,0,4,4,0)));
+		//We add a point that will build two triangles and three edges, but
+		//no bad edges.
+		tri = part.connectPoint(new Point(5,3,0));
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,5,3,0), new Edge(5,3,0,2,2,0), new Edge(2,2,0,0,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,4,0,5,3,0), new Edge(5,3,0,2,2,0), new Edge(2,2,0,4,4,0))));
+		bad = part.getBadEdges();
+		assertTrue(bad.isEmpty());
+		added = part.getAddedEdges();
+		assertTrue(added.size()==3);
+		assertTrue(added.contains(new Edge(0,0,0,5,3,0)));
+		assertTrue(added.contains(new Edge(2,2,0,5,3,0)));
+		assertTrue(added.contains(new Edge(5,3,0,4,4,0)));
+		//We add a point that will build three triangles and four edges, and
+		//three bad edges.
+		tri = part.connectPoint(new Point(5,6,0));
+		assertTrue(tri.size()==3);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,5,6,0), new Edge(5,6,0,2,2,0), new Edge(2,2,0,0,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,4,0,5,6,0), new Edge(5,6,0,2,2,0), new Edge(2,2,0,4,4,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,4,0,5,6,0), new Edge(5,6,0,5,3,0), new Edge(5,3,0,4,4,0))));
+		bad = part.getBadEdges();
+		assertTrue(bad.size()==3);
+		assertTrue(bad.contains(new Edge(5,3,0,4,4,0)));
+		assertTrue(bad.contains(new Edge(2,2,0,4,4,0)));
+		assertTrue(bad.contains(new Edge(0,0,0,2,2,0)));
+		added = part.getAddedEdges();
+		assertTrue(added.size()==4);
+		assertTrue(added.contains(new Edge(5,6,0,5,3,0)));
+		assertTrue(added.contains(new Edge(2,2,0,5,6,0)));
+		assertTrue(added.contains(new Edge(5,6,0,4,4,0)));
+		assertTrue(added.contains(new Edge(5,6,0,0,0,0)));
+
+	}
+
+	/**
 	 * Simple test that checks we can't have a null boundaryEdges list.
 	 */
 	public void testSetNullBoundaries(){

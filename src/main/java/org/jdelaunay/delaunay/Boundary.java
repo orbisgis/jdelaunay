@@ -12,7 +12,7 @@ import java.util.List;
  */
 class Boundary {
 
-        //The boundary
+        //The boundary, as a list of BoundaryPart instances.
         private List<BoundaryPart> boundary;
 
         Boundary(){
