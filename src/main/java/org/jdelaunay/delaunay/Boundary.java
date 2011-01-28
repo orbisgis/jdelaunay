@@ -80,7 +80,8 @@ final class Boundary {
 		//We first check the extremities.
 		if(boundary.get(1).isConstraintRightPoint(point)){
 			ret.add(boundary.get(0));
-			ret.addAll(getUpperSameRightPoint(0, boundary.get(0)));
+			ret.add(boundary.get(1));
+			ret.addAll(getUpperSameRightPoint(1, boundary.get(1)));
 			return ret;
 		}
 		if(boundary.get(1).pointIsLower(point)){

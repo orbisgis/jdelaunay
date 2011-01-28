@@ -33,6 +33,22 @@ public class TestBoundary extends BaseUtility {
 	}
 
 	/**
+	 * Get the eligible parts for the right point of the lowest constraint linked to
+	 * this boundary.
+	 */
+	public void testGetEligiblePartsLowerBis() throws DelaunayError{
+		Boundary bound = getExampleBoundary();
+		List<BoundaryPart> elig = bound.getEligibleParts(new Point(9,0,0));
+		assertTrue(elig.size()==2);
+		Edge ed = elig.get(0).getBoundaryEdges().get(0);
+		assertTrue(ed.equals(new Edge(0,1,0,3,2,0)));
+		assertNull(elig.get(0).getConstraint());
+		assertTrue(elig.get(1).getBoundaryEdges().get(0).equals(new Edge(3,2,0,5,3,0)));
+		assertTrue(elig.get(1).getBoundaryEdges().get(1).equals(new Edge(5,3,0,6,5,0)));
+		assertTrue(elig.get(1).getConstraint().equals(new Edge(3,2,0,9,0,0)));
+	}
+
+	/**
 	 * Get the eligible parts for a point that is upper than all the parts
 	 * of the boundary.
 	 */
@@ -119,6 +135,28 @@ public class TestBoundary extends BaseUtility {
 		assertTrue(elig.get(4).getBoundaryEdges().size()==1);
 		assertTrue(elig.get(4).getBoundaryEdges().get(0).equals(new Edge(0,12,0,0,14,0)));
 		assertTrue(elig.get(4).getConstraint().equals(new Edge(0,12,0,7,7,0)));
+		
+	}
+
+	/**
+	 * Some other test to ensure a good code coverage. We don't want to let bugs
+	 * behind us...
+	 * @throws DelaunayError
+	 */
+	public void testGetEligiblePart() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<BoundaryPart> elig = bound.getEligibleParts(new Point(7,11,0));
+		assertTrue(elig.size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,10,0,5,11,0)));
+		assertTrue(elig.get(0).getConstraint().equals(new Edge(6,10,0,9,12,0)));
+		//Once again
+		bound = getExampleBoundary();
+		elig = bound.getEligibleParts(new Point(7,10,0));
+		assertTrue(elig.size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().size()==1);
+		assertTrue(elig.get(0).getBoundaryEdges().get(0).equals(new Edge(6,10,0,7,7,0)));
+		assertTrue(elig.get(0).getConstraint().equals(new Edge(7,7,0,10,9,0)));
 		
 	}
 
