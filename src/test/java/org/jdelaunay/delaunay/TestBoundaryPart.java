@@ -473,4 +473,73 @@ public class TestBoundaryPart extends BaseUtility {
 		assertFalse(part.isConstraintRightPoint(new Point(0,0,0)));
 		assertTrue(part.isConstraintRightPoint(new Point(4,1,0)));
 	}
+
+	/**
+	 * Test that we add the constraint of the BoundaryPart, and not a random duplicate,
+	 * when connecting its right point
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testAddConstraintRightPoint() throws DelaunayError {
+		Edge cstr = new Edge(0,0,0,7,2,0);
+		List<Edge> bps = new ArrayList<Edge>();
+		bps.add(new Edge(0,0,0,2,3,0));
+		bps.add(new Edge(2,3,0,2,6,0));
+		BoundaryPart bp = new BoundaryPart(bps, cstr);
+		List<DelaunayTriangle> tri = bp.connectPoint(new Point(7,2,0));
+		bps = bp.getBoundaryEdges();
+		//We check the boundary edges.
+		assertTrue(bps.size()==2);
+		assertTrue(bps.get(0).equals(new Edge(0,0,0,7,2,0)));
+		assertTrue(bps.get(1).equals(new Edge(7,2,0,2,6,0)));
+		assertTrue(bps.get(0)==cstr);
+		//And we test the triangles, because we like it.
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,0,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,2,6,0))));
+		
+	}
+
+	/**
+	 * Tests that we add the other edge if it is eligible to be added and
+	 * given in argument to connectPoint.
+	 * @throws DelaunayError
+	 */
+	public void testAddPointAndEdge()throws DelaunayError {
+		Edge cstr = new Edge(0,0,0,7,2,0);
+		List<Edge> bps = new ArrayList<Edge>();
+		bps.add(new Edge(0,0,0,2,3,0));
+		bps.add(new Edge(2,3,0,2,6,0));
+		BoundaryPart bp = new BoundaryPart(bps, cstr);
+		Edge other = new Edge(7,2,0,2,6,0);
+		List<DelaunayTriangle> tri = bp.connectPoint(new Point(7,2,0), other);
+		bps = bp.getBoundaryEdges();
+		//We check the boundary edges.
+		assertTrue(bps.size()==2);
+		assertTrue(bps.get(0).equals(new Edge(0,0,0,7,2,0)));
+		assertTrue(bps.get(1).equals(new Edge(7,2,0,2,6,0)));
+		assertTrue(bps.get(0)==cstr);
+		assertTrue(bps.get(1)==other);
+		//And we test the triangles, because we like it.
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,0,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,2,6,0))));
+		//Let's try again, but this time other and cstr won't share a point.
+		bps = new ArrayList<Edge>();
+		bps.add(new Edge(0,0,0,2,3,0));
+		bps.add(new Edge(2,3,0,2,6,0));
+		bp = new BoundaryPart(bps, cstr);
+		other = new Edge(7,5,0,2,6,0);
+		tri = bp.connectPoint(new Point(7,5,0), other);
+		//We check the boundary edges.
+		assertTrue(bps.size()==2);
+		assertTrue(bps.get(0).equals(new Edge(0,0,0,7,5,0)));
+		assertTrue(bps.get(1).equals(new Edge(7,5,0,2,6,0)));
+		assertTrue(bps.get(1)==other);
+		//And we test the triangles, because we like it.
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,0,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,2,6,0))));
+		
+	}
 }

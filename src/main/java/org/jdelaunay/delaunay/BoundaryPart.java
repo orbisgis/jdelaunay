@@ -43,7 +43,7 @@ final class BoundaryPart {
 	 * @param bound
 	 * @param cstr
 	 */
-	public BoundaryPart(List<Edge> bound, Edge cstr){
+	BoundaryPart(List<Edge> bound, Edge cstr){
 		init();
 		boundaryEdges = bound;
 		constraint = cstr;
@@ -56,7 +56,7 @@ final class BoundaryPart {
 	 * This can happen for the lowest part of the boundary, fo instance.
 	 * @param bound
 	 */
-	public BoundaryPart(List<Edge> bound){
+	BoundaryPart(List<Edge> bound){
 		init();
 		boundaryEdges = bound;
 		constraint = null;
@@ -67,7 +67,7 @@ final class BoundaryPart {
 	 * next one is empty.
 	 * @param cstr
 	 */
-	public BoundaryPart(Edge cstr){
+	BoundaryPart(Edge cstr){
 		init();
 		setConstraint(cstr);
 		boundaryEdges = new ArrayList<Edge>();
@@ -77,7 +77,7 @@ final class BoundaryPart {
 	 * Get the list of edges associated to this part of the boundary.
 	 * @return
 	 */
-	public List<Edge> getBoundaryEdges() {
+	List<Edge> getBoundaryEdges() {
 		return boundaryEdges;
 	}
 
@@ -85,7 +85,7 @@ final class BoundaryPart {
 	 * Set the set of edges that are associated to this boundary part.
 	 * @param boundaryEdges
 	 */
-	public void setBoundaryEdges(List<Edge> boundaryEdges) {
+	void setBoundaryEdges(List<Edge> boundaryEdges) {
 		if(boundaryEdges == null){
 			this.boundaryEdges = new ArrayList<Edge>();
 		}else {
@@ -97,7 +97,7 @@ final class BoundaryPart {
 	 * Get the constraint that forms the lower limit of this part of the boundary.
 	 * @return
 	 */
-	public Edge getConstraint() {
+	Edge getConstraint() {
 		return constraint;
 	}
 
@@ -106,7 +106,7 @@ final class BoundaryPart {
 	 * boundary.
 	 * @param constraint
 	 */
-	public void setConstraint(Edge constraint) {
+	void setConstraint(Edge constraint) {
 		if(constraint.getPointLeft().equals(constraint.getEndPoint())){
 			constraint.swap();
 		}
@@ -117,7 +117,7 @@ final class BoundaryPart {
 	 * Get the edges added to the mesh during the last insertion of a point.
 	 * @return
 	 */
-	public List<Edge> getAddedEdges(){
+	List<Edge> getAddedEdges(){
 		return addedEdges;
 	}
 
@@ -125,7 +125,7 @@ final class BoundaryPart {
 	 * Gets the edges that will need to be processed by the flip-flap algorithm
 	 * @return
 	 */
-	public List<Edge> getBadEdges(){
+	List<Edge> getBadEdges(){
 		return badEdges;
 	}
 
@@ -135,7 +135,7 @@ final class BoundaryPart {
 	 * @param point
 	 * @return
 	 */
-	public boolean pointIsLower(final Point point){
+	boolean pointIsLower(final Point point){
 		return constraint.isRight(point);
 	}
 
@@ -145,7 +145,7 @@ final class BoundaryPart {
 	 * @param point
 	 * @return
 	 */
-	public boolean pointIsUpper(final Point point){
+	boolean pointIsUpper(final Point point){
 		return constraint.isLeft(point);
 	}
 
@@ -154,7 +154,7 @@ final class BoundaryPart {
 	 * @param point
 	 * @return
 	 */
-	public boolean isConstraintRightPoint(final Point point){
+	boolean isConstraintRightPoint(final Point point){
 		return constraint.getPointRight().equals(point);
 	}
 
@@ -164,7 +164,7 @@ final class BoundaryPart {
 	 * @param bpo
 	 * @return
 	 */
-	public boolean canBeNext(BoundaryPart bpo) {
+	boolean canBeNext(BoundaryPart bpo) {
 		Edge last = boundaryEdges.get(boundaryEdges.size()-1);
 		Point left = bpo.getConstraint().getPointLeft();
 		Point right = bpo.getConstraint().getPointRight();
@@ -182,7 +182,7 @@ final class BoundaryPart {
          * @param point
          * @return
          */
-        public  List<DelaunayTriangle> connectPoint(Point point) throws DelaunayError{
+        List<DelaunayTriangle> connectPoint(Point point, Edge nextCstr) throws DelaunayError{
 		if(boundaryEdges.isEmpty() && constraint==null){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
 		}
@@ -224,6 +224,9 @@ final class BoundaryPart {
 					if(mem == null){
 						//if not already set, we must instanciate mem
 						mem = new Edge(current.getStartPoint(),point);
+						//We must check that we're not about to duplicate the
+						//constraint Edge
+						mem = mem.equals(constraint) ? constraint : mem;
 						//We will add an Edge in the mesh.
 						addedEdges.add(mem);
 						//We must insert this new edge at the right position in
@@ -238,6 +241,9 @@ final class BoundaryPart {
 					}
 					//We build the last Edge of the triangle we are about to add.
 					memBis = new Edge(point, current.getEndPoint());
+					if(nextCstr != null){
+						memBis = memBis.equals(nextCstr) ? nextCstr : memBis;
+					}
 					//We will add an Edge in the mesh.
 					addedEdges.add(memBis);
 					//we can build the triangle...
@@ -403,8 +409,13 @@ final class BoundaryPart {
 		return ret;
 	}
 
-        public List<DelaunayTriangle> connectPoint(Point point, Edge nextCstr){
-                throw new UnsupportedOperationException();
-                
+	/**
+	 * Connect a single point to this boundary part.
+	 * @param point
+	 * @return
+	 * @throws DelaunayError
+	 */
+        List<DelaunayTriangle> connectPoint(Point point) throws DelaunayError{
+		return connectPoint(point, null);
         }
 }
