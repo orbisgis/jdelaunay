@@ -540,6 +540,5 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(tri.size()==2);
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,0,0,0))));
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,2,6,0))));
-		
 	}
 }
