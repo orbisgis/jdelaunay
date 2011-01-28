@@ -26,6 +26,17 @@ public class TestBoundaryPart extends BaseUtility {
 		assertFalse(bp1.canBeNext(bp2));
 	}
 
+	/**
+	 * When we set the constraint edge, we must be sure it is in the right sense.
+	 * @throws DelaunayError
+	 */
+	public void testSwapConstraint() throws DelaunayError {
+		BoundaryPart bp = new BoundaryPart(new ArrayList<Edge>());
+		bp.setConstraint(new Edge(2,2,0,0,0,0));
+		assertTrue(bp.getConstraint().getStartPoint().equals(new Point(0,0,0)));
+		assertTrue(bp.getConstraint().getEndPoint().equals(new Point(2,2,0)));
+	}
+
         /**
          * tests that we  are able to connect a single point to a bassic boundary part.
          */
@@ -426,12 +437,40 @@ public class TestBoundaryPart extends BaseUtility {
 	 * Simple test that checks we can't have a null boundaryEdges list.
 	 */
 	public void testSetNullBoundaries(){
-		BoundaryPart part = new BoundaryPart(new Edge());
+		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,1,1,0));
 		part.setBoundaryEdges(null);
 		List<Edge>  edg = part.getBoundaryEdges();
 		assertNotNull(edg);
 		edg = new ArrayList<Edge>();
 		part.setBoundaryEdges(edg);
 		assertTrue(edg == part.getBoundaryEdges());
+	}
+
+	/**
+	 * Tests the pointIsLower method.
+	 */
+	public void testIsLower() throws DelaunayError{
+		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,4,1,0));
+		assertTrue(part.pointIsLower(new Point(3,0,0)));
+		assertFalse(part.pointIsLower(new Point(3,2,0)));
+	}
+
+	/**
+	 * Tests the pointIsUpper method.
+	 */
+	public void testIsUpper() throws DelaunayError {
+		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,4,1,0));
+		assertFalse(part.pointIsUpper(new Point(3,0,0)));
+		assertTrue(part.pointIsUpper(new Point(3,2,0)));
+	}
+
+	/**
+	 * Tests the pointIsUpper method.
+	 */
+	public void testIsConstraintRightPoint() throws DelaunayError {
+		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,4,1,0));
+		assertFalse(part.isConstraintRightPoint(new Point(3,0,0)));
+		assertFalse(part.isConstraintRightPoint(new Point(0,0,0)));
+		assertTrue(part.isConstraintRightPoint(new Point(4,1,0)));
 	}
 }

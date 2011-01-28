@@ -14,7 +14,7 @@ import java.util.ListIterator;
  * and lower than the constraint Edge directly upper than C
  * @author alexis
  */
-class BoundaryPart {
+final class BoundaryPart {
 
 	//the section of the boundary contained in this BoundaryPart.
 	private List<Edge> boundaryEdges;
@@ -69,7 +69,7 @@ class BoundaryPart {
 	 */
 	public BoundaryPart(Edge cstr){
 		init();
-		constraint = cstr;
+		setConstraint(cstr);
 		boundaryEdges = new ArrayList<Edge>();
 	}
 
@@ -107,6 +107,9 @@ class BoundaryPart {
 	 * @param constraint
 	 */
 	public void setConstraint(Edge constraint) {
+		if(constraint.getPointLeft().equals(constraint.getEndPoint())){
+			constraint.swap();
+		}
 		this.constraint = constraint;
 	}
 
@@ -124,6 +127,35 @@ class BoundaryPart {
 	 */
 	public List<Edge> getBadEdges(){
 		return badEdges;
+	}
+
+	/**
+	 * Returns true if the point given in argument is lower than the constraint
+	 * edge used to define this boundary part.
+	 * @param point
+	 * @return
+	 */
+	public boolean pointIsLower(final Point point){
+		return constraint.isRight(point);
+	}
+
+	/**
+	 * Returns true if the point given in argument is upper than the constraint
+	 * edge used to define this boundary part.
+	 * @param point
+	 * @return
+	 */
+	public boolean pointIsUpper(final Point point){
+		return constraint.isLeft(point);
+	}
+
+	/**
+	 * Check if point is the right point of the constraint.
+	 * @param point
+	 * @return
+	 */
+	public boolean isConstraintRightPoint(final Point point){
+		return constraint.getPointRight().equals(point);
 	}
 
 	/**
