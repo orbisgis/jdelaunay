@@ -193,6 +193,72 @@ public class TestBoundary extends BaseUtility {
 	}
 
 	/**
+	 * Insert a point that is flanked with two constraint edges , and that does not lie
+	 * on a constraint.
+	 * @throws DelaunayError
+	 */
+	public void testInsertFlankedPoint() throws DelaunayError{
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(9,6,0));
+		BoundaryPart bp = bound.getBoundary().get(2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,5,0,9,6,0), new Edge(9,6,0,7,7,0), new Edge(7,7,0,6,5,0))));
+		assertTrue(tri.size()==1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(6,5,0,9,6,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(9,6,0,7,7,0)));
+		assertTrue(bp.getBoundaryEdges().size()==2);
+		assertTrue(bp.getConstraint().equals(new Edge(6,5,0,10,4,0)));
+	}
+
+	/**
+	 * Insert a point that is upper than all the constraint edges linked to the mesh.
+	 * This point does not lie on any constraint.
+	 * @throws DelaunayError
+	 */
+	public void testInsertUpperPoint() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(8,13,0));
+		BoundaryPart bp = bound.getBoundary().get(7);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,12,0,8,13,0), new Edge(8,13,0,0,13,0), new Edge(0,13,0,3,12,0))));
+		assertTrue(tri.size()==1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(3,12,0,8,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(8,13,0,0,13,0)));
+		assertTrue(bp.getBoundaryEdges().size()==2);
+		assertTrue(bp.getConstraint().equals(new Edge(3,12,0,9,12,0)));
+	}
+
+	/**
+	 * Insert a point that is upper than all the constraint edges linked to the mesh.
+	 * This point does not lie on any constraint.
+	 * @throws DelaunayError
+	 */
+	public void testInsertLowerPoint() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(8,-1,0));
+		BoundaryPart bp = bound.getBoundary().get(0);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,1,0,8,-1,0), new Edge(8,-1,0,3,2,0), new Edge(3,2,0,0,1,0))));
+		assertTrue(tri.size()==1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,1,0,8,-1,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(8,-1,0,3,2,0)));
+		assertTrue(bp.getBoundaryEdges().size()==2);
+		assertNull(bp.getConstraint());
+	}
+
+	/**
+	 * insert a point that must create a degenerated edge.
+	 * @throws DelaunayError
+	 */
+	public void testInsertPointDegenerated() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(9,8,0));
+		BoundaryPart bp = bound.getBoundary().get(3);
+		assertTrue(tri.isEmpty());
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(7,7,0,9,8,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).isDegenerated());
+		assertTrue(bp.getBoundaryEdges().size()==1);
+		assertTrue(bp.getConstraint().equals(new Edge(7,7,0,10,7,0)));
+	}
+
+	/**
 	 * Get a boundary ready to be tested.
 	 * @return
 	 */

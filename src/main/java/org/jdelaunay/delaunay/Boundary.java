@@ -52,11 +52,14 @@ final class Boundary {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
 		}
 		List<DelaunayTriangle> addedTri = new ArrayList<DelaunayTriangle>();
+		BoundaryPart bp;
 		if(indices.size()==1){
 			//parts contain only one BoundaryPart : the point is not the right
 			//extremity of a constraint linked to the edge.
 			//We can connect it directly : it won't provoke the
 			//removal of any BoundaryPart
+			bp = boundary.get(indices.get(0));
+			addedTri = bp.connectPoint(pt);
 		}
 		return addedTri;
         }
