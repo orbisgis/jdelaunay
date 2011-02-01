@@ -23,6 +23,7 @@ public class DelaunayError extends Exception {
 	public static final int DELAUNAY_ERROR_PROXIMITY = 104;
 	public static final int DELAUNAY_ERROR_POINT_NOT_FOUND = 105;
 	public static final int DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT = 106;
+	public static final int DELAUNAY_ERROR_CAN_NOT_SPLIT_BP = 107;
 	
 	public static final int DELAUNAY_ERROR_NON_INSERTED_POINT = 200;
 	public static final int DELAUNAY_ERROR_INCORRECT_TOPOLOGY = 201;
@@ -107,6 +108,9 @@ public class DelaunayError extends Exception {
 			break;
 		case DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT:
 			ret= "Can't connect the point to the boundary";
+			break;
+		case DELAUNAY_ERROR_CAN_NOT_SPLIT_BP:
+			ret= "Can't split this boundary part";
 			break;
 		case DELAUNAY_ERROR_NON_INSERTED_POINT:
 			ret= "one point is not inserted in the triangularization";

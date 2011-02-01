@@ -175,6 +175,55 @@ final class BoundaryPart {
 
 	}
 
+	/**
+	 * Split this BoundaryPart in two. The edge given in argument will be used
+	 * as the constraint for the new BoundaryEdge. Its leftmost point will be
+	 * searched in the boundary Edges of this BoundaryPart. 
+	 * @param cstr
+	 * @return
+	 */
+	BoundaryPart split(Edge cstr) throws DelaunayError {
+		if(boundaryEdges.isEmpty()){
+			//We can't split anything if we don't even have a boundary edge !
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_SPLIT_BP);
+		}
+		//The point where we'll perform the split
+		Point split = cstr.getPointLeft();
+		//We can instanciate ret, as we know its constraint.
+		BoundaryPart ret = new BoundaryPart(cstr);
+		if(split.equals(boundaryEdges.get(0).getStartPoint())){
+			//ret will starve this of all its boundary Edge.
+			ret.setBoundaryEdges(boundaryEdges);
+			this.setBoundaryEdges(new LinkedList<Edge>());
+			return ret;
+		}
+		if(boundaryEdges.get(0).isDegenerated()){
+			
+		}
+		LinkedList<Edge> futureBoundary = new LinkedList<Edge>();
+		List<Edge> otherBoundary = boundaryEdges;
+		
+		ListIterator<Edge> iter = otherBoundary.listIterator();
+		Edge course;
+		boolean success = false;
+		while(iter.hasNext()){
+			course = iter.next();
+			futureBoundary.add(course);
+			iter.remove();
+			if(course.getEndPoint().equals(split)){
+				success = true;
+				break;
+			}
+		}
+		if(!success){
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_SPLIT_BP);
+		} else {
+			this.setBoundaryEdges(futureBoundary);
+			return new BoundaryPart(otherBoundary, cstr);
+		}
+		
+	}
+
         /**
          * Connect a single point to this boundary part. Travels through the boundary
          * edges and try to build triangles from it. The boundary is, of course,

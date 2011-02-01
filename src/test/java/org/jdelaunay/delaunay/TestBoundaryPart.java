@@ -541,4 +541,134 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,0,0,0))));
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,2,6,0))));
 	}
+
+	/**
+	 * Performs a simple split on a boundary Edge.
+	 * @throws DelaunayError
+	 */
+	public void testSimpleSplit() throws DelaunayError {
+		BoundaryPart bp;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,0,0,5,1,0);
+		cstr.setLocked(true);
+		bounds.add(new Edge(0,0,0,2,2,0));
+		bounds.add(new Edge(2,2,0,2,4,0));
+		bounds.add(new Edge(2,4,0,0,6,0));
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(2,2,0,5,2,0));
+		//and we make our tests.
+		//On the result
+		assertTrue(res.getConstraint().equals(new Edge(2,2,0,5,2,0)));
+		assertTrue(res.getBoundaryEdges().size()==2);
+		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(2,2,0,2,4,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(2,4,0,0,6,0)));
+		//On the first BP
+		assertTrue(bp.getConstraint().equals(new Edge(0,0,0,5,1,0)));
+		assertTrue(bp.getBoundaryEdges().size()==1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
+	}
+
+	/**
+	 * Performs a split on the start point of the first boundary edge of the BP
+	 * @throws DelaunayError
+	 */
+	public void testSplitStartMostPoint() throws DelaunayError{
+		BoundaryPart bp;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,0,0,5,1,0);
+		cstr.setLocked(true);
+		bounds.add(new Edge(0,0,0,2,2,0));
+		bounds.add(new Edge(2,2,0,2,4,0));
+		bounds.add(new Edge(2,4,0,0,6,0));
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(0,0,0,5,2,0));
+		assertTrue(res.getConstraint().equals(new Edge(0,0,0,5,2,0)));
+		assertTrue(res.getBoundaryEdges().size()==3);
+		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(2,2,0,2,4,0)));
+		assertTrue(res.getBoundaryEdges().get(2).equals(new Edge(2,4,0,0,6,0)));
+		//On the first BP
+		assertTrue(bp.getConstraint().equals(new Edge(0,0,0,5,1,0)));
+		assertTrue(bp.getBoundaryEdges().isEmpty());
+		
+	}
+
+	/**
+	 * Performs a split on the start point of the first boundary edge of the BP
+	 * @throws DelaunayError
+	 */
+	public void testSplitEndMostPoint() throws DelaunayError{
+		BoundaryPart bp;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,0,0,5,1,0);
+		cstr.setLocked(true);
+		bounds.add(new Edge(0,0,0,2,2,0));
+		bounds.add(new Edge(2,2,0,2,4,0));
+		bounds.add(new Edge(2,4,0,0,6,0));
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(0,6,0,5,2,0));
+		assertTrue(res.getConstraint().equals(new Edge(0,6,0,5,2,0)));
+		assertTrue(res.getBoundaryEdges().isEmpty());
+		//On the first BP
+		assertTrue(bp.getConstraint().equals(new Edge(0,0,0,5,1,0)));
+		assertTrue(bp.getBoundaryEdges().size()==3);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(2,2,0,2,4,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(2,4,0,0,6,0)));
+	}
+
+	/**
+	 * Test that an exception is throws when trying to split a BP with an edge that
+	 * is not linked to it.
+	 * @throws DelaunayError
+	 */
+	public void testSplitException() throws DelaunayError {
+		BoundaryPart bp;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,0,0,5,1,0);
+		cstr.setLocked(true);
+		bounds.add(new Edge(0,0,0,2,2,0));
+		bounds.add(new Edge(2,2,0,2,4,0));
+		bounds.add(new Edge(2,4,0,0,6,0));
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp, an exception is supposed to be thrown
+		try{
+			bp.split(new Edge(8,6,0,5,2,0));
+			assertTrue(false);
+		}catch (DelaunayError d){
+		}
+		assertTrue(true);
+	}
+
+	/**
+	 * Test that an exception is thrown when trying to split a BP without any boundary edge.
+	 * @throws DelaunayError
+	 */
+	public void testSplitExceptionEmpty() throws DelaunayError {
+		BoundaryPart bp;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,0,0,5,1,0);
+		cstr.setLocked(true);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp, an exception is supposed to be thrown
+		try{
+			bp.split(new Edge(0,0,0,5,2,0));
+			assertTrue(false);
+		}catch (DelaunayError d){
+		}
+		try{
+			bp.split(new Edge(10,0,0,5,2,0));
+			assertTrue(false);
+		}catch (DelaunayError d){
+		}
+		assertTrue(true);
+	}
 }

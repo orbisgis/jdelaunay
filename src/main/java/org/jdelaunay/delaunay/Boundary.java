@@ -79,11 +79,14 @@ final class Boundary {
 
         /**
          * Connect a new Point to the boundary. This operation will alter the
-         * boundary, by potentially add or remove some boundary parts. Moreover,
+         * boundary, by potentially adding or removing some boundary parts. Moreover,
          * in every cases, at least one BoundaryPart will be modified.
          * @param pt
          */
-        List<DelaunayTriangle> insertPoint(final Point pt) throws DelaunayError {
+        List<DelaunayTriangle> insertPoint(final Point pt, final Edge constraint) throws DelaunayError {
+		if(constraint != null && !pt.equals(constraint.getPointLeft())){
+			throw new DelaunayError(106, "the point and the constraint do not match.");
+		}
 		List<Integer> indices = getEligibleParts(pt);
 		if(indices.isEmpty()){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
@@ -93,7 +96,7 @@ final class Boundary {
 		BoundaryPart bp;
 		List<Edge> bad = new ArrayList();
 		List<Edge> added = new ArrayList();
-		List<Edge>tmpAdded;
+		List<Edge> tmpAdded;
 		if(indices.size()==1){
 			//parts contain only one BoundaryPart : the point is not the right
 			//extremity of a constraint linked to the edge.
@@ -172,11 +175,8 @@ final class Boundary {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	List<DelaunayTriangle> inserPointWithConstraint(final Point point, final Edge constraint) throws DelaunayError{
-		if(!point.equals(constraint.getPointLeft())){
-			throw new DelaunayError(106, "the point and the constraint do not match.");
-		}
-		throw new UnsupportedOperationException();
+	List<DelaunayTriangle> insertPoint(final Point point) throws DelaunayError{
+		return insertPoint(point, null);
 	}
 
 	/**
