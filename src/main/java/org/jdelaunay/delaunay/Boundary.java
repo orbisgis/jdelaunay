@@ -15,6 +15,10 @@ final class Boundary {
 
         //The boundary, as a list of BoundaryPart instances.
         private List<BoundaryPart> boundary;
+	//The bad edges resulting of the last point insertion.
+	private List<Edge> badEdges;
+	//The edges added to the mesh during the last point insertion.
+	private List<Edge> addedEdges;
 
         Boundary(){
                 boundary = new ArrayList<BoundaryPart>();
@@ -40,6 +44,39 @@ final class Boundary {
 		}
         }
 
+	/**
+	 * Set the list of added Edges. Does not need to be publc, clearly.
+	 * @param edges
+	 */
+	private void setAddedEdges(List<Edge> edges){
+		addedEdges = edges;
+	}
+
+	/**
+	 * Get the edges added during the last insertion of a point in the mesh.
+	 * @return
+	 */
+	List<Edge> getAddedEdges(){
+		return addedEdges;
+	}
+
+	/**
+	 * set the list of bad edges resulting of the last insertion.
+	 * @param edges
+	 */
+	private void setBadEdges(List<Edge> edges){
+		badEdges = edges;
+	}
+
+	/**
+	 * Get the list of edges that must be tested with the flip flap-algorithm
+	 * because of the last insertion of a point.
+	 * @return
+	 */
+	List<Edge> getBadEdges(){
+		return badEdges;
+	}
+
         /**
          * Connect a new Point to the boundary. This operation will alter the
          * boundary, by potentially add or remove some boundary parts. Moreover,
@@ -52,7 +89,11 @@ final class Boundary {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
 		}
 		List<DelaunayTriangle> addedTri = new ArrayList<DelaunayTriangle>();
+		List<BoundaryPart> tmpBd ;
 		BoundaryPart bp;
+		List<Edge> bad = new ArrayList();
+		List<Edge> added = new ArrayList();
+		List<Edge>tmpAdded;
 		if(indices.size()==1){
 			//parts contain only one BoundaryPart : the point is not the right
 			//extremity of a constraint linked to the edge.
@@ -60,6 +101,66 @@ final class Boundary {
 			//removal of any BoundaryPart
 			bp = boundary.get(indices.get(0));
 			addedTri = bp.connectPoint(pt);
+			setBadEdges(bp.getBadEdges());
+			setAddedEdges(bp.getAddedEdges());
+		} else {
+			//We retrieve the informations of the connection of the point
+			//to the lowest BoundaryPart
+			//We are going to replace two or more boundary parts with
+			//one or two boundary parts.
+			//Let's go.
+
+			//we retrieve the first bp of the list.
+			bp = boundary.get(indices.get(0));
+			//We prepare the BP we will add in the end.
+			BoundaryPart newBP = new BoundaryPart(new ArrayList<Edge>(), bp.getConstraint());
+			//We must know the constraint that bound the next BP to avoid the
+			//creation of duplicates.
+			Edge nextCstr = boundary.get(indices.get(1)).getConstraint();
+			//we start the connection.
+			addedTri = bp.connectPoint(pt, nextCstr);
+			bad = bp.getBadEdges();
+			added = bp.getAddedEdges();
+			//We start to fill the edge we'll add in the end.
+			int bpSize = bp.getBoundaryEdges().size();
+			if(bpSize == 1){
+				newBP.setBoundaryEdges(bp.getBoundaryEdges());
+			} else {
+				newBP.setBoundaryEdges(bp.getBoundaryEdges().subList(0, bp.getBoundaryEdges().size()-1));
+			}
+			//And now we can process the other edges.
+			for(int i = 1; i<indices.size(); i++){
+				//we don't want to go too far.
+				if(i+1<indices.size()){
+					nextCstr = boundary.get(indices.get(i+1)).getConstraint();
+				}
+				bp = boundary.get(indices.get(i));
+				addedTri.addAll(bp.connectPoint(pt, nextCstr));
+				bad.addAll(bp.getBadEdges());
+				tmpAdded = bp.getAddedEdges();
+				added.addAll(tmpAdded.subList(1, tmpAdded.size()));
+			}
+			//We must use the last altered BP to retrieve the boundary
+			//edges
+			List<Edge> tmpLast = newBP.getBoundaryEdges();
+			if(bp.getBoundaryEdges().size()==1 && bp.getBoundaryEdges().get(0).equals(bp.getConstraint())){
+				//We are on the right point of a constraint. The Boundary
+				//Part that is associated to it does not contain any
+				//BoundaryEdge, consequently we must add the constraint
+				//edge to the boundaryEdges of newBP
+				tmpLast.add(bp.getConstraint());
+			} else {
+				tmpLast.addAll(bp.getBoundaryEdges().subList(1, bp.getBoundaryEdges().size()));				
+			}
+			newBP.setBoundaryEdges(tmpLast);
+			setAddedEdges(added);
+			setBadEdges(bad);
+			//We must replace the eligible parts with the one we've just
+			//created.
+			boundary.set(indices.get(0), newBP);
+			tmpBd = boundary;
+			boundary=tmpBd.subList(0, indices.get(0)+1);
+			boundary.addAll(tmpBd.subList(indices.get(indices.size()-1)+1, tmpBd.size()));
 		}
 		return addedTri;
         }

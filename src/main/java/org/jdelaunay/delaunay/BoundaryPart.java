@@ -107,7 +107,7 @@ final class BoundaryPart {
 	 * @param constraint
 	 */
 	void setConstraint(Edge constraint) {
-		if(constraint.getPointLeft().equals(constraint.getEndPoint())){
+		if(constraint != null && constraint.getPointLeft().equals(constraint.getEndPoint())){
 			constraint.swap();
 		}
 		this.constraint = constraint;
@@ -198,6 +198,14 @@ final class BoundaryPart {
 		if(boundaryEdges.isEmpty()){
 			firstFound = new Edge(constraint.getPointLeft(),point);
 			firstFound.setDegenerated(true);
+			if(firstFound.equals(constraint)){
+				firstFound = constraint;
+				if(constraint.getLeft()==null && constraint.getRight()==null){
+					constraint.setDegenerated(true);
+				}
+			} else {
+				firstFound = firstFound.equals(nextCstr) ? nextCstr : firstFound;
+			}
 			addedEdges.add(firstFound);
 			boundaryEdges.add(firstFound);
 			return new ArrayList<DelaunayTriangle>();

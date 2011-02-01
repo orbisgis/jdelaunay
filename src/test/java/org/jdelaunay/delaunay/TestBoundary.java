@@ -227,6 +227,23 @@ public class TestBoundary extends BaseUtility {
 	}
 
 	/**
+	 * Tests that we retrieve the good bad and added edges when inserting a point
+	 * that is upper than all the constraints linked to the mesh.
+	 * @throws DelaunayError
+	 */
+	public void testInsUpPtAddedAndBadEdges() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		bound.insertPoint(new Point(8,13,0));
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		assertTrue(added.size()==2);
+		assertTrue(added.contains(new Edge(0,13,0,8,13,0)));
+		assertTrue(added.contains(new Edge(8,13,0,3,12,0)));
+		assertTrue(bad.size()==1);
+		assertTrue(bad.contains(new Edge(0,13,0,3,12,0)));
+	}
+
+	/**
 	 * Insert a point that is upper than all the constraint edges linked to the mesh.
 	 * This point does not lie on any constraint.
 	 * @throws DelaunayError
@@ -244,6 +261,23 @@ public class TestBoundary extends BaseUtility {
 	}
 
 	/**
+	 * Tests that we retrieve the good bad and added edges when inserting a point
+	 * that is lower than all the constraints linked to the mesh.
+	 * @throws DelaunayError
+	 */
+	public void testInsLowPtAddedAndBadEdges() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		bound.insertPoint(new Point(8,-1,0));
+		List<Edge> added = bound.getAddedEdges();
+		assertTrue(added.size()==2);
+		assertTrue(added.contains(new Edge(0,1,0,8,-1,0)));
+		assertTrue(added.contains(new Edge(3,2,0,8,-1,0)));
+		List<Edge> bad = bound.getBadEdges();
+		assertTrue(bad.size()==1);
+		assertTrue(bad.contains(new Edge(0,1,0,3,2,0)));
+	}
+
+	/**
 	 * insert a point that must create a degenerated edge.
 	 * @throws DelaunayError
 	 */
@@ -256,6 +290,280 @@ public class TestBoundary extends BaseUtility {
 		assertTrue(bp.getBoundaryEdges().get(0).isDegenerated());
 		assertTrue(bp.getBoundaryEdges().size()==1);
 		assertTrue(bp.getConstraint().equals(new Edge(7,7,0,10,7,0)));
+	}
+
+	/**
+	 * tests that we retrieve the good bad and added edges when inserting a point
+	 * that create a single degenerated edge.
+	 * @throws DelaunayError
+	 */
+	public void testInsPtDegenAddedAndBadEdges() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		bound.insertPoint(new Point(9,8,0));
+		List<Edge> added = bound.getAddedEdges();
+		assertTrue(added.size()==1);
+		assertTrue(added.get(0).equals(new Edge(7,7,0,9,8,0)));
+		List<Edge> bad = bound.getBadEdges();
+		assertTrue(bad.isEmpty());
+	}
+
+	/**
+	 * Tests the insertion of the point when more than one edges of the boundary
+	 * are affected.
+	 * @throws DelaunayError
+	 */
+	public void testInsertTwoTriangles() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(7,3,0));
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,2,0,7,3,0), new Edge(7,3,0,5,3,0),  new Edge(5,3,0,3,2,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,5,0,7,3,0), new Edge(7,3,0,5,3,0),  new Edge(5,3,0,6,5,0))));
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		assertTrue(added.size()==3);
+		assertTrue(added.contains(new Edge(3,2,0,7,3,0)));
+		assertTrue(added.contains(new Edge(5,3,0,7,3,0)));
+		assertTrue(added.contains(new Edge(6,5,0,7,3,0)));
+		assertTrue(bad.size()==2);
+		assertTrue(bad.contains(new Edge(3,2,0,5,3,0)));
+		assertTrue(bad.contains(new Edge(6,5,0,5,3,0)));
+
+	}
+
+	/**
+	 * This (complete) test checks that we insert correctly the right points
+	 * of the constraints.
+	 * @throws DelaunayError
+	 */
+	public void testInsertConstraintRightPoint() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(10,4,0));
+		//we test the added triangles.
+		assertTrue(tri.size()==3);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,2,0,10,4,0), new Edge(10,4,0,5,3,0), new Edge(5,3,0,3,2,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,5,0,10,4,0), new Edge(10,4,0,5,3,0), new Edge(5,3,0,6,5,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,5,0,10,4,0), new Edge(10,4,0,7,7,0), new Edge(7,7,0,6,5,0))));
+		//we check that the constraint contained in some triangles is not a duplicated edge.
+		int index  = tri.indexOf(new DelaunayTriangle(new Edge(6,5,0,10,4,0), new Edge(10,4,0,5,3,0), new Edge(5,3,0,6,5,0)));
+		Edge ed = tri.get(index).getOppositeEdge(new Point(5,3,0));
+		assertTrue(ed.isLocked());
+		index  = tri.indexOf(new DelaunayTriangle(new Edge(6,5,0,10,4,0), new Edge(10,4,0,7,7,0), new Edge(7,7,0,6,5,0)));
+		ed = tri.get(index).getOppositeEdge(new Point(7,7,0));
+		assertTrue(ed.isLocked());
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		//we check the added edges.
+		assertTrue(added.size()==4);
+		assertTrue(added.contains(new Edge(3,2,0,10,4,0)));
+		assertTrue(added.contains(new Edge(5,3,0,10,4,0)));
+		assertTrue(added.contains(new Edge(6,5,0,10,4,0)));
+		assertTrue(added.contains(new Edge(7,7,0,10,4,0)));
+		//we check that the added edge that is a constraint is not a duplicate.
+		index = added.indexOf(new Edge(6,5,0,10,4,0));
+		ed = added.get(index);
+		assertTrue(ed.isLocked());
+		//we check the badEdges.
+		assertTrue(bad.size()==3);
+		assertTrue(bad.contains(new Edge(3,2,0,5,3,0)));
+		assertTrue(bad.contains(new Edge(5,3,0,6,5,0)));
+		assertTrue(bad.contains(new Edge(6,5,0,7,7,0)));
+		//We check the boundary state.
+		assertTrue(bound.getBoundary().size()==7);
+		BoundaryPart bp = bound.getBoundary().get(1);
+		assertTrue(bp.getConstraint().equals(new Edge(3,2,0,9,0,0)));
+
+	}
+
+	/**
+	 * This test performs an insertion of a point that is the right point of
+	 * many constraints.
+	 * @throws DelaunayError
+	 */
+	public void testInsertCstrRightPtManyBP() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(9,12,0));
+		//we test the added triangles.
+		assertTrue(tri.size()==4);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(7,7,0,9,12,0), new Edge(9,12,0,6,10,0), new Edge(6,10,0,7,7,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(5,11,0,9,12,0), new Edge(9,12,0,6,10,0), new Edge(6,10,0,5,11,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(5,11,0,9,12,0), new Edge(9,12,0,3,12,0), new Edge(3,12,0,5,11,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,13,0,9,12,0), new Edge(9,12,0,3,12,0), new Edge(3,12,0,0,13,0))));
+		//we check that the constraints contained in some triangles are not  duplicated edges.
+		int index  = tri.indexOf(new DelaunayTriangle(new Edge(7,7,0,9,12,0), new Edge(9,12,0,6,10,0), new Edge(6,10,0,7,7,0)));
+		Edge ed = tri.get(index).getOppositeEdge(new Point(7,7,0));
+		assertTrue(ed.isLocked());
+		index  = tri.indexOf(new DelaunayTriangle(new Edge(5,11,0,9,12,0), new Edge(9,12,0,6,10,0), new Edge(6,10,0,5,11,0)));
+		ed = tri.get(index).getOppositeEdge(new Point(6,10,0));
+		assertTrue(ed.isLocked());
+		index  = tri.indexOf(new DelaunayTriangle(new Edge(5,11,0,9,12,0), new Edge(9,12,0,3,12,0), new Edge(3,12,0,5,11,0)));
+		ed = tri.get(index).getOppositeEdge(new Point(5,11,0));
+		assertTrue(ed.isLocked());
+		index  = tri.indexOf(new DelaunayTriangle(new Edge(0,13,0,9,12,0), new Edge(9,12,0,3,12,0), new Edge(3,12,0,0,13,0)));
+		ed = tri.get(index).getOppositeEdge(new Point(0,13,0));
+		assertTrue(ed.isLocked());
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		//we check the added edges.
+		assertTrue(added.size()==5);
+		assertTrue(added.contains(new Edge(6,10,0,9,12,0)));
+		assertTrue(added.contains(new Edge(7,7,0,9,12,0)));
+		assertTrue(added.contains(new Edge(5,11,0,9,12,0)));
+		assertTrue(added.contains(new Edge(3,12,0,9,12,0)));
+		assertTrue(added.contains(new Edge(0,13,0,9,12,0)));
+		//we check the bad edges
+		assertTrue(bad.size()==4);
+		assertTrue(bad.contains(new Edge(7,7,0,6,10,0)));
+		assertTrue(bad.contains(new Edge(5,11,0,6,10,0)));
+		assertTrue(bad.contains(new Edge(5,11,0,3,12,0)));
+		assertTrue(bad.contains(new Edge(0,13,0,3,12,0)));
+		//And we check the whole boundary
+		assertTrue(bound.getBoundary().size()==5);
+		BoundaryPart bp = bound.getBoundary().get(4);
+		assertTrue(bp.getConstraint().equals(new Edge(7,7,0,10,9,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(7,7,0,9,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).getStartPoint().equals(new Point(7,7,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(0,13,0,9,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).getStartPoint().equals(new Point(9,12,0)));
+	}
+
+	/**
+	 * We add the right point of the lowest constraint and check that everything's ok.
+	 * @throws DelaunayError
+	 */
+	public void testAddRightPtLowestCstr() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(9,0,0));
+		//we test the added triangles.
+		assertTrue(tri.size()==3);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,1,0,9,0,0), new Edge(9,0,0,3,2,0), new Edge(3,2,0,0,1,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(5,3,0,9,0,0), new Edge(9,0,0,3,2,0), new Edge(3,2,0,5,3,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(5,3,0,9,0,0), new Edge(9,0,0,6,5,0), new Edge(6,5,0,5,3,0))));
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		//we check the added edges.
+		assertTrue(added.size()==4);
+		assertTrue(added.contains(new Edge(0,1,0,9,0,0)));
+		assertTrue(added.contains(new Edge(3,2,0,9,0,0)));
+		assertTrue(added.contains(new Edge(5,3,0,9,0,0)));
+		assertTrue(added.contains(new Edge(6,5,0,9,0,0)));
+		//we check the bad edges
+		assertTrue(bad.size()==3);
+		assertTrue(bad.contains(new Edge(0,1,0,3,2,0)));
+		assertTrue(bad.contains(new Edge(5,3,0,3,2,0)));
+		assertTrue(bad.contains(new Edge(5,3,0,6,5,0)));
+		//And we check the whole boundary
+		assertTrue(bound.getBoundary().size()==7);
+		BoundaryPart bp = bound.getBoundary().get(0);
+		assertNull(bp.getConstraint());
+		assertTrue(bp.getBoundaryEdges().size()==2);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,1,0,9,0,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(6,5,0,9,0,0)));
+	}
+
+	/**
+	 * checks that we manage properly the case where uppest boundary part does not
+	 * contain any boundary Edge.
+	 * @throws DelaunayError
+	 */
+	public void testInsertRightPtDegenUppestCstr() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		assertTrue(bound.getBoundary().size()==8);
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(10,7,0));
+		//we test the added triangles.
+		assertTrue(tri.size()==1);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,5,0,10,7,0), new Edge(10,7,0,7,7,0), new Edge(7,7,0,6,5,0))));
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		//we check the added edges.
+		assertTrue(added.size()==2);
+		assertTrue(added.contains(new Edge(6,5,0,10,7,0)));
+		assertTrue(added.contains(new Edge(7,7,0,10,7,0)));
+		//we check the bad edges
+		assertTrue(bad.size()==1);
+		assertTrue(bad.contains(new Edge(6,5,0,7,7,0)));
+		//And we check the whole boundary
+		assertTrue(bound.getBoundary().size()==7);
+		BoundaryPart bp = bound.getBoundary().get(2);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(6,5,0,10,7,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(7,7,0,10,7,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).isLocked());
+		assertFalse(bp.getBoundaryEdges().get(1).isDegenerated());
+	}
+
+	/**
+	 * Tests that the property of a constraints are well kept when adding its
+	 * right point to the mesh, when the insertion create (or rather use, as we 
+	 * don't create any duplicate edges in the mesh) a degenerated (and locked)
+	 * edge.
+	 * @throws DelaunayError
+	 */
+	public void testDegeneratedConstraint() throws DelaunayError {
+		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
+		BoundaryPart bp;
+		Edge cstr;
+		List<Edge> boundaryEdges;
+		Boundary bound = new Boundary();
+		//We fill a boundary part, and put it in bpl
+		cstr = null;
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(0,0,0,1,3,0));
+		bp = new BoundaryPart(boundaryEdges);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(1,3,0,6,1,0);
+		cstr.setLocked(true);
+		boundaryEdges = new ArrayList<Edge>();
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(1,3,0,5,4,0);
+		cstr.setLocked(true);
+		boundaryEdges = new ArrayList<Edge>();
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(1,3,0,6,6,0);
+		cstr.setLocked(true);
+		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges.add(new Edge(1,3,0,0,6,0));
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		bound.setBoundary(bpl);
+		//We insert the point
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(5,4,0));
+		assertTrue(tri.isEmpty());
+		assertTrue(bound.getBoundary().size()==3);
+		assertTrue(bound.getBoundary().get(1).getConstraint().equals(new Edge(1,3,0,6,1,0)));
+		assertTrue(bound.getBoundary().get(1).getBoundaryEdges().get(0).equals(new Edge(1,3,0,5,4,0)));
+		assertTrue(bound.getBoundary().get(1).getBoundaryEdges().get(0).isLocked());
+		assertTrue(bound.getBoundary().get(1).getBoundaryEdges().get(0).isDegenerated());
+		
+	}
+
+	public void testInsertRightPtDegenLowestCstr() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		assertTrue(bound.getBoundary().size()==8);
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(10,9,0));
+		//we test the added triangles.
+		assertTrue(tri.size()==1);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,10,0,10,9,0), new Edge(10,9,0,7,7,0), new Edge(7,7,0,6,10,0))));
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		//we check the added edges.
+		assertTrue(added.size()==2);
+		assertTrue(added.contains(new Edge(6,10,0,10,9,0)));
+		assertTrue(added.contains(new Edge(7,7,0,10,9,0)));
+		//we check the bad edges
+		assertTrue(bad.size()==1);
+		assertTrue(bad.contains(new Edge(6,10,0,7,7,0)));
+		//And we check the whole boundary
+		assertTrue(bound.getBoundary().size()==7);
+		BoundaryPart bp = bound.getBoundary().get(3);
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(6,10,0,10,9,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(7,7,0,10,9,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).isLocked());
+		assertFalse(bp.getBoundaryEdges().get(0).isDegenerated());
+
 	}
 
 	/**
@@ -276,6 +584,7 @@ public class TestBoundary extends BaseUtility {
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
 		cstr = new Edge(3,2,0,9,0,0);
+		cstr.setLocked(true);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(3,2,0,5,3,0));
 		boundaryEdges.add(new Edge(5,3,0,6,5,0));
@@ -283,35 +592,41 @@ public class TestBoundary extends BaseUtility {
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
 		cstr = new Edge(6,5,0,10,4,0);
+		cstr.setLocked(true);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(6,5,0,7,7,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
 		cstr = new Edge(7,7,0,10,7,0);
+		cstr.setLocked(true);
 		boundaryEdges = new ArrayList<Edge>();
 		bp = new BoundaryPart( cstr);
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
 		cstr = new Edge(7,7,0,10,9,0);
+		cstr.setLocked(true);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(7,7,0,6,10,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
 		cstr = new Edge(6,10,0,9,12,0);
+		cstr.setLocked(true);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(6,10,0,5,11,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
 		cstr = new Edge(5,11,0,9,12,0);
+		cstr.setLocked(true);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(5,11,0,3,12,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
 		bpl.add(bp);
 		//We fill a boundary part, and put it in bpl
 		cstr = new Edge(3,12,0,9,12,0);
+		cstr.setLocked(true);
 		boundaryEdges = new ArrayList<Edge>();
 		boundaryEdges.add(new Edge(3,12,0,0,13,0));
 		bp = new BoundaryPart(boundaryEdges, cstr);
