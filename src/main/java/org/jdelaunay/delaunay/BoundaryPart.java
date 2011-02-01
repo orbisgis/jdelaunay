@@ -1,6 +1,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -178,7 +179,11 @@ final class BoundaryPart {
 	/**
 	 * Split this BoundaryPart in two. The edge given in argument will be used
 	 * as the constraint for the new BoundaryEdge. Its leftmost point will be
-	 * searched in the boundary Edges of this BoundaryPart. 
+	 * searched in the boundary Edges of this BoundaryPart.
+	 *
+	 * It's up to you to use this method the right way. It's not public API, and
+	 * shouldn't be used out of the mesh production.
+	 *
 	 * @param cstr
 	 * @return
 	 */
@@ -197,28 +202,48 @@ final class BoundaryPart {
 			this.setBoundaryEdges(new LinkedList<Edge>());
 			return ret;
 		}
-		if(boundaryEdges.get(0).isDegenerated()){
-			
-		}
 		LinkedList<Edge> futureBoundary = new LinkedList<Edge>();
 		List<Edge> otherBoundary = boundaryEdges;
-		
+		LinkedList<Edge> degen = new LinkedList();
 		ListIterator<Edge> iter = otherBoundary.listIterator();
 		Edge course;
 		boolean success = false;
 		while(iter.hasNext()){
+			//Next step
 			course = iter.next();
+			if(course.isDegenerated()){
+				//We fill our memory of degenerated edges, that will be used
+				//if we end our course on one (the last, hopefully...) of them.
+				degen.add(course);
+			}
+			//The current edge will still be part of this BP's boundary edges...
 			futureBoundary.add(course);
+			//so we can remove it of the boundary edges of the future BP.
+			//If it is a degen edge, it will be added back in the end.
 			iter.remove();
 			if(course.getEndPoint().equals(split)){
+				//We have ended our course on a degen Edge. The degenerated
+				//edges that are part of this BP will be duplicated (or rather,
+				//their references will be duplicated).
+				if(course.isDegenerated()){
+					//We must reverse the order of the degen edges
+					//in the newly created BP
+					Collections.reverse(degen);
+					degen.addAll(otherBoundary);
+					otherBoundary = degen;
+				}
 				success = true;
 				break;
 			}
 		}
 		if(!success){
+			//we've failed at finding a boundary edge that own the right
+			//point of cstr.
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_SPLIT_BP);
 		} else {
+			//We replace this boundary edges by the shorter set computed here.
 			this.setBoundaryEdges(futureBoundary);
+			//We return the new BoundaryPart
 			return new BoundaryPart(otherBoundary, cstr);
 		}
 		

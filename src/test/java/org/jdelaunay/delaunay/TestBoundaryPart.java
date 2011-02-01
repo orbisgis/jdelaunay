@@ -586,6 +586,8 @@ public class TestBoundaryPart extends BaseUtility {
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
 		BoundaryPart res = bp.split(new Edge(0,0,0,5,2,0));
+		//and we make our tests.
+		//On the result
 		assertTrue(res.getConstraint().equals(new Edge(0,0,0,5,2,0)));
 		assertTrue(res.getBoundaryEdges().size()==3);
 		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
@@ -613,6 +615,8 @@ public class TestBoundaryPart extends BaseUtility {
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
 		BoundaryPart res = bp.split(new Edge(0,6,0,5,2,0));
+		//and we make our tests.
+		//On the result
 		assertTrue(res.getConstraint().equals(new Edge(0,6,0,5,2,0)));
 		assertTrue(res.getBoundaryEdges().isEmpty());
 		//On the first BP
@@ -671,4 +675,109 @@ public class TestBoundaryPart extends BaseUtility {
 		}
 		assertTrue(true);
 	}
+
+	/**
+	 * Performs a split on a BP with degen edges.
+	 * @throws DelaunayError
+	 */
+	public void testSplitDegen() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		//and we make our tests.
+		//On the result
+		assertTrue(res.getConstraint().equals(new Edge(12,9,0,10,10,0)));
+		assertTrue(res.getBoundaryEdges().size()==3);
+		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(res.getBoundaryEdges().get(2).equals(new Edge(6,12,0,0,13,0)));
+		//On the first BP
+		assertTrue(bp.getConstraint().equals(new Edge(6,12,0,15,0,0)));
+		assertTrue(bp.getBoundaryEdges().size()==2);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(10,10,0,8,11,0)));
+	}
+
+	/**
+	 * Performs a split on a BP that contains only degenerated edges.
+	 * @throws DelaunayError
+	 */
+	public void testSplitDegenDEOnly() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		//and we make our tests.
+		//On the result
+		assertTrue(res.getConstraint().equals(new Edge(12,9,0,10,10,0)));
+		assertTrue(res.getBoundaryEdges().size()==2);
+		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(8,11,0,6,12,0)));
+		//On the first BP
+		assertTrue(bp.getConstraint().equals(new Edge(6,12,0,15,0,0)));
+		assertTrue(bp.getBoundaryEdges().size()==2);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(10,10,0,8,11,0)));
+	}
+
+	/**
+	 * Performs a split on a BP with degen edges.
+	 * @throws DelaunayError
+	 */
+	public void testSplitDegenBis() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,6,0,12,0,0);
+		deg = new Edge(0,6,0,4,7,0);
+		bounds.add(deg);
+		deg = new Edge(4,7,0,6,9,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,9,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(8,11,0,10,13,0));
+		//and we make our tests.
+		//On the result
+		assertTrue(res.getConstraint().equals(new Edge(8,11,0,10,13,0)));
+		assertTrue(res.getBoundaryEdges().size()==2);
+		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(6,9,0,8,11,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(4,7,0,6,9,0)));
+		//On the first BP
+		assertTrue(bp.getConstraint().equals(new Edge(0,6,0,12,0,0)));
+		assertTrue(bp.getBoundaryEdges().size()==3);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,6,0,4,7,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(4,7,0,6,9,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(6,9,0,8,11,0)));
+		
+
+	}
+
 }
