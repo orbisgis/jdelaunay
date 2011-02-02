@@ -652,6 +652,31 @@ public class TestBoundaryPart extends BaseUtility {
 	}
 
 	/**
+	 * Tests that an exception is thrown when using a null (sic ! ) constraint
+	 * in split.
+	 * @throws DelaunayError
+	 */
+	public void testSplitExceptionEmptyCstr() throws DelaunayError {
+		BoundaryPart bp;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,0,0,5,1,0);
+		cstr.setLocked(true);
+		bounds.add(new Edge(0,0,0,2,2,0));
+		bounds.add(new Edge(2,2,0,2,4,0));
+		bounds.add(new Edge(2,4,0,0,6,0));
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp, an exception is supposed to be thrown
+		try{
+			bp.split(null);
+			assertTrue(false);
+		}catch (DelaunayError d){
+		}
+		assertTrue(true);
+		
+	}
+
+	/**
 	 * Test that an exception is thrown when trying to split a BP without any boundary edge.
 	 * @throws DelaunayError
 	 */
@@ -709,6 +734,196 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(bp.getBoundaryEdges().size()==2);
 		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(8,11,0,6,12,0)));
 		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(10,10,0,8,11,0)));
+	}
+
+	/**
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void testSplitDegenInsertPoint() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg, deg2;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		deg2 = deg;
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		List<DelaunayTriangle> tri = res.connectPoint(new Point(10,11,0));
+		//we test the tiangles
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,10,11,0), new Edge(10,11,0,8,11,0), new Edge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,10,11,0), new Edge(10,11,0,8,11,0), new Edge(8,11,0,6,12,0))));
+		//The added and bad edges, now.
+		List<Edge> added = res.getAddedEdges();
+		List<Edge> bad = res.getBadEdges();
+		//The added edges
+		assertTrue(added.size()==3);
+		assertTrue(added.contains(new Edge(6,12,0,10,11,0)));
+		assertTrue(added.contains(new Edge(8,11,0,10,11,0)));
+		assertTrue(added.contains(new Edge(10,10,0,10,11,0)));
+		//The bad edges
+		assertTrue(bad.isEmpty());
+		assertFalse(deg2.isDegenerated());
+		//And the boundary
+		List<Edge> bList = res.getBoundaryEdges();
+		assertTrue(bList.size()==3);
+		assertTrue(bList.get(0).equals(new Edge(10,10,0,10,11,0)));
+		assertTrue(bList.get(1).equals(new Edge(10,11,0,6,12,0)));
+		assertTrue(bList.get(2).equals(new Edge(6,12,0,0,13,0)));
+	}
+
+	/**
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testSplitDegenInsertPointBis() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg, deg2;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		deg2 = deg;
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		List<DelaunayTriangle> tri = res.connectPoint(new Point(10,14,0));
+		//we test the tiangles
+		assertTrue(tri.size()==3);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,10,14,0), new Edge(10,14,0,8,11,0), new Edge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,10,14,0), new Edge(10,14,0,8,11,0), new Edge(8,11,0,6,12,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,10,14,0), new Edge(10,14,0,0,13,0), new Edge(0,13,0,6,12,0))));
+		//The added and bad edges, now.
+		List<Edge> added = res.getAddedEdges();
+		List<Edge> bad = res.getBadEdges();
+		//The added edges
+		assertTrue(added.size()==4);
+		assertTrue(added.contains(new Edge(6,12,0,10,14,0)));
+		assertTrue(added.contains(new Edge(8,11,0,10,14,0)));
+		assertTrue(added.contains(new Edge(10,10,0,10,14,0)));
+		assertTrue(added.contains(new Edge(0,13,0,10,14,0)));
+		//The bad edges
+		assertTrue(bad.size()==1);
+		assertTrue(bad.contains(new Edge(0,13,0,6,12,0)));
+		assertFalse(deg2.isDegenerated());
+		//And the boundary
+		List<Edge> bList = res.getBoundaryEdges();
+		assertTrue(bList.size()==2);
+		assertTrue(bList.get(0).equals(new Edge(10,10,0,10,14,0)));
+		assertTrue(bList.get(0).getStartPoint().equals(new Point(10,10,0)));
+		assertTrue(bList.get(1).equals(new Edge(10,14,0,0,13,0)));
+		assertTrue(bList.get(1).getStartPoint().equals(new Point(10,14,0)));
+	}
+
+	/**
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testSplitDegenInsertPointLower() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg, deg2;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		deg2 = deg;
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		List<DelaunayTriangle> tri = bp.connectPoint(new Point(11,8,0));
+		//we test the tiangles
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,6,12,0))));
+		//The added and bad edges, now.
+		List<Edge> added = bp.getAddedEdges();
+		List<Edge> bad = bp.getBadEdges();
+		//The added edges
+		assertTrue(added.size()==3);
+		assertTrue(added.contains(new Edge(8,11,0,11,8,0)));
+		assertTrue(added.contains(new Edge(10,10,0,11,8,0)));
+		assertTrue(added.contains(new Edge(6,12,0,11,8,0)));
+		//The bad edges
+		assertTrue(bad.isEmpty());
+		assertFalse(deg2.isDegenerated());
+		//And the boundary
+		List<Edge> bList = bp.getBoundaryEdges();
+		assertTrue(bList.size()==2);
+		assertTrue(bList.get(0).equals(new Edge(6,12,0,11,8,0)));
+		assertTrue(bList.get(0).getStartPoint().equals(new Point(6,12,0)));
+		assertTrue(bList.get(1).equals(new Edge(11,8,0,10,10,0)));
+		assertTrue(bList.get(1).getStartPoint().equals(new Point(11,8,0)));
+	}
+
+	/**
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testSplitDegenInsertPointLowerWorse() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg, deg2;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		deg2 = deg;
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,10,0));
+		List<DelaunayTriangle> tri = bp.connectPoint(new Point(11,8,0));
+		//we test the tiangles
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,6,12,0))));
+		//The added and bad edges, now.
+		List<Edge> added = bp.getAddedEdges();
+		List<Edge> bad = bp.getBadEdges();
+		//The added edges
+		assertTrue(added.size()==3);
+		assertTrue(added.contains(new Edge(8,11,0,11,8,0)));
+		assertTrue(added.contains(new Edge(10,10,0,11,8,0)));
+		assertTrue(added.contains(new Edge(6,12,0,11,8,0)));
+		//The bad edges
+		assertTrue(bad.isEmpty());
+		assertFalse(deg2.isDegenerated());
+		//And the boundary
+		List<Edge> bList = bp.getBoundaryEdges();
+		assertTrue(bList.size()==2);
+		assertTrue(bList.get(0).equals(new Edge(6,12,0,11,8,0)));
+		assertTrue(bList.get(0).getStartPoint().equals(new Point(6,12,0)));
+		assertTrue(bList.get(1).equals(new Edge(11,8,0,10,10,0)));
+		assertTrue(bList.get(1).getStartPoint().equals(new Point(11,8,0)));
 	}
 
 	/**
@@ -776,8 +991,48 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,6,0,4,7,0)));
 		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(4,7,0,6,9,0)));
 		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(6,9,0,8,11,0)));
-		
+	}
 
+	/**
+	 * performs the connection of a point to a boundary part that contains only
+	 * edges shared with another one.
+	 * @throws DelaunayError
+	 */
+	public void testConnectToSplitDegenDEOnly () throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(0,6,0,12,0,0);
+		deg = new Edge(0,6,0,4,7,0);
+		bounds.add(deg);
+		deg = new Edge(4,7,0,6,9,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,9,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(8,11,0,10,13,0));
+		//we connect a point to the newly generated BP
+		List<DelaunayTriangle> tri = res.connectPoint(new Point(9,13,0));
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(8,11,0,9,13,0), new Edge(9,13,0,6,9,0), new Edge(6,9,0,8,11,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,7,0,9,13,0), new Edge(9,13,0,6,9,0), new Edge(6,9,0,4,7,0))));
+		//We check the boundary
+		List<Edge> boundEd = res.getBoundaryEdges();
+		assertTrue(boundEd.size()==2);
+		assertTrue(boundEd.contains(new Edge(8,11,0,9,13,0)));
+		assertTrue(boundEd.contains(new Edge(4,7,0,9,13,0)));
+		List<Edge> bad = res.getBadEdges();
+		List<Edge> added = res.getAddedEdges();
+		//we test the added edges.
+		assertTrue(added.size()==3);
+		assertTrue(added.contains(new Edge(4,7,0,9,13,0)));
+		assertTrue(added.contains(new Edge(6,9,0,9,13,0)));
+		assertTrue(added.contains(new Edge(8,11,0,9,13,0)));
+		assertTrue(bad.isEmpty());
 	}
 
 }

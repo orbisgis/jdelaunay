@@ -567,6 +567,91 @@ public class TestBoundary extends BaseUtility {
 	}
 
 	/**
+	 * Performs an insertion with a simple split.
+	 * @throws DelaunayError
+	 */
+	public void testInsertAndSplit() throws DelaunayError {
+		Boundary bound = getExampleBoundary();
+		List<Edge> cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(7,3,0,12,2,0));
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(7,3,0), cstrList);
+		assertTrue(tri.size()==2);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,2,0,7,3,0), new Edge(7,3,0,5,3,0),  new Edge(5,3,0,3,2,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,5,0,7,3,0), new Edge(7,3,0,5,3,0),  new Edge(5,3,0,6,5,0))));
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		//we check the added edges.
+		assertTrue(added.size()==3);
+		assertTrue(added.contains(new Edge(3,2,0,7,3,0)));
+		assertTrue(added.contains(new Edge(5,3,0,7,3,0)));
+		assertTrue(added.contains(new Edge(6,5,0,7,3,0)));
+		//we check the bad edges
+		assertTrue(bad.size()==2);
+		assertTrue(bad.contains(new Edge(3,2,0,5,3,0)));
+		assertTrue(bad.contains(new Edge(6,5,0,5,3,0)));
+		//And we check the whole boundary
+		assertTrue(bound.getBoundary().size()==9);
+		BoundaryPart bp = bound.getBoundary().get(1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(3,2,0,7,3,0)));
+		assertTrue(bp.getConstraint().equals(new Edge(3,2,0,9,0,0)));
+		bp = bound.getBoundary().get(2);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(7,3,0,6,5,0)));
+		assertTrue(bp.getConstraint().equals(new Edge(7,3,0,12,2,0)));
+		bp = bound.getBoundary().get(3);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(6,5,0,7,7,0)));
+		assertTrue(bp.getConstraint().equals(new Edge(6,5,0,10,4,0)));
+		
+	}
+
+	/**
+	 * test a split performed with degen edges
+	 * @throws DelaunayError
+	 */
+	public void testInsertDegenEdgesSplit() throws DelaunayError {
+		Boundary bound = getExampleDegenEdges();
+		List<Edge> cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(6,4,0,8,4,0));
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(6,4,0), cstrList);
+		List<Edge> added = bound.getAddedEdges();
+		List<Edge> bad = bound.getBadEdges();
+		//we test the added triangles.
+		assertTrue(tri.isEmpty());
+		//we check the bad edges
+		assertTrue(bad.isEmpty());
+		//we check the added edges.
+		assertTrue(added.size()==1);
+		assertTrue(added.get(0).equals(new Edge(4,4,0,6,4,0)));
+		//And we check the whole boundary
+		assertTrue(bound.getBoundary().size()==3);
+		BoundaryPart bp = bound.getBoundary().get(0);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,4,0,2,4,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(4,4,0,2,4,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(4,4,0,6,4,0)));
+		assertTrue(bp.getConstraint().equals(new Edge(0,4,0,8,0,0)));
+		bp = bound.getBoundary().get(1);
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(0,4,0,2,4,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(4,4,0,2,4,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(4,4,0,6,4,0)));
+		assertTrue(bp.getConstraint().equals(new Edge(6,4,0,8,4,0)));
+	}
+
+	/**
+	 * This test is built on the same scheme than testInsertDegenEdgesSplit, but
+	 * we go one step further by connecting another point to the mesh
+	 * @throws DelaunayError
+	 */
+	public void testInsertDESplitNextStep() throws DelaunayError {
+		Boundary bound = getExampleDegenEdges();
+		List<Edge> cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(6,4,0,8,4,0));
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(6,4,0), cstrList);
+		tri = bound.insertPoint(new Point(6,6,0));
+		//we test the added triangles.
+		assertTrue(tri.size()==3);
+
+	}
+
+	/**
 	 * Get a boundary ready to be tested.
 	 * @return
 	 */
@@ -637,6 +722,10 @@ public class TestBoundary extends BaseUtility {
 		return bound;
 	}
 
+	/**
+	 * Get a boundary ready to be tested.
+	 * @return
+	 */
 	private Boundary getExampleboundaryBis(){
 		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
 		BoundaryPart bp;
@@ -689,5 +778,38 @@ public class TestBoundary extends BaseUtility {
 		//We set the list of BoundaryPart in bound.
 		bound.setBoundary(bpl);
 		return bound;
+	}
+
+	/**
+	 * Get a boundary ready to be tested.
+	 * @return
+	 */
+	private Boundary getExampleDegenEdges(){
+		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
+		BoundaryPart bp;
+		Edge cstr;
+		Edge ed;
+		List<Edge> boundaryEdges;
+		Boundary bound = new Boundary();
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,4,0,8,0,0);
+		boundaryEdges = new ArrayList<Edge>();
+		ed = new Edge(0,4,0,2,4,0);
+		ed.setDegenerated(true);
+		boundaryEdges.add(ed);
+		ed = new Edge(2,4,0,4,4,0);
+		ed.setDegenerated(true);
+		boundaryEdges.add(ed);
+		bp = new BoundaryPart(boundaryEdges, cstr);
+		bpl.add(bp);
+		//We fill a boundary part, and put it in bpl
+		cstr = new Edge(0,4,0,8,10,0);
+		bp = new BoundaryPart(cstr);
+		bpl.add(bp);
+
+		//We set the list of BoundaryPart in bound.
+		bound.setBoundary(bpl);
+		return bound;
+		
 	}
 }

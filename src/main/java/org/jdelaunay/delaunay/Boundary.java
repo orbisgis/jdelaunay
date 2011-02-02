@@ -81,10 +81,14 @@ final class Boundary {
          * Connect a new Point to the boundary. This operation will alter the
          * boundary, by potentially adding or removing some boundary parts. Moreover,
          * in every cases, at least one BoundaryPart will be modified.
-         * @param pt
-         */
-        List<DelaunayTriangle> insertPoint(final Point pt, final Edge constraint) throws DelaunayError {
-		if(constraint != null && !pt.equals(constraint.getPointLeft())){
+	 *
+	 * @param pt
+	 * @param constraints
+	 * @return
+	 * @throws DelaunayError
+	 */
+        List<DelaunayTriangle> insertPoint(final Point pt, final List<Edge> constraints) throws DelaunayError {
+		if(constraints != null && !constraints.isEmpty() && !pt.equals(constraints.get(0).getPointLeft())){
 			throw new DelaunayError(106, "the point and the constraint do not match.");
 		}
 		List<Integer> indices = getEligibleParts(pt);
@@ -94,6 +98,8 @@ final class Boundary {
 		List<DelaunayTriangle> addedTri = new ArrayList<DelaunayTriangle>();
 		List<BoundaryPart> tmpBd ;
 		BoundaryPart bp;
+		BoundaryPart splitBp;
+		List<BoundaryPart> splitList = new ArrayList<BoundaryPart>();
 		List<Edge> bad = new ArrayList();
 		List<Edge> added = new ArrayList();
 		List<Edge> tmpAdded;
@@ -106,6 +112,16 @@ final class Boundary {
 			addedTri = bp.connectPoint(pt);
 			setBadEdges(bp.getBadEdges());
 			setAddedEdges(bp.getAddedEdges());
+			if(constraints != null && !constraints.isEmpty()){
+				//We must split bp into two boundary parts.
+				splitBp = bp.split(constraints.get(constraints.size()-1));
+				for(int i = 0; i<constraints.size()-1; i++) {
+					splitList.add(new BoundaryPart(constraints.get(i)));
+				}
+				splitList.add(splitBp);
+				//We insert the newly obtain BP in the boundary
+				boundary.addAll(indices.get(0)+1, splitList);
+			}
 		} else {
 			//We retrieve the informations of the connection of the point
 			//to the lowest BoundaryPart
@@ -160,10 +176,22 @@ final class Boundary {
 			setBadEdges(bad);
 			//We must replace the eligible parts with the one we've just
 			//created.
-			boundary.set(indices.get(0), newBP);
-			tmpBd = boundary;
-			boundary=tmpBd.subList(0, indices.get(0)+1);
-			boundary.addAll(tmpBd.subList(indices.get(indices.size()-1)+1, tmpBd.size()));
+			if(constraints != null && !constraints.isEmpty()){
+				splitBp = newBP.split(constraints.get(constraints.size()-1));
+				for(int i = 0; i<constraints.size()-1; i++) {
+					splitList.add(new BoundaryPart(constraints.get(i)));
+				}
+				splitList.add(splitBp);
+				tmpBd = boundary;
+				boundary=tmpBd.subList(0, indices.get(0));
+				boundary.addAll(splitList);
+				boundary.addAll(tmpBd.subList(indices.get(indices.size()-1)+1, tmpBd.size()));
+			} else {
+				boundary.set(indices.get(0), newBP);
+				tmpBd = boundary;
+				boundary=tmpBd.subList(0, indices.get(0)+1);
+				boundary.addAll(tmpBd.subList(indices.get(indices.size()-1)+1, tmpBd.size()));
+			}
 		}
 		return addedTri;
         }
