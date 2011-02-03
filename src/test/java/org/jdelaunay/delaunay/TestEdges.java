@@ -420,4 +420,11 @@ public class TestEdges extends BaseUtility {
 		Point pt = new Point (2,3,4);
 		assertTrue(pt.equals(ed.getBarycenter()));
 	}
+
+	public void testShared(){
+		Edge ed = new Edge(0,0,0,2,2,0);
+		assertFalse(ed.isShared());
+		ed.setShared(true);
+		assertTrue(ed.isShared());
+	}
 }

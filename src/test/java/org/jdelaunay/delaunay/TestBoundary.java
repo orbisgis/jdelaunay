@@ -651,6 +651,10 @@ public class TestBoundary extends BaseUtility {
 
 	}
 
+	public void testManySharedEdges() throws DelaunayError {
+		
+	}
+
 	/**
 	 * Get a boundary ready to be tested.
 	 * @return
@@ -810,6 +814,5 @@ public class TestBoundary extends BaseUtility {
 		//We set the list of BoundaryPart in bound.
 		bound.setBoundary(bpl);
 		return bound;
-		
 	}
 }

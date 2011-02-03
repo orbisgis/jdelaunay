@@ -31,7 +31,10 @@ public class Edge extends Element implements Comparable<Edge> {
 	//of the mesh, but is not part of any triangle. It is the case when adding 
 	//a point to the mesh that can't see any point of the boundary, because of
 	//the existing constraints.
-	private transient boolean degenerated;
+	private transient boolean degenerated = false;
+	//An Edge is said to be shared when it is used by two differents BoundaryParts
+	//during the building of the mesh.
+	private transient boolean shared = false;
 	/**
 	 * bit number  | function :
 	 * 1			| isOutsideMesh / setOutsideMesh
@@ -81,8 +84,6 @@ public class Edge extends Element implements Comparable<Edge> {
 		left = null;
 		right = null;
 		indicator = 0;
-		degenerated=false;
-//		aBox=null;
 	}
 
 	private void updateBox() {
@@ -257,6 +258,22 @@ public class Edge extends Element implements Comparable<Edge> {
 	 */
 	public final void setDegenerated(boolean degen){
 		degenerated=degen;
+	}
+
+	/**
+	 * An edge is shared when in use by two boundary parts.
+	 * @return
+	 */
+	final boolean isShared(){
+		return shared;
+	}
+
+	/**
+	 * set the shared status of this Edge.
+	 * @param share
+	 */
+	final void setShared(boolean share){
+		shared = share;
 	}
 
 	/**

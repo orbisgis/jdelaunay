@@ -222,11 +222,43 @@ public class TestBoundaryPart extends BaseUtility {
 		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
 		//And we check that we properly build triangles after that.
-		tri = part.connectPoint(new Point(5,3,0));
+		tri = part.connectPoint(new Point(7,3,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,3,0)));
-                assertTrue(bps.get(1).equals(new Edge(5,3,0,7,2,0)));
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new Edge(7,2,0,7,3,0)));
+                assertTrue(bps.get(3).equals(new Edge(7,3,0,3,6,0)));
+                assertTrue(bps.get(4).equals(new Edge(3,6,0,0,8,0)));
+		assertTrue(bps.size()==5);
+	}
+
+	/**
+	 * We work on the same basis as in testConnectionNovisibility, but here we will two
+	 * points that will form two degenerated edges, and we will connect another point
+	 * to build triangles.
+	 * In this test, one edge
+	 */
+	public void testConnectDegenEdgesBis() throws DelaunayError {
+                //First we fill an empty boundary part
+                List<Edge> bps = new ArrayList<Edge>();
+		//We make our test with only one edge
+		bps.add(new Edge(3,6,0,0,8,0));
+		Edge cstr = new Edge(3,6,0,6,0,0);
+		BoundaryPart part = new BoundaryPart(bps, cstr);
+		//We connect the point and retrieve the resulting triangles
+		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
+		tri = part.connectPoint(new Point(7,2,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+		//next on the resulting triangles.
+		assertTrue(tri.isEmpty());
+		//And we check that we properly build triangles after that.
+		tri = part.connectPoint(new Point(8,0,0));
+		//And we perform our tests. First on the boundary edges.
+                bps = part.getBoundaryEdges();
+                assertTrue(bps.get(0).equals(new Edge(3,6,0,8,0,0)));
+                assertTrue(bps.get(1).equals(new Edge(8,0,0,7,2,0)));
                 assertTrue(bps.get(2).equals(new Edge(7,2,0,5,4,0)));
                 assertTrue(bps.get(3).equals(new Edge(5,4,0,3,6,0)));
                 assertTrue(bps.get(4).equals(new Edge(3,6,0,0,8,0)));
@@ -727,13 +759,17 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(res.getConstraint().equals(new Edge(12,9,0,10,10,0)));
 		assertTrue(res.getBoundaryEdges().size()==3);
 		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(res.getBoundaryEdges().get(0).isShared());
 		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(res.getBoundaryEdges().get(1).isShared());
 		assertTrue(res.getBoundaryEdges().get(2).equals(new Edge(6,12,0,0,13,0)));
 		//On the first BP
 		assertTrue(bp.getConstraint().equals(new Edge(6,12,0,15,0,0)));
 		assertTrue(bp.getBoundaryEdges().size()==2);
 		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
 		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).isShared());
 	}
 
 	/**
@@ -900,7 +936,7 @@ public class TestBoundaryPart extends BaseUtility {
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,10,0));
+		bp.split(new Edge(10,10,0,12,10,0));
 		List<DelaunayTriangle> tri = bp.connectPoint(new Point(11,8,0));
 		//we test the tiangles
 		assertTrue(tri.size()==2);
@@ -1034,5 +1070,191 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(added.contains(new Edge(8,11,0,9,13,0)));
 		assertTrue(bad.isEmpty());
 	}
+
+	/**
+	 * Test that edges are well shared when splitting a BP with degenerated edges.
+	 * @throws DelaunayError
+	 */
+	public void testSharing() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		//We make some tests on the original BP
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		assertTrue(bp.getBoundaryEdges().get(1).isShared());
+		//We make some tests on the new BP
+		assertTrue(res.getBoundaryEdges().get(0).isShared());
+		assertTrue(res.getBoundaryEdges().get(1).isShared());
+		assertFalse(res.getBoundaryEdges().get(2).isShared());
+	}
+
+	/**
+	 * Tests that sthe sharing property is well removed when adding a point.
+	 * @throws DelaunayError
+	 */
+	public void testSharingRemoval() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		bp.connectPoint(new Point(11,8,0));
+		//We make some tests on the new BP
+		assertFalse(res.getBoundaryEdges().get(0).isShared());
+		assertFalse(res.getBoundaryEdges().get(1).isShared());
+		assertFalse(res.getBoundaryEdges().get(2).isShared());
+		bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		res = bp.split(new Edge(10,10,0,12,9,0));
+		res.connectPoint(new Point(11,14,0));
+		//We make some tests on the original BP
+		assertFalse(bp.getBoundaryEdges().get(0).isShared());
+		assertFalse(bp.getBoundaryEdges().get(1).isShared());
+	}
+
+	/**
+	 * Inserts a new degenerated edge in a BP that already
+	 * contains two shared edges.
+	 * @throws DelaunayError
+	 */
+	public void testSharingInsertNewDegen() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,11,0));
+		assertTrue(res.getBoundaryEdges().size()==3);
+		bp.connectPoint(new Point (12,10,0));
+		assertTrue(bp.getBoundaryEdges().size()==3);
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		assertTrue(bp.getBoundaryEdges().get(1).isShared());
+		assertTrue(bp.getBoundaryEdges().get(2).isDegenerated());
+	}
+
+	/**
+	 * Inserts a new degenerated edge in a BP that already
+	 * contains two shared edges, and create a new triangle with this degenerated
+	 * edge, with a point that can't be seen from the shared edges
+	 * @throws DelaunayError
+	 */
+	public void testSharingInsertNewDegenFurther() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,11,0));
+		assertTrue(res.getBoundaryEdges().size()==3);
+		List<DelaunayTriangle> tri = bp.connectPoint(new Point (12,10,0));
+		assertTrue(tri.isEmpty());
+		tri = bp.connectPoint(new Point (13,11,0));
+		assertTrue(bp.getBoundaryEdges().size()==5);
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(6,12,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).isShared());
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(8,11,0,10,10,0)));
+		assertFalse(bp.getBoundaryEdges().get(2).isDegenerated());
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(10,10,0,12,10,0)));
+		assertTrue(bp.getBoundaryEdges().get(3).equals(new Edge(13,11,0,12,10,0)));
+		assertTrue(bp.getBoundaryEdges().get(4).equals(new Edge(10,10,0,13,11,0)));
+		assertTrue(tri.size()==1);
+	}
+
+	/**
+	 * Inserts a new degenerated edge in a BP that already
+	 * contains two shared edges.
+	 * @throws DelaunayError
+	 */
+	public void testSharingSwapOrder() throws DelaunayError {
+		BoundaryPart bp;
+		Edge deg;
+		List<Edge> bounds = new ArrayList<Edge>();
+		//We prepare the first BP
+		Edge cstr = new Edge(6,12,0,15,0,0);
+		deg = new Edge(6,12,0,8,11,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(8,11,0,10,10,0);
+		deg.setDegenerated(true);
+		bounds.add(deg);
+		deg = new Edge(6,12,0,0,13,0);
+		bounds.add(deg);
+		bp = new BoundaryPart(bounds, cstr);
+		//We split the first bp
+		BoundaryPart res = bp.split(new Edge(10,10,0,12,6,0));
+		assertTrue(res.getBoundaryEdges().size()==3);
+		List<DelaunayTriangle> tri = res.connectPoint(new Point (12,8,0));
+		assertTrue(tri.isEmpty());
+		tri = res.connectPoint(new Point (14,6,0));
+		assertTrue(tri.isEmpty());
+		bp=res.split(new Edge(14,6,0,15,3,0));
+		assertTrue(bp.getBoundaryEdges().size()==5);
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(12,8,0,14,6,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).isShared());
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(12,8,0,10,10,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).isShared());
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(3).isShared());
+		assertTrue(bp.getBoundaryEdges().get(3).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(4).equals(new Edge(0,13,0,6,12,0)));
+	}
+
 
 }

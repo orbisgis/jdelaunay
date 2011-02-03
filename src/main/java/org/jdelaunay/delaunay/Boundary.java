@@ -95,13 +95,13 @@ final class Boundary {
 		if(indices.isEmpty()){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
 		}
-		List<DelaunayTriangle> addedTri = new ArrayList<DelaunayTriangle>();
+		List<DelaunayTriangle> addedTri;
 		List<BoundaryPart> tmpBd ;
 		BoundaryPart bp;
 		BoundaryPart splitBp;
 		List<BoundaryPart> splitList = new ArrayList<BoundaryPart>();
-		List<Edge> bad = new ArrayList();
-		List<Edge> added = new ArrayList();
+		List<Edge> bad;
+		List<Edge> added;
 		List<Edge> tmpAdded;
 		if(indices.size()==1){
 			//parts contain only one BoundaryPart : the point is not the right
@@ -113,7 +113,7 @@ final class Boundary {
 			setBadEdges(bp.getBadEdges());
 			setAddedEdges(bp.getAddedEdges());
 			if(constraints != null && !constraints.isEmpty()){
-				//We must split bp into two boundary parts.
+				//We must split bp into two or more boundary parts.
 				splitBp = bp.split(constraints.get(constraints.size()-1));
 				for(int i = 0; i<constraints.size()-1; i++) {
 					splitList.add(new BoundaryPart(constraints.get(i)));
