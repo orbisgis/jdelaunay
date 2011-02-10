@@ -873,6 +873,89 @@ public class TestBoundary extends BaseUtility {
 		 assertTrue(bp.getAddedEdges().contains(new Edge(6,13,0,16,16,0)));
 		 assertTrue(bp.getAddedEdges().contains(new Edge(3,13,0,16,16,0)));
 		 assertTrue(bp.getAddedEdges().contains(new Edge(0,13,0,16,16,0)));
+		 assertTrue(bp.getBadEdges().size()==1);
+	}
+
+	public void testBuildFirstBoundary() throws DelaunayError {
+		Edge constr = new Edge(3,0,0,3,6,0);
+		constr.setLocked(true);
+		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
+		Point p1 = new Point(1,3,0);
+		Point p2 = new Point(3,0,0);
+		Edge e1 = new Edge(p1, p2);
+		e1.setShared(true);
+		List<Edge> edList = new ArrayList<Edge>();
+		edList.add(e1);
+		BoundaryPart bp = new BoundaryPart(edList);
+		bpl.add(bp);
+		edList = new ArrayList<Edge>();
+		edList.add(e1);
+		bp = new BoundaryPart(edList, constr);
+		bpl.add(bp);
+		Boundary bound = new Boundary();
+		bound.setBoundary(bpl);
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(3,6,0));
+		assertTrue(tri.size()==1);
+		assertTrue(bound.getBoundary().size()==1);
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().size()==3);
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().get(0).equals(new Edge(1,3,0,3,0,0)));
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().get(1).equals(new Edge(3,0,0,3,6,0)));
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().get(2).equals(new Edge(3,6,0,1,3,0)));
+	}
+
+	public void testBuildFirstBoundaryBis() throws DelaunayError {
+		//We build the boundary part.
+		Edge constrBis = new Edge(0,2,0,6,4,0);
+		constrBis.setLocked(true);
+		BoundaryPart bp = new BoundaryPart(constrBis);
+		List<BoundaryPart> edList = new ArrayList<BoundaryPart>();
+		edList.add(bp);
+		//we build and fill the boundary
+		Boundary bound = new Boundary();
+		bound.setBoundary(edList);
+		//we prepare the constraint.
+		Edge constr = new Edge(4,0,0,6,4,0);
+		constr.setLocked(true);
+		List<Edge> cstrList = new ArrayList<Edge>();
+		cstrList.add(constr);
+		bound.insertPoint(new Point(4,0,0), cstrList);
+		assertTrue(bound.getBoundary().size()==3);
+		assertTrue(bound.getBoundary().get(2).getConstraint().equals(new Edge(0,2,0,6,4,0)));
+		assertTrue(bound.getBoundary().get(1).getConstraint().equals(new Edge(4,0,0,6,4,0)));
+		assertTrue(bound.getBoundary().get(0).getConstraint()==null);
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().get(0).equals(new Edge(0,2,0,4,0,0)));
+		assertTrue(bound.getBoundary().get(1).getBoundaryEdges().get(0).equals(new Edge(0,2,0,4,0,0)));
+		assertTrue(bound.getBoundary().get(2).getBoundaryEdges().isEmpty());
+	}
+
+	public void testBuildSharedVerticalConstraint () throws DelaunayError {
+		List<BoundaryPart> bpList = new ArrayList<BoundaryPart>();
+		List<Edge> edList = new ArrayList<Edge>();
+		//We build the first boundary part and add it to the list of BP
+		Edge constr = new Edge(0,6,0,6,0,0);
+		constr.setLocked(true);
+		Edge ed = new Edge(0,6,0,3,6,0);
+		ed.setShared(true);
+		edList.add(ed);
+		BoundaryPart bp = new BoundaryPart(edList, constr);
+		bpList.add(bp);
+		//We build the second boundary part and add it to the list of BP
+		edList = new ArrayList<Edge>();
+		edList.add(ed);
+		Edge constrBis = new Edge(3,6,0,4,9,0);
+		constrBis.setLocked(true);
+		bp = new BoundaryPart(edList,constrBis);
+		bpList.add(bp);
+		//we bulid and fill the boundary.
+		Boundary bound = new Boundary();
+		bound.setBoundary(bpList);
+		//We perform the insertion
+		List<Edge> cstrList = new ArrayList<Edge>();
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(4,9,0), cstrList);
+		//We perform our tests
+		assertTrue(tri.size()==1);
+		assertTrue(bound.getBoundary().size()==1);
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().size()==3);
 	}
 
 	/**

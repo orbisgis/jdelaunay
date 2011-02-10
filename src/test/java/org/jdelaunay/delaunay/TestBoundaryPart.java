@@ -1255,6 +1255,4 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(bp.getBoundaryEdges().get(3).equals(new Edge(8,11,0,6,12,0)));
 		assertTrue(bp.getBoundaryEdges().get(4).equals(new Edge(0,13,0,6,12,0)));
 	}
-
-
 }

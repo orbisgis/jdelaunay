@@ -43,7 +43,7 @@ public class ConstrainedMesh implements Serializable {
 	//The two following lists are used only during computation.
 	//The bad edge queue list contains all the edges that coud be changed
 	//during a flip-flap operation
-	private LinkedList<Edge> badEdgesQueueList;
+	private List<Edge> badEdgesQueueList;
 	//boundaryEdges contains the Envelope of the CURRENT geometry.
 	private List<Edge> boundaryEdges;
 	//Permits to know if the mesh has been computed or not
@@ -140,6 +140,9 @@ public class ConstrainedMesh implements Serializable {
 			//We lock the edge. It will not be supposed to be switched
 			//during a flip flap.
 			e.setLocked(true);
+			if(e.getPointLeft().equals(e.getEndPoint())){
+				e.swap();
+			}
 			addConstraintEdge(e);
 		}
 	}
@@ -962,7 +965,6 @@ public class ConstrainedMesh implements Serializable {
 			triangleList = new ArrayList<DelaunayTriangle>();
 			boundaryEdges = new ArrayList<Edge>();
 			cstrLinkedToEnv = new VerticalList();
-			LinkedList<Point> badPointList = new LinkedList<Point>();
 
 			// sort points
 			if (verbose) {
@@ -970,58 +972,25 @@ public class ConstrainedMesh implements Serializable {
 			}
 			ListIterator<Point> iterPoint = points.listIterator();
 
+			Point p1 = iterPoint.next();
+			Point p2 = iterPoint.next();
+			Edge e1 = new Edge(p1, p2);
+			e1 = replaceByConstraint(e1);
+			List<Edge> fromLeft = getConstraintsFromLeftPoint(p1);
+			//This operaton connects the two first points and their linked constraints.
+			Boundary bound = buildStartBoundary(p1, e1, fromLeft, getConstraintsFromLeftPoint(p2));
+			
 
-			// we build a first triangle with the 3 first points we find
-			if (verbose) {
-				log.trace("Building first triangle");
+			while(iterPoint.hasNext()){
+				p2=iterPoint.next();
+				fromLeft = getConstraintsFromLeftPoint(p2);
+				triangleList.addAll(bound.insertPoint(p2, fromLeft));
+				edges.addAll(bound.getAddedEdges());
+				badEdgesQueueList = bound.getBadEdges();
+				processBadEdges();
 			}
-
-			buildFirstTriangle(iterPoint, badPointList);
-
-			// flip-flop on a list of points
-			boolean ended = false;
-			Point currentPoint = null;
-			Point lastTestedPoint = null;
-			while (!ended) {
-				boolean hasGotPoint = false;
-				if (!badPointList.isEmpty()) {
-					//We must try to process the points that have been referenced as "bad"
-					currentPoint = badPointList.getFirst();
-					if (lastTestedPoint != currentPoint) {
-						//we've tested another point since last time
-						//we tried with the first point of the bad
-						//point list. Let's try again...
-						badPointList.removeFirst();
-						hasGotPoint = true;
-					}
-				}
-				//If we've retrieved a point in the badPointList, we
-				//don't need to take one in the points list.
-				if (!hasGotPoint) {
-					if (iterPoint.hasNext()) {
-						currentPoint = iterPoint.next();
-					} else {
-						ended = true;
-						currentPoint = null;
-					}
-				}
-				lastTestedPoint = currentPoint;
-				//And here we add the point in the mesh (cf insertPointIntoMesh)
-				if (currentPoint != null && insertPointIntoMesh(currentPoint) == null) {
-					badPointList.addFirst(currentPoint);
-				}
-
-			}
-
 
 			meshComputed = true;
-
-			if (polygons.size() > 0) {
-				if (verbose) {
-					log.trace("Processing edges of " + polygons.size() + " polygon" + (polygons.size() > 1 ? "s" : ""));
-				}
-//				processPolygons();
-			}
 
 			// It's fine, we computed the mesh
 			if (verbose) {
@@ -1032,6 +1001,108 @@ public class ConstrainedMesh implements Serializable {
 				log.trace("  Triangles : " + triangleList.size());
 			}
 		}
+	}
+
+	/**
+	 * Build the boundary needed to begin the building of the mesh.
+	 * @param p1
+	 * @param e1
+	 * @param constraintsP1
+	 * @return
+	 */
+	Boundary buildStartBoundary(Point p1, Edge e1, List<Edge> constraintsP1, List<Edge> constraintsP2){
+		BoundaryPart bp;
+		Boundary bound = new Boundary();
+		List<Edge> boundEdges = new LinkedList<Edge>();
+		boundEdges.add(e1);
+		//If p2 is not linked to any constraint, then [p1 p2] will be degenerated.
+		//If there are constraints linked to p2, then [p1 p2] will be shared between
+		//the uppest constraint linked to p1 that is lower than [p1 p2] and
+		//the uppest constraint linked to p2.
+		if(constraintsP2.isEmpty()){
+			e1.setDegenerated(true);
+		} else {
+			e1.setShared(true);
+		}
+		List<BoundaryPart> bps = new ArrayList<BoundaryPart>();
+		if(constraintsP1 == null || constraintsP1.isEmpty()){
+			//We don't have to manage with any constraint.
+			bp=new BoundaryPart(boundEdges);
+			bps.add(bp);
+			boundEdges = new LinkedList<Edge>();
+			boundEdges.add(e1);
+			//We add the constraints linked to p2, that will form other boundary parts.
+			for(Edge ed : constraintsP2){
+				bps.add(new BoundaryPart(ed));
+			}
+			if(!bps.isEmpty()){
+				boundEdges = new LinkedList<Edge>();
+				boundEdges.add(e1);
+				bps.get(bps.size()-1).setBoundaryEdges(boundEdges);
+			}
+			bound.setBoundary(bps);
+		} else {
+			Edge current = constraintsP1.get(0);
+			ListIterator<Edge> iter = constraintsP1.listIterator();
+			boolean direct = current.getEndPoint().equals(current.getPointRight());
+			if((direct && current.isRight(e1.getPointRight())) || (!direct && current.isLeft(e1.getPointRight())) ){
+				//We can create a boundary part without constraint, as 
+				//p2 is under all the constraints linked to p1.
+				bp=new BoundaryPart(boundEdges);
+				bps.add(bp);
+				bps.add(new BoundaryPart(current));
+				//We add the constraints linked to p2, that will form other boundary parts.
+				for(Edge ed : constraintsP2){
+					bps.add(new BoundaryPart(ed));
+				}
+				//We add the constraints linked to p1.
+				while(iter.hasNext()){
+					current = iter.next();
+					bps.add(new BoundaryPart(current));
+				}
+			} else {
+				//set will be set to true when the constraints linked to p2
+				//will have been added.
+				boolean set = false;
+				Edge mem = iter.next();
+				current = null;
+				while(iter.hasNext()){
+					current = iter.next();
+					if(!set && current.isRight(e1.getPointRight())){
+						bps.add(new BoundaryPart(boundEdges, mem));
+						//We add the constraints linked to p2, that will form other boundary parts.
+						for(Edge ed : constraintsP2){
+							bps.add(new BoundaryPart(ed));
+						}
+						mem=current;
+						set = true;
+					}else {
+						bps.add(new BoundaryPart(mem));
+						mem=current;
+					}
+				}
+				//We must process the last constraint edge linked to p1.
+				if(current != null){
+					//if current.isRight(p2), the BoundaryPart that
+					//contains e1 has already been added.
+					if(current.isRight(e1.getPointRight())){
+						bps.add(new BoundaryPart(current));
+					} else{
+					//We still have to add the BP with e1
+						bps.add(new BoundaryPart(boundEdges, current));
+					}
+				}
+				if(!set){
+					bps.add(new BoundaryPart(boundEdges, mem));
+					//We add the constraints linked to p2, that will form other boundary parts.
+					for(Edge ed : constraintsP2){
+						bps.add(new BoundaryPart(ed));
+					}
+				}
+			}
+		}
+		bound.setBoundary(bps);
+		return bound;
 	}
 
 	/**
@@ -1407,8 +1478,8 @@ public class ConstrainedMesh implements Serializable {
 		if (!isMeshComputed()) {
 			LinkedList<Edge> alreadySeen = new LinkedList<Edge>();
 			while (!badEdgesQueueList.isEmpty()) {
-				Edge anEdge = badEdgesQueueList.getFirst();
-				badEdgesQueueList.removeFirst();
+				Edge anEdge = badEdgesQueueList.get(0);
+				badEdgesQueueList.remove(0);
 
 				boolean doIt = true;
 
@@ -1449,7 +1520,7 @@ public class ConstrainedMesh implements Serializable {
 			}
 		} else {
 			while (!badEdgesQueueList.isEmpty()) {
-				badEdgesQueueList.removeFirst();
+				badEdgesQueueList.remove(0);
 			}
 		}
 	}

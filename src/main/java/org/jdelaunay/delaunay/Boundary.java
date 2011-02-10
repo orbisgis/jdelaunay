@@ -2,6 +2,7 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -108,7 +109,24 @@ final class Boundary {
 			//extremity of a constraint linked to the edge.
 			//We can connect it directly : it won't provoke the
 			//removal of any BoundaryPart
-			bp = boundary.get(indices.get(0));
+			int index = indices.get(0);
+			if(index == -1){
+				//if we come here, then we are working on the lowest BP of this boundary.
+				//We must create a degenerated edge, use it to create a new BP
+				//and add this bp to the boundary.
+				index = 0;
+				Edge ed = new Edge(boundary.get(0).getConstraint().getPointLeft(),pt);
+				for(Edge con : constraints){
+					ed = ed.equals(con) ? con : ed;
+				}
+				ed.setDegenerated(true);
+				List<Edge> led= new LinkedList<Edge> ();
+				led.add(ed);
+				bp=new BoundaryPart(led);
+				boundary.add(0, bp);
+			} else {
+				bp = boundary.get(index);
+			}
 			addedTri = bp.connectPoint(pt);
 			setBadEdges(bp.getBadEdges());
 			setAddedEdges(bp.getAddedEdges());
@@ -120,7 +138,7 @@ final class Boundary {
 				}
 				splitList.add(splitBp);
 				//We insert the newly obtain BP in the boundary
-				boundary.addAll(indices.get(0)+1, splitList);
+				boundary.addAll(index+1, splitList);
 			}
 		} else {
 			//We retrieve the informations of the connection of the point
@@ -168,8 +186,11 @@ final class Boundary {
 				//BoundaryEdge, consequently we must add the constraint
 				//edge to the boundaryEdges of newBP
 				tmpLast.add(bp.getConstraint());
+			} else if((bp.getBoundaryEdges().get(0).getRight()==null || bp.getBoundaryEdges().get(0).getLeft()==null)
+					&& !bp.getBoundaryEdges().get(0).equals(tmpLast.get(0))){
+				tmpLast.addAll(bp.getBoundaryEdges());
 			} else {
-				tmpLast.addAll(bp.getBoundaryEdges().subList(1, bp.getBoundaryEdges().size()));				
+				tmpLast.addAll(bp.getBoundaryEdges().subList(1, bp.getBoundaryEdges().size()));
 			}
 			newBP.setBoundaryEdges(tmpLast);
 			setAddedEdges(added);
@@ -216,7 +237,14 @@ final class Boundary {
 		//we treat the cases where the list contains one or none element.
 		ArrayList<Integer> ret = new ArrayList<Integer>();
 		if(boundary.size() <= 1){
-			ret.add(0);
+			//There is only one boundary part, or boundary is empty.
+			if(boundary.get(0).getConstraint() != null && boundary.get(0).getConstraint().isRight(point) ){
+				//we are going to add a new Boundary Part to the boundary.
+				ret.add(-1);
+			}else {
+				//We can work avec the boundary part that already exists.
+				ret.add(0);
+			}
 			return ret;
 		}
 		int size = boundary.size();
