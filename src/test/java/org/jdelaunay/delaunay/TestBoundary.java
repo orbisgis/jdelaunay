@@ -1005,6 +1005,52 @@ public class TestBoundary extends BaseUtility {
 	}
 
 	/**
+	 * This test matches TestConstrainedMesh.testCross, and performs the first
+	 * point insertion of the mesh building.
+	 * @throws DelaunayError
+	 */
+	public void testCross() throws DelaunayError {
+		List<BoundaryPart> bpList = new ArrayList<BoundaryPart>();
+		List<Edge> edList = new ArrayList<Edge>();
+		Edge ed = new Edge(0,0,0,0,4,0);
+		Edge constraint = new Edge(0,0,0,2,2,0);
+		constraint.setLocked(true);
+		ed.setDegenerated(true);
+		edList.add(ed);
+		//We build the first boundarypart
+		BoundaryPart bp = new BoundaryPart(edList, constraint);
+		Boundary bound = new Boundary();
+		bpList.add(bp);
+		//we build the second BoundaryPart
+		constraint = new Edge(0,4,0,2,2,0);
+		constraint.setLocked(true);
+		bp=new BoundaryPart(constraint);
+		bpList.add(bp);
+		//We fill the boundary
+		bound.setBoundary(bpList);
+		//We prepare the point insertion.
+		edList = new ArrayList<Edge>();
+		constraint = new Edge(2,2,0,4,0,0);
+		constraint.setLocked(true);
+		edList.add(constraint);
+		constraint = new Edge(2,2,0,4,4,0);
+		constraint.setLocked(true);
+		edList.add(constraint);
+		//we perform the insertion.
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(2,2,0), edList);
+		assertTrue(tri.size()==1);
+		assertTrue(bound.getBoundary().size()==3);
+		assertNull(bound.getBoundary().get(0).getConstraint());
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
+		assertTrue(bound.getBoundary().get(1).getConstraint().equals(new Edge(2,2,0,4,0,0)));
+		assertTrue(bound.getBoundary().get(1).getBoundaryEdges().isEmpty());
+		assertTrue(bound.getBoundary().get(2).getConstraint().equals(new Edge(2,2,0,4,4,0)));
+		assertTrue(bound.getBoundary().get(2).getBoundaryEdges().size()==2);
+		assertTrue(bound.getBoundary().get(2).getBoundaryEdges().get(0).equals(new Edge(2,2,0,0,4,0)));
+		assertTrue(bound.getBoundary().get(2).getBoundaryEdges().get(0).getStartPoint().equals(new Point(2,2,0)));
+	}
+
+	/**
 	 * Get a boundary ready to be tested.
 	 * @return
 	 */

@@ -152,7 +152,9 @@ final class Boundary {
 			//we retrieve the first bp of the list.
 			bp = boundary.get(indices.get(0));
 			//We prepare the BP we will add in the end.
-			BoundaryPart newBP = new BoundaryPart(new ArrayList<Edge>(), bp.getConstraint());
+			BoundaryPart newBP = indices.get(0) == 0 && boundary.get(0).getConstraint()!=null ?
+					new BoundaryPart(new ArrayList<Edge>()) :
+					new BoundaryPart(new ArrayList<Edge>(), bp.getConstraint());
 			//We must know the constraint that bound the next BP to avoid the
 			//creation of duplicates.
 			Edge nextCstr = boundary.get(indices.get(1)).getConstraint();
@@ -190,6 +192,10 @@ final class Boundary {
 				//BoundaryEdge, consequently we must add the constraint
 				//edge to the boundaryEdges of newBP
 				tmpLast.add(bp.getConstraint());
+				//We must swap the edge if necessary.
+				if(bp.getConstraint().getPointLeft().equals(bp.getConstraint().getStartPoint())){
+					bp.getConstraint().swap();
+				}
 			} else if((bp.getBoundaryEdges().get(0).getRight()==null || bp.getBoundaryEdges().get(0).getLeft()==null)
 					&& !bp.getBoundaryEdges().get(0).equals(tmpLast.get(0))){
 				//We check if bp.getBoundaryEdges.get(0) has an empty side, ie if it is linked to
@@ -213,12 +219,16 @@ final class Boundary {
 				tmpBd.addAll(boundary);
 				boundary = new ArrayList<BoundaryPart>();
 				boundary.addAll(tmpBd.subList(0, indices.get(0)));
+				//We must not forget newBP !
+				boundary.add(newBP);
 				boundary.addAll(splitList);
 				boundary.addAll(tmpBd.subList(indices.get(indices.size()-1)+1, tmpBd.size()));
 			} else {
 				boundary.set(indices.get(0), newBP);
-				tmpBd = boundary;
-				boundary=tmpBd.subList(0, indices.get(0)+1);
+				tmpBd = new ArrayList<BoundaryPart>();
+				tmpBd.addAll(boundary);
+				boundary = new ArrayList<BoundaryPart>();
+				boundary.addAll(tmpBd.subList(0, indices.get(0)+1));
 				boundary.addAll(tmpBd.subList(indices.get(indices.size()-1)+1, tmpBd.size()));
 			}
 		}

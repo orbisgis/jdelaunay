@@ -701,8 +701,8 @@ final class BoundaryPart {
 		mem.setDegenerated(true);
 		if(mem.equals(constraint)){
 			mem = constraint;
-			if(constraint.getLeft()==null && constraint.getRight()==null){
-				constraint.setDegenerated(true);
+			if(mem.getLeft()==null && mem.getRight()==null){
+				mem.setDegenerated(true);
 			}
 		} else {
 			mem = mem.equals(nextCstr) ? nextCstr : mem;
