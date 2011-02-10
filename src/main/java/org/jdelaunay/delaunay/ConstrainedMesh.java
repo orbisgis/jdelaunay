@@ -984,8 +984,11 @@ public class ConstrainedMesh implements Serializable {
 			while(iterPoint.hasNext()){
 				p2=iterPoint.next();
 				fromLeft = getConstraintsFromLeftPoint(p2);
+				//The insertion is performed here !
 				triangleList.addAll(bound.insertPoint(p2, fromLeft));
+				//We retrieve the edges that have been added to the mesh.
 				edges.addAll(bound.getAddedEdges());
+				//We retrieve the potential bad edges, and treat them.
 				badEdgesQueueList = bound.getBadEdges();
 				processBadEdges();
 			}
@@ -1010,11 +1013,14 @@ public class ConstrainedMesh implements Serializable {
 	 * @param constraintsP1
 	 * @return
 	 */
-	Boundary buildStartBoundary(Point p1, Edge e1, List<Edge> constraintsP1, List<Edge> constraintsP2){
+	final Boundary buildStartBoundary(Point p1, Edge e1, List<Edge> constraintsP1, List<Edge> constraintsP2){
 		BoundaryPart bp;
 		Boundary bound = new Boundary();
 		List<Edge> boundEdges = new LinkedList<Edge>();
 		boundEdges.add(e1);
+		//we need two different lists to avoid causing ConcurrentModificationException
+		List<Edge> boundEdgesBis = new LinkedList<Edge>();
+		boundEdgesBis.add(e1);
 		//If p2 is not linked to any constraint, then [p1 p2] will be degenerated.
 		//If there are constraints linked to p2, then [p1 p2] will be shared between
 		//the uppest constraint linked to p1 that is lower than [p1 p2] and
@@ -1032,9 +1038,7 @@ public class ConstrainedMesh implements Serializable {
 			boundEdges = new LinkedList<Edge>();
 			boundEdges.add(e1);
 			//We add the constraints linked to p2, that will form other boundary parts.
-			for(Edge ed : constraintsP2){
-				bps.add(new BoundaryPart(ed));
-			}
+			fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
 			if(!bps.isEmpty()){
 				boundEdges = new LinkedList<Edge>();
 				boundEdges.add(e1);
@@ -1052,9 +1056,7 @@ public class ConstrainedMesh implements Serializable {
 				bps.add(bp);
 				bps.add(new BoundaryPart(current));
 				//We add the constraints linked to p2, that will form other boundary parts.
-				for(Edge ed : constraintsP2){
-					bps.add(new BoundaryPart(ed));
-				}
+				fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
 				//We add the constraints linked to p1.
 				while(iter.hasNext()){
 					current = iter.next();
@@ -1071,9 +1073,7 @@ public class ConstrainedMesh implements Serializable {
 					if(!set && current.isRight(e1.getPointRight())){
 						bps.add(new BoundaryPart(boundEdges, mem));
 						//We add the constraints linked to p2, that will form other boundary parts.
-						for(Edge ed : constraintsP2){
-							bps.add(new BoundaryPart(ed));
-						}
+						fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
 						mem=current;
 						set = true;
 					}else {
@@ -1095,9 +1095,7 @@ public class ConstrainedMesh implements Serializable {
 				if(!set){
 					bps.add(new BoundaryPart(boundEdges, mem));
 					//We add the constraints linked to p2, that will form other boundary parts.
-					for(Edge ed : constraintsP2){
-						bps.add(new BoundaryPart(ed));
-					}
+					fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
 				}
 			}
 		}
@@ -1105,6 +1103,24 @@ public class ConstrainedMesh implements Serializable {
 		edges.add(e1);
 		bound.setBoundary(bps);
 		return bound;
+	}
+
+	/**
+	 * Fill the list of boundary parts with the boundary parts infered from p2
+	 * @param boundaryEdges
+	 * @param constraintsP2
+	 * @param bps
+	 */
+	private void fillWithP2Constraints(List<Edge> boundaryEdges, List<Edge> constraintsP2, List<BoundaryPart> bps){
+		Edge ed;
+		for(int i = 0; i<constraintsP2.size()-2; i++){
+			ed = constraintsP2.get(i);
+			bps.add(new BoundaryPart(ed));
+		}
+		if(!constraintsP2.isEmpty()){
+			bps.add(new BoundaryPart(boundaryEdges, constraintsP2.get(constraintsP2.size()-1)));
+		}
+		
 	}
 
 	/**
@@ -1126,353 +1142,7 @@ public class ConstrainedMesh implements Serializable {
 		}
 		return tempEdge;
 	}
-
-	/**
-	 * Insert a point to the current triangulation
-	 *
-	 * @param ptToAdd
-	 * @param property Property for the new triangle.
-	 * @throws DelaunayError
-	 */
-	private DelaunayTriangle insertPoint(Point ptToAdd, int property) throws DelaunayError {
-		DelaunayTriangle foundTriangle = null;
-		// We build triangles with all boundary edges for which the point is on
-		// the left
-		Point p1, p2;
-		Edge anEdge1, anEdge2;
-		DelaunayTriangle aTriangle;
-		LinkedList<Edge> oldEdges = new LinkedList<Edge>();
-		LinkedList<Edge> newEdges = new LinkedList<Edge>();
-		Edge current;
-		//We remove the constraints linked to the boundary that have ptToAdd as
-		//right point. Indeed, we know that this edges will be put in the
-		//mesh, or at its boundary.
-		cstrLinkedToEnv.removeEdgeFromRightPoint(ptToAdd);
-		for (int i = 0; i < boundaryEdges.size(); i++) {
-			//We change the current edge.
-			current = boundaryEdges.get(i);
-
-			//We must consider the case where current is a degenerated edge.
-			//For such an edge, the only condition to build a triangle from
-			//it and ptToAdd is that current must be visible from the new point.
-			//If it is, we just process it...
-			if(current.isDegenerated()){
-				if(current.isColinear2D(ptToAdd)){
-					//ptToAdd is colinear to an existing degenerated edge,
-					//we create a new degenerated edge, they will be properly treated later.
-					//We know that the newly created edge won't intersect any
-					//existing constraints, as we are stuck between
-					//two ones that share the same left edge.
-
- 					anEdge1 = getEligibleEdge(current.getPointRight(), ptToAdd, newEdges);
-
-					anEdge1.setDegenerated(true);
-					if(overlapsContent(anEdge1, newEdges)){
-						newEdges = new LinkedList<Edge>();
-						newEdges.add(anEdge1);
-					} else if(!newEdges.contains(anEdge1) ){
-						newEdges.add(anEdge1);
-					}
-					addEdge(anEdge1);
-					foundTriangle = new DelaunayTriangle();
-				} else {
-					anEdge1 = new Edge(current.getStartPoint(),ptToAdd);
-					anEdge2 = new Edge(current.getEndPoint(), ptToAdd);
-					//The triangle must be added if and only if we don't
-					//have an intersection with an existing constraint linked to
-					//the boundary.
-					if(!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge1)
-							&& !cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)
-							&& !intersectsBoundary(anEdge1)
-							&& !intersectsBoundary(anEdge2)){
-					//We can create a new triangle in this part of the mesh.
-					//Let's do it !
-						p1 = current.getStart();
-						p2 = current.getEnd();
-						if (current.isLeft(ptToAdd)) {
-							anEdge1 = getEligibleEdge(p2, ptToAdd, newEdges);
-							anEdge2 = getEligibleEdge(ptToAdd, p1, newEdges);
-						} else {
-							current.swap();
-
-							anEdge1 = getEligibleEdge(p1, ptToAdd, newEdges);
-							anEdge2 = getEligibleEdge(ptToAdd, p2, newEdges);
-						}
-						current.setDegenerated(false);
-
-						addEdge(anEdge1);
-						addEdge(anEdge2);
-
-
-						aTriangle = new DelaunayTriangle(current, anEdge1, anEdge2);
-						addTriangle(aTriangle);
-
-						// Then process the other points
-						if(!newEdges.contains(anEdge1)){
-							newEdges.add(anEdge1);
-						}
-						if(!newEdges.contains(anEdge2)){
-							newEdges.add(anEdge2);
-						}
-						//We don't add current to oldEdges, as it is still linked to
-						//the boundary.
-						if (foundTriangle == null) {
-							foundTriangle = aTriangle;
-						}
-						
-					}
-				}
-			} else {
-				// as the boundary edge anEdge already exists, we check if the
-				// point is on the left for the reverse order of the edge
-				// So, the point must be on the right of the BoundaryEdge
-				p1 = null;
-				p2 = null;
-				anEdge1 = null;
-				anEdge2 = null;
-				if (current.isRight(ptToAdd)) {
-					// We have the edge and the 2 points, in reverse order
-					p2 = current.getStartPoint();
-					p1 = current.getEndPoint();
-
-					// triangle points order is p1, p2, aPoint
-					// check if there is an edge between p2 and aPoint
-					anEdge1 = new Edge(p2, ptToAdd);
-
-					if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge1)
-							&& !intersectsBoundary(anEdge1)) {
-						// check if there is an edge between aPoint and p1
-						anEdge2 = new Edge(ptToAdd, p1);
-						
-						if (!cstrLinkedToEnv.intersectsUpperOrLower(ptToAdd, anEdge2)
-							&& !intersectsBoundary(anEdge2)) {
-							anEdge1 = getEligibleEdge(p2, ptToAdd, newEdges);
-							anEdge2 = getEligibleEdge(ptToAdd, p1, newEdges);
-							addEdgeToLeftSortedList(edges, anEdge1);
-							if(!newEdges.contains(anEdge1)){
-								newEdges.add(anEdge1);
-							}
-							addEdgeToLeftSortedList(edges, anEdge2);
-							if(!newEdges.contains(anEdge2)){
-								newEdges.add(anEdge2);
-							}
-							// create triangle : take care of the order : anEdge MUST be
-							// first
-							aTriangle = new DelaunayTriangle(current, anEdge1, anEdge2);
-							aTriangle.setProperty(property);
-							addTriangle(aTriangle);
-
-							// We say we founded a first triangle
-							if (foundTriangle == null) {
-								foundTriangle = aTriangle;
-							}
-
-							// Mark the edge to be removed
-							oldEdges.add(current);
-
-							// add the edges to the bad edges list
-							if (!isMeshComputed()) {
-								if (!badEdgesQueueList.contains(current)) {
-									badEdgesQueueList.add(current);
-								}
-								if (!badEdgesQueueList.contains(anEdge1)) {
-									badEdgesQueueList.add(anEdge1);
-								}
-								if (!badEdgesQueueList.contains(anEdge2)) {
-									badEdgesQueueList.add(anEdge2);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if(foundTriangle==null){
-			//We failed at building a triangle with the input point and the boundary edges.
-			//We check the position of the point from the segments.
-			//
-			Edge cstrLow = cstrLinkedToEnv.getLowerEdge(ptToAdd);
-			Edge cstrUp = cstrLinkedToEnv.getUpperEdge(ptToAdd);
-			Edge degenerated;
-			Edge tmp;
-			if(cstrLow != null){
-				degenerated=new Edge(cstrLow.getPointLeft(),ptToAdd);
-				if(cstrUp==null){
-					degenerated = replaceByConstraint(degenerated);
-				} else if(cstrUp.getPointLeft().equals(cstrLow.getPointLeft())){
-					//we create a new degenerated edge, and link it
-					//directly to the boundary edges.
-					degenerated=new Edge(cstrLow.getPointLeft(),ptToAdd);
-				} else {
-					tmp = new Edge(cstrUp.getPointLeft(), cstrLow.getPointLeft());
-					int inter = degenerated.intersects(tmp);
-					if(inter == Edge.INTERSECT || inter == Edge.SHARE_EDGE_PART){
-						degenerated = new Edge(cstrUp.getPointLeft(), ptToAdd);
-						degenerated = replaceByConstraint(degenerated);
-					} else {
-						degenerated = replaceByConstraint(degenerated);
-					}
-				}
-			} else if(cstrUp != null){
-				degenerated=new Edge(cstrUp.getPointLeft(),ptToAdd);
-				degenerated = replaceByConstraint(degenerated);
-			} else {
-				throw new DelaunayError("we failed at linking this point to the mesh : "+ptToAdd.toString());
-			}
-			if(!newEdges.contains(degenerated)){
-				newEdges.add(degenerated);
-			}
-			degenerated.setDegenerated(true);
-			addEdge(degenerated);
-			foundTriangle = new DelaunayTriangle();
-			
-		}
-		// remove old edges
-		for (Edge anEdge : oldEdges) {
-			boundaryEdges.remove(anEdge);
-		}
-
-		// add the newEdges to the boundary list
-		for (Edge anEdge : newEdges) {
-			if ((anEdge.getLeft() == null || anEdge.getRight() == null) && !boundaryEdges.contains(anEdge)) {
-				boundaryEdges.add(anEdge);
-			}
-		}
-
-		cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(ptToAdd));
-		// Process badTriangleQueueList
-		processBadEdges();
-
-
-		return foundTriangle;
-	}
-
-	/**
-	 * Get an Edge that has the good end point and start point. We first search
-	 * it in the constraints, then in the list given in argument, and finally
-	 * build it from the input points if we haven't found it.
-	 * Start will be the start point, end the end point, even if it implies to
-	 * swap the edge before returning it.
-	 * @param start
-	 * @param End
-	 * @param knownEdges
-	 * @return
-	 */
-	private Edge getEligibleEdge(Point start, Point end, List<Edge> knownEdges){
-		Edge tmp;
-		tmp = Tools.checkTwoPointsEdge(start, end, knownEdges);
-		if(tmp == null){
-			tmp = new Edge(start, end);
-			tmp = replaceByConstraint(tmp);
-		}
-		if(tmp.getStartPoint().equals(end)){
-			tmp.swap();
-		}
-		return tmp;
-	}
-
-	/**
-	 * Build the first triangle of the mesh. If the three first points of the 
-	 * input can be used to build a triangle, they are. Otherwise, we add a 
-	 * point (stored in the ghost attribute) and use it to buld a triangle with 
-	 * the two first points.
-	 * 
-	 * This temporary triangle will have to be removed when the computation will 
-	 * be ended.
-	 */
-	private void buildFirstTriangle(ListIterator<Point> iterPoint, List<Point> badPoints) throws DelaunayError {
-		DelaunayTriangle aTriangle;
-		Point p1, p2, p3;
-		Edge e1, e2, e3;
-		p1 = null;
-		p2 = null;
-		p3 = null;
-
-
-		p1 = iterPoint.next();
-		//we add the constraints that are linked to p1
-		cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(p1));
-		p2 = iterPoint.next();
-		//We add the constraints that are linked to p2
-		cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(p2));
-		e1 = new Edge(p1, p2);
-		e1 = replaceByConstraint(e1);
-		//we remove e1 from the constraints linked to the boundary
-		//Indeed, e1 will be part of the boundary...
-		cstrLinkedToEnv.removeEdge(e1);
-
-		//The 3 points MUST NOT be colinear
-		p3 = iterPoint.next();
-
-		if(e1.isColinear2D(p3)){
-			e2 = new Edge(p2,p3);
-			e1.setDegenerated(true);
-			e2.setDegenerated(true);
-			boundaryEdges.add(e1);
-			boundaryEdges.add(e2);
-			cstrLinkedToEnv.removeEdgeFromRightPoint(p3);
-			cstrLinkedToEnv.removeEdgeFromRightPoint(p2);
-			return;
-		}
-		e2 = new Edge(p2, p3);
-		e3 = new Edge(p3, p1);
-		cstrLinkedToEnv.addEdges(getConstraintsFromLeftPoint(p3));
-		boolean interE3Cstr = cstrLinkedToEnv.intersectsUpperOrLower(p3, e3);
-		if ((cstrLinkedToEnv.intersectsUpperOrLower(p3, e2)
-			|| interE3Cstr)
-			&& iterPoint.hasNext()) {
-			//We are in the case whe the first triangle can't be simply
-			//created. Consequently, we add a degenerated edge to
-			//the boundary.
-			e1.setDegenerated(true);
-			if(interE3Cstr){
-				e3=new Edge(p2, p3);
-			} else {
-				e3=new Edge(p1, p3);
-			}
-			e3 = replaceByConstraint(e3);
-			e3.setDegenerated(true);
-			boundaryEdges.add(e1);
-			boundaryEdges.add(e3);
-			addEdge(e1);
-			addEdge(e3);
-		} else {
-			//We are able to build a proper first triangle.
-			// The triangle's edges MUST be in the right direction
-			if (e1.isLeft(p3)) {
-				e2 = new Edge(p2, p3);
-				e3 = new Edge(p3, p1);
-				e2 = replaceByConstraint(e2);
-				e3 = replaceByConstraint(e3);
-			} else {
-				e1.setStartPoint(p2);
-				e1.setEndPoint(p1);
-
-				e2 = new Edge(p1, p3);
-				e3 = new Edge(p3, p2);
-				e2 = replaceByConstraint(e2);
-				e3 = replaceByConstraint(e3);
-			}
-
-			addEdge(e1);
-			addEdge(e2);
-			addEdge(e3);
-
-
-			aTriangle = new DelaunayTriangle(e1, e2, e3);
-			addTriangle(aTriangle);
-
-			// Then process the other points
-			boundaryEdges.add(e1);
-			boundaryEdges.add(e2);
-			boundaryEdges.add(e3);
-			cstrLinkedToEnv.removeEdgeFromRightPoint(p3);
-			cstrLinkedToEnv.removeEdgeFromRightPoint(p2);
-		}
-	}
-
-
+	
 	/**
 	 * Process the flip-flop algorithm on the list of triangles
 	 */
@@ -1542,15 +1212,6 @@ public class ConstrainedMesh implements Serializable {
 			}
 		}
 		return false;
-	}
-	/**
-	 * Insert a point to the current triangularization
-	 *
-	 * @param aPoint
-	 * @throws DelaunayError
-	 */
-	private DelaunayTriangle insertPointIntoMesh(Point aPoint) throws DelaunayError {
-		return insertPoint(aPoint, 0);
 	}
 
 	private boolean overlapsContent(Edge ed, List<Edge> edges) throws DelaunayError{
