@@ -116,8 +116,10 @@ final class Boundary {
 				//and add this bp to the boundary.
 				index = 0;
 				Edge ed = new Edge(boundary.get(0).getConstraint().getPointLeft(),pt);
-				for(Edge con : constraints){
-					ed = ed.equals(con) ? con : ed;
+				if(constraints != null && !constraints.isEmpty()){
+					for(Edge con : constraints){
+						ed = ed.equals(con) ? con : ed;
+					}
 				}
 				ed.setDegenerated(true);
 				List<Edge> led= new LinkedList<Edge> ();
@@ -137,7 +139,7 @@ final class Boundary {
 					splitList.add(new BoundaryPart(constraints.get(i)));
 				}
 				splitList.add(splitBp);
-				//We insert the newly obtain BP in the boundary
+				//We insert the newly obtained BP in the boundary
 				boundary.addAll(index+1, splitList);
 			}
 		} else {
@@ -175,7 +177,9 @@ final class Boundary {
 				addedTri.addAll(bp.connectPoint(pt, nextCstr));
 				bad.addAll(bp.getBadEdges());
 				tmpAdded = bp.getAddedEdges();
-				added.addAll(tmpAdded.subList(1, tmpAdded.size()));
+				if(tmpAdded.size()>1) {
+					added.addAll(tmpAdded.subList(1, tmpAdded.size()));
+				}
 			}
 			//We must use the last altered BP to retrieve the boundary
 			//edges
@@ -188,6 +192,8 @@ final class Boundary {
 				tmpLast.add(bp.getConstraint());
 			} else if((bp.getBoundaryEdges().get(0).getRight()==null || bp.getBoundaryEdges().get(0).getLeft()==null)
 					&& !bp.getBoundaryEdges().get(0).equals(tmpLast.get(0))){
+				//We check if bp.getBoundaryEdges.get(0) has an empty side, ie if it is linked to
+				//one triangle or less.
 				tmpLast.addAll(bp.getBoundaryEdges());
 			} else {
 				tmpLast.addAll(bp.getBoundaryEdges().subList(1, bp.getBoundaryEdges().size()));
@@ -203,8 +209,10 @@ final class Boundary {
 					splitList.add(new BoundaryPart(constraints.get(i)));
 				}
 				splitList.add(splitBp);
-				tmpBd = boundary;
-				boundary=tmpBd.subList(0, indices.get(0));
+				tmpBd = new ArrayList<BoundaryPart>();
+				tmpBd.addAll(boundary);
+				boundary = new ArrayList<BoundaryPart>();
+				boundary.addAll(tmpBd.subList(0, indices.get(0)));
 				boundary.addAll(splitList);
 				boundary.addAll(tmpBd.subList(indices.get(indices.size()-1)+1, tmpBd.size()));
 			} else {
@@ -248,6 +256,19 @@ final class Boundary {
 			return ret;
 		}
 		int size = boundary.size();
+		//In some cases, the lowest BoundaryPart can contain a constraint Edge.
+		//We must manage this case.
+		if(boundary.get(0).getConstraint() != null && boundary.get(0).getConstraint().isRight(point)){
+			//we are going to add a new Boundary Part to the boundary.
+			ret.add(-1);
+			return ret;
+
+		}
+		if(boundary.get(0).getConstraint() != null && boundary.get(0).isConstraintRightPoint(point)){
+			ret.add(0);
+			ret.addAll(getUpperSameRightPoint(0, boundary.get(0)));
+			return ret;
+		}
 		//We first check the extremities.
 		if(boundary.get(1).isConstraintRightPoint(point)){
 			ret.add(0);

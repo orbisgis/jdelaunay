@@ -928,6 +928,10 @@ public class TestBoundary extends BaseUtility {
 		assertTrue(bound.getBoundary().get(2).getBoundaryEdges().isEmpty());
 	}
 
+	/**
+	 * Performs an insertion on a boundary wher a vertical constraint is shared.
+	 * @throws DelaunayError
+	 */
 	public void testBuildSharedVerticalConstraint () throws DelaunayError {
 		List<BoundaryPart> bpList = new ArrayList<BoundaryPart>();
 		List<Edge> edList = new ArrayList<Edge>();
@@ -956,6 +960,48 @@ public class TestBoundary extends BaseUtility {
 		assertTrue(tri.size()==1);
 		assertTrue(bound.getBoundary().size()==1);
 		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().size()==3);
+	}
+
+	public void testLowestIsConstraint() throws DelaunayError {
+		List<BoundaryPart> bpList = new ArrayList<BoundaryPart>();
+		List<Edge> edList = new ArrayList<Edge>();
+		//we build the first (and only) BoundaryPart. It is built with a constraint
+		//and an edge. The constraint is lower thant the edge.
+		Edge constraint = new Edge(0,0,0,5,3,0);
+		constraint.setLocked(true);
+		Edge ed = new Edge(0,0,0,2,3,0);
+		edList.add(ed);
+		BoundaryPart bp = new BoundaryPart(edList, constraint);
+		bpList.add(bp);
+		constraint = new Edge(0,0,0,5,13,0);
+		constraint.setLocked(true);
+		bp = new BoundaryPart(constraint);
+		bpList.add(bp);
+		Boundary bound = new Boundary();
+		bound.setBoundary(bpList);
+		constraint = new Edge(3,0,0,5,1,0);
+		constraint.setLocked(true);
+		edList = new ArrayList<Edge>();
+		edList.add(constraint);
+		//And now we add a point that is lower than the constraint Edge.
+		//A constraint begins at this point.
+		//It must result in a boundary with three boundary parts :
+		// - The lowest without constraint, with one boundary Edge
+		// - the second with the new constraint, that shares the boundary edge with the lowest.
+		// - the uppest identical as the one already present.
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(3,0,0),edList);
+		assertTrue(tri.isEmpty());
+		assertTrue(bound.getBoundary().size()==4);
+		assertNull(bound.getBoundary().get(0).getConstraint());
+		assertTrue(bound.getBoundary().get(0).getBoundaryEdges().get(0).equals(new Edge(0,0,0,3,0,0)));
+		assertTrue(bound.getBoundary().get(1).getConstraint().equals(new Edge(3,0,0,5,1,0)));
+		assertTrue(bound.getBoundary().get(1).getBoundaryEdges().get(0).equals(new Edge(3,0,0,0,0,0)));
+		assertTrue(bound.getBoundary().get(1).getBoundaryEdges().get(0).isShared());
+		assertFalse(bound.getBoundary().get(1).getBoundaryEdges().get(0).isDegenerated());
+		assertTrue(bound.getBoundary().get(2).getConstraint().equals(new Edge(0,0,0,5,3,0)));
+		assertTrue(bound.getBoundary().get(2).getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,3,0)));
+		assertTrue(bound.getBoundary().get(3).getConstraint().equals(new Edge(0,0,0,5,13,0)));
+		
 	}
 
 	/**
