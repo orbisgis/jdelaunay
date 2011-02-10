@@ -723,6 +723,78 @@ public class TestBoundary extends BaseUtility {
 	}
 
 	/**
+	 * A more complete example, with many degenerated edges. we insert a point.
+	 * @throws DelaunayError
+	 */
+	public void testManySharedEdgesInsertion() throws DelaunayError {
+		Edge cstr = new Edge(0,13,0,19,0,0);
+		BoundaryPart bp = new BoundaryPart(cstr);
+		Boundary bound = new Boundary();
+		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
+		List<Edge> cstrList;
+		bpl.add(bp);
+		bound.setBoundary(bpl);
+		//3,13,0   19,2,0
+		Point ptToAdd = new Point(3,13,0);
+		cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(3,13,0,19,2,0));
+		bound.insertPoint(ptToAdd, cstrList);
+		assertTrue(bound.getBoundary().size()==2);
+		//6,13,0   19,4,0
+		ptToAdd = new Point(6,13,0);
+		cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(6,13,0,19,4,0));
+		bound.insertPoint(ptToAdd, cstrList);
+		//9,13,0   19,6,0
+		ptToAdd = new Point(9,13,0);
+		cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(9,13,0,19,6,0));
+		bound.insertPoint(ptToAdd, cstrList);
+		//12,13,0
+		ptToAdd = new Point(12,13,0);
+		cstrList = new ArrayList<Edge>();
+		bound.insertPoint(ptToAdd, cstrList);
+		//15,13,0
+		ptToAdd = new Point(15,13,0);
+		cstrList = new ArrayList<Edge>();
+		bound.insertPoint(ptToAdd, cstrList);
+		assertTrue(bound.getBoundary().size()==4);
+		assertTrue(bound.getAddedEdges().contains(new Edge(12,13,0,15,13,0)));
+		//We insert a point.
+		List<DelaunayTriangle> tri = bound.insertPoint(new Point(16,16,0));
+		/***************************************
+		 * And now we can perform our tests.
+		 **************************************/
+		 assertTrue(tri.size()==5);
+		 assertTrue(tri.contains(new DelaunayTriangle(new Edge(12,13,0,15,13,0), new Edge(15,13,0,16,16,0), new Edge(16,16,0,12,13,0))));
+		 assertTrue(tri.contains(new DelaunayTriangle(new Edge(12,13,0,9,13,0), new Edge(9,13,0,16,16,0), new Edge(16,16,0,12,13,0))));
+		 assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,13,0,9,13,0), new Edge(9,13,0,16,16,0), new Edge(16,16,0,6,13,0))));
+		 assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,13,0,3,13,0), new Edge(3,13,0,16,16,0), new Edge(16,16,0,6,13,0))));
+		 assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,13,0,3,13,0), new Edge(3,13,0,16,16,0), new Edge(16,16,0,0,13,0))));
+		 for(BoundaryPart bopa : bound.getBoundary()){
+			 assertFalse(bopa.getBoundaryEdges().get(0).isShared());
+		 }
+		 bp = bound.getBoundary().get(3);
+		 assertTrue(bp.getBoundaryEdges().size()==4);
+		 assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(9,13,0,12,13,0)));
+		 assertTrue(bp.getBoundaryEdges().get(0).getStartPoint().equals(new Point(9,13,0)));
+		 assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(15,13,0,12,13,0)));
+		 assertTrue(bp.getBoundaryEdges().get(1).getStartPoint().equals(new Point(12,13,0)));
+		 assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(15,13,0,16,16,0)));
+		 assertTrue(bp.getBoundaryEdges().get(2).getStartPoint().equals(new Point(15,13,0)));
+		 assertTrue(bp.getBoundaryEdges().get(3).equals(new Edge(0,13,0,16,16,0)));
+		 assertTrue(bp.getBoundaryEdges().get(3).getStartPoint().equals(new Point(16,16,0)));
+		 assertTrue(bp.getAddedEdges().size()==6);
+		 assertTrue(bp.getAddedEdges().contains(new Edge(15,13,0,16,16,0)));
+		 assertTrue(bp.getAddedEdges().contains(new Edge(12,13,0,16,16,0)));
+		 assertTrue(bp.getAddedEdges().contains(new Edge(9,13,0,16,16,0)));
+		 assertTrue(bp.getAddedEdges().contains(new Edge(6,13,0,16,16,0)));
+		 assertTrue(bp.getAddedEdges().contains(new Edge(3,13,0,16,16,0)));
+		 assertTrue(bp.getAddedEdges().contains(new Edge(0,13,0,16,16,0)));
+		
+	}
+
+	/**
 	 * Get a boundary ready to be tested.
 	 * @return
 	 */

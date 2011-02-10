@@ -589,9 +589,11 @@ final class BoundaryPart {
 					if(mem == null){
 						ret = new Edge(point, current.getStartPoint());
 						mem = ret;
+						addedEdges.add(mem);
 					}
 					//we build the edge we don't know yet
 					memBis = new Edge(current.getEndPoint(), point);
+					addedEdges.add(memBis);
 					//We build the triangle and add it to the list.
 					tri.add(new DelaunayTriangle(current, memBis, mem));
 					//We store memBis in mem in order not to loose it
