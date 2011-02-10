@@ -651,8 +651,75 @@ public class TestBoundary extends BaseUtility {
 
 	}
 
+	/**
+	 * A more complete example, with many degenerated edges.
+	 * @throws DelaunayError
+	 */
 	public void testManySharedEdges() throws DelaunayError {
-		
+		Edge cstr = new Edge(0,13,0,19,0,0);
+		BoundaryPart bp = new BoundaryPart(cstr);
+		Boundary bound = new Boundary();
+		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
+		List<Edge> cstrList;
+		bpl.add(bp);
+		bound.setBoundary(bpl);
+		//3,13,0   19,2,0
+		Point ptToAdd = new Point(3,13,0);
+		cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(3,13,0,19,2,0));
+		bound.insertPoint(ptToAdd, cstrList);
+		assertTrue(bound.getBoundary().size()==2);
+		//6,13,0   19,4,0
+		ptToAdd = new Point(6,13,0);
+		cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(6,13,0,19,4,0));
+		bound.insertPoint(ptToAdd, cstrList);
+		//9,13,0   19,6,0
+		ptToAdd = new Point(9,13,0);
+		cstrList = new ArrayList<Edge>();
+		cstrList.add(new Edge(9,13,0,19,6,0));
+		bound.insertPoint(ptToAdd, cstrList);
+		//12,13,0
+		ptToAdd = new Point(12,13,0);
+		cstrList = new ArrayList<Edge>();
+		bound.insertPoint(ptToAdd, cstrList);
+		//15,13,0
+		ptToAdd = new Point(15,13,0);
+		cstrList = new ArrayList<Edge>();
+		bound.insertPoint(ptToAdd, cstrList);
+		assertTrue(bound.getBoundary().size()==4);
+		assertTrue(bound.getAddedEdges().contains(new Edge(12,13,0,15,13,0)));
+		/***************************************
+		 * And now we can perform our tests.
+		 **************************************/
+		//On the first BP in the boundary
+		bp = bound.getBoundary().get(0);
+		assertTrue(bp.getBoundaryEdges().size()==1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,13,0,3,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		//On the second BP in the boundary
+		bp = bound.getBoundary().get(1);
+		assertTrue(bp.getBoundaryEdges().size()==1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(6,13,0,3,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		//On the third BP in the boundary
+		bp = bound.getBoundary().get(2);
+		assertTrue(bp.getBoundaryEdges().size()==1);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(6,13,0,9,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		//On the third BP in the boundary
+		bp = bound.getBoundary().get(3);
+		assertTrue(bp.getBoundaryEdges().size()==5);
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(12,13,0,9,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).isDegenerated());
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(12,13,0,15,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).isDegenerated());
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(6,13,0,9,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).isShared());
+		assertTrue(bp.getBoundaryEdges().get(3).equals(new Edge(6,13,0,3,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(3).isShared());
+		assertTrue(bp.getBoundaryEdges().get(4).equals(new Edge(0,13,0,3,13,0)));
+		assertTrue(bp.getBoundaryEdges().get(4).isShared());
 	}
 
 	/**

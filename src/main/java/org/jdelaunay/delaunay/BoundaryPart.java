@@ -530,12 +530,12 @@ final class BoundaryPart {
 		LinkedList<Edge> llMem = new LinkedList<Edge>();
 		//We manage the case where we'll just add a new degenerated Edge.
 		if(current.isColinear(point)){
-			while(current.isColinear(point) && iter.hasNext()){
+			while(current.isColinear(point) && iter.hasNext() && current.isDegenerated() && !current.isShared()){
 				current = iter.next();
 			}
 			//If we've been stopped because current.isColinear(point) is false,
-			//we must go one step back.
-			if(!current.isColinear(point)){
+			//or because it's not degenerated, we must go one step back.
+			if(!current.isColinear(point) || !current.isDegenerated()){
 				current = iter.previous();
 				current = iter.previous();
 				ret = new Edge(current.getEndPoint(),point);
