@@ -547,23 +547,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		double minAngle = 400;
 		int returndeValue = -1;
 		for (int k = 0; k < PT_NB; k++) {
-			int k1 = (k + 1) % PT_NB;
-			int k2 = (k1 + 1) % PT_NB;
-
-			Point p1 = this.getPoint(k);
-			Point p2 = this.getPoint(k1);
-			Point pptNb = this.getPoint(k2);
-
-			double ux = p2.getX() - p1.getX();
-			double uy = p2.getY() - p1.getY();
-			double vx = pptNb.getX() - p1.getX();
-			double vy = pptNb.getY() - p1.getY();
-
-			double dp = ux * vx + uy * vy;
-
-			double angle = Math.acos(Math.sqrt(((dp * dp))
-					/ ((ux * ux + uy * uy) * (vx * vx + vy * vy))))
-					* (180d / Math.PI);
+			double angle = getAngle(k);
 			if (angle < minAngle) {
 				minAngle = angle;
 				if (minAngle < tolarance) {
@@ -582,23 +566,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	protected final double getMaxAngle() {
 		double maxAngle = 0;
 		for (int k = 0; k < PT_NB; k++) {
-			int k1 = (k + 1) % PT_NB;
-			int k2 = (k1 + 1) % PT_NB;
-
-			Point p1 = this.getPoint(k);
-			Point p2 = this.getPoint(k1);
-			Point pptNb = this.getPoint(k2);
-
-			double ux = p2.getX() - p1.getX();
-			double uy = p2.getY() - p1.getY();
-			double vx = pptNb.getX() - p1.getX();
-			double vy = pptNb.getY() - p1.getY();
-
-			double dp = ux * vx + uy * vy;
-
-			double angle = Math.acos(Math.sqrt(((dp * dp))
-					/ ((ux * ux + uy * uy) * (vx * vx + vy * vy))))
-					* (180d / Math.PI);
+			double angle = getAngle(k);
 			if (angle > maxAngle) {
 				maxAngle = angle;
 			}
@@ -1024,5 +992,29 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		return c;
 	}
 
+	/**
+	 * retrieve the angle between number k.
+	 * @param k
+	 * @return
+	 */
+	private double getAngle(int k){
+		int k1 = (k + 1) % PT_NB;
+		int k2 = (k1 + 1) % PT_NB;
 
+		Point p1 = this.getPoint(k);
+		Point p2 = this.getPoint(k1);
+		Point pptNb = this.getPoint(k2);
+
+		double ux = p2.getX() - p1.getX();
+		double uy = p2.getY() - p1.getY();
+		double vx = pptNb.getX() - p1.getX();
+		double vy = pptNb.getY() - p1.getY();
+
+		double dp = ux * vx + uy * vy;
+
+		return Math.acos(Math.sqrt(((dp * dp))
+				/ ((ux * ux + uy * uy) * (vx * vx + vy * vy))))
+				* (180d / Math.PI);
+
+	}
 }
