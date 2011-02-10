@@ -523,8 +523,6 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(3,8,0,1,13,0), new Edge(1,13,0,0,10,0), new Edge(0,10,0,3,8,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(3,8,0,1,13,0), new Edge(1,13,0,3,14,0), new Edge(3,14,0,3,8,0))));
 		assertTrue(triangles.size()==4);
-
-
 	}
 
 	/**

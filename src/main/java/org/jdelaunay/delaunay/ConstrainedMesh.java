@@ -1140,7 +1140,7 @@ public class ConstrainedMesh implements Serializable {
 	 */
 	private void fillWithP2Constraints(List<Edge> boundaryEdges, List<Edge> constraintsP2, List<BoundaryPart> bps, Edge e1){
 		Edge ed;
-		for(int i = 0; i<constraintsP2.size()-2; i++){
+		for(int i = 0; i<constraintsP2.size()-1; i++){
 			ed = constraintsP2.get(i);
 			if(!ed.equals(e1)){
 				bps.add(new BoundaryPart(ed));
