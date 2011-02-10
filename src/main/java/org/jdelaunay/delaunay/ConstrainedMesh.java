@@ -156,6 +156,9 @@ public class ConstrainedMesh implements Serializable {
 		if (constraintEdges == null) {
 			constraintEdges = new ArrayList<Edge>();
 		}
+		if(e.getPointLeft().equals(e.getEndPoint())){
+			e.swap();
+		}
 		e.setLocked(true);
 		addEdgeToLeftSortedList(constraintEdges, e);
 		int index = Collections.binarySearch(points, e.getStartPoint());
@@ -944,6 +947,18 @@ public class ConstrainedMesh implements Serializable {
 		}
 		return retList;
 	}
+
+	/**
+	 * Get the list of constraint edges whose left point is left, vertically sorted.
+	 * @param left
+	 * @return
+	 */
+	public final List<Edge> getConstraintFromLPVertical(Point left){
+		List<Edge> retList = getConstraintsFromLeftPoint(left);
+		VerticalComparator vc = new VerticalComparator(left.getX());
+		Collections.sort(retList, vc);
+		return retList;
+	}
 	// ------------------------------------------------------------------------------------------
 
 	/**
@@ -976,14 +991,14 @@ public class ConstrainedMesh implements Serializable {
 			Point p2 = iterPoint.next();
 			Edge e1 = new Edge(p1, p2);
 			e1 = replaceByConstraint(e1);
-			List<Edge> fromLeft = getConstraintsFromLeftPoint(p1);
+			List<Edge> fromLeft = getConstraintFromLPVertical(p1);
 			//This operaton connects the two first points and their linked constraints.
-			Boundary bound = buildStartBoundary(p1, e1, fromLeft, getConstraintsFromLeftPoint(p2));
+			Boundary bound = buildStartBoundary(p1, e1, fromLeft, getConstraintFromLPVertical(p2));
 			
 
 			while(iterPoint.hasNext()){
 				p2=iterPoint.next();
-				fromLeft = getConstraintsFromLeftPoint(p2);
+				fromLeft = getConstraintFromLPVertical(p2);
 				//The insertion is performed here !
 				triangleList.addAll(bound.insertPoint(p2, fromLeft));
 				//We retrieve the edges that have been added to the mesh.
@@ -1038,7 +1053,7 @@ public class ConstrainedMesh implements Serializable {
 			boundEdges = new LinkedList<Edge>();
 			boundEdges.add(e1);
 			//We add the constraints linked to p2, that will form other boundary parts.
-			fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
+			fillWithP2Constraints(boundEdgesBis, constraintsP2, bps, e1);
 			if(!bps.isEmpty()){
 				boundEdges = new LinkedList<Edge>();
 				boundEdges.add(e1);
@@ -1056,7 +1071,7 @@ public class ConstrainedMesh implements Serializable {
 				bps.add(bp);
 				bps.add(new BoundaryPart(current));
 				//We add the constraints linked to p2, that will form other boundary parts.
-				fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
+				fillWithP2Constraints(boundEdgesBis, constraintsP2, bps, e1);
 				//We add the constraints linked to p1.
 				while(iter.hasNext()){
 					current = iter.next();
@@ -1070,14 +1085,20 @@ public class ConstrainedMesh implements Serializable {
 				current = null;
 				while(iter.hasNext()){
 					current = iter.next();
-					if(!set && current.isRight(e1.getPointRight())){
+					if(!set && (current.isRight(e1.getPointRight()) || current.getPointRight().equals(e1.getEndPoint()))){
 						bps.add(new BoundaryPart(boundEdges, mem));
 						//We add the constraints linked to p2, that will form other boundary parts.
-						fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
+						fillWithP2Constraints(boundEdgesBis, constraintsP2, bps, e1);
 						mem=current;
 						set = true;
 					}else {
-						bps.add(new BoundaryPart(mem));
+						//We must not consider e1 as a constraint edge linked to the boundary :
+						//it's already part of the boundary.
+						if(!set && e1.equals(current)){
+							bps.add(new BoundaryPart(boundEdges, mem));
+						} else {
+							bps.add(new BoundaryPart(mem));
+						}
 						mem=current;
 					}
 				}
@@ -1087,15 +1108,16 @@ public class ConstrainedMesh implements Serializable {
 					//contains e1 has already been added.
 					if(current.isRight(e1.getPointRight())){
 						bps.add(new BoundaryPart(current));
-					} else{
+					} else if(!current.equals(e1)){
 					//We still have to add the BP with e1
 						bps.add(new BoundaryPart(boundEdges, current));
 					}
 				}
 				if(!set){
+
 					bps.add(new BoundaryPart(boundEdges, mem));
 					//We add the constraints linked to p2, that will form other boundary parts.
-					fillWithP2Constraints(boundEdgesBis, constraintsP2, bps);
+					fillWithP2Constraints(boundEdgesBis, constraintsP2, bps, e1);
 				}
 			}
 		}
@@ -1108,17 +1130,27 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Fill the list of boundary parts with the boundary parts infered from p2
 	 * @param boundaryEdges
+	 *		The boundary Edges that will be used to fill the last BP
 	 * @param constraintsP2
+	 *		The constraints that will be used to build the BPs
 	 * @param bps
+	 *		The list where we will add the BPs
+	 * @param e1
+	 *		The already created Edge
 	 */
-	private void fillWithP2Constraints(List<Edge> boundaryEdges, List<Edge> constraintsP2, List<BoundaryPart> bps){
+	private void fillWithP2Constraints(List<Edge> boundaryEdges, List<Edge> constraintsP2, List<BoundaryPart> bps, Edge e1){
 		Edge ed;
 		for(int i = 0; i<constraintsP2.size()-2; i++){
 			ed = constraintsP2.get(i);
-			bps.add(new BoundaryPart(ed));
+			if(!ed.equals(e1)){
+				bps.add(new BoundaryPart(ed));
+			}
 		}
 		if(!constraintsP2.isEmpty()){
-			bps.add(new BoundaryPart(boundaryEdges, constraintsP2.get(constraintsP2.size()-1)));
+			ed = constraintsP2.get(constraintsP2.size()-1);
+			if(!ed.equals(e1)){
+				bps.add(new BoundaryPart(boundaryEdges, ed));
+			}
 		}
 		
 	}
