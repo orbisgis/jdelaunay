@@ -322,6 +322,12 @@ final class BoundaryPart {
 						//constraint Edge
 						mem = mem.equals(constraint) ? constraint : mem;
 						mem = mem.equals(nextCstr) ? nextCstr : mem;
+						if(mem.isShared()){
+							mem.setShared(false);
+						}
+						if(mem.isDegenerated()){
+							mem.setDegenerated(false);
+						}
 						//We will add an Edge in the mesh.
 						addedEdges.add(mem);
 						//We must insert this new edge at the right position in
