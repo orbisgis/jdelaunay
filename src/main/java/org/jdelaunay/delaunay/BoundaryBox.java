@@ -98,7 +98,7 @@ public class BoundaryBox implements Serializable {
 	/**
 	 * Update middle coordinate. 
 	 */
-	private final void updateMiddle(){
+	private void updateMiddle(){
 		double mx = (maxx-minx)/2;
 		double my = (maxy-miny)/2;
 		double mz = (maxz-minz)/2;

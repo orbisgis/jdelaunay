@@ -30,10 +30,6 @@ public class ConstrainedMesh implements Serializable {
 	private List<Point> points;
 	//The lis of constraints used during the triangulation
 	private List<Edge> constraintEdges;
-	//The constraint edges which are currently linked to the envelop during the
-	//triangulation, ie the edges whose one point is in the mesh and the other one
-	//is outside.
-	private VerticalList cstrLinkedToEnv;
 	//A list of polygons that will be emptied after the triangulation
 	private List<ConstraintPolygon> polygons;
 	//
@@ -75,7 +71,6 @@ public class ConstrainedMesh implements Serializable {
 		constraintEdges = new ArrayList<Edge>();
 		points = new ArrayList<Point>();
 		polygons = new ArrayList<ConstraintPolygon>();
-		cstrLinkedToEnv = new VerticalList(0);
 		meshComputed = false;
 		precision = 0;
 		tolerance = EPSILON;
@@ -979,7 +974,6 @@ public class ConstrainedMesh implements Serializable {
 			edges = new ArrayList<Edge>();
 			triangleList = new ArrayList<DelaunayTriangle>();
 			boundaryEdges = new ArrayList<Edge>();
-			cstrLinkedToEnv = new VerticalList();
 
 			// sort points
 			if (verbose) {
@@ -1227,32 +1221,6 @@ public class ConstrainedMesh implements Serializable {
 				badEdgesQueueList.remove(0);
 			}
 		}
-	}
-
-	/**
-	 * Check if the edge given in argument intersects the current boundary.
-	 * @param edge
-	 * @return
-	 * @throws DelaunayError
-	 */
-	private boolean intersectsBoundary(Edge edge) throws DelaunayError{
-		int inter;
-		for(Edge ed : boundaryEdges){
-			inter = ed.intersects(edge);
-			if(inter == Edge.INTERSECT || inter == Edge.SHARE_EDGE_PART ){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean overlapsContent(Edge ed, List<Edge> edges) throws DelaunayError{
-		for(Edge edge : edges){
-			if(ed.intersects(edge)==Edge.SHARE_EDGE_PART){
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

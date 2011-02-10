@@ -4,7 +4,7 @@ import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Triangle;
 
-public class JTSUtilities {
+public final class JTSUtilities {
 
 	/**
 	 * Default constructor is kept private

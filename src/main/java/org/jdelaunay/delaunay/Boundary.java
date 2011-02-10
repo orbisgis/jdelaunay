@@ -90,7 +90,7 @@ final class Boundary {
 	 */
         List<DelaunayTriangle> insertPoint(final Point pt, final List<Edge> constraints) throws DelaunayError {
 		if(constraints != null && !constraints.isEmpty() && !pt.equals(constraints.get(0).getPointLeft())){
-			throw new DelaunayError(106, "the point and the constraint do not match.");
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT, "the point and the constraint do not match.");
 		}
 		List<Integer> indices = getEligibleParts(pt);
 		if(indices.isEmpty()){
@@ -302,7 +302,7 @@ final class Boundary {
 			return ret;
 		}
 
-		BoundaryPart bp = boundary.get(0);
+		BoundaryPart bp;
 		BoundaryPart bpo ;
 		int index = boundary.size()/2;
 		int delta = index ;

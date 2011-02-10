@@ -8,7 +8,7 @@ package org.jhydrocell.hydronetwork;
  * @version 1.1
  */
 
-public class HydroProperties {
+public final class HydroProperties {
 	// Constraints types
 	public static final int WALL = 1;
 	public static final int SEWER = 1 << 1;
