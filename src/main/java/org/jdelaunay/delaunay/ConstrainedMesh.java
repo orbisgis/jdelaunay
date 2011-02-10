@@ -1101,6 +1101,8 @@ public class ConstrainedMesh implements Serializable {
 				}
 			}
 		}
+		//We must add e1 to the list of edges.
+		edges.add(e1);
 		bound.setBoundary(bps);
 		return bound;
 	}
