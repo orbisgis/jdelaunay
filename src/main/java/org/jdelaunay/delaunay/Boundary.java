@@ -164,10 +164,11 @@ final class Boundary {
 			added = bp.getAddedEdges();
 			//We start to fill the edge we'll add in the end.
 			int bpSize = bp.getBoundaryEdges().size();
-			if(bpSize == 1){
+			Edge ed = bp.getBoundaryEdges().get(bpSize-1);
+			if(bpSize == 1 ||(ed.isLocked() && ed.isDegenerated())){
 				newBP.setBoundaryEdges(bp.getBoundaryEdges());
 			} else {
-				newBP.setBoundaryEdges(bp.getBoundaryEdges().subList(0, bp.getBoundaryEdges().size()-1));
+				newBP.setBoundaryEdges(bp.getBoundaryEdges().subList(0, bpSize-1));
 			}
 			//And now we can process the other edges.
 			for(int i = 1; i<indices.size(); i++){
@@ -186,6 +187,7 @@ final class Boundary {
 			//We must use the last altered BP to retrieve the boundary
 			//edges
 			List<Edge> tmpLast = newBP.getBoundaryEdges();
+			Edge ed0 = bp.getBoundaryEdges().get(0);
 			if(bp.getBoundaryEdges().size()==1 && bp.getBoundaryEdges().get(0).equals(bp.getConstraint())){
 				//We are on the right point of a constraint. The Boundary
 				//Part that is associated to it does not contain any
@@ -196,8 +198,8 @@ final class Boundary {
 				if(bp.getConstraint().getPointLeft().equals(bp.getConstraint().getStartPoint())){
 					bp.getConstraint().swap();
 				}
-			} else if((bp.getBoundaryEdges().get(0).getRight()==null || bp.getBoundaryEdges().get(0).getLeft()==null)
-					&& !bp.getBoundaryEdges().get(0).equals(tmpLast.get(0))){
+			} else if((ed0.getRight()==null || ed0.getLeft()==null)
+					&& !ed0.equals(tmpLast.get(0)) && !ed0.equals(tmpLast.get(tmpLast.size()-1))){
 				//We check if bp.getBoundaryEdges.get(0) has an empty side, ie if it is linked to
 				//one triangle or less.
 				tmpLast.addAll(bp.getBoundaryEdges());
