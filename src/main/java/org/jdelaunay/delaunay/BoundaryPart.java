@@ -433,12 +433,12 @@ final class BoundaryPart {
 		boolean connectedToPrev = false;
 
 		if(constraint != null){
-			reverse = constraint != null && share.isLeft(constraint.getPointLeft());
+			reverse = share.isLeft(constraint.getPointLeft());
 			connectedToPrev = prevAdd != null &&
 					(share.isExtremity(prevAdd.getStartPoint())
 					|| share.isExtremity(prevAdd.getEndPoint()));
-			boolean connectedToConstraint = constraint != null && (share.isExtremity(constraint.getStartPoint())
-					|| share.isExtremity(constraint.getEndPoint()));
+			boolean connectedToConstraint = share.isExtremity(constraint.getStartPoint())
+					|| share.isExtremity(constraint.getEndPoint());
 			if(!connectedToConstraint && !connectedToPrev){
 				return null;
 			}
