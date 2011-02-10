@@ -266,17 +266,17 @@ public class TestConstrainedMesh extends BaseUtility {
 		List<Point> points = mesh.getPoints();
 		Point pt;
 		for(DelaunayTriangle tri : triangles){
-			index = mesh.searchEdge(tri.getEdge(0));
+			index = edges.indexOf(tri.getEdge(0));
 			comp = edges.get(index) ;
 			assertTrue(tri.getEdge(0)==comp);
 			pt=points.get(points.indexOf(tri.getPoint(0)));
 			assertTrue(tri.getPoint(0) == pt);
-			index = mesh.searchEdge(tri.getEdge(1));
+			index = edges.indexOf(tri.getEdge(1));
 			comp = edges.get(index) ;
 			assertTrue(tri.getEdge(1)==comp);
 			pt=points.get(points.indexOf(tri.getPoint(1)));
 			assertTrue(tri.getPoint(1) == pt);
-			index = mesh.searchEdge(tri.getEdge(2));
+			index = edges.indexOf(tri.getEdge(2));
 			comp = edges.get(index) ;
 			assertTrue(tri.getEdge(2)==comp);
 			pt=points.get(points.indexOf(tri.getPoint(2)));

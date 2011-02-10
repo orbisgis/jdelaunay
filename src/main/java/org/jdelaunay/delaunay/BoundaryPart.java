@@ -429,6 +429,7 @@ final class BoundaryPart {
 		}
 		mem = replaceByCstr(mem, nextCstr);
 		mem.setDegenerated(true);
+		addedEdges.add(mem);
 		iterBis.add(mem);
 	}
 
