@@ -940,4 +940,16 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,0,0,10,5,0), new Edge(10,5,0,19,5,0), new Edge(19,5,0,6,0,0))));
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,0,0,1.5,1,0), new Edge(1.5,1,0,2,8,0), new Edge(2,8,0,6,0,0))));
 	}
+
+	public void testFromCatalunyaRicher() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (2.0799999999580905, 505.160000000149, 400.0, 8.209999999962747, 508.5, 400.0));
+		mesh.addConstraintEdge(new Edge (2.3800000000046566, 577.7999999998137, 390.0, 6.659999999974389, 576.4500000001863, 390.0));
+		mesh.addConstraintEdge(new Edge (2.4400000000023283, 592.109999999404, 380.0, 10.85999999998603, 587.5999999996275, 380.0));
+		mesh.addConstraintEdge(new Edge (2.459999999962747, 595.9399999994785, 380.0, 19.51999999996042, 586.7099999999627, 380.0));
+		mesh.addConstraintEdge(new Edge (2.5599999999976717, 620.0800000000745, 390.0, 5.3299999999580905, 611.7199999997392, 390.0));
+//		mesh.processDelaunay();
+		assertTrue(true);
+
+	}
 }
