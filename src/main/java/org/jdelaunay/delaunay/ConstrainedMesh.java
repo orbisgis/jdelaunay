@@ -1079,7 +1079,12 @@ public class ConstrainedMesh implements Serializable {
 				while(iter.hasNext()){
 					current = iter.next();
 					if(!set && (current.isRight(e1.getPointRight()) || current.getPointRight().equals(e1.getEndPoint()))){
-						bps.add(new BoundaryPart(boundEdges, mem));
+						//We must not instanciate a BP where the constraint is a boundary Edge
+						if(mem.equals(e1)){
+							bps.add(new BoundaryPart(boundEdges));
+						} else {
+							bps.add(new BoundaryPart(boundEdges, mem));
+						}
 						//We add the constraints linked to p2, that will form other boundary parts.
 						fillWithP2Constraints(boundEdgesBis, constraintsP2, bps, e1);
 						mem=current;

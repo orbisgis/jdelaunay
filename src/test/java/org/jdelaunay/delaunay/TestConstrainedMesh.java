@@ -853,4 +853,32 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(edges.contains(new Edge(10,7,60,12,0,60)));
 		assertTrue(edges.contains(new Edge(15,2,60,12,0,60)));
 	}
+
+	/**
+	 * This test caused problem, the generation of the start boundary did not work.
+	 * @throws DelaunayError
+	 */
+	public void testBuildStartBound() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (	0  , 5, 0,
+							1, 3, 0));
+		mesh.addConstraintEdge(new Edge (	0  , 5, 0,
+							7, 8, 0));
+		mesh.addConstraintEdge(new Edge (	1, 3, 0,
+							6  , 1, 0));
+		mesh.addConstraintEdge(new Edge (	6  , 1, 0,
+							8, 0 , 0));
+		mesh.addConstraintEdge(new Edge (	7, 8, 0,
+							12 , 10, 0));
+		mesh.processDelaunay();
+//		show(mesh);
+		List<DelaunayTriangle> tri = mesh.getTriangleList();
+		assertTrue(tri.size()==5);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(7,8,0,0,5,0), new Edge(0,5,0,1,3,0), new Edge(1,3,0,7,8,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(7,8,0,6,1,0), new Edge(6,1,0,1,3,0), new Edge(1,3,0,7,8,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(7,8,0,6,1,0), new Edge(6,1,0,8,0,0), new Edge(8,0,0,7,8,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(7,8,0,12,10,0), new Edge(12,10,0,8,0,0), new Edge(8,0,0,7,8,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(1,3,0,6,1,0), new Edge(6,1,0,8,0,0), new Edge(8,0,0,1,3,0))));
+		assertTrue(mesh.getEdges().size()==10);
+	}
 }
