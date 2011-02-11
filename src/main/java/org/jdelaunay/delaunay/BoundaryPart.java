@@ -704,7 +704,10 @@ final class BoundaryPart {
 	 */
 	private Edge replaceByCstr(Edge mem, Edge cstr){
 		Edge memRet = mem.equals(cstr) ? cstr : mem;
-		memRet = mem.equals(constraint) ? constraint : memRet;
+		if(mem.equals(constraint)){
+			memRet = constraint;
+			constraint = null;
+		}
 		if(memRet.getStartPoint().equals(mem.getEndPoint())){
 			memRet.swap();
 		}

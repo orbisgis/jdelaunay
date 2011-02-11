@@ -1193,7 +1193,7 @@ public class ConstrainedMesh implements Serializable {
 					DelaunayTriangle aTriangle1 = anEdge.getLeft();
 					DelaunayTriangle aTriangle2 = anEdge.getRight();
 					if ((aTriangle1 != null) && (aTriangle2 != null)
-						&& swapTriangle(aTriangle1, aTriangle2, anEdge, false)) {
+						&& swapTriangle(aTriangle1, aTriangle2, anEdge)) {
 						// Add the triangle"s edges to the bad edges list
 						Edge addEdge;
 						for (int j = 0; j < 3; j++) {
@@ -1231,7 +1231,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @return
 	 */
 	private boolean swapTriangle(DelaunayTriangle aTriangle1, DelaunayTriangle aTriangle2,
-		Edge anEdge, boolean forced) {
+		Edge anEdge) {
 
 		boolean exchange = false;
 		Edge anEdge10, anEdge11, anEdge12;
@@ -1259,7 +1259,7 @@ public class ConstrainedMesh implements Serializable {
 				exchange = true;
 			}
 
-			if (p3 != p4 && (exchange || forced)) {
+			if (p3 != p4 && exchange) {
 				anEdge10 = anEdge;
 				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
 				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
@@ -1269,12 +1269,10 @@ public class ConstrainedMesh implements Serializable {
 				if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
 					log.error("ERROR");
 				} else {
-					removeEdge(anEdge);
 					anEdge.setStartPoint(p3);
 					anEdge.setEndPoint(p4);
 					edgeGID++;
 					anEdge.setGID(edgeGID);
-					addEdgeToLeftSortedList(edges, anEdge);
 					aTriangle1.edges[0] = anEdge10;
 					aTriangle1.edges[1] = anEdge11;
 					aTriangle1.edges[2] = anEdge12;
