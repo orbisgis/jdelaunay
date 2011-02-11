@@ -132,7 +132,6 @@ public final class HydroNetwork {
 				// Recupération des noeuds associés à l'edge
 
 				// Qualification de la pente de l'edge parcouru
-				int edgeGradient = edge.getGradient();
 				if (!leftBorder && !rightBorder) {
 					// Traitement des ridges
 					if ((!rightTtoEdge && !leftTtoEdge)
@@ -239,8 +238,8 @@ public final class HydroNetwork {
 			 * The code below is used to insert new talweg in the TIN
 			 */
 
-			ArrayList<Point> listPointAtraiter = new ArrayList<Point>();
-			ArrayList<DelaunayTriangle> listTriangles = new ArrayList<DelaunayTriangle>();
+//			ArrayList<Point> listPointAtraiter = new ArrayList<Point>();
+//			ArrayList<DelaunayTriangle> listTriangles = new ArrayList<DelaunayTriangle>();
 
 			for (Edge edge : theMesh.getEdges()) {
 

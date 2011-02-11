@@ -123,13 +123,13 @@ public final class HydroPolygonUtil {
 	public double getSlope() {
 		if (valeurPente == -1.0) {
 			double d = 0.0;
-			Coordinate p = get3DVector();
-			if (p != null){
+			Coordinate pc = get3DVector();
+			if (pc != null){
 				// calcul de la distance horizontale
 				// separant les 2 extremites du vecteur pente
-				d = Math.sqrt(p.x * p.x + p.y * p.y);
+				d = Math.sqrt(pc.x * pc.x + pc.y * pc.y);
 			}
-			valeurPente = d == 0.0 ? 0.0 : p.z / d;
+			valeurPente = d == 0.0 ? 0.0 : pc.z / d;
 		}
 
 		// debug obedel
@@ -173,7 +173,6 @@ public final class HydroPolygonUtil {
 			a = b;
 			b = d;
 			ab = MathUtil.differenceVectoriel(b, a);
-			ac = MathUtil.differenceVectoriel(c, a);
 		}
 		// test d'intersection entre AB et P
 		Coordinate pt = this.get3DVector();

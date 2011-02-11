@@ -223,7 +223,7 @@ public final class MathUtil {
 	 */
 
 	public static double roundDouble(double v, int p) {
-		double vRounded = v;
+		double vRounded;
 		double m = 1.0;
 		for (int i = 0; i < p; i++) {
 			m = m * 10.0;

@@ -50,7 +50,7 @@ public final class HydroTriangleUtil {
 	 * @return steepest path vector of the face also direction
 	 */
 	public static Coordinate get3DVector(DelaunayTriangle triangle) {
-		Coordinate	pente = new Coordinate(0, 0, 0);
+		Coordinate pente;
 			// on recupere le vecteur normal
 			Coordinate n = getNormal(triangle);
 			// on en deduit le vecteur de ligne de niveau
@@ -114,7 +114,6 @@ public final class HydroTriangleUtil {
 			a = b;
 			b = d;
 			ab = MathUtil.differenceVectoriel(b, a);
-			ac = MathUtil.differenceVectoriel(c, a);
 		}
 		// test d'intersection entre AB et P
 		Coordinate p = get3DVector(triangle);
