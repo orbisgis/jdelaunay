@@ -952,6 +952,13 @@ public class ConstrainedMesh implements Serializable {
 		List<Edge> retList = getConstraintsFromLeftPoint(left);
 		VerticalComparator vc = new VerticalComparator(left.getX());
 		Collections.sort(retList, vc);
+		//Vertical constraints are managed in a way that put the potential one
+		//linked to left at the beginning of the list. It shoule be the last one.
+		if(!retList.isEmpty() && retList.get(0).isVertical()){
+			Edge tmp = retList.get(0);
+			retList.remove(0);
+			retList.add(tmp);
+		}
 		return retList;
 	}
 	// ------------------------------------------------------------------------------------------
@@ -994,7 +1001,11 @@ public class ConstrainedMesh implements Serializable {
 				p2=iterPoint.next();
 				fromLeft = getConstraintFromLPVertical(p2);
 				//The insertion is performed here !
+				try{
 				triangleList.addAll(bound.insertPoint(p2, fromLeft));
+				} catch (Exception e){
+					break;
+				}
 				//We retrieve the edges that have been added to the mesh.
 				edges.addAll(bound.getAddedEdges());
 				//We retrieve the potential bad edges, and treat them.
