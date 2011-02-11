@@ -1015,7 +1015,7 @@ public class TestBoundary extends BaseUtility {
 		Edge ed = new Edge(0,0,0,0,4,0);
 		Edge constraint = new Edge(0,0,0,2,2,0);
 		constraint.setLocked(true);
-		ed.setDegenerated(true);
+		ed.setShared(true);
 		edList.add(ed);
 		//We build the first boundarypart
 		BoundaryPart bp = new BoundaryPart(edList, constraint);
@@ -1024,7 +1024,9 @@ public class TestBoundary extends BaseUtility {
 		//we build the second BoundaryPart
 		constraint = new Edge(0,4,0,2,2,0);
 		constraint.setLocked(true);
-		bp=new BoundaryPart(constraint);
+		edList = new ArrayList<Edge>();
+		edList.add(ed);
+		bp=new BoundaryPart(edList, constraint);
 		bpList.add(bp);
 		//We fill the boundary
 		bound.setBoundary(bpList);
