@@ -909,4 +909,35 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(8,0,0,11,6,0), new Edge(11,6,0,6,2,0), new Edge(6,2,0,8,0,0))));
 		assertTrue(mesh.getEdges().size()==10);
 	}
+
+	/**
+	 * A test with raw data from the catalunya level lines
+	 * Point order :
+	 * This tests may cause null pointer exception.
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testFromCatalunya() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (	1.5, 1, 0,
+							6  , 0, 0));
+		mesh.addConstraintEdge(new Edge (	2, 8, 0,
+							10 , 5, 0));
+		mesh.addConstraintEdge(new Edge (	2.5, 9, 0,
+							19 , 5, 0));
+		mesh.addConstraintEdge(new Edge (	3, 13, 0,
+							5  , 12, 0));
+		mesh.processDelaunay();
+//		show(mesh);
+		List<DelaunayTriangle> tri = mesh.getTriangleList();
+		assertTrue(tri.size()==8);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2.5,9,0,2,8,0), new Edge(2,8,0,3,13,0), new Edge(3,13,0,2.5,9,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2.5,9,0,5,12,0), new Edge(5,12,0,3,13,0), new Edge(3,13,0,2.5,9,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2.5,9,0,5,12,0), new Edge(5,12,0,19,5,0), new Edge(19,5,0,2.5,9,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2.5,9,0,10,5,0), new Edge(10,5,0,19,5,0), new Edge(19,5,0,2.5,9,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2.5,9,0,10,5,0), new Edge(10,5,0,2,8,0), new Edge(2,8,0,2.5,9,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,0,0,10,5,0), new Edge(10,5,0,2,8,0), new Edge(2,8,0,6,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,0,0,10,5,0), new Edge(10,5,0,19,5,0), new Edge(19,5,0,6,0,0))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,0,0,1.5,1,0), new Edge(1.5,1,0,2,8,0), new Edge(2,8,0,6,0,0))));
+	}
 }

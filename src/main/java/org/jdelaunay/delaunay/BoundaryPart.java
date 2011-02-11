@@ -532,7 +532,7 @@ final class BoundaryPart {
 			share.swap();
 		}
 
-		return ret;
+		return ret == null ? prevAdd : ret;
 	}
 
 	/**
