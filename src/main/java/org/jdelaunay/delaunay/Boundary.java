@@ -322,7 +322,7 @@ final class Boundary {
 				} else if(bpo.isConstraintRightPoint(point)){
 					//We've got a positive match, let's use it.
 					ret.add(index);
-					ret.addAll(getUpperSameRightPoint(index+1, bpo));
+					ret.addAll(getUpperSameRightPoint(index, bpo));
 					return ret;
 				} else {
 					delta = delta/2 > 0 ? delta/2 : 1;
@@ -360,7 +360,7 @@ final class Boundary {
 	}
 
 	/**
-	 * Retrieve the boundarypart that share the same right point as orig,
+	 * Retrieve the BoundaryPart that share the same right point as orig,
 	 * starting at index in the boundary list.
 	 * DOES NOT include orig in the returned set.
 	 * DOES NOT return the first boundarypart that does not share the same right
@@ -391,7 +391,7 @@ final class Boundary {
 	/**
 	 * Retrieve the boundarypart that share the same right point as orig,
 	 * starting at index in the boundary list, and going in reverse order.
-	 * Does NOT include orig in the returned set.
+	 * DOES NOT include orig in the returned set.
 	 * DOES return the first boundarypart that does not share the same right
 	 * point as orig and that is lower than it in the boundary.
 	 *
