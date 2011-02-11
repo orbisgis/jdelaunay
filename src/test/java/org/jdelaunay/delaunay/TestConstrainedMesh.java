@@ -711,4 +711,68 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,4,7,0), new Edge(4,7,0,2,3,0),new Edge(2,3,0,7,5,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(7,5,0,4,7,0), new Edge(4,7,0,7,9,0),new Edge(7,9,0,7,5,0))));
 	}
+
+	public void testLongConstraintLine()throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+//		mesh.addConstraintEdge(new Edge (	0, 15, 10,
+//							5, 13, 10));
+//		mesh.addConstraintEdge(new Edge (	4, 0 , 10,
+//							5, 0 , 10));
+//		mesh.addConstraintEdge(new Edge (	4, 0 , 10,
+//							10, 3, 10));
+//		mesh.addConstraintEdge(new Edge (	5, 13, 10,
+//							8, 10, 10));
+//		mesh.addConstraintEdge(new Edge (	8, 10, 10,
+//							10, 6, 10));
+//		mesh.addConstraintEdge(new Edge (	10, 3, 10,
+//							12, 0, 10));
+		mesh.addConstraintEdge(new Edge (	10, 6, 10,
+							15, 12, 10));
+		mesh.addConstraintEdge(new Edge (	12, 0 , 10,
+							15, 0, 10));
+		mesh.addConstraintEdge(new Edge (	13, 5, 10,
+							15, 4, 10));
+		mesh.addConstraintEdge(new Edge (	13, 5, 10,
+							15, 7, 10));
+//		mesh.addConstraintEdge(new Edge (	15, 0 , 10,
+//							17, 0 , 10));
+		mesh.addConstraintEdge(new Edge (	15, 4, 10,
+							17, 0, 10));
+		mesh.addConstraintEdge(new Edge (	15, 7, 10,
+							16, 10, 10));
+		mesh.addConstraintEdge(new Edge (	15, 12, 10,
+							16, 10, 10));
+		mesh.processDelaunay();
+		show(mesh);
+		assertTrue(true);
+
+	}
+
+	public void testChezineStress() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (	0, 15, 10,
+							5, 13, 10));
+		mesh.addConstraintEdge(new Edge (	4, 0 , 10,
+							5, 0 , 10));
+		mesh.addConstraintEdge(new Edge (	4, 0 , 10,
+							10, 3, 10));
+		mesh.addConstraintEdge(new Edge (	5, 13, 10,
+							8, 10, 10));
+		mesh.addConstraintEdge(new Edge (	8, 10, 10,
+							10, 6, 10));
+		mesh.addConstraintEdge(new Edge (	10, 3, 10,
+							12, 0, 10));
+		mesh.processDelaunay();
+//		show(mesh);
+		List<DelaunayTriangle> tri = mesh.getTriangleList();
+		assertTrue(tri.size()==7);
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,0,10,5,13,10), new Edge(5,13,10,0,15,10), new Edge(0,15,10,4,0,10))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,0,10,5,13,10), new Edge(5,13,10,8,10,10), new Edge(8,10,10,4,0,10))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,0,10,10,6,10), new Edge(10,6,10,8,10,10), new Edge(8,10,10,4,0,10))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,0,10,10,6,10), new Edge(10,6,10,10,3,10), new Edge(10,3,10,4,0,10))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,0,10,5,0,10), new Edge(5,0,10,10,3,10), new Edge(10,3,10,4,0,10))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(12,0,10,5,0,10), new Edge(5,0,10,10,3,10), new Edge(10,3,10,12,0,10))));
+		assertTrue(tri.contains(new DelaunayTriangle(new Edge(12,0,10,10,6,10), new Edge(10,6,10,10,3,10), new Edge(10,3,10,12,0,10))));
+		
+	}
 }

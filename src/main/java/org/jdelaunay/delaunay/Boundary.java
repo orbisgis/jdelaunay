@@ -193,10 +193,12 @@ final class Boundary {
 				//Part that is associated to it does not contain any
 				//BoundaryEdge, consequently we must add the constraint
 				//edge to the boundaryEdges of newBP
-				tmpLast.add(bp.getConstraint());
+				if(!tmpLast.isEmpty() && !tmpLast.get(tmpLast.size()-1).equals(bp.getConstraint())){
+					tmpLast.add(bp.getConstraint());
 				//We must swap the edge if necessary.
-				if(bp.getConstraint().getPointLeft().equals(bp.getConstraint().getStartPoint())){
-					bp.getConstraint().swap();
+					if(bp.getConstraint().getPointLeft().equals(bp.getConstraint().getStartPoint())){
+						bp.getConstraint().swap();
+					}
 				}
 			} else if((ed0.getRight()==null || ed0.getLeft()==null)
 					&& !ed0.equals(tmpLast.get(0)) && !ed0.equals(tmpLast.get(tmpLast.size()-1))){
