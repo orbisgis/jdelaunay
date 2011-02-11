@@ -153,8 +153,8 @@ public final class Tools {
 					if (aPoint.getX() > cleRef1) {
 						found = true;
 					}
-					else if ((aPoint.getX() == cleRef1)
-							&& (aPoint.getY() >= cleRef2)) {
+					else if ((Math.abs(aPoint.getX() - cleRef1)<EPSILON)
+							&& (aPoint.getY() - cleRef2 >= -EPSILON )) {
 						found = true;
 					}
 					else {
@@ -173,8 +173,8 @@ public final class Tools {
 					if (aPoint.getX() < cleRef1) {
 						found = true;
 					}
-					else if ((aPoint.getX() == cleRef1)
-							&& (aPoint.getY() <= cleRef2)) {
+					else if ((Math.abs(aPoint.getX() - cleRef1)<EPSILON)
+							&& (aPoint.getY() - cleRef2 <= EPSILON )) {
 						found = true;
 					}
 					else {
@@ -244,7 +244,7 @@ public final class Tools {
 			x = cleRef4;
 			cleRef4 = cleRef2;
 			cleRef2 = x;
-		} else if ((cleRef3 == cleRef1) && (cleRef4 < cleRef2)) {
+		} else if ((Math.abs(cleRef3-cleRef1)<EPSILON) && (cleRef4 < cleRef2)) {
 			x = cleRef4;
 			cleRef4 = cleRef2;
 			cleRef2 = x;
@@ -279,7 +279,7 @@ public final class Tools {
 						x = cle4;
 						cle4 = cle2;
 						cle2 = x;
-					} else if ((cle3 == cle1) && (cle4 < cle2)) {
+					} else if ((Math.abs(cle3 - cle1)<EPSILON) && (cle4 < cle2)) {
 						x = cle4;
 						cle4 = cle2;
 						cle2 = x;
@@ -344,7 +344,7 @@ public final class Tools {
 						x = cle4;
 						cle4 = cle2;
 						cle2 = x;
-					} else if ((cle3 == cle1) && (cle4 < cle2)) {
+					} else if ((Math.abs(cle3-cle1)<EPSILON) && (cle4 < cle2)) {
 						x = cle4;
 						cle4 = cle2;
 						cle2 = x;

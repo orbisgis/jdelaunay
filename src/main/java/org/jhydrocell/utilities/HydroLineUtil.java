@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import org.jdelaunay.delaunay.Tools;
 
 public class HydroLineUtil {
 
@@ -36,7 +37,7 @@ public class HydroLineUtil {
 	 * @return pente de l'edge (dz/distance horizontale)
 	 */
 	public double getSlope() {
-		if (valeurPente == -1.0) {
+		if (Math.abs(valeurPente+1.0)<Tools.EPSILON) {
 			Coordinate c1 = this.geom.getCoordinates()[0];
 			Coordinate c2 = this.geom.getCoordinates()[this.geom.getNumPoints() - 1];
 			// l'ordre des coordonnees correspond a l'orientation de l'arc

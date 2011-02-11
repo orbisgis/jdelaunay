@@ -12,6 +12,7 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.Triangle;
 import com.vividsolutions.jts.util.Assert;
+import org.jdelaunay.delaunay.Tools;
 
 public final class HydroPolygonUtil {
 
@@ -121,7 +122,7 @@ public final class HydroPolygonUtil {
 	 *         horizontale)
 	 */
 	public double getSlope() {
-		if (valeurPente == -1.0) {
+		if (Math.abs(valeurPente+1.0)<Tools.EPSILON) {
 			double d = 0.0;
 			Coordinate pc = get3DVector();
 			if (pc != null){
@@ -206,9 +207,6 @@ public final class HydroPolygonUtil {
 		if (orientationPente == -1.) {
 			Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
 			Coordinate c2 = this.get3DVector();
-			if (c2 == null) {
-				c2 = new Coordinate(0.0, 0.0, 0.0);
-			}
 			if (c2.z > 0.0) {
 				c2.setCoordinate(new Coordinate(-c2.x, -c2.y, -c2.z));
 			}
