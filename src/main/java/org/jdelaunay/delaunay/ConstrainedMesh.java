@@ -1001,11 +1001,7 @@ public class ConstrainedMesh implements Serializable {
 				p2=iterPoint.next();
 				fromLeft = getConstraintFromLPVertical(p2);
 				//The insertion is performed here !
-				try{
 				triangleList.addAll(bound.insertPoint(p2, fromLeft));
-				} catch (Exception e){
-					break;
-				}
 				//We retrieve the edges that have been added to the mesh.
 				edges.addAll(bound.getAddedEdges());
 				//We retrieve the potential bad edges, and treat them.
