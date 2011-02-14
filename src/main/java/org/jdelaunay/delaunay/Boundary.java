@@ -152,7 +152,8 @@ final class Boundary {
 			//we retrieve the first bp of the list.
 			bp = boundary.get(indices.get(0));
 			//We prepare the BP we will add in the end.
-			BoundaryPart newBP = indices.get(0) == 0 && boundary.get(0).getConstraint()!=null ?
+			BoundaryPart newBP = indices.get(0) == 0 && bp.getConstraint()!=null
+							&& pt.equals(bp.getConstraint().getPointRight()) ?
 					new BoundaryPart(new ArrayList<Edge>()) :
 					new BoundaryPart(new ArrayList<Edge>(), bp.getConstraint());
 			//We must know the constraint that bound the next BP to avoid the
