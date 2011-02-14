@@ -943,12 +943,19 @@ public class TestConstrainedMesh extends BaseUtility {
 
 	public void testFromCatalunyaRicher() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new Edge (2.0799999999580905, 505.160000000149, 400.0, 8.209999999962747, 508.5, 400.0));
-		mesh.addConstraintEdge(new Edge (2.3800000000046566, 577.7999999998137, 390.0, 6.659999999974389, 576.4500000001863, 390.0));
-		mesh.addConstraintEdge(new Edge (2.4400000000023283, 592.109999999404, 380.0, 10.85999999998603, 587.5999999996275, 380.0));
-		mesh.addConstraintEdge(new Edge (2.459999999962747, 595.9399999994785, 380.0, 19.51999999996042, 586.7099999999627, 380.0));
-		mesh.addConstraintEdge(new Edge (2.5599999999976717, 620.0800000000745, 390.0, 5.3299999999580905, 611.7199999997392, 390.0));
-//		mesh.processDelaunay();
+		mesh.addConstraintEdge(new Edge (	2.3, 5, 0,
+							8, 9, 0));
+		mesh.addConstraintEdge(new Edge (	2.4, 48, 0,
+							7, 46, 0));
+		mesh.addConstraintEdge(new Edge (	2.45, 62, 0,
+							11, 58, 0));
+		mesh.addConstraintEdge(new Edge (	2.55, 66, 0,
+							20, 57, 0));
+		mesh.addConstraintEdge(new Edge (	2.6, 90, 0,
+							5, 82, 0));
+//		show(mesh);
+		mesh.processDelaunay();
+//		show(mesh);
 		assertTrue(true);
 
 	}

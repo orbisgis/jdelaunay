@@ -454,7 +454,7 @@ final class BoundaryPart {
 			boolean connectedToConstraint = share.isExtremity(constraint.getStartPoint())
 					|| share.isExtremity(constraint.getEndPoint());
 			if(!connectedToConstraint && !connectedToPrev){
-				return null;
+				return ret == null ? prevAdd : ret;
 			}
 			if(prevAdd != null && connectedToPrev){
 				//If the previously added edge is connected to the end point
