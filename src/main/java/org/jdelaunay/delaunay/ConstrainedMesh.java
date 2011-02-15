@@ -783,7 +783,7 @@ public class ConstrainedMesh implements Serializable {
 						}
 					}
 					j++;
-					if(j>=edgeBuffer.size()){
+					if(edgeBuffer.size()>0 && j>=edgeBuffer.size()){
 						e2 = edgeBuffer.get(edgeBuffer.size()-1);
 						if(e2.getPointRight().equals(currentEvent)){
 							edgeBuffer.remove(edgeBuffer.size()-1);
