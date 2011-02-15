@@ -1056,15 +1056,103 @@ public class TestConstrainedMesh extends BaseUtility {
 
 	public void testCantBuildTriangleQuattro() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new Edge (0.0, 214.86000000033528, 710.0, 2.0599999999976717, 224.34999999962747, 710.0));
-		mesh.addConstraintEdge(new Edge (0.07000000000698492, 268.54000000003725, 710.0, 1.7899999999790452, 264.2400000002235, 710.0));
-		mesh.addConstraintEdge(new Edge (0.4699999999720603, 312.12000000011176, 730.0, 0.5100000000093132, 337.0800000000745, 730.0));
+		mesh.addConstraintEdge(new Edge (	0.27000000001862645, 218.3300000000745, 660.0,
+							1.7199999999720603, 213.97000000067055, 660.0));
+		mesh.addConstraintEdge(new Edge (	0.8400000000256114, 150.29000000003725, 660.0,
+							2.7899999999790452, 152.97000000067055, 660.0));
+		mesh.addConstraintEdge(new Edge (	0.9299999999930151, 312.910000000149, 710.0,
+							3.2100000000209548, 310.3500000005588, 710.0));
+		mesh.addConstraintEdge(new Edge (	1.7199999999720603, 213.97000000067055, 660.0,
+							5.349999999976717, 191.30000000074506, 660.0));
+		mesh.addConstraintEdge(new Edge (	2.0200000000186265, 91.84000000078231, 680.0,
+							9.940000000002328, 104.0100000007078, 680.0));
+		mesh.addConstraintEdge(new Edge (	2.650000000023283, 0.0, 720.0, 
+							3.070000000006985, 24.12000000011176, 720.0));
+		try{
+			mesh.processDelaunay();
+//			show(mesh);
+			assertTrue(true);
+		} catch (DelaunayError d){
+			assertFalse(true);
+		}
+		List<DelaunayTriangle> tri = mesh.getTriangleList();
+		assertTrue(tri.size()==14);
+		assertTrue(tri.contains(new DelaunayTriangle(	new Edge(0.27000000001862645, 218.3300000000745, 660.0,
+									5.349999999976717, 191.30000000074506, 660.0),
+								new Edge(5.349999999976717, 191.30000000074506, 660.0,
+									0.8400000000256114, 150.29000000003725, 660.0),
+								new Edge(0.8400000000256114, 150.29000000003725, 660.0,
+									0.27000000001862645, 218.3300000000745, 660.0))));
+		assertTrue(tri.contains(new DelaunayTriangle(	new Edge(0.27000000001862645, 218.3300000000745, 660.0,
+									3.2100000000209548, 310.3500000005588, 710.0),
+								new Edge(3.2100000000209548, 310.3500000005588, 710.0,
+									1.7199999999720603, 213.97000000067055, 660.0),
+								new Edge(1.7199999999720603, 213.97000000067055, 660.0,
+									0.27000000001862645, 218.3300000000745, 660.0))));
+		assertTrue(tri.contains(new DelaunayTriangle(	new Edge(2.0200000000186265, 91.84000000078231, 680.0,
+									2.650000000023283, 0.0, 720.0),
+								new Edge(2.650000000023283, 0.0, 720.0,
+									0.8400000000256114, 150.29000000003725, 660.0),
+								new Edge(0.8400000000256114, 150.29000000003725, 660.0,
+									2.0200000000186265, 91.84000000078231, 680.0))));
+
+	}
+
+	/**
+	 * A test designed with cross constraints, from girona level lines.
+	 * x order :
+	 *
+	 * 0.0
+	 * 0.77
+	 * 1.19
+	 * 1.45
+	 * 1.82
+	 * 2.58
+	 * 3.20
+	 * 3.70
+	 * 4.88
+	 * 5.97
+	 * 6.45
+	 * 6.65
+	 * 6.89
+	 * 7.76
+	 * 9.5
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void testCrossedConstraints() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (	0.0, 4.18, 770.0,
+							2.58, 8.06, 770.0));
+		mesh.addConstraintEdge(new Edge (	0.77, 5.33, 770.0,
+							1.19, 9.87, 763.0));
+		mesh.addConstraintEdge(new Edge (	0.77, 5.33, 770.0,
+							1.45, 4.79, 773.0));
+		mesh.addConstraintEdge(new Edge (	1.19, 9.87, 763.0,
+							6.65, 13.48, 763.0));
+		mesh.addConstraintEdge(new Edge (	1.45, 4.79, 773.0,
+							3.70, 2.91, 780.0));
+		mesh.addConstraintEdge(new Edge (	1.82, 0.0, 780.0,
+							3.20, 1.5, 780.0));
+		mesh.addConstraintEdge(new Edge (	3.20, 1.5, 780.0,
+							4.88, 6.25, 780.0));
+		mesh.addConstraintEdge(new Edge (	3.70, 2.91, 780.0,
+							5.97, 3.29, 787.0));
+		mesh.addConstraintEdge(new Edge (	5.97, 3.29, 787.0,
+							6.89, 5.47, 787.0));
+		mesh.addConstraintEdge(new Edge (	6.45, 2.04, 790.0,
+							7.76, 5.12, 790.0));
+		mesh.addConstraintEdge(new Edge (	6.89, 5.47, 787.0,
+							9.5 , 8.04, 787.0));
+//		show(mesh);
+		mesh.forceConstraintIntegrity();
+//		show(mesh);
 		try{
 			mesh.processDelaunay();
 			assertTrue(true);
 		} catch (DelaunayError d){
 			assertFalse(true);
 		}
-
+//		show(mesh);
 	}
 }
