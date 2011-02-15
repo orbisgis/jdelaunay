@@ -473,9 +473,9 @@ final class BoundaryPart {
 				reverse = share.getEndPoint().equals(constraint.getStartPoint())
 					|| share.getEndPoint().equals(constraint.getEndPoint());
 			}
-		} else if(!connectedToPrev){
+		} else if(prevAdd != null && !connectedToPrev){
 			return prevAdd;
-		} else {
+		} else if(prevAdd != null){
 				//If the previously added edge is connected to the end point
 				//of share, we must go in reverse order.
 				reverse = share.getEndPoint().equals(prevAdd.getStartPoint())
