@@ -1351,6 +1351,7 @@ public class ConstrainedMesh implements Serializable {
 	 *
 	 * @param g
 	 */
+	//NOSONAR
 	public final void displayObject(Graphics g) {
 		try {
 			Envelope theBox = getBoundingBox();
