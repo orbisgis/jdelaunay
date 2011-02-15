@@ -242,4 +242,13 @@ public class BaseUtility extends TestCase {
 		}
 	}
 
+	public void assertConstraintsAreLocked(ConstrainedMesh mesh){
+		for(Edge ed : mesh.getConstraintEdges()){
+			if(!ed.isLocked()){
+				assertTrue(false);
+			}
+		}
+		assertTrue(true);
+	}
+
 }

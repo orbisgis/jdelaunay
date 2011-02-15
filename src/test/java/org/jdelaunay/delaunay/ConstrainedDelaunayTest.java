@@ -879,6 +879,36 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		
 	}
 
+	public void testIntersectionFromCatalunya() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (	0.0, 4.18, 770.0,
+							2.58, 8.06, 770.0));
+		mesh.addConstraintEdge(new Edge (	0.77, 5.33, 770.0,
+							1.19, 9.87, 763.0));
+		mesh.addConstraintEdge(new Edge (	0.77, 5.33, 770.0,
+							1.45, 4.79, 773.0));
+		mesh.addConstraintEdge(new Edge (	1.19, 9.87, 763.0,
+							6.65, 13.48, 763.0));
+		mesh.addConstraintEdge(new Edge (	1.45, 4.79, 773.0,
+							3.70, 2.91, 780.0));
+		mesh.addConstraintEdge(new Edge (	1.82, 0.0, 780.0,
+							3.20, 1.5, 780.0));
+		mesh.addConstraintEdge(new Edge (	3.20, 1.5, 780.0,
+							4.88, 6.25, 780.0));
+		mesh.addConstraintEdge(new Edge (	3.70, 2.91, 780.0,
+							5.97, 3.29, 787.0));
+		mesh.addConstraintEdge(new Edge (	5.97, 3.29, 787.0,
+							6.89, 5.47, 787.0));
+		mesh.addConstraintEdge(new Edge (	6.45, 2.04, 790.0,
+							7.76, 5.12, 790.0));
+		mesh.addConstraintEdge(new Edge (	6.89, 5.47, 787.0,
+							9.5 , 8.04, 787.0));
+		mesh.forceConstraintIntegrity();
+		List<Edge> constraint = mesh.getConstraintEdges();
+		assertTrue(constraint.size()==15);
+		assertConstraintsAreLocked(mesh);
+	}
+
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number
