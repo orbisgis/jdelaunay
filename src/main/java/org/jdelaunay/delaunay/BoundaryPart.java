@@ -286,6 +286,7 @@ final class BoundaryPart {
                 ListIterator<Edge> iter = boundaryEdges.listIterator();
 		Edge mem = null;
 		Edge memBis = null;
+		boolean endShared = false;
 		Edge current;
 		boolean rightDeg = false;
 		//If the boundaryEdges list is empty, we must add a degenerated edge.
@@ -308,6 +309,11 @@ final class BoundaryPart {
 				}
 			} else if(current.isShared()){
 				mem = connectToShared(iter, current, point, triList, mem, nextCstr);
+				endShared = mem == null ? false : mem.equals(memBis);
+				if(endShared){
+					break;
+				}
+				memBis = mem;
 			} else {
 				if(current.isRight(point)){
 					//Current is not degenerated, so it will become
@@ -375,7 +381,7 @@ final class BoundaryPart {
 			//constraint edge's left point or to the last edge's right point.
 			//We must determine what to do...
 			connectDegenOrphan(point, iter, nextCstr);
-		} else if(!rightDeg){
+		} else if(!rightDeg && !endShared){
 			iter.add(mem);
 		}
 		return triList;
@@ -445,18 +451,18 @@ final class BoundaryPart {
 		//reverse order.
 		boolean reverse = false;
 		boolean connectedToPrev = false;
-
+		connectedToPrev = prevAdd != null &&
+				(share.isExtremity(prevAdd.getStartPoint())
+				|| share.isExtremity(prevAdd.getEndPoint()));
+		boolean connectedToConstraint = false;
 		if(constraint != null){
 			reverse = share.isLeft(constraint.getPointLeft());
-			connectedToPrev = prevAdd != null &&
-					(share.isExtremity(prevAdd.getStartPoint())
-					|| share.isExtremity(prevAdd.getEndPoint()));
-			boolean connectedToConstraint = share.isExtremity(constraint.getStartPoint())
+			connectedToConstraint = share.isExtremity(constraint.getStartPoint())
 					|| share.isExtremity(constraint.getEndPoint());
 			if(!connectedToConstraint && !connectedToPrev){
-				return ret == null ? prevAdd : ret;
+				return prevAdd;
 			}
-			if(prevAdd != null && connectedToPrev){
+			if(connectedToPrev){
 				//If the previously added edge is connected to the end point
 				//of share, we must go in reverse order.
 				reverse = share.getEndPoint().equals(prevAdd.getStartPoint())
@@ -467,6 +473,13 @@ final class BoundaryPart {
 				reverse = share.getEndPoint().equals(constraint.getStartPoint())
 					|| share.getEndPoint().equals(constraint.getEndPoint());
 			}
+		} else if(!connectedToPrev){
+			return prevAdd;
+		} else {
+				//If the previously added edge is connected to the end point
+				//of share, we must go in reverse order.
+				reverse = share.getEndPoint().equals(prevAdd.getStartPoint())
+					|| share.getEndPoint().equals(prevAdd.getEndPoint());
 		}
 		//And we can perform the connection
 		if(reverse && share.isLeft(point)){
@@ -530,6 +543,11 @@ final class BoundaryPart {
 			share.setShared(false);
 			//share must be swapped.
 			share.swap();
+		} else if(prevAdd != null){
+			//we must add the prevAdd edge, as it is now part of the boundary.
+			iter.previous();
+			iter.add(prevAdd);
+			iter.next();
 		}
 
 		return ret == null ? prevAdd : ret;

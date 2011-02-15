@@ -975,21 +975,96 @@ public class TestConstrainedMesh extends BaseUtility {
 
 	}
 
+	/**
+	 * This configuration caused a problem because of a bad insertion in the boundary.
+	 * @throws DelaunayError
+	 */
 	public void testCantBuildTriangle() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new Edge (	0.9699999999720603, 235.1800000006333, 0,
-							7.099999999976717, 238.5200000004843, 1));
-		mesh.addConstraintEdge(new Edge (	1.2700000000186265, 307.820000000298, 0,
-							5.5499999999883585, 306.47000000067055, 2));
-		mesh.addConstraintEdge(new Edge (	1.4500000000116415, 350.1000000005588, 0,
-							4.21999999997206, 341.7400000002235, 3));
-		mesh.addConstraintEdge(new Edge (	1.4899999999906868, 359.89000000059605, 0,
-							2.8099999999976717, 369.8500000005588, 4));
-		mesh.addConstraintEdge(new Edge (	5.190000000002328, 1259.2999999998137, 0,
-							7.869999999995343, 1259.0300000002608, 5));
-		mesh.addConstraintEdge(new Edge (	7.669999999983702, -9.629999999888241, 0,
-							9.150000000023283, -14.290000000037253, 6));
+		mesh.addConstraintEdge(new Edge (	0.97, 1, 10,
+							7.10, 3.5, 11));
+		mesh.addConstraintEdge(new Edge (	1.27, 73, 20,
+							5.55, 71, 21));
+		mesh.addConstraintEdge(new Edge (	1.45, 115, 30,
+							4.22, 107, 31));
+		mesh.addConstraintEdge(new Edge (	1.49, 125, 40,
+							2.81, 135, 41));
+		mesh.addConstraintEdge(new Edge (	5.19, 1024, 50,
+							7.87, 1024, 51));
 //		show(mesh);
-//		mesh.processDelaunay();
+		try{
+			mesh.processDelaunay();
+			assertTrue(true);
+		} catch (DelaunayError d){
+			assertFalse(true);
+		}
+//		show(mesh);
+	}
+
+	public void testCantBuildTriangleBis() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (	0.0, 0.0, 0,
+							4.04, -3.89, 0));
+		mesh.addConstraintEdge(new Edge (	0.83, 199,0,
+							5.77, 202,0));
+		mesh.addConstraintEdge(new Edge (	0.97, 235, 0,
+							7.10, 238, 0));
+		mesh.addConstraintEdge(new Edge (	1.27, 307, 0,
+							5.55, 306,0));
+		mesh.addConstraintEdge(new Edge (	1.35, 326, 0,
+							18.41, 317, 0));
+		mesh.addConstraintEdge(new Edge (	1.45, 350, 0,
+							4.22, 342, 0));
+		mesh.addConstraintEdge(new Edge (	1.49, 360, 0,
+							2.81, 370, 0));
+//		show(mesh);
+		try{
+			mesh.processDelaunay();
+			assertTrue(true);
+		} catch (DelaunayError d){
+			assertFalse(true);
+		}
+//		show(mesh);
+	}
+
+	public void testCantBuildTriangleTer() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (	0.0, 0.0, 0, 
+							4.04, -3.89, 0));
+		mesh.addConstraintEdge(new Edge (	0.83, 199, 0,
+							5.77, 203, 0));
+		mesh.addConstraintEdge(new Edge (	0.97, 235.18, 0,
+							7.10, 239, 0));
+		mesh.addConstraintEdge(new Edge (	1.27, 307.82, 0,
+							5.55, 306, 0));
+		mesh.addConstraintEdge(new Edge (	1.49, 360, 0,
+							2.81, 370, 0));
+		mesh.addConstraintEdge(new Edge (	1.78, 430, 0,
+							3.75, 427, 0));
+		mesh.addConstraintEdge(new Edge (	2.22, 537, 0,
+							14.17, 533, 0));
+		mesh.addConstraintEdge(new Edge (	2.45, 593, 0,
+							9.41, 592, 0));
+		try{
+			mesh.processDelaunay();
+			assertTrue(true);
+		} catch (DelaunayError d){
+			assertFalse(true);
+		}
+		
+	}
+
+	public void testCantBuildTriangleQuattro() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge (0.0, 214.86000000033528, 710.0, 2.0599999999976717, 224.34999999962747, 710.0));
+		mesh.addConstraintEdge(new Edge (0.07000000000698492, 268.54000000003725, 710.0, 1.7899999999790452, 264.2400000002235, 710.0));
+		mesh.addConstraintEdge(new Edge (0.4699999999720603, 312.12000000011176, 730.0, 0.5100000000093132, 337.0800000000745, 730.0));
+		try{
+			mesh.processDelaunay();
+			assertTrue(true);
+		} catch (DelaunayError d){
+			assertFalse(true);
+		}
+
 	}
 }

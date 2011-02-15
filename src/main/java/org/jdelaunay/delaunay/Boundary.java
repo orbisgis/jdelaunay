@@ -176,6 +176,8 @@ final class Boundary {
 				//we don't want to go too far.
 				if(i+1<indices.size()){
 					nextCstr = boundary.get(indices.get(i+1)).getConstraint();
+				} else {
+					nextCstr = null;
 				}
 				bp = boundary.get(indices.get(i));
 				addedTri.addAll(bp.connectPoint(pt, nextCstr));
