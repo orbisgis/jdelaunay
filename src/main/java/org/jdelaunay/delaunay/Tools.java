@@ -35,21 +35,6 @@ public final class Tools {
 	}
 
 	/**
-	 * swap two elements
-	 * 
-	 * @param elements
-	 * @param index1
-	 * @param index2
-	 */
-	private static void swapElements(ArrayList elements, int index1,
-			int index2) {
-		Object anElement;
-		anElement = elements.get(index1);
-		elements.set(index1, elements.get(index2));
-		elements.set(index2, anElement);
-	}
-
-	/**
 	 * Quick sort a Element array ordered according to the GID
 	 * 
 	 * @param points
@@ -108,7 +93,7 @@ public final class Tools {
 			// exchange values
 			if (i <= j) {
 				// we can change values
-				swapElements(elements, i, j);
+				Collections.swap(elements, i, j);
 
 				i++;
 				j--;
@@ -192,7 +177,7 @@ public final class Tools {
 			// exchange values
 			if (i <= j) {
 				// we can change values
-				swapElements(points, i, j);
+				Collections.swap(points, i, j);
 
 				i++;
 				j--;
@@ -399,7 +384,7 @@ public final class Tools {
 			// exchange values
 			if (i <= j) {
 				// we can change values
-				swapElements(edges, i, j);
+				Collections.swap(edges, i, j);
 
 				i++;
 				j--;
@@ -437,33 +422,6 @@ public final class Tools {
 		else {
 			return (p2.getZ() + p1.getZ()) / 2.0;
 		}
-	}
-
-	/**
-	 * Check if the edge already exists returns null if it doesn't
-	 * 
-	 * @param p1
-	 * @param p2
-	 * @param edgeList
-	 * @return theEdge
-	 */
-	protected static Edge checkTwoPointsEdge(Point p1, Point p2,
-			List<Edge> edgeList) {
-		// Check if the two points already lead to an existing edge.
-		// If the edge exists it must be in the non-processed edges
-		Edge theEdge = null;
-		Point test1, test2;
-		ListIterator<Edge> iter1 = edgeList.listIterator();
-		while (iter1.hasNext() && (theEdge == null)) {
-			Edge anEdge = iter1.next();
-			test1 = anEdge.getStartPoint();
-			test2 = anEdge.getEndPoint();
-			if (((test1.equals(p1)) && (test2.equals(p2)))
-					|| ((test1.equals(p2)) && (test2.equals(p1)))) {
-				theEdge = anEdge;
-			}
-		}
-		return theEdge;
 	}
 
 	/**

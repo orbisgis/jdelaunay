@@ -5,6 +5,8 @@
 
 package org.jdelaunay.delaunay;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 /**
  * This class is dedicated to the tests related to the point class.
  * @author alexis
@@ -41,4 +43,84 @@ public class TestPoint extends BaseUtility {
                 p2 = new Point(22,10,0);
                 assertTrue(p1.compareTo2D(p2)==-1);
         }
+
+	/**
+	 * Checks that we throw the expected exception when instanciating a point
+	 * with a NaN value.
+	 */
+	public void testNotANumber() {
+		Point pt;
+		try{
+			pt = new Point(0, 0, Double.NaN);
+			assertTrue(false);
+		} catch(DelaunayError d){
+		}
+		try{
+			pt = new Point( Double.NaN,0, 0);
+			assertTrue(false);
+		} catch(DelaunayError d){
+		}
+		try{
+			pt = new Point(0, Double.NaN, 0);
+			assertTrue(false);
+		} catch(DelaunayError d){
+		}
+		assertTrue(true);
+	}
+
+	/**
+	 * Tests the point instanciation.
+	 * @throws DelaunayError
+	 */
+	public void testInstanciation() throws DelaunayError {
+		Point pt = new Point(new Coordinate(1,2,3));
+		assertTrue(pt.getX()==1);
+		assertTrue(pt.getY()==2);
+		assertTrue(pt.getZ()==3);
+		pt.setX(5);
+		assertTrue(pt.getX()==5);
+		pt.setY(6);
+		assertTrue(pt.getY()==6);
+		pt.setZ(7);
+		assertTrue(pt.getZ()==7);
+
+	}
+
+	/**
+	 * Performs operation on the point indicator.
+	 * @throws DelaunayError
+	 */
+	public void testIndicator() throws DelaunayError {
+		Point pt = new Point(0,0,0);
+		pt.setMarked(1, true);
+		assertTrue(pt.isMarked(1));
+		pt.setMarked(2, true);
+		assertTrue(pt.isLocked());
+		pt.setMarked(3, true);
+		assertTrue(pt.isUseByLevelEdge());
+		pt.setMarked(4, true);
+		assertTrue(pt.isUseByPolygon());
+		pt.setMarked(5, true);
+		assertTrue(pt.isZUse());
+
+		pt.setMarked(1, false);
+		assertFalse(pt.isMarked(1));
+		pt.setLocked(false);
+		assertFalse(pt.isLocked());
+		pt.setUseByLevelEdge(false);
+		assertFalse(pt.isUseByLevelEdge());
+		pt.setUseByLevelEdge(false);
+		assertFalse(pt.isUseByPolygon());
+		pt.setUseByPolygon(false);
+		assertFalse(pt.isZUse());
+	}
+
+	/**
+	 * Checks that a point is not equal to null.
+	 * @throws DelaunayError
+	 */
+	public void testNullEquality() throws DelaunayError {
+		Point pt = new Point(0,0,0);
+		assertFalse(pt.equals2D(null));
+	}
 }
