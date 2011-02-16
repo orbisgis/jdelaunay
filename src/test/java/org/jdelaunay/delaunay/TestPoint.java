@@ -94,13 +94,13 @@ public class TestPoint extends BaseUtility {
 		Point pt = new Point(0,0,0);
 		pt.setMarked(1, true);
 		assertTrue(pt.isMarked(1));
-		pt.setMarked(2, true);
+		pt.setLocked(true);
 		assertTrue(pt.isLocked());
-		pt.setMarked(3, true);
+		pt.setUseByLevelEdge(true);
 		assertTrue(pt.isUseByLevelEdge());
-		pt.setMarked(4, true);
+		pt.setUseByPolygon(true);
 		assertTrue(pt.isUseByPolygon());
-		pt.setMarked(5, true);
+		pt.setUseZ(true);
 		assertTrue(pt.isZUse());
 
 		pt.setMarked(1, false);
@@ -109,9 +109,9 @@ public class TestPoint extends BaseUtility {
 		assertFalse(pt.isLocked());
 		pt.setUseByLevelEdge(false);
 		assertFalse(pt.isUseByLevelEdge());
-		pt.setUseByLevelEdge(false);
-		assertFalse(pt.isUseByPolygon());
 		pt.setUseByPolygon(false);
+		assertFalse(pt.isUseByPolygon());
+		pt.setUseZ(false);
 		assertFalse(pt.isZUse());
 	}
 
