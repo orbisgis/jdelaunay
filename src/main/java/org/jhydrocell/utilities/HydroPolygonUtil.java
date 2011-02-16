@@ -137,7 +137,7 @@ public final class HydroPolygonUtil {
 		if (Math.abs(valeurPente) > 1.0) {
 			// System.out.println("valeur de pente surprenante : " +
 			// valeurPente);
-			Coordinate p = get3DVector();
+			Coordinate pt = get3DVector();
 
 		}
 

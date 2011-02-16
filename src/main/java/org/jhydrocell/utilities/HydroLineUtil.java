@@ -20,7 +20,7 @@ public class HydroLineUtil {
 
 	private LineString geom;
 
-	GeometryFactory gf = new GeometryFactory();
+	private GeometryFactory gf = new GeometryFactory();
 
 	public HydroLineUtil(Edge myEdge) {
 
@@ -36,7 +36,7 @@ public class HydroLineUtil {
 	 *
 	 * @return pente de l'edge (dz/distance horizontale)
 	 */
-	public double getSlope() {
+	public final double getSlope() {
 		if (Math.abs(valeurPente+1.0)<Tools.EPSILON) {
 			Coordinate c1 = this.geom.getCoordinates()[0];
 			Coordinate c2 = this.geom.getCoordinates()[this.geom.getNumPoints() - 1];
@@ -56,7 +56,7 @@ public class HydroLineUtil {
 	 *
 	 * @return
 	 */
-	public double getSlopeInDegree() {
+	public final double getSlopeInDegree() {
 		return Math.abs(getSlope()) * 100;
 	}
 
@@ -64,7 +64,7 @@ public class HydroLineUtil {
 	 *
 	 * @return angle entre le nord et l'edge (sens descendant) (en degres)
 	 */
-	public double getSlopeAzimut() {
+	public final double getSlopeAzimut() {
 		if (orientationPente == -1.) {
 			Coordinate c1 = this.geom.getCoordinates()[0];
 			Coordinate c2 = this.geom.getCoordinates()[this.geom.getNumPoints() - 1];
@@ -86,7 +86,7 @@ public class HydroLineUtil {
 	 *
 	 * @return vecteur de l'edge
 	 */
-	public Coordinate get3DVector() {
+	public final Coordinate get3DVector() {
 		if (pente == null) {
 			Coordinate d = new Coordinate();
 			Geometry g = this.geom;

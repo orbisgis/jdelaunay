@@ -412,7 +412,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return marked
 	 */
 	public final boolean isMarked(int byteNumber) {
-		return testBit(6 + byteNumber);
+		return testBit(Tools.BIT_MARKED + byteNumber);
 	}
 
 	/**
@@ -421,7 +421,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param marked
 	 */
 	public final void setMarked(int byteNumber, boolean marked) {
-		setBit(6 + byteNumber, marked);
+		setBit(Tools.BIT_MARKED + byteNumber, marked);
 	}
 
 	/**
@@ -429,7 +429,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return marked
 	 */
 	public final boolean isLocked() {
-		return testBit(2);
+		return testBit(Tools.BIT_LOCKED);
 	}
 
 	/**
@@ -437,7 +437,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param marked
 	 */
 	public final void setLocked(boolean locked) {
-		setBit(2, locked);
+		setBit(Tools.BIT_LOCKED, locked);
 	}
 
 	/**
@@ -445,7 +445,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return outsideMesh
 	 */
 	public final boolean isOutsideMesh() {
-		return testBit(1);
+		return testBit(Tools.BIT_OUTSIDE);
 	}
 
 	/**
@@ -453,7 +453,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param outsideMesh
 	 */
 	public final void setOutsideMesh(boolean outsideMesh) {
-		setBit(1, outsideMesh);
+		setBit(Tools.BIT_OUTSIDE, outsideMesh);
 	}
 
 	/**
@@ -461,7 +461,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return levelEdge
 	 */
 	public final boolean isLevelEdge() {
-		return testBit(3);
+		return testBit(Tools.BIT_LEVEL);
 	}
 
 	/**
@@ -469,16 +469,16 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param levelEdge
 	 */
 	public final void setLevelEdge(boolean levelEdge) {
-		setBit(3, levelEdge);
+		setBit(Tools.BIT_LEVEL, levelEdge);
 	}
 
 	/**
-	 * check if edge is use by a polygon
+	 * Check if this edge is used by a polygon
 	 * @return useByPolygon
 	 */
 	@Override
 	public final boolean isUseByPolygon() {
-		return testBit(4);
+		return testBit(Tools.BIT_POLYGON);
 	}
 
 	/**
@@ -487,7 +487,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 */
 	@Override
 	public final void setUseByPolygon(boolean useByPolygon) {
-		setBit(4, useByPolygon);
+		setBit(Tools.BIT_POLYGON, useByPolygon);
 	}
 
 	/**
@@ -495,7 +495,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @return useZ
 	 */
 	public final boolean isZUse() {
-		return testBit(5);
+		return testBit(Tools.BIT_ZUSED);
 	}
 
 	/**
@@ -503,7 +503,7 @@ public class Edge extends Element implements Comparable<Edge> {
 	 * @param useByPolygon
 	 */
 	public final void setUseZ(boolean useZ) {
-		setBit(5, useZ);
+		setBit(Tools.BIT_ZUSED, useZ);
 	}
 
 	/* (non-Javadoc)
@@ -1308,6 +1308,6 @@ public class Edge extends Element implements Comparable<Edge> {
 	 */
 	@Override
 	public final String toString() {
-		return "Edge " + gid + " [Start : " + startPoint + ", End : " + endPoint + "]";
+		return "Edge " + getGID() + " [Start : " + startPoint + ", End : " + endPoint + "]";
 	}
 }

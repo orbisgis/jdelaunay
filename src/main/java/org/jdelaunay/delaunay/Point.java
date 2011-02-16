@@ -179,21 +179,21 @@ public class Point extends Element implements Comparable<Point> {
 	}
 	
 	/**
-	 * get the mark of the point
+	 * get the mark of the edge
 	 * @param byteNumber
 	 * @return marked
 	 */
 	public final boolean isMarked(int byteNumber) {
-		return testBit(6+byteNumber);
+		return testBit(Tools.BIT_MARKED + byteNumber);
 	}
 
 	/**
-	 * set the mark of the point
+	 * set the mark of the edge
 	 * @param byteNumber
 	 * @param marked
 	 */
 	public final void setMarked(int byteNumber, boolean marked) {
-		setBit(6+byteNumber, marked);
+		setBit(Tools.BIT_MARKED + byteNumber, marked);
 	}
 	
 	
@@ -208,19 +208,19 @@ public class Point extends Element implements Comparable<Point> {
 	}
 
 	/**
-	 * get the mark of the point
+	 * get the mark of the edge
 	 * @return marked
 	 */
 	public final boolean isLocked() {
-		return testBit(2);
+		return testBit(Tools.BIT_LOCKED);
 	}
 
 	/**
-	 * set the mark of the point
+	 * set the mark of the edge
 	 * @param marked
 	 */
 	public final void setLocked(boolean locked) {
-		setBit(2, locked);
+		setBit(Tools.BIT_LOCKED, locked);
 	}
 	
 	
@@ -240,38 +240,38 @@ public class Point extends Element implements Comparable<Point> {
 		setBit(3, useByLevelEdge);
 	}
 	
-	/**
-	 * check if point is use by a polygon.
+		/**
+	 * check if edge is use by a polygon
 	 * @return useByPolygon
 	 */
 	@Override
-	public final boolean isUseByPolygon(){
-		return testBit(4);
+	public final boolean isUseByPolygon() {
+		return testBit(Tools.BIT_POLYGON);
 	}
-	
+
 	/**
-	 * set if point is use by a polygon.
+	 * set if edge is use by a polygon.
 	 * @param useByPolygon
 	 */
 	@Override
-	public final void setUseByPolygon(boolean useByPolygon){
-		setBit(4, useByPolygon);
+	public final void setUseByPolygon(boolean useByPolygon) {
+		setBit(Tools.BIT_POLYGON, useByPolygon);
 	}
-	
+
 	/**
 	 * check if Z coordinate is use.
 	 * @return useZ
 	 */
-	public final boolean isZUse(){
-		return testBit(5);
+	public final boolean isZUse() {
+		return testBit(Tools.BIT_ZUSED);
 	}
-	
+
 	/**
 	 * set if Z coordinate is use.
 	 * @param useByPolygon
 	 */
-	public final void setUseZ(boolean useZ){
-		setBit(5, useZ);
+	public final void setUseZ(boolean useZ) {
+		setBit(Tools.BIT_ZUSED, useZ);
 	}
 	
 	
@@ -390,7 +390,7 @@ public class Point extends Element implements Comparable<Point> {
 	 */
 	@Override
 	public final String toString() {
-		return "Point "+gid+" [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
+		return "Point "+getGID()+" [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
 	}
 
 	/**

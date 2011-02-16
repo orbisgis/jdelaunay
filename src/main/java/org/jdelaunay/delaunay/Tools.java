@@ -19,6 +19,13 @@ public final class Tools {
 
 	public static final double EPSILON = 0.0000001;
 	public static final double EPSILON2 = EPSILON * EPSILON;
+	public static final int BIT_OUTSIDE = 1;
+	public static final int BIT_LOCKED = 2;
+	public static final int BIT_LEVEL = 3;
+	public static final int BIT_POLYGON = 4;
+	public static final int BIT_ZUSED = 5;
+	public static final int BIT_MARKED = 6;
+
 
 	/**
 	 * Default constructor is private : it is not supposed to be used !

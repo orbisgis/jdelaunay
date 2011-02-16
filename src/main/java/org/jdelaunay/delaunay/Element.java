@@ -19,7 +19,7 @@ public abstract class Element  implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5437683478248244942L;
-	protected int gid;
+	private int gid;
 	protected int property;
 
 	/**

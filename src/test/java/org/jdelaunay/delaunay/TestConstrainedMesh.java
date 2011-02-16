@@ -1001,6 +1001,13 @@ public class TestConstrainedMesh extends BaseUtility {
 //		show(mesh);
 	}
 
+	/**
+	 * This test and the next two ones have been created because the configurations
+	 * they contain caused DelaunayErrors or NullPointerExceptions. We don't check
+	 * the content of the generated mesh, but just check we don't catch
+	 * any delaunay error.
+	 * @throws DelaunayError
+	 */
 	public void testCantBuildTriangleBis() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new Edge (	0.0, 0.0, 0,

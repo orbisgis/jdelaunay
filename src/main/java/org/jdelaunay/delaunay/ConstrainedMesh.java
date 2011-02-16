@@ -995,7 +995,7 @@ public class ConstrainedMesh implements Serializable {
 			List<Edge> fromLeft = getConstraintFromLPVertical(p1);
 			//This operaton connects the two first points and their linked constraints.
 			Boundary bound = buildStartBoundary(p1, e1, fromLeft, getConstraintFromLPVertical(p2));
-			
+
 
 			while(iterPoint.hasNext()){
 				p2=iterPoint.next();
@@ -1420,7 +1420,7 @@ public class ConstrainedMesh implements Serializable {
 						scaleX, scaleY);
 				}
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.warn("Problem during rendering\n", e);
 		}
 	}

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.List;
 
 /**
  * Delaunay Package.
@@ -19,9 +20,9 @@ public class BoundaryBox implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5019273961990097490L;
-	protected double minx, maxx;
-	protected double miny, maxy;
-	protected double minz, maxz;
+	private double minx, maxx;
+	private double miny, maxy;
+	private double minz, maxz;
 	private Coordinate middle;
 	private boolean empty;
 
@@ -172,7 +173,7 @@ public class BoundaryBox implements Serializable {
 		return "min x["+minx+"] y["+miny+"] z["+minz+"] | max x["+maxx+"] y["+maxy+"] z["+maxz+"]";
 	}
 
-	public final ArrayList<Point> getPoints() throws DelaunayError {
+	public final List<Point> getPoints() throws DelaunayError {
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point(minx, miny, 0));
 		points.add(new Point(minx, maxy, 0));

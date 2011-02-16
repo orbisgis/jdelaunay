@@ -238,7 +238,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @return marked
 	 */
 	public final boolean isMarked(int byteNumber) {
-		return testBit(PT_NB+byteNumber);
+		return testBit(3+byteNumber);
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param marked
 	 */
 	public final void setMarked(int byteNumber, boolean marked) {
-		setBit(PT_NB+byteNumber, marked);
+		setBit(3+byteNumber, marked);
 	}
 
 	/* (non-Javadoc)
@@ -845,7 +845,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 */
 	@Override
 	public final String toString() {
-		return "Triangle "+gid+": ["+getPoint(0).toString()+", "+getPoint(1).toString()+", "+getPoint(2).toString()+"]";
+		return "Triangle "+getGID()+": ["+getPoint(0).toString()+", "+getPoint(1).toString()+", "+getPoint(2).toString()+"]";
 	}
 
 	/**
@@ -922,21 +922,21 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
-	 * Test if this triangle is used by a polygon or not
-	 * @return
+	 * check if this DelaunayTriangle is used by a polygon
+	 * @return useByPolygon
 	 */
 	@Override
 	public final boolean isUseByPolygon() {
-		return testBit(4);
+		return testBit(Tools.BIT_POLYGON);
 	}
 
 	/**
-	 * Used to specify when a triangle is used by a polygon.
+	 * set if edge is use by a polygon.
 	 * @param useByPolygon
 	 */
 	@Override
 	public final void setUseByPolygon(boolean useByPolygon) {
-		setBit(4, useByPolygon);
+		setBit(Tools.BIT_POLYGON, useByPolygon);
 	}
 
 	/**
