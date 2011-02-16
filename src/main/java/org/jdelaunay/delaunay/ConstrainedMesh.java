@@ -1075,7 +1075,9 @@ public class ConstrainedMesh implements Serializable {
 				//We add the constraints linked to p1.
 				while(iter.hasNext()){
 					current = iter.next();
-					bps.add(new BoundaryPart(current));
+					if(!current.equals(e1)){
+						bps.add(new BoundaryPart(current));
+					}
 				}
 			} else {
 				//set will be set to true when the constraints linked to p2
