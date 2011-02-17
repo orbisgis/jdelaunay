@@ -135,9 +135,9 @@ public final class HydroPolygonUtil {
 
 		// debug obedel
 		if (Math.abs(valeurPente) > 1.0) {
-			// System.out.println("valeur de pente surprenante : " +
-			// valeurPente);
-			Coordinate pt = get3DVector();
+			 System.out.println("valeur de pente surprenante : " +
+			 valeurPente);
+//			Coordinate pt = get3DVector();
 
 		}
 

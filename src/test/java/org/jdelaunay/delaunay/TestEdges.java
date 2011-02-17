@@ -427,4 +427,11 @@ public class TestEdges extends BaseUtility {
 		ed.setShared(true);
 		assertTrue(ed.isShared());
 	}
+
+	public void testBoundingBox() throws DelaunayError{
+		Edge ed = new Edge(0,0,0,2,2,0);
+		BoundaryBox bb = ed.getBoundingBox();
+		assertTrue(bb.getPoints().contains(new Point(0,0,0)));
+		assertTrue(bb.getPoints().contains(new Point(2,2,0)));
+	}
 }

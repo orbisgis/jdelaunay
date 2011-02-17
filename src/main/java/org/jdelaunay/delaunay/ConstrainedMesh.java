@@ -39,9 +39,7 @@ public class ConstrainedMesh implements Serializable {
 	//The two following lists are used only during computation.
 	//The bad edge queue list contains all the edges that coud be changed
 	//during a flip-flap operation
-	private List<Edge> badEdgesQueueList;
-	//boundaryEdges contains the Envelope of the CURRENT geometry.
-	private List<Edge> boundaryEdges;
+	private transient List<Edge> badEdgesQueueList;
 	//Permits to know if the mesh has been computed or not
 	private boolean meshComputed;
 	//Is the debug level used ?
@@ -51,6 +49,7 @@ public class ConstrainedMesh implements Serializable {
 	private int edgeGID;
 	private int triangleGID;
 	// constants
+	public static final int MIN_POINTS_NUMBER = 3;
 	public static final double EPSILON = 0.00001;
 	public static final int MAXITER = 5;
 	public static final int REFINEMENT_MAX_AREA = 1;
@@ -59,7 +58,7 @@ public class ConstrainedMesh implements Serializable {
 	public static final int REFINEMENT_OBTUSE_ANGLE = 8;
 
 	//The two points that will be used to extend the mesh, and to reduce the number
-	//of edges in the boundary. They will be removed when the mesh will be comuted,
+	//of edges in the boundary. They will be removed when the mesh will be computed,
 	//and the mesh will be fixed.
 	private Double extMinX = null;
 	private Double extMaxY = null;
@@ -80,7 +79,6 @@ public class ConstrainedMesh implements Serializable {
 		triangleGID = 0;
 
 		badEdgesQueueList = new LinkedList<Edge>();
-		boundaryEdges = new ArrayList<Edge>();
 	}
 
 	/**
@@ -97,22 +95,6 @@ public class ConstrainedMesh implements Serializable {
 	 */
 	public final void setBadEdgesQueueList(LinkedList<Edge> badEdgesQueueList) {
 		this.badEdgesQueueList = badEdgesQueueList;
-	}
-
-	/**
-	 * Get the list of edges that form the current convex hull of the triangulation
-	 * @return
-	 */
-	public final List<Edge> getBoundaryEdges() {
-		return boundaryEdges;
-	}
-
-	/**
-	 * Set the list of edges that form the current convex hull of the triangulation
-	 * @param boundaryEdges
-	 */
-	public final void setBoundaryEdges(ArrayList<Edge> boundaryEdges) {
-		this.boundaryEdges = boundaryEdges;
 	}
 
 	/**
@@ -552,10 +534,11 @@ public class ConstrainedMesh implements Serializable {
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
 		ArrayList<Point> eventPoints = new ArrayList<Point>();
+		final int defGID = -2;
 		//We fill the list.
 		for (Edge edge : constraintEdges) {
-			addToSortedList(edge.getStart(), eventPoints, -2);
-			addToSortedList(edge.getEnd(), eventPoints, -2);
+			addToSortedList(edge.getStart(), eventPoints, defGID);
+			addToSortedList(edge.getEnd(), eventPoints, defGID);
 		}
 		//we are about to perform the sweepline algorithm
 		Point currentEvent = null;
@@ -681,7 +664,7 @@ public class ConstrainedMesh implements Serializable {
 								}
 								j = (j - rmCount < 0 ? 0 : j - rmCount);
 							} else { // the intersection will be processed later.
-								addToSortedList(newEvent, eventPoints, -2);
+								addToSortedList(newEvent, eventPoints, defGID);
 							}
 						} else {
 							//in this case, we have e1.isExtremity(newEvent) && e2.isExtremity(newEvent)
@@ -973,14 +956,13 @@ public class ConstrainedMesh implements Serializable {
 	public final void processDelaunay() throws DelaunayError {
 		if (isMeshComputed()) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
-		} else if (points.size() < 3) {
+		} else if (points.size() < MIN_POINTS_NUMBER) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
 		} else {
 			// general data structures
 			badEdgesQueueList = new LinkedList<Edge>();
 			edges = new ArrayList<Edge>();
 			triangleList = new ArrayList<DelaunayTriangle>();
-			boundaryEdges = new ArrayList<Edge>();
 
 			// sort points
 			if (verbose) {
@@ -1210,15 +1192,15 @@ public class ConstrainedMesh implements Serializable {
 						&& swapTriangle(aTriangle1, aTriangle2, anEdge)) {
 						// Add the triangle"s edges to the bad edges list
 						Edge addEdge;
-						for (int j = 0; j < 3; j++) {
-							addEdge = aTriangle1.edges[j];
+						for (int j = 0; j < DelaunayTriangle.PT_NB; j++) {
+							addEdge = aTriangle1.getEdge(j);
 							if ((addEdge.getLeft() != null)
 								&& (addEdge.getRight() != null)
 								&& !addEdge.equals(anEdge)
 								&& !badEdgesQueueList.contains(addEdge)) {
 								badEdgesQueueList.add(addEdge);
 							}
-							addEdge = aTriangle2.edges[j];
+							addEdge = aTriangle2.getEdge(j);
 							if ((addEdge.getLeft() != null)
 								&& (addEdge.getRight() != null)
 								&& !addEdge.equals(anEdge)
@@ -1275,11 +1257,11 @@ public class ConstrainedMesh implements Serializable {
 
 			if (p3 != p4 && exchange) {
 				anEdge10 = anEdge;
-				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.edges, 3);
-				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.edges, 3);
+				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.getEdges(), DelaunayTriangle.PT_NB);
+				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.getEdges(), DelaunayTriangle.PT_NB);
 				anEdge20 = anEdge;
-				anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.edges, 3);
-				anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.edges, 3);
+				anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.getEdges(), DelaunayTriangle.PT_NB);
+				anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.getEdges(), DelaunayTriangle.PT_NB);
 				if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
 					log.error("ERROR");
 				} else {
@@ -1287,12 +1269,12 @@ public class ConstrainedMesh implements Serializable {
 					anEdge.setEndPoint(p4);
 					edgeGID++;
 					anEdge.setGID(edgeGID);
-					aTriangle1.edges[0] = anEdge10;
-					aTriangle1.edges[1] = anEdge11;
-					aTriangle1.edges[2] = anEdge12;
-					aTriangle2.edges[0] = anEdge20;
-					aTriangle2.edges[1] = anEdge21;
-					aTriangle2.edges[2] = anEdge22;
+					aTriangle1.setEdge(0, anEdge10);
+					aTriangle1.setEdge(1, anEdge11);
+					aTriangle1.setEdge(2, anEdge12);
+					aTriangle2.setEdge(0, anEdge20);
+					aTriangle2.setEdge(1, anEdge21);
+					aTriangle2.setEdge(2, anEdge22);
 					if (anEdge12.getLeft() == aTriangle2) {
 						anEdge12.setLeft(aTriangle1);
 					} else {

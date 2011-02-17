@@ -14,9 +14,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.io.Serializable;
 import org.apache.log4j.Logger;
 
-public class Edge extends Element implements Comparable<Edge> {
+public class Edge extends Element implements Comparable<Edge>,Serializable {
 
 	//The logger supposed to report errors to the user.
 	private static Logger log = Logger.getLogger(Edge.class);
@@ -26,7 +27,6 @@ public class Edge extends Element implements Comparable<Edge> {
 	private static final long serialVersionUID = 1L;
 	private Point startPoint, endPoint;
 	private DelaunayTriangle left, right;
-	private BoundaryBox aBox;
 	//An edge is considered to be degenerated if it is connected to the boundary
 	//of the mesh, but is not part of any triangle. It is the case when adding 
 	//a point to the mesh that can't see any point of the boundary, because of
@@ -86,12 +86,6 @@ public class Edge extends Element implements Comparable<Edge> {
 		indicator = 0;
 	}
 
-	private void updateBox() {
-		aBox = new BoundaryBox();
-		aBox.alterBox(this.startPoint);
-		aBox.alterBox(this.endPoint);
-	}
-
 	/**
 	 * Generate a new edge.
 	 */
@@ -111,7 +105,6 @@ public class Edge extends Element implements Comparable<Edge> {
 		init();
 		this.startPoint = start;
 		this.endPoint = end;
-//		updateBox();
 	}
 
 	/**
@@ -287,7 +280,6 @@ public class Edge extends Element implements Comparable<Edge> {
 		}
 
 		this.startPoint = p;
-		updateBox();
 	}
 
 	/**
@@ -301,9 +293,8 @@ public class Edge extends Element implements Comparable<Edge> {
 		}
 
 		this.endPoint = p;
-		updateBox();
 	}
-
+	
 	/**
 	 * Get the point of this edge that is on the left from the other. 
 	 * We use the order relation defined in Point. Consequently, with a vertical
