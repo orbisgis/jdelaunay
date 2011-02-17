@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +23,7 @@ import java.util.logging.Logger;
  * This is the class representing a Triangle in the DelaunayTriangulation.
  * @author alexis
  */
-public class DelaunayTriangle extends Element implements Comparable<DelaunayTriangle>, Serializable{
+public class DelaunayTriangle extends Element implements Comparable<DelaunayTriangle>{
 
 	/**
 	 * 

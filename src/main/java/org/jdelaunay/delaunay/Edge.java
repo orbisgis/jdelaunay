@@ -14,10 +14,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import java.io.Serializable;
 import org.apache.log4j.Logger;
 
-public class Edge extends Element implements Comparable<Edge>,Serializable {
+public class Edge extends Element implements Comparable<Edge> {
 
 	//The logger supposed to report errors to the user.
 	private static Logger log = Logger.getLogger(Edge.class);

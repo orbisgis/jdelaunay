@@ -1,7 +1,5 @@
 package org.jdelaunay.delaunay;
 
-import java.io.Serializable;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 
@@ -14,7 +12,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @version 2.0
  */
 
-public abstract class Element  implements Serializable {
+public abstract class Element {
 	/**
 	 * 
 	 */

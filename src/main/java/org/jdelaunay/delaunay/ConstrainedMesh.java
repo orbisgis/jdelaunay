@@ -3,6 +3,8 @@ package org.jdelaunay.delaunay;
 import com.vividsolutions.jts.geom.Envelope;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1405,5 +1407,10 @@ public class ConstrainedMesh implements Serializable {
 		} catch (RuntimeException e) {
 			log.warn("Problem during rendering\n", e);
 		}
+	}
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+		// our "pseudo-constructor"
+		in.defaultReadObject();
+		badEdgesQueueList = new LinkedList<Edge>();
 	}
 }

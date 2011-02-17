@@ -13,9 +13,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import java.io.Serializable;
 
-public class Point extends Element implements Comparable<Point>, Serializable {
+public class Point extends Element implements Comparable<Point> {
 	/**
 	 * 
 	 */

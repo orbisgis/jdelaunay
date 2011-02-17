@@ -16,7 +16,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import java.io.Serializable;
 
-public final class ConstraintPolygon extends Element implements Serializable {
+public final class ConstraintPolygon extends Element {
 
 	/**
 	 * 
