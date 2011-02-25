@@ -1102,6 +1102,9 @@ public class ConstrainedMesh implements Serializable {
 					} else if(!current.equals(e1)){
 					//We still have to add the BP with e1
 						bps.add(new BoundaryPart(boundEdges, current));
+						//We add the constraints linked to p2, that will form other boundary parts.
+						fillWithP2Constraints(boundEdgesBis, constraintsP2, bps, e1);
+						set = true;
 					}
 				}
 				if(!set){
