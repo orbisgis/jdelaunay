@@ -18,7 +18,7 @@ import java.util.ListIterator;
 final class BoundaryPart {
 
 	//the section of the boundary contained in this BoundaryPart.
-	private List<Edge> boundaryEdges;
+	private LinkedList<Edge> boundaryEdges;
 	//The constraint that define the lower scope of this boundary part.
 	//The upper scope will be defined by the next BoundaryPart in the Boundary class.
 	private Edge constraint;
@@ -30,7 +30,7 @@ final class BoundaryPart {
 	private Edge splitMem;
 
 	private void init(){
-		badEdges = new ArrayList<Edge>();
+		badEdges = new LinkedList<Edge>();
 		addedEdges = new ArrayList<Edge>();
 	}
 
@@ -48,7 +48,7 @@ final class BoundaryPart {
 	 */
 	BoundaryPart(List<Edge> bound, Edge cstr){
 		init();
-		boundaryEdges = bound;
+		boundaryEdges = bound instanceof LinkedList ? (LinkedList) bound : new LinkedList(bound);
 		constraint = cstr;
 	}
 
@@ -61,7 +61,7 @@ final class BoundaryPart {
 	 */
 	BoundaryPart(List<Edge> bound){
 		init();
-		boundaryEdges = bound;
+		boundaryEdges = bound instanceof LinkedList ? (LinkedList) bound : new LinkedList(bound);
 		constraint = null;
 	}
 
@@ -73,7 +73,7 @@ final class BoundaryPart {
 	BoundaryPart(Edge cstr){
 		init();
 		setConstraint(cstr);
-		boundaryEdges = new ArrayList<Edge>();
+		boundaryEdges = new LinkedList<Edge>();
 	}
 	
 	/**
@@ -88,11 +88,11 @@ final class BoundaryPart {
 	 * Set the set of edges that are associated to this boundary part.
 	 * @param boundaryEdges
 	 */
-	void setBoundaryEdges(List<Edge> boundaryEdges) {
-		if(boundaryEdges == null){
-			this.boundaryEdges = new ArrayList<Edge>();
+	void setBoundaryEdges(List<Edge> bound) {
+		if(bound == null){
+			this.boundaryEdges = new LinkedList<Edge>();
 		}else {
-			this.boundaryEdges = boundaryEdges;
+			boundaryEdges = bound instanceof LinkedList ? (LinkedList) bound : new LinkedList(bound);
 		}
 	}
 
@@ -205,7 +205,7 @@ final class BoundaryPart {
 			return ret;
 		}
 		LinkedList<Edge> futureBoundary = new LinkedList<Edge>();
-		List<Edge> otherBoundary = boundaryEdges;
+		LinkedList<Edge> otherBoundary = boundaryEdges;
 		LinkedList<Edge> degen = new LinkedList();
 		ListIterator<Edge> iter = otherBoundary.listIterator();
 		Edge course;

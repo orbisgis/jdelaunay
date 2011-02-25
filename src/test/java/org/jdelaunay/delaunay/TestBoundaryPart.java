@@ -2,6 +2,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -471,9 +472,9 @@ public class TestBoundaryPart extends BaseUtility {
 	public void testSetNullBoundaries(){
 		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,1,1,0));
 		part.setBoundaryEdges(null);
-		List<Edge>  edg = part.getBoundaryEdges();
+		LinkedList<Edge>  edg = (LinkedList) part.getBoundaryEdges();
 		assertNotNull(edg);
-		edg = new ArrayList<Edge>();
+		edg = new LinkedList<Edge>();
 		part.setBoundaryEdges(edg);
 		assertTrue(edg == part.getBoundaryEdges());
 	}
@@ -557,7 +558,7 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,0,0,0))));
 		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,2,6,0))));
 		//Let's try again, but this time other and cstr won't share a point.
-		bps = new ArrayList<Edge>();
+		bps = new LinkedList<Edge>();
 		bps.add(new Edge(0,0,0,2,3,0));
 		bps.add(new Edge(2,3,0,2,6,0));
 		bp = new BoundaryPart(bps, cstr);
