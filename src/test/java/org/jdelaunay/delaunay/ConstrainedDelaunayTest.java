@@ -910,6 +910,21 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	}
 
 	/**
+	 * performs an intersection between an edge which is almost vertical and another one.
+	 * @throws DelaunayError
+	 */
+	public void testIntersectAlmostVertical() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new Edge(296317.8, 2258359.5, 0,296317.79999999993, 2258360.8, 0));
+		mesh.addConstraintEdge(new Edge(296313.2, 2258359.7, 0,296320.29999999993, 2258359.6999999983, 0));
+		mesh.addConstraintEdge(new Edge(296312.7, 2258363.1999999993, 0,296317.79999999993, 2258360.8, 0));
+		mesh.addConstraintEdge(new Edge(296317.8, 2258359.5, 0,296320.99999999994, 2258359.0999999978, 0));
+		mesh.forceConstraintIntegrity();
+//		show(mesh);
+		assertTrue(mesh.getConstraintEdges().size()==6);
+	}
+
+	/**
 	 * Method used to create random a list of random edge.
 	 * @param number
 	 * @return

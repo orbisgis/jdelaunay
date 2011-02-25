@@ -49,9 +49,9 @@ public class VerticalComparator implements Comparator<Edge>, Serializable {
 
 	/**
 	 * This comparison method is a vertical sorting test :
-	 * Sort two edges (this and edge, indeed), and sort them according to their intersection point
+	 * Sort two edges (edge1 and edge2, indeed), and sort them according to their intersection point
 	 * with the line l of equation x=abs.
-	 * if p1 (p2) is the intersection between l and the line defined by this (edge),
+	 * if p1 (p2) is the intersection between l and the line defined by edge1 (edge2),
 	 * this method returns :
 	 *  * -1 if p1 < p2 or ( p1 == p2 and this is "under" edge)
 	 *  * 0 if p1 == p2 and (this and edge are colinear)
@@ -68,7 +68,12 @@ public class VerticalComparator implements Comparator<Edge>, Serializable {
 		int c;
 		Point pEdge1 = null;
 		Point pEdge2 = null;
+		//If the two edges are equal, we return fast
+		if(edge1.equals(edge2)){
+			return 0;
+		}
 		try{
+			//We retrieve the points that must be used to perform the comparison.
 			pEdge1 = edge1.getPointFromItsX(abs);
 			pEdge2 = edge2.getPointFromItsX(abs);
 		} catch (DelaunayError e){
@@ -77,12 +82,24 @@ public class VerticalComparator implements Comparator<Edge>, Serializable {
 		if (pEdge1 == null || pEdge2 == null) {
 			c=-2;
 		} else {
+			//We can perform the comparison.
 			c = pEdge1.compareTo2D(pEdge2);
 			if (c == 0) {
+				//We have an intersection. (pEdge1 and pEdge2 are equal)
 				if(edge1.isVertical()){
 					c = edge1.getPointRight().compareTo2D(edge2.getPointRight());
+					if(edge1.getPointLeft().equals(pEdge1)){
+						c = 1;
+					} else if(edge1.getPointRight().equals(pEdge1)){
+						c = -1;
+					}
 				} else if(edge2.isVertical()){
 					c = edge2.getPointRight().compareTo2D(edge1.getPointRight());
+					if(edge2.getPointLeft().equals(pEdge2)){
+						c = -1;
+					} else if(edge2.getPointRight().equals(pEdge2)){
+						c = 1;
+					}
 				} else {
 					double deltaXT = edge1.getPointRight().getX()-edge1.getPointLeft().getX();
 					double deltaYT = edge1.getPointRight().getY()-edge1.getPointLeft().getY();
