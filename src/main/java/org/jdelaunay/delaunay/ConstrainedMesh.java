@@ -144,6 +144,8 @@ public class ConstrainedMesh implements Serializable {
 		if(index < 0 ){
 			updateExtensionPoints(e.getStartPoint());
 			points.add(-index -1, e.getStartPoint());
+			pointGID++;
+			e.getStartPoint().setGID(pointGID);
 		} else {
 			e.setStartPoint(points.get(index));
 		}
@@ -151,6 +153,8 @@ public class ConstrainedMesh implements Serializable {
 		if(index < 0 ){
 			updateExtensionPoints(e.getEndPoint());
 			points.add(-index -1, e.getEndPoint());
+			pointGID++;
+			e.getEndPoint().setGID(pointGID);
 		} else {
 			e.setEndPoint(points.get(index));
 		}
@@ -189,6 +193,8 @@ public class ConstrainedMesh implements Serializable {
 		int constraintIndex = sortedListContains(constraintEdges, e);
 		if (constraintIndex < 0) {
 			addEdgeToLeftSortedList(edges, e);
+			edgeGID++;
+			e.setGID(edgeGID);
 		} else {
 			addEdgeToLeftSortedList(edges, constraintEdges.get(constraintIndex));
 		}
@@ -231,8 +237,8 @@ public class ConstrainedMesh implements Serializable {
 	 * @param sorted
 	 * @param edge
 	 */
-	private void addEdgeToLeftSortedList(List<Edge> sorted, Edge edge) {
-		addToSortedList(edge, sorted, edgeGID);
+	private boolean addEdgeToLeftSortedList(List<Edge> sorted, Edge edge) {
+		return addToSortedList(edge, sorted);
 	}
 
 	/**
@@ -282,15 +288,6 @@ public class ConstrainedMesh implements Serializable {
 	 */
 	public final List<DelaunayTriangle> getTriangleList() {
 		return triangleList;
-	}
-
-	/**
-	 * Set the list of triangles already computed in this mesh.
-	 * @param triangleList
-	 */
-	public final void setTriangleList(List<DelaunayTriangle> triangleList) {
-		Collections.sort(triangleList);
-		this.triangleList = triangleList;
 	}
 
 	/**
@@ -423,7 +420,11 @@ public class ConstrainedMesh implements Serializable {
 			points = new ArrayList<Point>();
 		}
 		updateExtensionPoints(point);
-		addToSortedList(point, points, pointGID);
+		boolean res = addToSortedList(point, points);
+		if(res){
+			pointGID++;
+			point.setGID(pointGID);
+		}
 	}
 
 	/**
@@ -434,7 +435,7 @@ public class ConstrainedMesh implements Serializable {
 	 *	the max x-coordinate of the mesh minus 1.
 	 *	The first one will have the max y-coordinate (ie the max y-coordinate of
 	 *	the mesh plus 1), the second will have the min y-coordinate (ie the min
-	 *	y-coordinate minux 1).
+	 *	y-coordinate minus 1).
 	 * @throws DelaunayError
 	 */
 	public final List<Point> getExtensionPoints() throws DelaunayError{
@@ -482,7 +483,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param elt
 	 * @param sortedList
 	 */
-	private <T extends Element & Comparable<? super T>> void addToSortedList(T elt, List<T> sortedList, int gid) {
+	private <T extends Element & Comparable<? super T>> boolean addToSortedList(T elt, List<T> sortedList) {
 		//We make a binary search, as divides and conquers rules...
 		int index = Collections.binarySearch(sortedList, elt);
 		if (index < 0) {
@@ -493,9 +494,9 @@ public class ConstrainedMesh implements Serializable {
 			//is already contained in the list.
 			int insertPos = -index - 1;
 			sortedList.add(insertPos, elt);
-			gid++;
-			elt.setGID(gid);
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -536,11 +537,10 @@ public class ConstrainedMesh implements Serializable {
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
 		ArrayList<Point> eventPoints = new ArrayList<Point>();
-		final int defGID = -2;
 		//We fill the list.
 		for (Edge edge : constraintEdges) {
-			addToSortedList(edge.getStart(), eventPoints, defGID);
-			addToSortedList(edge.getEnd(), eventPoints, defGID);
+			addToSortedList(edge.getStart(), eventPoints);
+			addToSortedList(edge.getEnd(), eventPoints);
 		}
 		//we are about to perform the sweepline algorithm
 		Point currentEvent = null;
@@ -666,7 +666,7 @@ public class ConstrainedMesh implements Serializable {
 								}
 								j = (j - rmCount < 0 ? 0 : j - rmCount);
 							} else { // the intersection will be processed later.
-								addToSortedList(newEvent, eventPoints, defGID);
+								addToSortedList(newEvent, eventPoints);
 							}
 						} else {
 							//in this case, we have e1.isExtremity(newEvent) && e2.isExtremity(newEvent)
@@ -949,7 +949,7 @@ public class ConstrainedMesh implements Serializable {
 	// ------------------------------------------------------------------------------------------
 
 	/**
-	 * Generate the Delaunay's triangularization with a flip-flop algorithm.
+	 * Generate the Delaunay's triangularization with a flip-flap algorithm.
 	 * Mesh must have been set. Triangulation can only be done once.
 	 * Otherwise call reprocessDelaunay
 	 *
@@ -979,15 +979,26 @@ public class ConstrainedMesh implements Serializable {
 			List<Edge> fromLeft = getConstraintFromLPVertical(p1);
 			//This operaton connects the two first points and their linked constraints.
 			Boundary bound = buildStartBoundary(p1, e1, fromLeft, getConstraintFromLPVertical(p2));
-
-
+			List<Edge> added ;
+			List<DelaunayTriangle> tri;
 			while(iterPoint.hasNext()){
 				p2=iterPoint.next();
 				fromLeft = getConstraintFromLPVertical(p2);
 				//The insertion is performed here !
-				triangleList.addAll(bound.insertPoint(p2, fromLeft));
+				tri = bound.insertPoint(p2, fromLeft);
+				for(DelaunayTriangle t : tri){
+					triangleGID++;
+					t.setGID(triangleGID);
+				}
+				triangleList.addAll(tri);
+
 				//We retrieve the edges that have been added to the mesh.
-				edges.addAll(bound.getAddedEdges());
+				added = bound.getAddedEdges();
+				for(Edge e : added){
+					edgeGID++;
+					e.setGID(edgeGID);
+				}
+				edges.addAll(added);
 				//We retrieve the potential bad edges, and treat them.
 				badEdgesQueueList = bound.getBadEdges();
 				processBadEdges();
@@ -1117,6 +1128,8 @@ public class ConstrainedMesh implements Serializable {
 		}
 		//We must add e1 to the list of edges.
 		edges.add(e1);
+		edgeGID++;
+		e1.setGID(edgeGID);
 		bound.setBoundary(bps);
 		return bound;
 	}

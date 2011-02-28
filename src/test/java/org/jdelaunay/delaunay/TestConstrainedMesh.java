@@ -23,15 +23,15 @@ public class TestConstrainedMesh extends BaseUtility {
 	public void testSimpleConstraint() throws DelaunayError{
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		Edge constr = new Edge(0,3,0,8,3,0);
-//		mesh.addConstraintEdge(constr);
-//		mesh.addPoint(new Point(4,5,0));
-//		mesh.addPoint(new Point(4,1,0));
-//		mesh.processDelaunay();
-////		show(mesh);
+		mesh.addConstraintEdge(constr);
+		mesh.addPoint(new Point(4,5,0));
+		mesh.addPoint(new Point(4,1,0));
+		mesh.processDelaunay();
+//		show(mesh);
 		DelaunayTriangle tri1 = new DelaunayTriangle(constr, new Edge(0,3,0,4,5,0), new Edge(4,5,0,8,3,0));
 		DelaunayTriangle tri2 = new DelaunayTriangle(constr, new Edge(0,3,0,4,1,0), new Edge(4,1,0,8,3,0));
-//		assertTrue(mesh.getTriangleList().contains(tri1));
-//		assertTrue(mesh.getTriangleList().contains(tri2));
+		assertTrue(mesh.getTriangleList().contains(tri1));
+		assertTrue(mesh.getTriangleList().contains(tri2));
 //		assertTrue(mesh.isMeshComputed());
 
 		mesh = new ConstrainedMesh();
@@ -47,6 +47,9 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(mesh.getTriangleList().contains(tri1));
 		assertTrue(mesh.getTriangleList().contains(tri2));
 		assertTrue(mesh.isMeshComputed());
+		assertGIDUnicity(mesh);
+		assertUseEachEdge(mesh);
+		assertUseEachPoint(mesh);
 	}
 
 	/**
@@ -69,6 +72,9 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(5,0,0,8,3,0), new Edge(8,3,0,3,1,0), new Edge(3,1,0,5,0,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,3,0,4,5,0), new Edge(4,5,0,6,4,0), new Edge(6,4,0,0,3,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(0,3,0,8,3,0), new Edge(8,3,0,6,4,0), new Edge(6,4,0,0,3,0))));
+		assertGIDUnicity(mesh);
+		assertUseEachEdge(mesh);
+		assertUseEachPoint(mesh);
 	}
 
 	/**
@@ -96,6 +102,9 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(10,6,0,8,3,0), new Edge(8,3,0,6,4,0), new Edge(6,4,0,10,6,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(10,6,0,4,5,0), new Edge(4,5,0,6,4,0), new Edge(6,4,0,10,6,0))));
 		assertTrue(triangles.size()==8);
+		assertGIDUnicity(mesh);
+		assertUseEachEdge(mesh);
+		assertUseEachPoint(mesh);
 	}
 
 	/**
@@ -197,6 +206,9 @@ public class TestConstrainedMesh extends BaseUtility {
 			new Edge(11,9,0,8,7,0),
 			new Edge(12,7,0,11,9,0),
 			new Edge(8,7,0,12,7,0))));
+		assertGIDUnicity(mesh);
+		assertUseEachEdge(mesh);
+		assertUseEachPoint(mesh);
 
 	}
 
@@ -231,6 +243,9 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,1,0,3,2,0), new Edge(3,2,0,3,4,0), new Edge(3,4,0,1,1,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,1,0,3,6,0), new Edge(3,6,0,3,4,0), new Edge(3,4,0,1,1,0))));
 		assertTrue(triangles.contains(new DelaunayTriangle(new Edge(1,1,0,3,8,0), new Edge(3,8,0,3,6,0), new Edge(3,6,0,1,1,0))));
+		assertGIDUnicity(mesh);
+		assertUseEachEdge(mesh);
+		assertUseEachPoint(mesh);
 	}
 
 	/**
@@ -343,6 +358,9 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(triangles.size()==8);
 		List<Edge> edges = mesh.getEdges();
 		assertTrue(edges.size()==14);
+		assertGIDUnicity(mesh);
+		assertUseEachEdge(mesh);
+		assertUseEachPoint(mesh);
 
 	}
 
@@ -365,7 +383,9 @@ public class TestConstrainedMesh extends BaseUtility {
 		DelaunayTriangle tri2 = new DelaunayTriangle(new Edge(p1, p3), new Edge(p3, p4), new Edge(p4, p1));
 		assertTrue(mesh.getTriangleList().contains(tri1));
 		assertTrue(mesh.getTriangleList().contains(tri2));
-
+		assertGIDUnicity(mesh);
+		assertUseEachEdge(mesh);
+		assertUseEachPoint(mesh);
 	}
 
 
