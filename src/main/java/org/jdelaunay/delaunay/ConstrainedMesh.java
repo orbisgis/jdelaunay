@@ -52,7 +52,6 @@ public class ConstrainedMesh implements Serializable {
 	private int triangleGID;
 	// constants
 	public static final int MIN_POINTS_NUMBER = 3;
-	public static final double EPSILON = 0.00001;
 	public static final int MAXITER = 5;
 	public static final int REFINEMENT_MAX_AREA = 1;
 	public static final int REFINEMENT_MIN_ANGLE = 2;
@@ -74,7 +73,7 @@ public class ConstrainedMesh implements Serializable {
 		polygons = new ArrayList<ConstraintPolygon>();
 		meshComputed = false;
 		precision = 0;
-		tolerance = EPSILON;
+		tolerance = Tools.EPSILON;
 
 		pointGID = 0;
 		edgeGID = 0;
