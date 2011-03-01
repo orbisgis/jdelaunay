@@ -151,7 +151,7 @@ public class BoundaryBox implements Serializable {
 	 * 
 	 * @param aPoint
 	 */
-	public final void alterBox(Point aPoint) {
+	public final void alterBox(DPoint aPoint) {
 		double x = aPoint.getX();
 		double y = aPoint.getY();
 		double z = aPoint.getZ();
@@ -178,12 +178,12 @@ public class BoundaryBox implements Serializable {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public final List<Point> getPoints() throws DelaunayError {
-		ArrayList<Point> points = new ArrayList<Point>();
-		points.add(new Point(minx, miny, 0));
-		points.add(new Point(minx, maxy, 0));
-		points.add(new Point(maxx, miny, 0));
-		points.add(new Point(maxx, maxy, 0));
+	public final List<DPoint> getPoints() throws DelaunayError {
+		ArrayList<DPoint> points = new ArrayList<DPoint>();
+		points.add(new DPoint(minx, miny, 0));
+		points.add(new DPoint(minx, maxy, 0));
+		points.add(new DPoint(maxx, miny, 0));
+		points.add(new DPoint(maxx, maxy, 0));
 		return points;
 	}
 }

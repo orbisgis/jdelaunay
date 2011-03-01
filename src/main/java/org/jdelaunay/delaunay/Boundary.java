@@ -17,9 +17,9 @@ final class Boundary {
         //The boundary, as a list of BoundaryPart instances.
         private List<BoundaryPart> boundary;
 	//The bad edges resulting of the last point insertion.
-	private List<Edge> badEdges;
+	private List<DEdge> badEdges;
 	//The edges added to the mesh during the last point insertion.
-	private List<Edge> addedEdges;
+	private List<DEdge> addedEdges;
 
         Boundary(){
                 boundary = new ArrayList<BoundaryPart>();
@@ -49,7 +49,7 @@ final class Boundary {
 	 * Set the list of added Edges. Does not need to be publc, clearly.
 	 * @param edges
 	 */
-	private void setAddedEdges(List<Edge> edges){
+	private void setAddedEdges(List<DEdge> edges){
 		addedEdges = edges;
 	}
 
@@ -57,7 +57,7 @@ final class Boundary {
 	 * Get the edges added during the last insertion of a point in the mesh.
 	 * @return
 	 */
-	List<Edge> getAddedEdges(){
+	List<DEdge> getAddedEdges(){
 		return addedEdges;
 	}
 
@@ -65,7 +65,7 @@ final class Boundary {
 	 * set the list of bad edges resulting of the last insertion.
 	 * @param edges
 	 */
-	private void setBadEdges(List<Edge> edges){
+	private void setBadEdges(List<DEdge> edges){
 		badEdges = edges;
 	}
 
@@ -74,12 +74,12 @@ final class Boundary {
 	 * because of the last insertion of a point.
 	 * @return
 	 */
-	List<Edge> getBadEdges(){
+	List<DEdge> getBadEdges(){
 		return badEdges;
 	}
 
         /**
-         * Connect a new Point to the boundary. This operation will alter the
+         * Connect a new DPoint to the boundary. This operation will alter the
          * boundary, by potentially adding or removing some boundary parts. Moreover,
          * in every cases, at least one BoundaryPart will be modified.
 	 *
@@ -88,7 +88,7 @@ final class Boundary {
 	 * @return
 	 * @throws DelaunayError
 	 */
-        List<DelaunayTriangle> insertPoint(final Point pt, final List<Edge> constraints) throws DelaunayError {
+        List<DTriangle> insertPoint(final DPoint pt, final List<DEdge> constraints) throws DelaunayError {
 		if(constraints != null && !constraints.isEmpty() && !pt.equals(constraints.get(0).getPointLeft())){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT, "the point and the constraint do not match.");
 		}
@@ -96,14 +96,14 @@ final class Boundary {
 		if(indices.isEmpty()){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
 		}
-		List<DelaunayTriangle> addedTri;
+		List<DTriangle> addedTri;
 		List<BoundaryPart> tmpBd ;
 		BoundaryPart bp;
 		BoundaryPart splitBp;
 		List<BoundaryPart> splitList = new ArrayList<BoundaryPart>();
-		List<Edge> bad;
-		List<Edge> added;
-		List<Edge> tmpAdded;
+		List<DEdge> bad;
+		List<DEdge> added;
+		List<DEdge> tmpAdded;
 		if(indices.size()==1){
 			//parts contain only one BoundaryPart : the point is not the right
 			//extremity of a constraint linked to the edge.
@@ -115,14 +115,14 @@ final class Boundary {
 				//We must create a degenerated edge, use it to create a new BP
 				//and add this bp to the boundary.
 				index = 0;
-				Edge ed = new Edge(boundary.get(0).getConstraint().getPointLeft(),pt);
+				DEdge ed = new DEdge(boundary.get(0).getConstraint().getPointLeft(),pt);
 				if(constraints != null && !constraints.isEmpty()){
-					for(Edge con : constraints){
+					for(DEdge con : constraints){
 						ed = ed.equals(con) ? con : ed;
 					}
 				}
 				ed.setDegenerated(true);
-				List<Edge> led= new LinkedList<Edge> ();
+				List<DEdge> led= new LinkedList<DEdge> ();
 				led.add(ed);
 				bp=new BoundaryPart(led);
 				boundary.add(0, bp);
@@ -154,18 +154,18 @@ final class Boundary {
 			//We prepare the BP we will add in the end.
 			BoundaryPart newBP = indices.get(0) == 0 && bp.getConstraint()!=null
 							&& pt.equals(bp.getConstraint().getPointRight()) ?
-					new BoundaryPart(new ArrayList<Edge>()) :
-					new BoundaryPart(new ArrayList<Edge>(), bp.getConstraint());
+					new BoundaryPart(new ArrayList<DEdge>()) :
+					new BoundaryPart(new ArrayList<DEdge>(), bp.getConstraint());
 			//We must know the constraint that bound the next BP to avoid the
 			//creation of duplicates.
-			Edge nextCstr = boundary.get(indices.get(1)).getConstraint();
+			DEdge nextCstr = boundary.get(indices.get(1)).getConstraint();
 			//we start the connection.
 			addedTri = bp.connectPoint(pt, nextCstr);
 			bad = bp.getBadEdges();
 			added = bp.getAddedEdges();
 			//We start to fill the edge we'll add in the end.
 			int bpSize = bp.getBoundaryEdges().size();
-			Edge ed = bp.getBoundaryEdges().get(bpSize-1);
+			DEdge ed = bp.getBoundaryEdges().get(bpSize-1);
 			if(bpSize == 1 ||(ed.isLocked() && ed.isDegenerated())){
 				newBP.setBoundaryEdges(bp.getBoundaryEdges());
 			} else {
@@ -189,8 +189,8 @@ final class Boundary {
 			}
 			//We must use the last altered BP to retrieve the boundary
 			//edges
-			List<Edge> tmpLast = newBP.getBoundaryEdges();
-			Edge ed0 = bp.getBoundaryEdges().get(0);
+			List<DEdge> tmpLast = newBP.getBoundaryEdges();
+			DEdge ed0 = bp.getBoundaryEdges().get(0);
 			if(bp.getBoundaryEdges().size()==1 && bp.getBoundaryEdges().get(0).equals(bp.getConstraint())){
 				//We are on the right point of a constraint. The Boundary
 				//Part that is associated to it does not contain any
@@ -249,7 +249,7 @@ final class Boundary {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	List<DelaunayTriangle> insertPoint(final Point point) throws DelaunayError{
+	List<DTriangle> insertPoint(final DPoint point) throws DelaunayError{
 		return insertPoint(point, null);
 	}
 
@@ -258,7 +258,7 @@ final class Boundary {
 	 * @param point
 	 * @return
 	 */
-	List<Integer> getEligibleParts(final Point point){
+	List<Integer> getEligibleParts(final DPoint point){
 		//we treat the cases where the list contains one or none element.
 		ArrayList<Integer> ret = new ArrayList<Integer>();
 		if(boundary.size() <= 1){
@@ -273,7 +273,7 @@ final class Boundary {
 			return ret;
 		}
 		int size = boundary.size();
-		//In some cases, the lowest BoundaryPart can contain a constraint Edge.
+		//In some cases, the lowest BoundaryPart can contain a constraint DEdge.
 		//We must manage this case.
 		if(boundary.get(0).getConstraint() != null && boundary.get(0).getConstraint().isRight(point)){
 			//we are going to add a new Boundary Part to the boundary.
@@ -377,7 +377,7 @@ final class Boundary {
 	 * @return
 	 */
 	private List<Integer> getUpperSameRightPoint(int index, BoundaryPart orig){
-		Point point = orig.getConstraint().getPointRight();
+		DPoint point = orig.getConstraint().getPointRight();
 		List<Integer> ret = new ArrayList<Integer>();
 		BoundaryPart bp;
 		for(int i = index+1; i < boundary.size();i++){
@@ -406,7 +406,7 @@ final class Boundary {
 	 * @return
 	 */
 	private List<Integer> getLowerSameRightPoint(int index, BoundaryPart orig){
-		Point point = orig.getConstraint().getPointRight();
+		DPoint point = orig.getConstraint().getPointRight();
 		List<Integer> ret = new ArrayList<Integer>();
 		BoundaryPart bp;
 		for(int i = index-1; i >=0;i--){
@@ -415,7 +415,7 @@ final class Boundary {
 				ret.add(i);
 			} else {
 				//We add this last BP, as it is eligible for a connection
-				//with the new Point.
+				//with the new DPoint.
 				ret.add(i);
 				break;
 			}

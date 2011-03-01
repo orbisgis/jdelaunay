@@ -1,7 +1,7 @@
 package org.jhydrocell.utilities;
 
-import org.jdelaunay.delaunay.Edge;
-import org.jdelaunay.delaunay.Point;
+import org.jdelaunay.delaunay.DEdge;
+import org.jdelaunay.delaunay.DPoint;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -22,10 +22,10 @@ public class HydroLineUtil {
 
 	private GeometryFactory gf = new GeometryFactory();
 
-	public HydroLineUtil(Edge myEdge) {
+	public HydroLineUtil(DEdge myEdge) {
 
-		Point pt1 = myEdge.getStartPoint();
-		Point pt2 = myEdge.getEndPoint();
+		DPoint pt1 = myEdge.getStartPoint();
+		DPoint pt2 = myEdge.getEndPoint();
 		Coordinate p1 = pt1.getCoordinate();
 		Coordinate p2 = pt2.getCoordinate();
 		geom = gf.createLineString(new Coordinate[] { p1, p2 });

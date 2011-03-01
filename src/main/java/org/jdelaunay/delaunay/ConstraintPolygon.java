@@ -22,8 +22,8 @@ public final class ConstraintPolygon extends Element {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Polygon polygon;
-	private ArrayList<Edge> edges;
-	private DelaunayTriangle refTriangle;
+	private ArrayList<DEdge> edges;
+	private DTriangle refTriangle;
 
 	
 	/**
@@ -130,7 +130,7 @@ public final class ConstraintPolygon extends Element {
 			refTriangle=null;
 			
 			// create edge list
-			edges = new ArrayList<Edge>();
+			edges = new ArrayList<DEdge>();
 
 			// add edges to the edge list
 			// each point is created one
@@ -139,16 +139,16 @@ public final class ConstraintPolygon extends Element {
 			if(Double.isNaN(polygon.getCoordinates()[0].z)) {
 				polygon.getCoordinates()[0].z = 0;
 			}
-			Point lastPoint = new Point(polygon.getCoordinates()[0]);
+			DPoint lastPoint = new DPoint(polygon.getCoordinates()[0]);
 
-			Point aPoint;
-			Edge aEdge;
+			DPoint aPoint;
+			DEdge aEdge;
 			for (int i = 1; i < nbPoints; i++) {
 				if(Double.isNaN(polygon.getCoordinates()[i].z)) {
 					polygon.getCoordinates()[i].z = 0;
 				}
-				aPoint = new Point(polygon.getCoordinates()[i]);
-				aEdge=new Edge(lastPoint, aPoint);
+				aPoint = new DPoint(polygon.getCoordinates()[i]);
+				aEdge=new DEdge(lastPoint, aPoint);
 				aEdge.setUseByPolygon(true);
 				edges.add(aEdge);
 				lastPoint = aPoint;
@@ -168,7 +168,7 @@ public final class ConstraintPolygon extends Element {
 	 */
 	public void setUsePolygonZ(boolean usePolygonZ) {
 		this.usePolygonZ = usePolygonZ;
-		for(Edge aEdge:edges){
+		for(DEdge aEdge:edges){
 			aEdge.setUseZ(usePolygonZ);
                 }
 	}
@@ -211,7 +211,7 @@ public final class ConstraintPolygon extends Element {
 	/**
 	 * @return The reference triangle.
 	 */
-	public DelaunayTriangle getRefTriangle() {
+	public DTriangle getRefTriangle() {
 		return refTriangle;
 	}
 
@@ -219,7 +219,7 @@ public final class ConstraintPolygon extends Element {
 	 * Set the reference triangle.
 	 * @param refTriangle
 	 */
-	public void setRefTriangle(DelaunayTriangle refTriangle) {
+	public void setRefTriangle(DTriangle refTriangle) {
 		this.refTriangle = refTriangle;
 	}
 
@@ -235,7 +235,7 @@ public final class ConstraintPolygon extends Element {
 	 * 
 	 * @return edges
 	 */
-	public ArrayList<Edge> getEdges() {
+	public ArrayList<DEdge> getEdges() {
 		return edges;
 	}
 	
@@ -245,12 +245,12 @@ public final class ConstraintPolygon extends Element {
 	 * @return points
 	 * @throws DelaunayError 
 	 */
-	public ArrayList<Point> getPoints() throws DelaunayError {
-		ArrayList<Point> points= new ArrayList<Point>();
-		Point aPoint;
+	public ArrayList<DPoint> getPoints() throws DelaunayError {
+		ArrayList<DPoint> points= new ArrayList<DPoint>();
+		DPoint aPoint;
 		for (int i = 0; i < polygon.getNumPoints()-1; i++)
 		{	
-			aPoint=new Point(polygon.getCoordinates()[i]);
+			aPoint=new DPoint(polygon.getCoordinates()[i]);
 			aPoint.setUseByPolygon(true);
 			aPoint.setUseZ(usePolygonZ);
 			points.add(aPoint);
@@ -281,12 +281,12 @@ public final class ConstraintPolygon extends Element {
 	 * @return
 	 */
 	@Override
-	public boolean contains(Point aPoint) {
+	public boolean contains(DPoint aPoint) {
 		return polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 	}
 	
-	public boolean contains(Edge anEdge) throws DelaunayError { //FIXME make better code
-		Point aPoint = anEdge.getBarycenter();
+	public boolean contains(DEdge anEdge) throws DelaunayError { //FIXME make better code
+		DPoint aPoint = anEdge.getBarycenter();
 		boolean intersectPolygon=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 		boolean edgeColinear=false, intersectEdge=false;
 		for(int i=0;i<edges.size();i++ )
@@ -294,7 +294,7 @@ public final class ConstraintPolygon extends Element {
 			if(edges.get(i).haveSamePoint(anEdge)) {
 				edgeColinear = true;
 			}
-			else if(edges.get(i).intersects(anEdge.getStartPoint(), anEdge.getEndPoint())==Edge.INTERSECT) {
+			else if(edges.get(i).intersects(anEdge.getStartPoint(), anEdge.getEndPoint())==DEdge.INTERSECT) {
 				intersectEdge = true;
 			}
 		}
@@ -319,11 +319,11 @@ public final class ConstraintPolygon extends Element {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public boolean isIntersect(Edge anEdge) throws DelaunayError{
+	public boolean isIntersect(DEdge anEdge) throws DelaunayError{
 		boolean intersect=false;
 		for(int i=0;i<edges.size() && !intersect;i++ )
 		{
-			intersect=edges.get(i).intersects(anEdge.getStartPoint(),anEdge.getEndPoint()) == Edge.INTERSECT;
+			intersect=edges.get(i).intersects(anEdge.getStartPoint(),anEdge.getEndPoint()) == DEdge.INTERSECT;
 		}
 			
 		return intersect;

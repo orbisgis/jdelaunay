@@ -11,11 +11,11 @@ import org.apache.log4j.Logger;
 
 /**
  * The VerticalComparator class will be used to perform sorting and searching operations
- * in vertically sorted lists. We can't use directly the Comparable interface in Edge,
+ * in vertically sorted lists. We can't use directly the Comparable interface in DEdge,
  * as it is already used for the "left-right" method.
  * @author alexis
  */
-public class VerticalComparator implements Comparator<Edge>, Serializable {
+public class VerticalComparator implements Comparator<DEdge>, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static Logger log = Logger.getLogger(VerticalComparator.class);
@@ -64,10 +64,10 @@ public class VerticalComparator implements Comparator<Edge>, Serializable {
 	 * @return
 	 */
 	@Override
-	public final int compare(Edge edge1, Edge edge2) {
+	public final int compare(DEdge edge1, DEdge edge2) {
 		int c;
-		Point pEdge1 = null;
-		Point pEdge2 = null;
+		DPoint pEdge1 = null;
+		DPoint pEdge2 = null;
 		//If the two edges are equal, we return fast
 		if(edge1.equals(edge2)){
 			return 0;

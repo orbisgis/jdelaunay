@@ -12,26 +12,26 @@ import java.util.ListIterator;
  *  * An edge C that is a constraint used during the triangulation.
  *
  * The elements of E will be all the edges of the boundary that are upper than C,
- * and lower than the constraint Edge directly upper than C
+ * and lower than the constraint DEdge directly upper than C
  * @author alexis
  */
 final class BoundaryPart {
 
 	//the section of the boundary contained in this BoundaryPart.
-	private LinkedList<Edge> boundaryEdges;
+	private LinkedList<DEdge> boundaryEdges;
 	//The constraint that define the lower scope of this boundary part.
 	//The upper scope will be defined by the next BoundaryPart in the Boundary class.
-	private Edge constraint;
+	private DEdge constraint;
 	//The list of edges that could be swapped during the flip-flap.
-	private List<Edge> badEdges;
+	private List<DEdge> badEdges;
 	//The list of newly added Edges
-	private List<Edge> addedEdges;
+	private List<DEdge> addedEdges;
 
-	private Edge splitMem;
+	private DEdge splitMem;
 
 	private void init(){
-		badEdges = new LinkedList<Edge>();
-		addedEdges = new ArrayList<Edge>();
+		badEdges = new LinkedList<DEdge>();
+		addedEdges = new ArrayList<DEdge>();
 	}
 
 	/**
@@ -46,7 +46,7 @@ final class BoundaryPart {
 	 * @param bound
 	 * @param cstr
 	 */
-	BoundaryPart(List<Edge> bound, Edge cstr){
+	BoundaryPart(List<DEdge> bound, DEdge cstr){
 		init();
 		boundaryEdges = bound instanceof LinkedList ? (LinkedList) bound : new LinkedList(bound);
 		constraint = cstr;
@@ -59,7 +59,7 @@ final class BoundaryPart {
 	 * This can happen for the lowest part of the boundary, fo instance.
 	 * @param bound
 	 */
-	BoundaryPart(List<Edge> bound){
+	BoundaryPart(List<DEdge> bound){
 		init();
 		boundaryEdges = bound instanceof LinkedList ? (LinkedList) bound : new LinkedList(bound);
 		constraint = null;
@@ -70,17 +70,17 @@ final class BoundaryPart {
 	 * next one is empty.
 	 * @param cstr
 	 */
-	BoundaryPart(Edge cstr){
+	BoundaryPart(DEdge cstr){
 		init();
 		setConstraint(cstr);
-		boundaryEdges = new LinkedList<Edge>();
+		boundaryEdges = new LinkedList<DEdge>();
 	}
 	
 	/**
 	 * Get the list of edges associated to this part of the boundary.
 	 * @return
 	 */
-	List<Edge> getBoundaryEdges() {
+	List<DEdge> getBoundaryEdges() {
 		return boundaryEdges;
 	}
 
@@ -88,9 +88,9 @@ final class BoundaryPart {
 	 * Set the set of edges that are associated to this boundary part.
 	 * @param boundaryEdges
 	 */
-	void setBoundaryEdges(List<Edge> bound) {
+	void setBoundaryEdges(List<DEdge> bound) {
 		if(bound == null){
-			this.boundaryEdges = new LinkedList<Edge>();
+			this.boundaryEdges = new LinkedList<DEdge>();
 		}else {
 			boundaryEdges = bound instanceof LinkedList ? (LinkedList) bound : new LinkedList(bound);
 		}
@@ -100,7 +100,7 @@ final class BoundaryPart {
 	 * Get the constraint that forms the lower limit of this part of the boundary.
 	 * @return
 	 */
-	Edge getConstraint() {
+	DEdge getConstraint() {
 		return constraint;
 	}
 
@@ -109,7 +109,7 @@ final class BoundaryPart {
 	 * boundary.
 	 * @param constraint
 	 */
-	void setConstraint(Edge constraint) {
+	void setConstraint(DEdge constraint) {
 		if(constraint != null && constraint.getPointLeft().equals(constraint.getEndPoint())){
 			constraint.swap();
 		}
@@ -120,7 +120,7 @@ final class BoundaryPart {
 	 * Get the edges added to the mesh during the last insertion of a point.
 	 * @return
 	 */
-	List<Edge> getAddedEdges(){
+	List<DEdge> getAddedEdges(){
 		return addedEdges;
 	}
 
@@ -128,7 +128,7 @@ final class BoundaryPart {
 	 * Gets the edges that will need to be processed by the flip-flap algorithm
 	 * @return
 	 */
-	List<Edge> getBadEdges(){
+	List<DEdge> getBadEdges(){
 		return badEdges;
 	}
 
@@ -138,7 +138,7 @@ final class BoundaryPart {
 	 * @param point
 	 * @return
 	 */
-	boolean pointIsLower(final Point point){
+	boolean pointIsLower(final DPoint point){
 		return constraint.isRight(point);
 	}
 
@@ -148,7 +148,7 @@ final class BoundaryPart {
 	 * @param point
 	 * @return
 	 */
-	boolean pointIsUpper(final Point point){
+	boolean pointIsUpper(final DPoint point){
 		return constraint.isLeft(point);
 	}
 
@@ -157,7 +157,7 @@ final class BoundaryPart {
 	 * @param point
 	 * @return
 	 */
-	boolean isConstraintRightPoint(final Point point){
+	boolean isConstraintRightPoint(final DPoint point){
 		return constraint.getPointRight().equals(point);
 	}
 
@@ -168,9 +168,9 @@ final class BoundaryPart {
 	 * @return
 	 */
 	boolean canBeNext(BoundaryPart bpo) {
-		Edge last = boundaryEdges.get(boundaryEdges.size()-1);
-		Point left = bpo.getConstraint().getPointLeft();
-		Point right = bpo.getConstraint().getPointRight();
+		DEdge last = boundaryEdges.get(boundaryEdges.size()-1);
+		DPoint left = bpo.getConstraint().getPointLeft();
+		DPoint right = bpo.getConstraint().getPointRight();
 		return (left.equals(last.getStartPoint())
 			|| left.equals(last.getEndPoint()) )
 			&& last.isRight(right)
@@ -189,26 +189,26 @@ final class BoundaryPart {
 	 * @param cstr
 	 * @return
 	 */
-	BoundaryPart split(Edge cstr) throws DelaunayError {
+	BoundaryPart split(DEdge cstr) throws DelaunayError {
 		if(boundaryEdges.isEmpty() || cstr == null){
 			//We can't split anything if we don't even have a boundary edge !
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_SPLIT_BP);
 		}
 		//The point where we'll perform the split
-		Point split = cstr.getPointLeft();
+		DPoint split = cstr.getPointLeft();
 		//We can instanciate ret, as we know its constraint.
 		BoundaryPart ret = new BoundaryPart(cstr);
 		if(split.equals(boundaryEdges.get(0).getStartPoint())){
-			//ret will starve this of all its boundary Edge.
+			//ret will starve this of all its boundary DEdge.
 			ret.setBoundaryEdges(boundaryEdges);
-			this.setBoundaryEdges(new LinkedList<Edge>());
+			this.setBoundaryEdges(new LinkedList<DEdge>());
 			return ret;
 		}
-		LinkedList<Edge> futureBoundary = new LinkedList<Edge>();
-		LinkedList<Edge> otherBoundary = boundaryEdges;
-		LinkedList<Edge> degen = new LinkedList();
-		ListIterator<Edge> iter = otherBoundary.listIterator();
-		Edge course;
+		LinkedList<DEdge> futureBoundary = new LinkedList<DEdge>();
+		LinkedList<DEdge> otherBoundary = boundaryEdges;
+		LinkedList<DEdge> degen = new LinkedList();
+		ListIterator<DEdge> iter = otherBoundary.listIterator();
+		DEdge course;
 		boolean success = false;
 		while(iter.hasNext()){
 			//Next step
@@ -224,7 +224,7 @@ final class BoundaryPart {
 			//If it is a degen edge, it will be added back in the end.
 			iter.remove();
 			if(course.getEndPoint().equals(split)){
-				//We have ended our course on a degen Edge. The degenerated
+				//We have ended our course on a degen DEdge. The degenerated
 				//edges that are part of this BP will be duplicated (or rather,
 				//their references will be duplicated).
 				if(course.isDegenerated()){
@@ -233,7 +233,7 @@ final class BoundaryPart {
 					Collections.reverse(degen);
 					//the Edges in degen are not degenerated anymore,
 					//they are shared.
-					for(Edge edge : degen){
+					for(DEdge edge : degen){
 						edge.setDegenerated(false);
 						edge.setShared(true);
 					}
@@ -267,12 +267,12 @@ final class BoundaryPart {
 	 * @return
 	 * @throws DelaunayError
 	 */
-        List<DelaunayTriangle> connectPoint(Point point, Edge nextCstr) throws DelaunayError{
+        List<DTriangle> connectPoint(DPoint point, DEdge nextCstr) throws DelaunayError{
 		if(boundaryEdges==null || (boundaryEdges.isEmpty() && constraint==null)){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT);
 		}
-		badEdges = new ArrayList<Edge>();
-		addedEdges = new ArrayList<Edge>();
+		badEdges = new ArrayList<DEdge>();
+		addedEdges = new ArrayList<DEdge>();
 		//This boolean will be used to travel through the degenerated edges in
 		//the right way, when processing an BP that shares some degen edges
 		//with another BP
@@ -283,18 +283,18 @@ final class BoundaryPart {
 			boundaryEdges.get(boundaryEdges.size()-1).getEndPoint().equals(splitMem.getStartPoint()) :
 			false;
 		revertDir = removeDegen || revertDir;
-                ListIterator<Edge> iter = boundaryEdges.listIterator();
-		Edge mem = null;
-		Edge memBis = null;
+                ListIterator<DEdge> iter = boundaryEdges.listIterator();
+		DEdge mem = null;
+		DEdge memBis = null;
 		boolean endShared = false;
-		Edge current;
+		DEdge current;
 		boolean rightDeg = false;
 		//If the boundaryEdges list is empty, we must add a degenerated edge.
 		if(boundaryEdges.isEmpty()){
 			return buildFirstDegen(point, nextCstr);
 		}
-		List<DelaunayTriangle> triList = new ArrayList<DelaunayTriangle>();
-		DelaunayTriangle temp = null;
+		List<DTriangle> triList = new ArrayList<DTriangle>();
+		DTriangle temp = null;
 		while(iter.hasNext()){
 			current = iter.next();
 			//We must put current the right direction if it is degenerated.
@@ -303,9 +303,9 @@ final class BoundaryPart {
 				mem = connectToDegenerated(iter, point, triList, mem, revertDir, nextCstr);
 				rightDeg = mem==null;
 				if(mem != null && mem.isDegenerated()){
-					//if we've built an Edge that is degenerated, we can stop here
+					//if we've built an DEdge that is degenerated, we can stop here
 					//and return an empty list of triangles.
-					return new ArrayList<DelaunayTriangle>();
+					return new ArrayList<DTriangle>();
 				}
 			} else if(current.isShared()){
 				mem = connectToShared(iter, current, point, triList, mem, nextCstr);
@@ -317,15 +317,15 @@ final class BoundaryPart {
 			} else {
 				if(current.isRight(point)){
 					//Current is not degenerated, so it will become
-					//an inner Edge of the mesh. We must process the flip
+					//an inner DEdge of the mesh. We must process the flip
 					//flap on it if necessary.
 					badEdges.add(current);
 					//we can build a triangle.
 					if(mem == null){
 						//if not already set, we must instanciate mem
-						mem = new Edge(current.getStartPoint(),point);
+						mem = new DEdge(current.getStartPoint(),point);
 						//We must check that we're not about to duplicate the
-						//constraint Edge
+						//constraint DEdge
 						mem = replaceByCstr(mem, nextCstr);
 						if(mem.isShared()){
 							mem.setShared(false);
@@ -333,7 +333,7 @@ final class BoundaryPart {
 						if(mem.isDegenerated()){
 							mem.setDegenerated(false);
 						}
-						//We will add an Edge in the mesh.
+						//We will add an DEdge in the mesh.
 						addedEdges.add(mem);
 						//We must insert this new edge at the right position in
 						//the boundaryEdges list. For that we come one step
@@ -345,16 +345,16 @@ final class BoundaryPart {
 						//same edge twice.
 						iter.next();
 					}
-					//We build the last Edge of the triangle we are about to add.
-					memBis = new Edge(point, current.getEndPoint());
+					//We build the last DEdge of the triangle we are about to add.
+					memBis = new DEdge(point, current.getEndPoint());
 					memBis = replaceByCstr(memBis, nextCstr);
-					//We will add an Edge in the mesh.
+					//We will add an DEdge in the mesh.
 					addedEdges.add(memBis);
 					//we can build the triangle...
-					temp = new DelaunayTriangle(current, mem, memBis);
+					temp = new DTriangle(current, mem, memBis);
 					//...and add it to the list we'll return.
 					triList.add(temp);
-					//memBis is the last created Edge - we put it in mem.
+					//memBis is the last created DEdge - we put it in mem.
 					mem = memBis;
 					//and we can remove the current edge, as it is not
 					//part of the boundary anymore.
@@ -372,7 +372,7 @@ final class BoundaryPart {
 				}
 			}
 		}
-		//If we're here, the point was still visible from the last Edge of
+		//If we're here, the point was still visible from the last DEdge of
 		//the list. We must add the last generated edge.
 		//We check that mem is not null. It can be null if point can't be seen
 		//from any edges of this boundary part
@@ -393,15 +393,15 @@ final class BoundaryPart {
 	 * @param point
 	 * @return
 	 */
-	private void connectDegenOrphan(Point point, ListIterator<Edge> iter, Edge nextCstr){
-		Edge mem = null;
-		ListIterator<Edge> iterBis = iter;
+	private void connectDegenOrphan(DPoint point, ListIterator<DEdge> iter, DEdge nextCstr){
+		DEdge mem = null;
+		ListIterator<DEdge> iterBis = iter;
 		//in all cases, we are sure we can connect point to the
 		//constraint edge's left point or to the last edge's right point.
 		//We must determine what to do...
 		if(constraint == null ){
 			if(!boundaryEdges.get(boundaryEdges.size()-1).getPointRight().equals(point)){
-				mem = new Edge(boundaryEdges.get(boundaryEdges.size()-1).getPointRight(), point);
+				mem = new DEdge(boundaryEdges.get(boundaryEdges.size()-1).getPointRight(), point);
 			} else {
 				return;
 			}
@@ -417,21 +417,21 @@ final class BoundaryPart {
 				//The first edge in the list is shared. if it is connected to the
 				//constraint by its left, we must connect the new edge to the end of the list.
 				if(boundaryEdges.get(0).getStartPoint().equals(constraint.getStartPoint())){
-					mem = new Edge(boundaryEdges.get(boundaryEdges.size()-1).getPointRight(), point);
+					mem = new DEdge(boundaryEdges.get(boundaryEdges.size()-1).getPointRight(), point);
 				} else {
-					mem = new Edge(constraint.getStartPoint(), point);
+					mem = new DEdge(constraint.getStartPoint(), point);
 					iterBis=boundaryEdges.listIterator();
 				}
 			} else {
 				if(boundaryEdges.get(0).getStartPoint().equals(boundaryEdges.get(0).getPointLeft())){
-					mem = new Edge(boundaryEdges.get(boundaryEdges.size()-1).getPointRight(), point);
+					mem = new DEdge(boundaryEdges.get(boundaryEdges.size()-1).getPointRight(), point);
 				} else {
-					mem = new Edge(constraint.getStartPoint(), point);
+					mem = new DEdge(constraint.getStartPoint(), point);
 					iterBis=boundaryEdges.listIterator();
 				}
 			}
 		} else {
-			mem = new Edge(constraint.getStartPoint(), point);
+			mem = new DEdge(constraint.getStartPoint(), point);
 		}
 		mem = replaceByCstr(mem, nextCstr);
 		mem.setDegenerated(true);
@@ -443,10 +443,10 @@ final class BoundaryPart {
 	 * Perform the connection of a point to a shared edge.
 	 * @return
 	 */
-	private Edge connectToShared(ListIterator<Edge> iter, Edge share, Point point,
-			List<DelaunayTriangle> tri, Edge prevAdd, Edge nextCstr) throws DelaunayError {
-		Edge ret = null;
-		//The shared Edge is supposed to be oriented with the start point on
+	private DEdge connectToShared(ListIterator<DEdge> iter, DEdge share, DPoint point,
+			List<DTriangle> tri, DEdge prevAdd, DEdge nextCstr) throws DelaunayError {
+		DEdge ret = null;
+		//The shared DEdge is supposed to be oriented with the start point on
 		//the right. We must determine if we need to consider it as in
 		//reverse order.
 		boolean reverse = false;
@@ -483,24 +483,24 @@ final class BoundaryPart {
 		}
 		//And we can perform the connection
 		if(reverse && share.isLeft(point)){
-			ret = new Edge(point, share.getStartPoint());
+			ret = new DEdge(point, share.getStartPoint());
 			ret = replaceByCstr(ret, nextCstr);
 			if(connectedToPrev){
 				//We must go in reverse order, and share and prevAdd are connected.
 				//Consequently, share and prevAdd share the endPoint of share.
 				//The other point of prevAdd is point. If it is not, we'll
 				//receive a DelaunayError.
-				tri.add(new DelaunayTriangle(share, prevAdd, ret));
+				tri.add(new DTriangle(share, prevAdd, ret));
 				//We must remove the current shared edge from the
 				//list of boundaryEdges
 				iter.remove();
 			} else {
 				//We must go in reverse order, and share and prevAdd are not
 				//connected. We create the other needed edge.
-				Edge e = new Edge(share.getEndPoint(), point);
+				DEdge e = new DEdge(share.getEndPoint(), point);
 				e = replaceByCstr(e, nextCstr);
 				e.setDegenerated(false);
-				tri.add(new DelaunayTriangle(share, e, ret));
+				tri.add(new DTriangle(share, e, ret));
 				//We must remove the current shared edge from the
 				//list of boundaryEdges
 				iter.remove();
@@ -513,7 +513,7 @@ final class BoundaryPart {
 			//share is not shared anymore !
 			share.setShared(false);
 		} else if(!reverse && share.isRight(point)){
-			ret = new Edge(point, share.getEndPoint());
+			ret = new DEdge(point, share.getEndPoint());
 			ret = replaceByCstr(ret, nextCstr);
 			if(connectedToPrev){
 				//We travel in the direct order, shared and prevAdd
@@ -521,16 +521,16 @@ final class BoundaryPart {
 				//the startPoint of share.
 				//The other point of prevAdd is point. If it is not,
 				//we'll receive a DelaunayError when creating the triangle.
-				tri.add(new DelaunayTriangle(share, prevAdd, ret));
+				tri.add(new DTriangle(share, prevAdd, ret));
 				//We must remove the current shared edge from the
 				//list of boundaryEdges
 				iter.remove();
 			} else {
 				//We travel in the direct order, and shared and prevAdd
 				//are not connected. We create the other needed edge.
-				Edge e = new Edge(share.getStartPoint(), point);
+				DEdge e = new DEdge(share.getStartPoint(), point);
 				e = replaceByCstr(e, nextCstr);
-				tri.add(new DelaunayTriangle(share, e, ret));
+				tri.add(new DTriangle(share, e, ret));
 				//We must remove the current shared edge from the
 				//list of boundaryEdges
 				iter.remove();
@@ -565,14 +565,14 @@ final class BoundaryPart {
 	 * and point. null if such an edge can't exist.
 	 * @throws DelaunayError
 	 */
-	private Edge connectToDegenerated(ListIterator<Edge> iter, Point point,
-				List<DelaunayTriangle> tri, Edge prevAdded, boolean revertDir, Edge nextCstr) throws DelaunayError {
-		Edge current = iter.next();
-		Edge ret = null;
-		Edge mem = null;
-		Edge memBis = null;
-		LinkedList<Edge> llMem = new LinkedList<Edge>();
-		//We manage the case where we'll just add a new degenerated Edge.
+	private DEdge connectToDegenerated(ListIterator<DEdge> iter, DPoint point,
+				List<DTriangle> tri, DEdge prevAdded, boolean revertDir, DEdge nextCstr) throws DelaunayError {
+		DEdge current = iter.next();
+		DEdge ret = null;
+		DEdge mem = null;
+		DEdge memBis = null;
+		LinkedList<DEdge> llMem = new LinkedList<DEdge>();
+		//We manage the case where we'll just add a new degenerated DEdge.
 		if(current.isColinear(point)){
 			while(current.isColinear(point) && iter.hasNext() && current.isDegenerated() && !current.isShared()){
 				current = iter.next();
@@ -582,7 +582,7 @@ final class BoundaryPart {
 			if(!current.isColinear(point) || !current.isDegenerated()){
 				current = iter.previous();
 				current = iter.previous();
-				ret = new Edge(current.getEndPoint(),point);
+				ret = new DEdge(current.getEndPoint(),point);
 				ret = replaceByCstr(ret, nextCstr);
 				ret.setDegenerated(true);
 				addedEdges.add(ret);
@@ -591,7 +591,7 @@ final class BoundaryPart {
 				return ret;
 			} else {
 				if(!current.getEndPoint().equals(point)){
-					ret = new Edge(current.getEndPoint(),point);
+					ret = new DEdge(current.getEndPoint(),point);
 					ret = replaceByCstr(ret, nextCstr);
 					ret.setDegenerated(true);
 					addedEdges.add(ret);
@@ -617,17 +617,17 @@ final class BoundaryPart {
 					//the degenerated edges will keep their orientation, but ret will
 					//be the last one to be generated.
 					if(mem == null){
-						mem = new Edge(current.getEndPoint(), point);
+						mem = new DEdge(current.getEndPoint(), point);
 						mem = replaceByCstr(mem, nextCstr);
 						ret = mem;
 						addedEdges.add(mem);
 					}
 					//we build the edge we don't know yet
-					memBis = new Edge(point, current.getStartPoint());
+					memBis = new DEdge(point, current.getStartPoint());
 					memBis = replaceByCstr(memBis, nextCstr);
 					addedEdges.add(memBis);
 					//We build the triangle and add it to the list.
-					tri.add(new DelaunayTriangle(current, memBis, mem));
+					tri.add(new DTriangle(current, memBis, mem));
 					//We store memBis in mem in order not to loose it
 					mem = memBis;
 					//current is not degenerated anymore
@@ -637,17 +637,17 @@ final class BoundaryPart {
 				} else {
 					//We can let the current degenerated edges in the order they are.
 					if(mem == null){
-						ret = new Edge(point, current.getStartPoint());
+						ret = new DEdge(point, current.getStartPoint());
 						ret = replaceByCstr(ret, nextCstr);
 						mem = ret;
 						addedEdges.add(mem);
 					}
 					//we build the edge we don't know yet
-					memBis = new Edge(current.getEndPoint(), point);
+					memBis = new DEdge(current.getEndPoint(), point);
 					memBis = replaceByCstr(memBis, nextCstr);
 					addedEdges.add(memBis);
 					//We build the triangle and add it to the list.
-					tri.add(new DelaunayTriangle(current, memBis, mem));
+					tri.add(new DTriangle(current, memBis, mem));
 					//We store memBis in mem in order not to loose it
 					mem = memBis;
 					//current is not degenerated anymore
@@ -668,7 +668,7 @@ final class BoundaryPart {
 				//We check that the first edge does not already exist in the boundary:
 				if(mem == null){
 					//Be careful, we've swapped the edge !
-					mem = new Edge(current.getEndPoint(),point);
+					mem = new DEdge(current.getEndPoint(),point);
 					if(mem.equals(prevAdded)){
 						//We avoid edge duplication here.
 						mem=prevAdded;
@@ -678,12 +678,12 @@ final class BoundaryPart {
 						iter.add(mem);
 					}
 				}
-				//We build the Edge we don't know yet
-				memBis = new Edge(point, current.getStartPoint());
+				//We build the DEdge we don't know yet
+				memBis = new DEdge(point, current.getStartPoint());
 				memBis = replaceByCstr(memBis, nextCstr);
 				addedEdges.add(memBis);
 				//And we add the new Triangle to the list.
-				tri.add(new DelaunayTriangle(mem, memBis, current));
+				tri.add(new DTriangle(mem, memBis, current));
 				mem=memBis;
 				//current is not degenerated anymore
 				current.setDegenerated(false);
@@ -706,7 +706,7 @@ final class BoundaryPart {
 				iter.previous();
 			}
 			iter.add(mem);
-			for(Edge ed : llMem){
+			for(DEdge ed : llMem){
 				iter.add(ed);
 			}
 		}
@@ -715,13 +715,13 @@ final class BoundaryPart {
 
 	/**
 	 * mem is replaced by cstr if they are equal, or by this constraint
-	 * Edge if they are equal. Point order is kept.
+	 * DEdge if they are equal. DPoint order is kept.
 	 * @param mem
 	 * @param cstr
 	 * @return
 	 */
-	private Edge replaceByCstr(Edge mem, Edge cstr){
-		Edge memRet = mem.equals(cstr) ? cstr : mem;
+	private DEdge replaceByCstr(DEdge mem, DEdge cstr){
+		DEdge memRet = mem.equals(cstr) ? cstr : mem;
 		if(mem.equals(constraint)){
 			memRet = constraint;
 			constraint = null;
@@ -738,8 +738,8 @@ final class BoundaryPart {
 	 * @param nextCstr
 	 * @return
 	 */
-	private List<DelaunayTriangle> buildFirstDegen(Point point, Edge nextCstr){
-		Edge mem = new Edge(constraint.getPointLeft(),point);
+	private List<DTriangle> buildFirstDegen(DPoint point, DEdge nextCstr){
+		DEdge mem = new DEdge(constraint.getPointLeft(),point);
 		mem.setDegenerated(true);
 		if(mem.equals(constraint)){
 			mem = constraint;
@@ -751,7 +751,7 @@ final class BoundaryPart {
 		}
 		addedEdges.add(mem);
 		boundaryEdges.add(mem);
-		return new ArrayList<DelaunayTriangle>();
+		return new ArrayList<DTriangle>();
 	}
 
 	/**
@@ -760,7 +760,7 @@ final class BoundaryPart {
 	 * @return
 	 * @throws DelaunayError
 	 */
-        List<DelaunayTriangle> connectPoint(Point point) throws DelaunayError{
+        List<DTriangle> connectPoint(DPoint point) throws DelaunayError{
 		return connectPoint(point, null);
         }
 }

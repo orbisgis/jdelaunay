@@ -14,7 +14,7 @@ import java.awt.Graphics;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class Point extends Element implements Comparable<Point> {
+public class DPoint extends Element implements Comparable<DPoint> {
 	/**
 	 * 
 	 */
@@ -55,7 +55,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * Build a point at the origin
 	 * @throws DelaunayError  If x, y or z is not set.
 	 */
-	public Point() throws DelaunayError {
+	public DPoint() throws DelaunayError {
 		super();
 		init(0.0,0.0,0.0);
 	}
@@ -68,7 +68,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param z
 	 * @throws DelaunayError If x, y or z is not set.
 	 */
-	public Point(double x, double y, double z) throws DelaunayError {
+	public DPoint(double x, double y, double z) throws DelaunayError {
 		super();
 		init(x,y,z);
 	}
@@ -77,7 +77,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * Build a point as a copy of another point
 	 * @throws DelaunayError DelaunayError
 	 */
-	public Point(Point pt) throws DelaunayError {
+	public DPoint(DPoint pt) throws DelaunayError {
 		super((Element) pt);
 		init(pt.coord.x,pt.coord.y,pt.coord.z);
 	}
@@ -86,7 +86,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * Build a point as a copy of jts Coordinates
 	 * @throws DelaunayError If x, y or z is not set.
 	 */
-	public Point(Coordinate coord) throws DelaunayError {
+	public DPoint(Coordinate coord) throws DelaunayError {
 		super();
 		init(coord.x,coord.y,coord.z);
 	}
@@ -301,7 +301,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @return
 	 */
 	@Override
-	public final boolean contains(Point aPoint) {
+	public final boolean contains(DPoint aPoint) {
 		return squareDistance(aPoint) < Tools.EPSILON2;
 	}
 	
@@ -316,7 +316,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected final double squareDistance1D(Point aPoint) {
+	protected final double squareDistance1D(DPoint aPoint) {
 		return (coord.x - aPoint.coord.x) * (coord.x - aPoint.coord.x);
 	}
 
@@ -326,7 +326,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected final double squareDistance2D(Point aPoint) {
+	protected final double squareDistance2D(DPoint aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y);
 	}
 
@@ -347,7 +347,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected final double squareDistance(Point aPoint) {
+	protected final double squareDistance(DPoint aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
 	}
 
@@ -382,13 +382,13 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param tolarence
 	 * @return closedTo
 	 */
-	protected final boolean closedTo(Point aPoint, double tolerence) {
+	protected final boolean closedTo(DPoint aPoint, double tolerence) {
 		return (squareDistance(aPoint) < tolerence*tolerence);
 	}
 
 	/**
 	 * Gives a string representation of this object.
-	 * @return Point GID [x y z]
+	 * @return DPoint GID [x y z]
 	 */
 	@Override
 	public final String toString() {
@@ -403,8 +403,8 @@ public class Point extends Element implements Comparable<Point> {
 	 */
 	@Override
 	public final boolean equals(Object p){
-		if(p instanceof Point){
-			Point y = (Point) p;
+		if(p instanceof DPoint){
+			DPoint y = (DPoint) p;
                         double dist = (getX() - y.getX())*(getX() - y.getX())+(getY() - y.getY())*(getY() - y.getY());
                         dist = dist + (getZ() - y.getZ())*(getZ() - y.getZ());
 			return dist<Tools.EPSILON2;
@@ -429,7 +429,7 @@ public class Point extends Element implements Comparable<Point> {
 	 * @param y
 	 * @return
 	 */
-	public final boolean equals2D(Point y){
+	public final boolean equals2D(DPoint y){
 		if(y==null){
 			return false;
 		} else {
@@ -445,7 +445,7 @@ public class Point extends Element implements Comparable<Point> {
 	 *	0 : if this.x == p.x && this.y == p.y
 	 *	1 otherwise.
 	 */
-	public final int compareTo2D(Point p){
+	public final int compareTo2D(DPoint p){
                 double dx = (getX() - p.getX());
                 if(dx*dx*2 < Tools.EPSILON2){
                         double dy = (getY() - p.getY());
@@ -472,7 +472,7 @@ public class Point extends Element implements Comparable<Point> {
 	 *	1 otherwise.
 	 */
 	@Override
-	public final int compareTo(Point p){
+	public final int compareTo(DPoint p){
 		return compareTo2D(p);
 	}
 	

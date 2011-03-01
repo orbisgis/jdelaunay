@@ -7,7 +7,7 @@ package org.jdelaunay.delaunay;
 public class TestElement extends BaseUtility {
 
 	public void testProperty() throws DelaunayError{
-		Point pt = new Point();
+		DPoint pt = new DPoint();
 		pt.addProperty(4);
 		assertTrue(pt.hasProperty(4));
 		pt.addProperty(6);

@@ -18,11 +18,11 @@ public class TestPoint extends BaseUtility {
          * their equality.
          */
         public void testPrecision() throws DelaunayError{
-                Point p1 = new Point(22,8,0);
-                Point p2 = new Point(22.00000005,8.00000005,0.00000005);
+                DPoint p1 = new DPoint(22,8,0);
+                DPoint p2 = new DPoint(22.00000005,8.00000005,0.00000005);
                 assertTrue(p1.equals(p2));
                 assertTrue(p1.compareTo2D(p2)==0);
-                p2 = new Point(22.0000001,8.0000001,0.0000001);
+                p2 = new DPoint(22.0000001,8.0000001,0.0000001);
                 assertFalse(p1.equals(p2));
                 assertTrue(p1.compareTo2D(p2)==-1);
         }
@@ -31,16 +31,16 @@ public class TestPoint extends BaseUtility {
          * Tests the comparison methods between two points in two dimensions.
          */
         public void testComparison() throws DelaunayError {
-                Point p1 = new Point(22,8,0);
-                Point p2 = new Point(22,8,0);
+                DPoint p1 = new DPoint(22,8,0);
+                DPoint p2 = new DPoint(22,8,0);
                 assertTrue(p1.compareTo2D(p2)==0);
-                p2=new Point(15, 6, 4);
+                p2=new DPoint(15, 6, 4);
                 assertTrue(p1.compareTo2D(p2)==1);
-                p2=new Point(35, 6, 4);
+                p2=new DPoint(35, 6, 4);
                 assertTrue(p1.compareTo2D(p2)==-1);
-                p2 = new Point(22,5,0);
+                p2 = new DPoint(22,5,0);
                 assertTrue(p1.compareTo2D(p2)==1);
-                p2 = new Point(22,10,0);
+                p2 = new DPoint(22,10,0);
                 assertTrue(p1.compareTo2D(p2)==-1);
         }
 
@@ -49,19 +49,19 @@ public class TestPoint extends BaseUtility {
 	 * with a NaN value.
 	 */
 	public void testNotANumber() {
-		Point pt;
+		DPoint pt;
 		try{
-			pt = new Point(0, 0, Double.NaN);
+			pt = new DPoint(0, 0, Double.NaN);
 			assertTrue(false);
 		} catch(DelaunayError d){
 		}
 		try{
-			pt = new Point( Double.NaN,0, 0);
+			pt = new DPoint( Double.NaN,0, 0);
 			assertTrue(false);
 		} catch(DelaunayError d){
 		}
 		try{
-			pt = new Point(0, Double.NaN, 0);
+			pt = new DPoint(0, Double.NaN, 0);
 			assertTrue(false);
 		} catch(DelaunayError d){
 		}
@@ -73,7 +73,7 @@ public class TestPoint extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testInstanciation() throws DelaunayError {
-		Point pt = new Point(new Coordinate(1,2,3));
+		DPoint pt = new DPoint(new Coordinate(1,2,3));
 		assertTrue(pt.getX()==1);
 		assertTrue(pt.getY()==2);
 		assertTrue(pt.getZ()==3);
@@ -91,7 +91,7 @@ public class TestPoint extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testIndicator() throws DelaunayError {
-		Point pt = new Point(0,0,0);
+		DPoint pt = new DPoint(0,0,0);
 		pt.setMarked(1, true);
 		assertTrue(pt.isMarked(1));
 		pt.setLocked(true);
@@ -120,7 +120,7 @@ public class TestPoint extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testNullEquality() throws DelaunayError {
-		Point pt = new Point(0,0,0);
+		DPoint pt = new DPoint(0,0,0);
 		assertFalse(pt.equals2D(null));
 	}
 }

@@ -26,7 +26,7 @@ public class TestDelaunay extends BaseUtility {
 
 	/**
 	 * test GIDs
-	 * Check GIDs for Point, Edges and Triangles
+	 * Check GIDs for DPoint, Edges and Triangles
 	 * GIDs must exist for each element (GID >= 0).
 	 * GIDs are unique for each kind of element.
 	 *
@@ -54,8 +54,8 @@ public class TestDelaunay extends BaseUtility {
 		mesh.setPrecision(1.0e-3);
 		mesh.setVerbose(true);
 		
-		ArrayList<Point> pts = getPoints();
-		Point addedPoint = new Point(pts.get(1));
+		ArrayList<DPoint> pts = getPoints();
+		DPoint addedPoint = new DPoint(pts.get(1));
 		int ptsSize = pts.size();
 		mesh.setPoints(pts);
 		mesh.addPoint(addedPoint);
@@ -75,8 +75,8 @@ public class TestDelaunay extends BaseUtility {
 		mesh.setPrecision(1.0e-3);
 		mesh.setVerbose(true);
 		
-		ArrayList<Point> pts = getPoints();
-		Point addedPoint = new Point(pts.get(1));
+		ArrayList<DPoint> pts = getPoints();
+		DPoint addedPoint = new DPoint(pts.get(1));
 		addedPoint.setZ(addedPoint.getZ() + 10);
 		int ptsSize = pts.size();
 		
@@ -109,8 +109,8 @@ public class TestDelaunay extends BaseUtility {
 //
 //		for (Edge anEdge:edgeList) {
 //			Edge myEdge;
-//			Point start = anEdge.getStart();
-//			Point end = anEdge.getEnd();
+//			DPoint start = anEdge.getStart();
+//			DPoint end = anEdge.getEnd();
 //
 //			ListIterator<Edge> iterEdge = edgeList.listIterator();
 //			while ((correct) && (iterEdge.hasNext())) {

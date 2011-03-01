@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.jdelaunay.delaunay.DelaunayError;
-import org.jdelaunay.delaunay.Edge;
+import org.jdelaunay.delaunay.DEdge;
 import org.jdelaunay.delaunay.ConstrainedMesh;
-import org.jdelaunay.delaunay.Point;
-import org.jdelaunay.delaunay.DelaunayTriangle;
+import org.jdelaunay.delaunay.DPoint;
+import org.jdelaunay.delaunay.DTriangle;
 import org.jhydrocell.utilities.HydroLineUtil;
 import org.jhydrocell.utilities.HydroPolygonUtil;
 import org.jhydrocell.utilities.MathUtil;
@@ -18,11 +18,11 @@ import com.vividsolutions.jts.geom.Coordinate;
 public final class HydroNetwork {
 	private ConstrainedMesh theMesh;
 
-	private LinkedList<Point> listEntry;
-	private LinkedList<Point> listExit;
-	private LinkedList<Point> listIntermediate;
-	private LinkedList<Edge> listEdges;
-	private LinkedList<Point> listPrepare;
+	private LinkedList<DPoint> listEntry;
+	private LinkedList<DPoint> listExit;
+	private LinkedList<DPoint> listIntermediate;
+	private LinkedList<DEdge> listEdges;
+	private LinkedList<DPoint> listPrepare;
 	private int listDefinition;
 	private boolean connectToSurface;
 
@@ -32,11 +32,11 @@ public final class HydroNetwork {
 	private void init() {
 		theMesh = null;
 
-		listEntry = new LinkedList<Point>();
-		listExit = new LinkedList<Point>();
-		listIntermediate = new LinkedList<Point>();
-		listEdges = new LinkedList<Edge>();
-		listPrepare = new LinkedList<Point>();
+		listEntry = new LinkedList<DPoint>();
+		listExit = new LinkedList<DPoint>();
+		listIntermediate = new LinkedList<DPoint>();
+		listEdges = new LinkedList<DEdge>();
+		listPrepare = new LinkedList<DPoint>();
 		listDefinition = 0;
 		connectToSurface = true;
 	}
@@ -71,11 +71,11 @@ public final class HydroNetwork {
 		else {
 
 			// Edges : topographic qualifications
-			for (Edge edge : theMesh.getEdges()) {
+			for (DEdge edge : theMesh.getEdges()) {
 				HydroLineUtil hydroLineUtil = new HydroLineUtil(edge);
 				HydroPolygonUtil hydroPolygonUtil = null;
-				DelaunayTriangle aTriangleLeft = edge.getLeft();
-				DelaunayTriangle aTriangleRight = edge.getRight();
+				DTriangle aTriangleLeft = edge.getLeft();
+				DTriangle aTriangleRight = edge.getRight();
 
 				boolean rightTtoEdge = false;
 				boolean rightTColinear = false;
@@ -237,18 +237,18 @@ public final class HydroNetwork {
 			 * The code below is used to insert new talweg in the TIN
 			 */
 
-//			ArrayList<Point> listPointAtraiter = new ArrayList<Point>();
-//			ArrayList<DelaunayTriangle> listTriangles = new ArrayList<DelaunayTriangle>();
+//			ArrayList<DPoint> listPointAtraiter = new ArrayList<DPoint>();
+//			ArrayList<DTriangle> listTriangles = new ArrayList<DTriangle>();
 
-			for (Edge edge : theMesh.getEdges()) {
+			for (DEdge edge : theMesh.getEdges()) {
 
-				// Edge talweg
+				// DEdge talweg
 				if ((!edge.hasProperty(HydroProperties.TALWEG))
 						|| (!edge.hasProperty(HydroProperties.LEFTCOLINEAR))
 						|| (!edge.hasProperty(HydroProperties.RIGHTCOLINEAR))
 						|| (!edge.hasProperty(HydroProperties.DOUBLECOLINEAR))) {
 
-//					Point uperPoint = theMesh.findUperPoint(edge);
+//					DPoint uperPoint = theMesh.findUperPoint(edge);
 
 //					if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
 //						if (!listPointAtraiter.contains(uperPoint)) {
@@ -265,18 +265,18 @@ public final class HydroNetwork {
 	 * post process the edges according to their type
 	 */
 	private void postProcessEdges() {
-		LinkedList<Edge> addedEdges = new LinkedList<Edge>();
-		List<Edge> theEdges = theMesh.getEdges();
-		for (Edge anEdge : theEdges) {
+		LinkedList<DEdge> addedEdges = new LinkedList<DEdge>();
+		List<DEdge> theEdges = theMesh.getEdges();
+		for (DEdge anEdge : theEdges) {
 			if (anEdge.hasProperty(HydroProperties.WALL)) {
 				// Process wall : duplicate edge and changes connections
 				if ((anEdge.getLeft() != null) && (anEdge.getRight() != null)) {
 					// Something to do if and only if there are two triangles
 					// connected
-					Edge newEdge = new Edge(anEdge);
+					DEdge newEdge = new DEdge(anEdge);
 
 					// Changes left triangle connection
-					DelaunayTriangle aTriangle = anEdge.getLeft();
+					DTriangle aTriangle = anEdge.getLeft();
 					for (int i = 0; i < 3; i++) {
 						if (aTriangle.getEdge(i) == anEdge) {
 							aTriangle.setEdge(i, newEdge);
@@ -294,7 +294,7 @@ public final class HydroNetwork {
 		}
 
 		// add edges to the structure
-		for (Edge anEdge : addedEdges) {
+		for (DEdge anEdge : addedEdges) {
 			theEdges.add(anEdge);
 		}
 	}
@@ -309,10 +309,10 @@ public final class HydroNetwork {
 	 */
 	private void branchStart(int branchType, boolean connectToSurface)
 			throws DelaunayError {
-		this.listEntry = new LinkedList<Point>();
-		this.listExit = new LinkedList<Point>();
-		this.listIntermediate = new LinkedList<Point>();
-		this.listEdges = new LinkedList<Edge>();
+		this.listEntry = new LinkedList<DPoint>();
+		this.listExit = new LinkedList<DPoint>();
+		this.listIntermediate = new LinkedList<DPoint>();
+		this.listEdges = new LinkedList<DEdge>();
 		this.listDefinition = branchType;
 		this.connectToSurface = connectToSurface;
 	}
@@ -334,18 +334,18 @@ public final class HydroNetwork {
 	 * @throws DelaunayError
 	 */
 	private void setNewBranch(LinkedList theList) throws DelaunayError {
-		Point lastPoint = null;
+		DPoint lastPoint = null;
 		int count = theList.size();
-		Point aPoint = null;
+		DPoint aPoint = null;
 		Coordinate aCoordinate = null;
 		ListIterator iterList = theList.listIterator();
 		while (iterList.hasNext()) {
 			Object item = iterList.next();
-			if (item instanceof Point) {
-				aPoint = (Point) item;
+			if (item instanceof DPoint) {
+				aPoint = (DPoint) item;
 			} else if (item instanceof Coordinate) {
 				aCoordinate = (Coordinate) item;
-				aPoint = new Point(aCoordinate.x, aCoordinate.y,
+				aPoint = new DPoint(aCoordinate.x, aCoordinate.y,
 						aCoordinate.z);
 			} else {
 				aPoint = null;
@@ -394,7 +394,7 @@ public final class HydroNetwork {
 					}
 
 					// Link lastPoint to new point
-					Edge anEdge = new Edge(lastPoint, aPoint);
+					DEdge anEdge = new DEdge(lastPoint, aPoint);
 					anEdge.addProperty(listDefinition);
 					listEdges.add(anEdge);
 				}
@@ -412,12 +412,12 @@ public final class HydroNetwork {
 	 * @throws DelaunayError
 	 */
 	private void branchValidate() throws DelaunayError {
-//		DelaunayTriangle referenceTriangle = null;
-//		List<Edge> edges = theMesh.getEdges();
-//		List<Point> points = theMesh.getPoints();
+//		DTriangle referenceTriangle = null;
+//		List<DEdge> edges = theMesh.getEdges();
+//		List<DPoint> points = theMesh.getPoints();
 //
 //		// add every entry point to the mesh
-//		for (Point aPoint : listEntry) {
+//		for (DPoint aPoint : listEntry) {
 //			if (points.contains(aPoint)) {
 //				// Already in the points list => do noting
 //			} else {
@@ -437,7 +437,7 @@ public final class HydroNetwork {
 //
 //		// add every intermediate point to the point list
 //		// do not include them in the mesh
-//		for (Point aPoint : listIntermediate) {
+//		for (DPoint aPoint : listIntermediate) {
 //			if (points.contains(aPoint)) {
 //				// Already in the points list => do noting
 //			} else {
@@ -463,7 +463,7 @@ public final class HydroNetwork {
 //		}
 //
 //		// add every exit point to the mesh
-//		for (Point aPoint : listExit) {
+//		for (DPoint aPoint : listExit) {
 //			if (points.contains(aPoint)) {
 //				// Already in the points list => do noting
 //			} else {
@@ -482,7 +482,7 @@ public final class HydroNetwork {
 //		}
 //
 //		// add edges
-//		for (Edge anEdge : listEdges) {
+//		for (DEdge anEdge : listEdges) {
 //			anEdge.setMarked(0,true); //FIXME check if it's good ( old version : anEdge.setMarked(true); )
 //			if (connectToSurface) {
 //				theMesh.addEdge(anEdge);
@@ -494,10 +494,10 @@ public final class HydroNetwork {
 //		}
 //
 //		// Reset informations
-//		listEntry = new LinkedList<Point>();
-//		listExit = new LinkedList<Point>();
-//		listIntermediate = new LinkedList<Point>();
-//		listEdges = new LinkedList<Edge>();
+//		listEntry = new LinkedList<DPoint>();
+//		listExit = new LinkedList<DPoint>();
+//		listIntermediate = new LinkedList<DPoint>();
+//		listEdges = new LinkedList<DEdge>();
 //		listDefinition = 0;
 //		connectToSurface = true;
 	}
@@ -514,7 +514,7 @@ public final class HydroNetwork {
 	public void addSewerEntry(double x, double y, double z)
 			throws DelaunayError {
 		// Search for the point
-		Point sewerPoint = theMesh.getPoint(x, y, z);
+		DPoint sewerPoint = theMesh.getPoint(x, y, z);
 		addSewerEntry(sewerPoint);
 	}
 
@@ -524,8 +524,8 @@ public final class HydroNetwork {
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
-	public void addSewerEntry(Point sewerPoint) throws DelaunayError {
-		listPrepare = new LinkedList<Point>();
+	public void addSewerEntry(DPoint sewerPoint) throws DelaunayError {
+		listPrepare = new LinkedList<DPoint>();
 		listPrepare.add(sewerPoint);
 	}
 
@@ -539,7 +539,7 @@ public final class HydroNetwork {
 	 */
 	public void addSewerExit(double x, double y, double z) throws DelaunayError {
 		// Search for the point
-		Point sewerPoint = theMesh.getPoint(x, y, z);
+		DPoint sewerPoint = theMesh.getPoint(x, y, z);
 		addSewerExit(sewerPoint);
 	}
 
@@ -549,10 +549,10 @@ public final class HydroNetwork {
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
-	public void addSewerExit(Point sewerPoint) throws DelaunayError {
+	public void addSewerExit(DPoint sewerPoint) throws DelaunayError {
 		listPrepare.add(sewerPoint);
 		sewerSet(listPrepare);
-		listPrepare = new LinkedList<Point>();
+		listPrepare = new LinkedList<DPoint>();
 	}
 
 	/**
@@ -566,7 +566,7 @@ public final class HydroNetwork {
 	public void addSewerPoint(double x, double y, double z)
 			throws DelaunayError {
 		// Search for the point
-		Point aPoint = theMesh.getPoint(x, y, z);
+		DPoint aPoint = theMesh.getPoint(x, y, z);
 		addSewerPoint(aPoint);
 	}
 
@@ -576,7 +576,7 @@ public final class HydroNetwork {
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
-	public void addSewerPoint(Point sewerPoint) throws DelaunayError {
+	public void addSewerPoint(DPoint sewerPoint) throws DelaunayError {
 		listPrepare.add(sewerPoint);
 	}
 
@@ -600,7 +600,7 @@ public final class HydroNetwork {
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
-	public void setSewerPoint(Point sewerPoint) throws DelaunayError {
+	public void setSewerPoint(DPoint sewerPoint) throws DelaunayError {
 		addSewerEntry(sewerPoint);
 	}
 
@@ -620,7 +620,7 @@ public final class HydroNetwork {
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
-	public void sewerSet(LinkedList<Point> sewerList) throws DelaunayError {
+	public void sewerSet(LinkedList<DPoint> sewerList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.SEWER, false);
 		}
@@ -659,7 +659,7 @@ public final class HydroNetwork {
 	 * @param ditchList
 	 * @throws DelaunayError
 	 */
-	public void ditchSet(LinkedList<Point> ditchList) throws DelaunayError {
+	public void ditchSet(LinkedList<DPoint> ditchList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.DITCH);
 		}
@@ -698,7 +698,7 @@ public final class HydroNetwork {
 	 * @param riverList
 	 * @throws DelaunayError
 	 */
-	public void riverSet(LinkedList<Point> riverList) throws DelaunayError {
+	public void riverSet(LinkedList<DPoint> riverList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.RIVER);
 		}
@@ -737,7 +737,7 @@ public final class HydroNetwork {
 	 * @param wallList
 	 * @throws DelaunayError
 	 */
-	public void wallSet(LinkedList<Point> wallList) throws DelaunayError {
+	public void wallSet(LinkedList<DPoint> wallList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.WALL);
 		}

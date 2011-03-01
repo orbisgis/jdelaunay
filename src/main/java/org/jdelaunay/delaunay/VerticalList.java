@@ -12,7 +12,7 @@ import java.util.List;
 public class VerticalList {
 
 	//The list of constraints attached to this object
-	private List<Edge> constraintsList;
+	private List<DEdge> constraintsList;
 	//The comparator used by this VerticalList
 	private VerticalComparator comp;
 
@@ -24,20 +24,20 @@ public class VerticalList {
 	/*****************************************************/
 
 	//The last point used for a getUpperEdge
-	private Point lastUpperPt;
+	private DPoint lastUpperPt;
 	//The last returned upper edge
-	private Edge lastUpperEd;
+	private DEdge lastUpperEd;
 	//The last point used for a getLowerEdge
-	private Point lastLowerPt;
+	private DPoint lastLowerPt;
 	//The last returned lower edge
-	private Edge lastLowerEd;
+	private DEdge lastLowerEd;
 
 	/**
 	 * The default constructor. The inner comparator is instanciated with
 	 * value 0.
 	 */
 	public VerticalList(){
-		constraintsList = new ArrayList<Edge>();
+		constraintsList = new ArrayList<DEdge>();
 		comp = new VerticalComparator((0));
 		resetVolatileAttributes();
 	}
@@ -47,7 +47,7 @@ public class VerticalList {
 	 * @param abs
 	 */
 	public VerticalList(double abs){
-		constraintsList = new ArrayList<Edge>();
+		constraintsList = new ArrayList<DEdge>();
 		comp=new VerticalComparator(abs);
 		resetVolatileAttributes();
 	}
@@ -57,7 +57,7 @@ public class VerticalList {
 	 * comparator.
 	 * @param pt
 	 */
-	public VerticalList(Point pt){
+	public VerticalList(DPoint pt){
 		this(pt.getX());
 	}
 
@@ -86,7 +86,7 @@ public class VerticalList {
 	 * we use the absciss of the point given in parameter.
 	 * @param abs
 	 */
-	public final void setAbs(Point pt) throws DelaunayError{
+	public final void setAbs(DPoint pt) throws DelaunayError{
 		setAbs(pt.getX());
 	}
 
@@ -95,7 +95,7 @@ public class VerticalList {
 	 * @param i
 	 * @return
 	 */
-	public final Edge get(int i){
+	public final DEdge get(int i){
 		return constraintsList.get(i);
 	}
 
@@ -104,9 +104,9 @@ public class VerticalList {
 	 * list.
 	 * @param constraints
 	 */
-	public final void addEdges(List<Edge> constraints){
+	public final void addEdges(List<DEdge> constraints){
 		resetVolatileAttributes();
-		for(Edge edge : constraints){
+		for(DEdge edge : constraints){
 			Tools.addToSortedList(edge, constraintsList, comp);
 		}
 	}
@@ -116,10 +116,10 @@ public class VerticalList {
 	 * to the boundary of the current mesh.
 	 * @param constraint
 	 */
-	public final int addEdge(Edge constraint){
+	public final int addEdge(DEdge constraint){
 		resetVolatileAttributes();
 		if(constraintsList == null){
-			constraintsList = new ArrayList<Edge>();
+			constraintsList = new ArrayList<DEdge>();
 		}
 		return Tools.addToSortedList(constraint, constraintsList, comp);
 	}
@@ -128,7 +128,7 @@ public class VerticalList {
 	 * Remove an edge in this vertical list. Do nothing if the edge is not present.
 	 * @param constr
 	 */
-	public final void removeEdge(Edge constr){
+	public final void removeEdge(DEdge constr){
 		resetVolatileAttributes();
 		int index = Collections.binarySearch(constraintsList, constr, comp);
 		if(index >= 0){
@@ -141,7 +141,7 @@ public class VerticalList {
 	 * @param index
 	 * @return
 	 */
-	public final Edge remove(int index){
+	public final DEdge remove(int index){
 		resetVolatileAttributes();
 		return constraintsList.remove(index);
 	}
@@ -151,7 +151,7 @@ public class VerticalList {
 	 * @param edge
 	 * @param abs
 	 */
-	protected final int searchEdge(Edge edge){
+	protected final int searchEdge(DEdge edge){
 		return Tools.sortedListContains(constraintsList, edge, comp);
 	}
 
@@ -159,7 +159,7 @@ public class VerticalList {
 	 * Get the list of constraints linked to the boundary of the current mesh.
 	 * @return
 	 */
-	public final List<Edge> getVerticallySortedEdges(){
+	public final List<DEdge> getVerticallySortedEdges(){
 		return constraintsList;
 	}
 
@@ -167,7 +167,7 @@ public class VerticalList {
 	 * get the last evaluated lower edge
 	 * @return
 	 */
-	public final Edge getLastLowerEd() {
+	public final DEdge getLastLowerEd() {
 		return lastLowerEd;
 	}
 
@@ -175,7 +175,7 @@ public class VerticalList {
 	 * get the last point evaluate to perform et getLowerPoint operation
 	 * @return
 	 */
-	public final Point getLastLowerPt() {
+	public final DPoint getLastLowerPt() {
 		return lastLowerPt;
 	}
 
@@ -183,7 +183,7 @@ public class VerticalList {
 	 * Get the last evaluated upper edge
 	 * @return
 	 */
-	public final Edge getLastUpperEd() {
+	public final DEdge getLastUpperEd() {
 		return lastUpperEd;
 	}
 
@@ -191,7 +191,7 @@ public class VerticalList {
 	 * Get the last evaluated upper point
 	 * @return
 	 */
-	public final Point getLastUpperPt() {
+	public final DPoint getLastUpperPt() {
 		return lastUpperPt;
 	}
 
@@ -200,9 +200,9 @@ public class VerticalList {
 	 * list whose right point is equal to rightPt.
 	 * @param rightPt
 	 */
-	public final void removeEdgeFromRightPoint(Point rightPt) throws DelaunayError {
+	public final void removeEdgeFromRightPoint(DPoint rightPt) throws DelaunayError {
 		setAbs(rightPt);
-		Edge ed = new Edge(rightPt, rightPt);
+		DEdge ed = new DEdge(rightPt, rightPt);
 		int index = searchEdge(ed);
 		index = index < 0 ? -index -1: index ;
 		int i = index;
@@ -235,8 +235,8 @@ public class VerticalList {
 		int s = constraintsList.size();
 		int i = 0;
 		int c = 0;
-		Edge e1;
-		Edge e2;
+		DEdge e1;
+		DEdge e2;
 		while (i < s - 1) {
 			e1 = constraintsList.get(i);
 			e2 = constraintsList.get(i + 1);
@@ -277,7 +277,7 @@ public class VerticalList {
          * The list is sorted according to the abscissa of point. Consequently,
          * this method is able to change the sorting absciss of the list.
          *
-         * Note that we don't use the vertical sort here : an Edge edge is said to be
+         * Note that we don't use the vertical sort here : an DEdge edge is said to be
          * "upper" than point if and only if edge.getPointFromItsX(point.getX())>point.getY()
          *
          * This method is used to determine which points of the mesh boundary are
@@ -291,7 +291,7 @@ public class VerticalList {
          * @return The edge of which the ordinate is directly greater that the one
          * of point. Null if such an edge does not exist.
          */
-        public final Edge getUpperEdge(Point point) throws DelaunayError{
+        public final DEdge getUpperEdge(DPoint point) throws DelaunayError{
                 if(constraintsList == null || constraintsList.isEmpty()){
 			lastUpperEd = null;
                         return null;
@@ -306,7 +306,7 @@ public class VerticalList {
                         setAbs(abs);
                 }
 		lastUpperPt=point;
-                Edge search = new Edge(point, new Point(point.getX()+1, point.getY(), point.getZ()));
+                DEdge search = new DEdge(point, new DPoint(point.getX()+1, point.getY(), point.getZ()));
                 int index = Collections.binarySearch(constraintsList, search, comp);
                 index = (index < 0 ? -index -1 : index);
 		//if index == size, there is no edge upper than pRef
@@ -337,9 +337,9 @@ public class VerticalList {
 				//some edges have the same getPointFromItsX. Indeed, we want
 				//here to detect intersections that occur before the current
 				//x-coordinate.
-				Edge next;
-				Point rightSearch;
-				Point rightNext;
+				DEdge next;
+				DPoint rightSearch;
+				DPoint rightNext;
 				do{
 					next = constraintsList.get(index+1);
 					rightSearch = search.getPointFromItsX(abs);
@@ -365,7 +365,7 @@ public class VerticalList {
          * The list is sorted according to the abscissa of point. Consequently,
          * this method is able to change the sorting absciss of the list.
          *
-         * Note that we don't use the vertical sort here : an Edge edge is said to be
+         * Note that we don't use the vertical sort here : an DEdge edge is said to be
          * "lower" than point if and only if edge.getPointFromItsX(point.getX())<point.getY()
          *
          * This method is used to determine which points of the mesh boundary are
@@ -379,7 +379,7 @@ public class VerticalList {
          * @return The edge of which the ordinate is directly greater that the one
          * of point. Null if such an edge does not exist.
          */
-        public final Edge getLowerEdge(Point point) throws DelaunayError{
+        public final DEdge getLowerEdge(DPoint point) throws DelaunayError{
                 if(constraintsList == null || constraintsList.isEmpty()){
 			lastLowerEd=null;
                         return null;
@@ -393,7 +393,7 @@ public class VerticalList {
                         setAbs(abs);
                 }
 		lastLowerPt=point;
-                Edge search = new Edge(point, new Point(point.getX()+1, point.getY(), point.getZ()));
+                DEdge search = new DEdge(point, new DPoint(point.getX()+1, point.getY(), point.getZ()));
                 int index = Collections.binarySearch(constraintsList, search, comp);
                 index = (index < 0 ? -index -1 : index);
                 //we are searching for the edge that is lower. The insertionPoint is
@@ -409,8 +409,8 @@ public class VerticalList {
 			lastLowerEd=null;
                         return null;
                 }
-		Edge edgeTmp;
-		Point pointTmp;
+		DEdge edgeTmp;
+		DPoint pointTmp;
 		//we need to handle a boolean to be able to manage vertical edges
 		boolean cont = true;
                 do{
@@ -445,9 +445,9 @@ public class VerticalList {
 					//some edges have the same getPointFromItsX. Indeed, we want
 					//here to detect intersections that occur before the current
 					//x-coordinate.
-					Edge prev;
-					Point rightSearch;
-					Point rightPrev;
+					DEdge prev;
+					DPoint rightSearch;
+					DPoint rightPrev;
 					do{
 						prev = constraintsList.get(index-1);
 						rightSearch = search.getPointFromItsX(abs);
@@ -480,20 +480,20 @@ public class VerticalList {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public final boolean intersectsUpperOrLower(Point pRef, Edge ed) throws DelaunayError{
+	public final boolean intersectsUpperOrLower(DPoint pRef, DEdge ed) throws DelaunayError{
 		setAbs(pRef);
-		Edge upper = getUpperEdge(pRef);
+		DEdge upper = getUpperEdge(pRef);
 		int inter;
 		if(upper!=null){
 			inter = upper.intersects(ed);
-			if(inter == Edge.INTERSECT){
+			if(inter == DEdge.INTERSECT){
 				return true;
 			}
 		}
-		Edge lower = getLowerEdge(pRef);
+		DEdge lower = getLowerEdge(pRef);
 		if(lower!=null){
 			inter = lower.intersects(ed);
-			if(inter == Edge.INTERSECT){
+			if(inter == DEdge.INTERSECT){
 				return true;
 			}
 		}

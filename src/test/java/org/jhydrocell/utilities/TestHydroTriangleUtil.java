@@ -1,9 +1,9 @@
 package org.jhydrocell.utilities;
 
 import org.jdelaunay.delaunay.DelaunayError;
-import org.jdelaunay.delaunay.Edge;
-import org.jdelaunay.delaunay.Point;
-import org.jdelaunay.delaunay.DelaunayTriangle;
+import org.jdelaunay.delaunay.DEdge;
+import org.jdelaunay.delaunay.DPoint;
+import org.jdelaunay.delaunay.DTriangle;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -17,19 +17,19 @@ public class TestHydroTriangleUtil {
 		int max=95;
 		for(double i= -max; i<=max;i+=1.0)
 		{
-			Point p1=new Point(0, 0, 0);
-			Point p2=new Point(10*Math.cos(Math.toRadians(i-45)), 10*Math.sin(Math.toRadians(i-45)), 10);
-			Point p3=new Point(10*Math.cos(Math.toRadians(i+45)), 10*Math.sin(Math.toRadians(i+45)), 10);
+			DPoint p1=new DPoint(0, 0, 0);
+			DPoint p2=new DPoint(10*Math.cos(Math.toRadians(i-45)), 10*Math.sin(Math.toRadians(i-45)), 10);
+			DPoint p3=new DPoint(10*Math.cos(Math.toRadians(i+45)), 10*Math.sin(Math.toRadians(i+45)), 10);
 
 			
-//			Point p1=new Point(0, 0, 0);
-//			Point p2=new Point(10, 0, 0);
-//			Point p3=new Point(5, 5*Math.cos(Math.toRadians(i)), 5*Math.sin(Math.toRadians(i)));
+//			DPoint p1=new DPoint(0, 0, 0);
+//			DPoint p2=new DPoint(10, 0, 0);
+//			DPoint p3=new DPoint(5, 5*Math.cos(Math.toRadians(i)), 5*Math.sin(Math.toRadians(i)));
 			
-			Edge e1= new Edge(p1, p2);
-			Edge e2= new Edge(p2, p3);
-			Edge e3= new Edge(p3, p1);
-			DelaunayTriangle triangle = new DelaunayTriangle(e1, e2, e3);
+			DEdge e1= new DEdge(p1, p2);
+			DEdge e2= new DEdge(p2, p3);
+			DEdge e3= new DEdge(p3, p1);
+			DTriangle triangle = new DTriangle(e1, e2, e3);
 			
 //			HydroPolygonUtil h= new HydroPolygonUtil(triangle);
 	

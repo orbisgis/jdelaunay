@@ -19,19 +19,19 @@ public class BaseUtility extends TestCase {
 	 * @return
 	 * @throws DelaunayError 
 	 */
-	public static ArrayList<Point> getPoints() throws DelaunayError {
-		ArrayList<Point> points = new ArrayList<Point>();
-		points.add(new Point(12, 10, 2));
-		points.add(new Point(120, 10, 20));
-		points.add(new Point(12, 100, 12));
-		points.add(new Point(102, 100, 1));
-		points.add(new Point(52, 100, 1));
-		points.add(new Point(10, 50, 5));
-		points.add(new Point(50, 50, 1));
-		points.add(new Point(150, 50, 11));
-		points.add(new Point(50, 150, 2));
-		points.add(new Point(5, 50, 3));
-		points.add(new Point(5, 5, 10));
+	public static ArrayList<DPoint> getPoints() throws DelaunayError {
+		ArrayList<DPoint> points = new ArrayList<DPoint>();
+		points.add(new DPoint(12, 10, 2));
+		points.add(new DPoint(120, 10, 20));
+		points.add(new DPoint(12, 100, 12));
+		points.add(new DPoint(102, 100, 1));
+		points.add(new DPoint(52, 100, 1));
+		points.add(new DPoint(10, 50, 5));
+		points.add(new DPoint(50, 50, 1));
+		points.add(new DPoint(150, 50, 11));
+		points.add(new DPoint(50, 150, 2));
+		points.add(new DPoint(5, 50, 3));
+		points.add(new DPoint(5, 5, 10));
 
 		return points;
 	}
@@ -41,11 +41,11 @@ public class BaseUtility extends TestCase {
 	 * @return
 	 * @throws DelaunayError 
 	 */
-	public static ArrayList<Edge> getBreaklines() throws DelaunayError {
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		edges.add(new Edge(new Point(12, 10, 2), new Point(102, 100, 1)));
-		edges.add(new Edge(new Point(50, 10, 2), new Point(10, 10, 1)));
-		edges.add(new Edge(new Point(120, 10, 2), new Point(102, 10, 1)));
+	public static ArrayList<DEdge> getBreaklines() throws DelaunayError {
+		ArrayList<DEdge> edges = new ArrayList<DEdge>();
+		edges.add(new DEdge(new DPoint(12, 10, 2), new DPoint(102, 100, 1)));
+		edges.add(new DEdge(new DPoint(50, 10, 2), new DPoint(10, 10, 1)));
+		edges.add(new DEdge(new DPoint(120, 10, 2), new DPoint(102, 10, 1)));
 
 		return edges;
 	}
@@ -56,14 +56,14 @@ public class BaseUtility extends TestCase {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public static List<Point> getRandomPoints(int number) throws DelaunayError {
-		ArrayList<Point> rand = new ArrayList<Point>();
+	public static List<DPoint> getRandomPoints(int number) throws DelaunayError {
+		ArrayList<DPoint> rand = new ArrayList<DPoint>();
 		double abs;
 		double ord;
 		for(int i =0; i< number; i++){
 			abs = Math.random()*100;
 			ord = Math.random()*100;
-			rand.add(new Point(abs, ord, 0));
+			rand.add(new DPoint(abs, ord, 0));
 		}
 		return rand;
 	}
@@ -88,14 +88,14 @@ public class BaseUtility extends TestCase {
 	/**
 	 * Check coherence
 	 * An edge is made of 2 different points
-	 * A DelaunayTriangle is made of 3 different edges
+	 * A DTriangle is made of 3 different edges
 	 * @param aMesh
 	 */
 	public void assertCoherence(ConstrainedMesh aMesh) {
 		// Assert edges correctly defined
 		boolean correct = true;
-		Edge myEdge;
-		ListIterator<Edge> iterEdge = aMesh.getEdges().listIterator();
+		DEdge myEdge;
+		ListIterator<DEdge> iterEdge = aMesh.getEdges().listIterator();
 		while ((correct) && (iterEdge.hasNext())) {
 			myEdge = iterEdge.next();
 			if (myEdge.getStart() == null) {
@@ -109,8 +109,8 @@ public class BaseUtility extends TestCase {
 		}
 
 		// Assert triangles correctly defined
-		DelaunayTriangle myTriangle;
-		ListIterator<DelaunayTriangle> iterTriangle = aMesh.getTriangleList().listIterator();
+		DTriangle myTriangle;
+		ListIterator<DTriangle> iterTriangle = aMesh.getTriangleList().listIterator();
 		while ((correct) && (iterTriangle.hasNext())) {
 			myTriangle = iterTriangle.next();
 			for (int i=0; i<3; i++) {
@@ -142,13 +142,13 @@ public class BaseUtility extends TestCase {
 	 */
 	public void assertUseEachPoint(ConstrainedMesh aMesh) {
 		// Assert
-		for (Point aPoint : aMesh.getPoints()) {
+		for (DPoint aPoint : aMesh.getPoints()) {
 			// point must belong to an edge
 			int GID = aPoint.getGID();
 			
 			boolean found = false;
-			Edge myEdge;
-			ListIterator<Edge> iterEdge = aMesh.getEdges().listIterator();
+			DEdge myEdge;
+			ListIterator<DEdge> iterEdge = aMesh.getEdges().listIterator();
 			while ((! found) && (iterEdge.hasNext())) {
 				myEdge = iterEdge.next();
 				if (GID == myEdge.getStart().getGID()) {
@@ -168,13 +168,13 @@ public class BaseUtility extends TestCase {
 	 */
 	public void assertUseEachEdge(ConstrainedMesh aMesh)  {
 		// Assert
-		for (Edge anEdge : aMesh.getEdges()) {
+		for (DEdge anEdge : aMesh.getEdges()) {
 			// point must belong to an edge
 			int GID = anEdge.getGID();
 			
 			boolean found = false;
-			DelaunayTriangle myTriangle;
-			ListIterator<DelaunayTriangle> iterTriangle = aMesh.getTriangleList().listIterator();
+			DTriangle myTriangle;
+			ListIterator<DTriangle> iterTriangle = aMesh.getTriangleList().listIterator();
 			while ((! found) && (iterTriangle.hasNext())) {
 				myTriangle = iterTriangle.next();
 				for (int i=0; i<3; i++) {
@@ -196,7 +196,7 @@ public class BaseUtility extends TestCase {
 	
 	/**
 	 * test GIDs
-	 * Check GIDs for Point, Edges and Triangles
+	 * Check GIDs for DPoint, Edges and Triangles
 	 * GIDs must exist for each element (GID >= 0).
 	 * GIDs are unique for each kind of element.
 	 *
@@ -207,7 +207,7 @@ public class BaseUtility extends TestCase {
 		
 		// Test points
 		gids = new ArrayList<Integer>();
-		for (Point myPoint : aMesh.getPoints()) {
+		for (DPoint myPoint : aMesh.getPoints()) {
 			int gid = myPoint.getGID();
 
 			if ((gids.contains(gid)) || (gid < 0)) {
@@ -219,7 +219,7 @@ public class BaseUtility extends TestCase {
 
 		// Test edges
 		gids = new ArrayList<Integer>();
-		for (Edge myEdge : aMesh.getEdges()) {
+		for (DEdge myEdge : aMesh.getEdges()) {
 			int gid = myEdge.getGID();
 
 			if ((gids.contains(gid)) || (gid < 0)) {
@@ -231,7 +231,7 @@ public class BaseUtility extends TestCase {
 
 		// Test triangles
 		gids= new ArrayList<Integer>();
-		for (DelaunayTriangle myTriangle : aMesh.getTriangleList()) {
+		for (DTriangle myTriangle : aMesh.getTriangleList()) {
 			int gid = myTriangle.getGID();
 
 			if ((gids.contains(gid)) || (gid < 0)) {
@@ -243,7 +243,7 @@ public class BaseUtility extends TestCase {
 	}
 
 	public void assertConstraintsAreLocked(ConstrainedMesh mesh){
-		for(Edge ed : mesh.getConstraintEdges()){
+		for(DEdge ed : mesh.getConstraintEdges()){
 			if(!ed.isLocked()){
 				assertTrue(false);
 			}

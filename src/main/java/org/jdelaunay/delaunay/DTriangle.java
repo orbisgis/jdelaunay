@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  * This is the class representing a Triangle in the DelaunayTriangulation.
  * @author alexis
  */
-public class DelaunayTriangle extends Element implements Comparable<DelaunayTriangle>{
+public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	/**
 	 * 
@@ -35,7 +35,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	/**
 	 * The array of edges that constitute this triangle
 	 */
-	private Edge[] edges;
+	private DEdge[] edges;
 
 	private double xCenter, yCenter;
 	private double radius;
@@ -47,7 +47,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * Initialize data structure This method is called by every constructor
 	 */
 	private void init() {
-		this.edges = new Edge[PT_NB];
+		this.edges = new DEdge[PT_NB];
 		this.xCenter = 0;
 		this.yCenter = 0;
 		this.radius = -1;
@@ -58,7 +58,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * Create a new triangle with points and edges
 	 *
 	 */
-	public DelaunayTriangle() {
+	public DTriangle() {
 		super();
 		init();
 	}
@@ -71,7 +71,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param eptNb
 	 * @throws DelaunayError
 	 */
-	public DelaunayTriangle(Edge e1, Edge e2, Edge eptNb) throws DelaunayError {
+	public DTriangle(DEdge e1, DEdge e2, DEdge eptNb) throws DelaunayError {
 		super();
 		init();
 
@@ -97,12 +97,12 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
-	 * Create a DelaunayTriangle from another triangle NB : it doesn't update edges
+	 * Create a DTriangle from another triangle NB : it doesn't update edges
 	 * connection
 	 *
 	 * @param aTriangle
 	 */
-	public DelaunayTriangle(DelaunayTriangle aTriangle) {
+	public DTriangle(DTriangle aTriangle) {
 		super((Element)aTriangle);
 		init();
 		System.arraycopy(aTriangle.edges, 0, edges, 0, PT_NB);
@@ -120,8 +120,8 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param i
 	 * @return aPoint
 	 */
-	public final Point getPoint(int i) {
-		Point p;
+	public final DPoint getPoint(int i) {
+		DPoint p;
 		if (i==0) {
 			p = edges[0].getStartPoint();
 		}
@@ -144,7 +144,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param i
 	 * @return anEdge
 	 */
-	public final Edge getEdge(int i) {
+	public final DEdge getEdge(int i) {
 		if ((0<=i) && (i<=2)) {
 			return edges[i];
 		}
@@ -157,7 +157,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * Return the edges that form this triangle in an array.
 	 * @return
 	 */
-	public final Edge[] getEdges(){
+	public final DEdge[] getEdges(){
 		return this.edges;
 	}
 
@@ -167,7 +167,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param i
 	 * @param anEdge
 	 */
-	public final void setEdge(int i, Edge anEdge) {
+	public final void setEdge(int i, DEdge anEdge) {
 		if ((0<=i) && (i<=2)) {
 			edges[i] = anEdge;
 		}
@@ -258,7 +258,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	public final BoundaryBox getBoundingBox() {
 		BoundaryBox aBox = new BoundaryBox();
 
-		Point p1,p2,pptNb;
+		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		pptNb = edges[1].getStartPoint();
@@ -276,9 +276,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * Get the leftmost point of this triangle.
 	 * @return
 	 */
-	public final Point getLeftMost(){
-		Point p1 = edges[0].getPointLeft();
-		Point p2 = edges[1].getPointLeft();
+	public final DPoint getLeftMost(){
+		DPoint p1 = edges[0].getPointLeft();
+		DPoint p2 = edges[1].getPointLeft();
 		return (p1.compareTo(p2) < 1 ? p1 : p2);
 	}
 
@@ -289,7 +289,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param e2
 	 * @return
 	 */
-	public final Edge getLastEdge(Edge e1, Edge e2){
+	public final DEdge getLastEdge(DEdge e1, DEdge e2){
 		if(e1.equals(edges[0])){
 			if(e2.equals(edges[1])){
 				return edges[2];
@@ -313,23 +313,23 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
+	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.DPoint)
 	 */
 	@Override
-	public final boolean contains(Point aPoint) {
+	public final boolean contains(DPoint aPoint) {
 		return isInside(aPoint);
 	}
 	
 	@Override
 	public final boolean contains(Coordinate c) throws DelaunayError {
-		return isInside(new Point(c));
+		return isInside(new DPoint(c));
 	}
 
 	/**
 	 * Recompute the center of the circle that joins the ptNb points : the CircumCenter
 	 */
 	protected final void recomputeCenter() {
-		Point p1,p2,pptNb;
+		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		pptNb = edges[1].getStartPoint();
@@ -376,7 +376,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		// we connect edges to the triangle
 		for (int i=0; i<PT_NB; i++) {
 			// Start point should be start
-			Point aPoint = this.getAlterPoint(edges[i]);
+			DPoint aPoint = this.getAlterPoint(edges[i]);
 			if (edges[i].isLeft(aPoint)) {
 				if (edges[i].getLeft() == null) {
 					edges[i].setLeft(this);
@@ -403,7 +403,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return position 0 = outside 1 = inside 2 = on the circle
 	 */
-	public final int inCircle(Point aPoint) {
+	public final int inCircle(DPoint aPoint) {
 		// default is outside the circle
 		int returnedValue = 0;
 
@@ -427,12 +427,12 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return isInside
 	 */
-	public final boolean isInside(Point aPoint) {
+	public final boolean isInside(DPoint aPoint) {
 		boolean isInside = true;
 
 		int k = 0;
 		while ((k < PT_NB) && (isInside)) {
-			Edge theEdge = edges[k];
+			DEdge theEdge = edges[k];
 
 			if (theEdge.getLeft() == this) {
 				if (theEdge.isRight(aPoint)) {
@@ -455,10 +455,10 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return ZValue
 	 */
-	public final double interpolateZ(Point aPoint) {
+	public final double interpolateZ(DPoint aPoint) {
 		double zValue = 0;
 
-		Point p1,p2,pptNb;
+		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		pptNb = edges[1].getStartPoint();
@@ -493,14 +493,14 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return ZValue
 	 */
-	public final double softInterpolateZ(Point aPoint) {
+	public final double softInterpolateZ(DPoint aPoint) {
 		double weight = 3.0;
 		double zValue = interpolateZ(aPoint) * weight;
 		
 		// Process connected edges
 		for (int i=0; i<PT_NB; i++) {
-			Edge anEdge = edges[i];
-			DelaunayTriangle aTriangle = null;
+			DEdge anEdge = edges[i];
+			DTriangle aTriangle = null;
 			if (anEdge != null) {
 				if (anEdge.getLeft() == this) {
 					aTriangle = anEdge.getRight();
@@ -525,7 +525,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @return area
 	 */
 	public final double computeArea() {
-		Point p1,p2,pptNb;
+		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
 		pptNb = edges[1].getStartPoint();
@@ -617,10 +617,10 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		}
 
 		// Check if each point in the edges is referenced 2 times
-		Point aPoint;
+		DPoint aPoint;
 		i = 0;
 		while ((i < PT_NB) && (correct)) {
-			Edge anEdge = edges[i];
+			DEdge anEdge = edges[i];
 			for (j = 0; j < 2; j++) {
 				if (j == 0) {
 					aPoint = anEdge.getStartPoint();
@@ -655,11 +655,11 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param pts
 	 * @return
 	 */
-	public final boolean checkDelaunay(List<Point> pts) {
+	public final boolean checkDelaunay(List<DPoint> pts) {
 		boolean correct = true;
-		ListIterator<Point> iterPoint = pts.listIterator();
+		ListIterator<DPoint> iterPoint = pts.listIterator();
 		while (iterPoint.hasNext() && correct) {
-			Point aPoint = iterPoint.next();
+			DPoint aPoint = iterPoint.next();
 			if (inCircle(aPoint) == 1 && !aPoint.equals(getPoint(0))
                                         && !aPoint.equals(getPoint(1))
                                         && !aPoint.equals(getPoint(2))) {
@@ -697,9 +697,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param ed
 	 * @return alterPoint
 	 */
-	public final Point getAlterPoint(Edge ed) {
-		Point start = ed.getStartPoint();
-		Point end = ed.getEndPoint();
+	public final DPoint getAlterPoint(DEdge ed) {
+		DPoint start = ed.getStartPoint();
+		DPoint end = ed.getEndPoint();
 		return getAlterPoint(start, end);
 	}
 
@@ -708,7 +708,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * point of this triangle.
 	 * @param pt
 	 */
-	public final Edge getOppositeEdge(Point pt){
+	public final DEdge getOppositeEdge(DPoint pt){
 		if(!contains(pt)){
 			return null;
 		}
@@ -734,10 +734,10 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param p2
 	 * @return alterPoint
 	 */
-	protected final Point getAlterPoint(Point p1, Point p2) {
-		Point t1 = getPoint(0);
-		Point t2 = getPoint(1);
-		Point t3 = getPoint(2);
+	protected final DPoint getAlterPoint(DPoint p1, DPoint p2) {
+		DPoint t1 = getPoint(0);
+		DPoint t2 = getPoint(1);
+		DPoint t3 = getPoint(2);
 		if(p1.equals(t1)){
 			if(p2.equals(t2)){
 				return t3;
@@ -767,12 +767,12 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param p2
 	 * @return alterEdge
 	 */
-	protected final Edge getEdgeFromPoints(Point p1, Point p2) {
-		Edge alterEdge = null;
-		Point test1, test2;
+	protected final DEdge getEdgeFromPoints(DPoint p1, DPoint p2) {
+		DEdge alterEdge = null;
+		DPoint test1, test2;
 		int i = 0;
 		while ((i < PT_NB) && (alterEdge == null)) {
-			Edge testEdge = edges[i];
+			DEdge testEdge = edges[i];
 			test1 = testEdge.getStartPoint();
 			test2 = testEdge.getEndPoint();
 			if ((test1.equals(p1)) && (test2.equals(p2))) {
@@ -795,9 +795,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @param aPoint
 	 * @return belongs
 	 */
-	public final boolean belongsTo(Point aPoint) {
+	public final boolean belongsTo(DPoint aPoint) {
 		boolean belongs = false;
-		Edge anEdge = this.getEdge(0);
+		DEdge anEdge = this.getEdge(0);
 		if (anEdge.getStartPoint().equals(aPoint)) {
 			belongs = true;
 		}
@@ -823,9 +823,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @return isFlat
 	 * @throws DelaunayError 
 	 */
-	public final Point getBarycenter() throws DelaunayError {
+	public final DPoint getBarycenter() throws DelaunayError {
 		double x = 0, y = 0, z = 0;
-		Point aPoint;
+		DPoint aPoint;
 		for (int i = 0; i < PT_NB; i++) {
 			aPoint = getPoint(i);
 
@@ -837,7 +837,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		y /= 3.0;
 		z /= 3.0;
 		
-		return new Point(x, y, z);
+		return new DPoint(x, y, z);
 	}
 
 	/**
@@ -883,7 +883,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		int[] xPoints, yPoints;
 		xPoints = new int[PT_NB];
 		yPoints = new int[PT_NB];
-		Point p1, p2, pptNb;
+		DPoint p1, p2, pptNb;
 		p1 = getPoint(0);
 		p2 = getPoint(1);
 		pptNb = getPoint(2);
@@ -923,7 +923,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
-	 * check if this DelaunayTriangle is used by a polygon
+	 * check if this DTriangle is used by a polygon
 	 * @return useByPolygon
 	 */
 	@Override
@@ -942,15 +942,15 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 
 	/**
 	 * Used to check if this is equal to other.
-	 * This and other are equal if and only if other is an instance of DelaunayTriangle
+	 * This and other are equal if and only if other is an instance of DTriangle
 	 * and their points are the same (whatever their order in the triangle).
 	 * @param other
 	 * @return
 	 */
 	@Override
 	public final boolean equals(Object other){
-		if(other instanceof DelaunayTriangle){
-			DelaunayTriangle otherTri = (DelaunayTriangle) other;
+		if(other instanceof DTriangle){
+			DTriangle otherTri = (DTriangle) other;
 			boolean ret = belongsTo(otherTri.getPoint(0)) && belongsTo(otherTri.getPoint(1))
 				&& belongsTo(otherTri.getPoint(2));
 			return ret;
@@ -979,7 +979,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 * @return
 	 */
 	@Override
-	public final int compareTo(DelaunayTriangle t) {
+	public final int compareTo(DTriangle t) {
 		Coordinate midT = getBoundingBox().getMiddle();
 		Coordinate midO = t.getBoundingBox().getMiddle();
 		int c = midT.compareTo(midO);
@@ -987,7 +987,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 			try {
 				c = getBarycenter().compareTo(t.getBarycenter());
 			} catch (DelaunayError ex) {
-				Logger.getLogger(DelaunayTriangle.class.getName()).log(Level.WARNING, null, ex);
+				Logger.getLogger(DTriangle.class.getName()).log(Level.WARNING, null, ex);
 			}
 		}
 		return c;
@@ -1002,9 +1002,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		int k1 = (k + 1) % PT_NB;
 		int k2 = (k1 + 1) % PT_NB;
 
-		Point p1 = this.getPoint(k);
-		Point p2 = this.getPoint(k1);
-		Point pptNb = this.getPoint(k2);
+		DPoint p1 = this.getPoint(k);
+		DPoint p2 = this.getPoint(k1);
+		DPoint pptNb = this.getPoint(k2);
 
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();

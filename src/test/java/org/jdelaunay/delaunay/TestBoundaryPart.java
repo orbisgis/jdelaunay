@@ -15,15 +15,15 @@ public class TestBoundaryPart extends BaseUtility {
 	 * test if a boundary part can bee right next another one in the boundary.
 	 */
 	public void testCanBeNext(){
-		BoundaryPart bp1 = new BoundaryPart(new Edge(0,0,0,2,2,0));
-		List<Edge> be = new ArrayList<Edge>();
-		be.add(new Edge(0,0,0,1,4,0));
+		BoundaryPart bp1 = new BoundaryPart(new DEdge(0,0,0,2,2,0));
+		List<DEdge> be = new ArrayList<DEdge>();
+		be.add(new DEdge(0,0,0,1,4,0));
 		bp1.setBoundaryEdges(be);
-		BoundaryPart bp2 = new BoundaryPart(new Edge(1,4,0,2,2,0));
+		BoundaryPart bp2 = new BoundaryPart(new DEdge(1,4,0,2,2,0));
 		assertTrue(bp1.canBeNext(bp2));
-		bp2 = new BoundaryPart(new Edge(8,4,0,2,2,0));
+		bp2 = new BoundaryPart(new DEdge(8,4,0,2,2,0));
 		assertFalse(bp1.canBeNext(bp2));
-		bp2 = new BoundaryPart(new Edge(0,0,0,2,2,0));
+		bp2 = new BoundaryPart(new DEdge(0,0,0,2,2,0));
 		assertFalse(bp1.canBeNext(bp2));
 	}
 
@@ -32,10 +32,10 @@ public class TestBoundaryPart extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testSwapConstraint() throws DelaunayError {
-		BoundaryPart bp = new BoundaryPart(new ArrayList<Edge>());
-		bp.setConstraint(new Edge(2,2,0,0,0,0));
-		assertTrue(bp.getConstraint().getStartPoint().equals(new Point(0,0,0)));
-		assertTrue(bp.getConstraint().getEndPoint().equals(new Point(2,2,0)));
+		BoundaryPart bp = new BoundaryPart(new ArrayList<DEdge>());
+		bp.setConstraint(new DEdge(2,2,0,0,0,0));
+		assertTrue(bp.getConstraint().getStartPoint().equals(new DPoint(0,0,0)));
+		assertTrue(bp.getConstraint().getEndPoint().equals(new DPoint(2,2,0)));
 	}
 
         /**
@@ -43,28 +43,28 @@ public class TestBoundaryPart extends BaseUtility {
          */
         public void testConnectSinglePoint() throws DelaunayError{
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
-		Edge ed = new Edge(0,0,0,1,3,0);
+                List<DEdge> bps = new ArrayList<DEdge>();
+		DEdge ed = new DEdge(0,0,0,1,3,0);
 		ed.setDegenerated(false);
                 bps.add(ed);
-		ed = new Edge(1,3,0,1,5,0);
+		ed = new DEdge(1,3,0,1,5,0);
 		ed.setDegenerated(false);
                 bps.add(ed);
-		ed = new Edge(1,5,0,0,8,0);
+		ed = new DEdge(1,5,0,0,8,0);
 		ed.setDegenerated(false);
                 bps.add(ed);
                 BoundaryPart part = new BoundaryPart(bps);
 		//We connect the point and retrieve the resulting triangles
-                List<DelaunayTriangle> tri = part.connectPoint(new Point(3,4,0));
+                List<DTriangle> tri = part.connectPoint(new DPoint(3,4,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(0,0,0,3,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(0,8,0,3,4,0)));
+                assertTrue(bps.get(0).equals(new DEdge(0,0,0,3,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(0,8,0,3,4,0)));
                 assertTrue(bps.size()==2);
 		//next on the resulting triangles.
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,1,3,0),new Edge(1,3,0,3,4,0), new Edge(3,4,0,0,0,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(1,5,0,1,3,0),new Edge(1,3,0,3,4,0), new Edge(3,4,0,1,5,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(1,5,0,0,8,0),new Edge(0,8,0,3,4,0), new Edge(3,4,0,1,5,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(0,0,0,1,3,0),new DEdge(1,3,0,3,4,0), new DEdge(3,4,0,0,0,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(1,5,0,1,3,0),new DEdge(1,3,0,3,4,0), new DEdge(3,4,0,1,5,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(1,5,0,0,8,0),new DEdge(0,8,0,3,4,0), new DEdge(3,4,0,1,5,0))));
 		assertTrue(tri.size()==3);
         }
 
@@ -75,26 +75,26 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectionPartialVisibility() throws DelaunayError{
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
-		bps.add(new Edge(1,0,0,3,1,0));
-		bps.add(new Edge(3,1,0,4,4,0));
-		bps.add(new Edge(4,4,0,4,7,0));
-		bps.add(new Edge(4,7,0,3,9,0));
-		bps.add(new Edge(3,9,0,0,10,0));
+                List<DEdge> bps = new ArrayList<DEdge>();
+		bps.add(new DEdge(1,0,0,3,1,0));
+		bps.add(new DEdge(3,1,0,4,4,0));
+		bps.add(new DEdge(4,4,0,4,7,0));
+		bps.add(new DEdge(4,7,0,3,9,0));
+		bps.add(new DEdge(3,9,0,0,10,0));
                 BoundaryPart part = new BoundaryPart(bps);
 		//We connect the point and retrieve the resulting triangles
-                List<DelaunayTriangle> tri = part.connectPoint(new Point(8,5,0));
+                List<DTriangle> tri = part.connectPoint(new DPoint(8,5,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(1,0,0,3,1,0)));
-                assertTrue(bps.get(1).equals(new Edge(3,1,0,8,5,0)));
-                assertTrue(bps.get(2).equals(new Edge(8,5,0,3,9,0)));
-                assertTrue(bps.get(3).equals(new Edge(3,9,0,0,10,0)));
+                assertTrue(bps.get(0).equals(new DEdge(1,0,0,3,1,0)));
+                assertTrue(bps.get(1).equals(new DEdge(3,1,0,8,5,0)));
+                assertTrue(bps.get(2).equals(new DEdge(8,5,0,3,9,0)));
+                assertTrue(bps.get(3).equals(new DEdge(3,9,0,0,10,0)));
                 assertTrue(bps.size()==4);
 		//next on the resulting triangles.
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,1,0,8,5,0), new Edge(8,5,0,4,4,0), new Edge(4,4,0,3,1,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,7,0,8,5,0), new Edge(8,5,0,4,4,0), new Edge(4,4,0,4,7,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,7,0,8,5,0), new Edge(8,5,0,3,9,0), new Edge(3,9,0,4,7,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(3,1,0,8,5,0), new DEdge(8,5,0,4,4,0), new DEdge(4,4,0,3,1,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(4,7,0,8,5,0), new DEdge(8,5,0,4,4,0), new DEdge(4,4,0,4,7,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(4,7,0,8,5,0), new DEdge(8,5,0,3,9,0), new DEdge(3,9,0,4,7,0))));
 		assertTrue(tri.size()==3);
 	}
 
@@ -106,17 +106,17 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectionNoVisibility() throws DelaunayError{
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
+                List<DEdge> bps = new ArrayList<DEdge>();
 		//We make our test with only one edge
-		bps.add(new Edge(3,6,0,0,8,0));
-		Edge cstr = new Edge(3,6,0,6,0,0);
+		bps.add(new DEdge(3,6,0,0,8,0));
+		DEdge cstr = new DEdge(3,6,0,6,0,0);
 		BoundaryPart part = new BoundaryPart(bps, cstr);
 		//We connect the point and retrieve the resulting triangles
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(5,4,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(3,6,0,0,8,0)));
                 assertTrue(bps.get(0).isDegenerated());
                 assertTrue(bps.size()==2);
 		//next on the resulting triangles.
@@ -131,31 +131,31 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectionNoVisibilityFurther() throws DelaunayError {
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
+                List<DEdge> bps = new ArrayList<DEdge>();
 		//We make our test with only one edge
-		bps.add(new Edge(3,6,0,0,8,0));
-		Edge cstr = new Edge(3,6,0,6,0,0);
+		bps.add(new DEdge(3,6,0,0,8,0));
+		DEdge cstr = new DEdge(3,6,0,6,0,0);
 		BoundaryPart part = new BoundaryPart(bps, cstr);
 		//We connect the point and retrieve the resulting triangles
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(5,4,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(3,6,0,0,8,0)));
                 assertTrue(bps.get(0).isDegenerated());
                 assertTrue(bps.size()==2);
 		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
 		//And we check that we properly build triangles after that.
-		tri = part.connectPoint(new Point(5,7,0));
+		tri = part.connectPoint(new DPoint(5,7,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(5,4,0,5,7,0)));
-                assertTrue(bps.get(2).equals(new Edge(5,7,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(5,4,0,5,7,0)));
+                assertTrue(bps.get(2).equals(new DEdge(5,7,0,0,8,0)));
 		assertTrue(bps.size()==3);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,6,0,5,4,0), new Edge(5,4,0,5,7,0), new Edge(5,7,0,3,6,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(3,6,0,0,8,0), new Edge(0,8,0,5,7,0), new Edge(5,7,0,3,6,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(3,6,0,5,4,0), new DEdge(5,4,0,5,7,0), new DEdge(5,7,0,3,6,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(3,6,0,0,8,0), new DEdge(0,8,0,5,7,0), new DEdge(5,7,0,3,6,0))));
 		assertTrue(tri.size()==2);
 
 	}
@@ -167,32 +167,32 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectiontwoDegenEdges() throws DelaunayError {
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
+                List<DEdge> bps = new ArrayList<DEdge>();
 		//We make our test with only one edge
-		bps.add(new Edge(3,6,0,0,8,0));
-		Edge cstr = new Edge(3,6,0,6,0,0);
+		bps.add(new DEdge(3,6,0,0,8,0));
+		DEdge cstr = new DEdge(3,6,0,6,0,0);
 		BoundaryPart part = new BoundaryPart(bps, cstr);
 		//We connect the point and retrieve the resulting triangles
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
-		tri = part.connectPoint(new Point(7,2,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(5,4,0));
+		tri = part.connectPoint(new DPoint(7,2,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
-                assertTrue(bps.get(2).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new DEdge(3,6,0,0,8,0)));
                 assertTrue(bps.get(0).isDegenerated());
                 assertTrue(bps.get(1).isDegenerated());
                 assertTrue(bps.size()==3);
 		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
 		//And we check that we properly build triangles after that.
-		tri = part.connectPoint(new Point(5,7,0));
+		tri = part.connectPoint(new DPoint(5,7,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
-                assertTrue(bps.get(2).equals(new Edge(7,2,0,5,7,0)));
-                assertTrue(bps.get(3).equals(new Edge(5,7,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new DEdge(7,2,0,5,7,0)));
+                assertTrue(bps.get(3).equals(new DEdge(5,7,0,0,8,0)));
 		assertTrue(bps.size()==4);
 	}
 
@@ -204,33 +204,33 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectDegenEdges() throws DelaunayError {
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
+                List<DEdge> bps = new ArrayList<DEdge>();
 		//We make our test with only one edge
-		bps.add(new Edge(3,6,0,0,8,0));
-		Edge cstr = new Edge(3,6,0,6,0,0);
+		bps.add(new DEdge(3,6,0,0,8,0));
+		DEdge cstr = new DEdge(3,6,0,6,0,0);
 		BoundaryPart part = new BoundaryPart(bps, cstr);
 		//We connect the point and retrieve the resulting triangles
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
-		tri = part.connectPoint(new Point(7,2,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(5,4,0));
+		tri = part.connectPoint(new DPoint(7,2,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
-                assertTrue(bps.get(2).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new DEdge(3,6,0,0,8,0)));
                 assertTrue(bps.get(0).isDegenerated());
                 assertTrue(bps.get(1).isDegenerated());
                 assertTrue(bps.size()==3);
 		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
 		//And we check that we properly build triangles after that.
-		tri = part.connectPoint(new Point(7,3,0));
+		tri = part.connectPoint(new DPoint(7,3,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
-                assertTrue(bps.get(2).equals(new Edge(7,2,0,7,3,0)));
-                assertTrue(bps.get(3).equals(new Edge(7,3,0,3,6,0)));
-                assertTrue(bps.get(4).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new DEdge(7,2,0,7,3,0)));
+                assertTrue(bps.get(3).equals(new DEdge(7,3,0,3,6,0)));
+                assertTrue(bps.get(4).equals(new DEdge(3,6,0,0,8,0)));
 		assertTrue(bps.size()==5);
 	}
 
@@ -242,27 +242,27 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectDegenEdgesBis() throws DelaunayError {
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
+                List<DEdge> bps = new ArrayList<DEdge>();
 		//We make our test with only one edge
-		bps.add(new Edge(3,6,0,0,8,0));
-		Edge cstr = new Edge(3,6,0,6,0,0);
+		bps.add(new DEdge(3,6,0,0,8,0));
+		DEdge cstr = new DEdge(3,6,0,6,0,0);
 		BoundaryPart part = new BoundaryPart(bps, cstr);
 		//We connect the point and retrieve the resulting triangles
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
-		tri = part.connectPoint(new Point(7,2,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(5,4,0));
+		tri = part.connectPoint(new DPoint(7,2,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
 		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
 		//And we check that we properly build triangles after that.
-		tri = part.connectPoint(new Point(8,0,0));
+		tri = part.connectPoint(new DPoint(8,0,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,8,0,0)));
-                assertTrue(bps.get(1).equals(new Edge(8,0,0,7,2,0)));
-                assertTrue(bps.get(2).equals(new Edge(7,2,0,5,4,0)));
-                assertTrue(bps.get(3).equals(new Edge(5,4,0,3,6,0)));
-                assertTrue(bps.get(4).equals(new Edge(3,6,0,0,8,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,8,0,0)));
+                assertTrue(bps.get(1).equals(new DEdge(8,0,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new DEdge(7,2,0,5,4,0)));
+                assertTrue(bps.get(3).equals(new DEdge(5,4,0,3,6,0)));
+                assertTrue(bps.get(4).equals(new DEdge(3,6,0,0,8,0)));
 		assertTrue(bps.size()==5);
 	}
 
@@ -273,37 +273,37 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectThreeColinearDegen() throws DelaunayError {
                 //First we fill an empty boundary part
-                List<Edge> bps = new ArrayList<Edge>();
+                List<DEdge> bps = new ArrayList<DEdge>();
 		//We make our test with only one edge
-		Edge cstr = new Edge(3,6,0,6,0,0);
+		DEdge cstr = new DEdge(3,6,0,6,0,0);
 		BoundaryPart part = new BoundaryPart(bps, cstr);
 		//We connect the point and retrieve the resulting triangles
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(5,4,0));
-		tri = part.connectPoint(new Point(7,2,0));
-		tri = part.connectPoint(new Point(9,0,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(5,4,0));
+		tri = part.connectPoint(new DPoint(7,2,0));
+		tri = part.connectPoint(new DPoint(9,0,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(3,6,0,5,4,0)));
-                assertTrue(bps.get(1).equals(new Edge(5,4,0,7,2,0)));
-                assertTrue(bps.get(2).equals(new Edge(7,2,0,9,0,0)));
+                assertTrue(bps.get(0).equals(new DEdge(3,6,0,5,4,0)));
+                assertTrue(bps.get(1).equals(new DEdge(5,4,0,7,2,0)));
+                assertTrue(bps.get(2).equals(new DEdge(7,2,0,9,0,0)));
                 assertTrue(bps.size()==3);
 		assertTrue(tri.isEmpty());
 	}
 
 	public void testInvisiblePoint() throws DelaunayError{
 		//We fill the boundary part :
-		List<Edge> bps = new ArrayList<Edge>();
-		bps.add(new Edge(0,4,0,4,5,0));
+		List<DEdge> bps = new ArrayList<DEdge>();
+		bps.add(new DEdge(0,4,0,4,5,0));
 		//We create the constraint.
-		Edge cstr = new Edge(0,4,0,10,0,0);
+		DEdge cstr = new DEdge(0,4,0,10,0,0);
 		//We create the boundary part.
 		BoundaryPart part = new BoundaryPart(bps, cstr);
 		//We connect the point and retrieve the resulting triangles.
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(6,7,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(6,7,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(0,4,0,4,5,0)));
-                assertTrue(bps.get(1).equals(new Edge(4,5,0,6,7,0)));
+                assertTrue(bps.get(0).equals(new DEdge(0,4,0,4,5,0)));
+                assertTrue(bps.get(1).equals(new DEdge(4,5,0,6,7,0)));
                 assertTrue(bps.size()==2);
 		assertTrue(tri.isEmpty());
 
@@ -311,29 +311,29 @@ public class TestBoundaryPart extends BaseUtility {
 
 	/**
 	 * Test the insertion of a point in a boundary part were the boundaryEdges
-	 * list is empty. The resulting list will contain one degenerated Edge;
+	 * list is empty. The resulting list will contain one degenerated DEdge;
 	 * This test checks that we throw an exception if we try to connect a point
-	 * to a BoundaryPart that have nor a boundaryEdges list neither a constraint Edge.
+	 * to a BoundaryPart that have nor a boundaryEdges list neither a constraint DEdge.
 	 * @throws DelaunayError
 	 */
 	public void testAddPointEmptyBoundary() throws DelaunayError {
 		//We don't feed the boundary part, as we want to obtain a degenerated edge.
-		List<Edge> bps = new ArrayList<Edge>();
+		List<DEdge> bps = new ArrayList<DEdge>();
 		BoundaryPart part = new BoundaryPart(bps);
 		//We connect the point and retrieve the resulting triangles
-		List<DelaunayTriangle> tri;
+		List<DTriangle> tri;
 		try{
 			//We test the exception throw whent trying to connect a point to a totally
 			//empty boundaryPart.
-			tri = part.connectPoint(new Point(5,4,0));
+			tri = part.connectPoint(new DPoint(5,4,0));
 			assertTrue(false);
 		} catch (DelaunayError d){
 		}
-		part.setConstraint(new Edge(0,0,0,4,4,0));
-		tri = part.connectPoint(new Point(2,4,0));
+		part.setConstraint(new DEdge(0,0,0,4,4,0));
+		tri = part.connectPoint(new DPoint(2,4,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(0,0,0,2,4,0)));
+                assertTrue(bps.get(0).equals(new DEdge(0,0,0,2,4,0)));
 		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
 
@@ -342,27 +342,27 @@ public class TestBoundaryPart extends BaseUtility {
 
 	/**
 	 * On the same basis than the testAddPointEmptyBoundary test, we add a point
-	 * to build a triangle from a degenerated Edge.
+	 * to build a triangle from a degenerated DEdge.
 	 * @throws DelaunayError
 	 */
 	public void testAddPointEmptyBoundaryFurther() throws DelaunayError {
 		//We don't feed the boundary part, as we want to obtain a degenerated edge.
-		List<Edge> bps = new ArrayList<Edge>();
+		List<DEdge> bps = new ArrayList<DEdge>();
 		BoundaryPart part = new BoundaryPart(bps);
 		//We connect the point and retrieve the resulting triangles
-		part.setConstraint(new Edge(0,0,0,4,1,0));
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(2,2,0));
+		part.setConstraint(new DEdge(0,0,0,4,1,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(2,2,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-                assertTrue(bps.get(0).equals(new Edge(0,0,0,2,2,0)));
+                assertTrue(bps.get(0).equals(new DEdge(0,0,0,2,2,0)));
 		//next on the resulting triangles.
 		assertTrue(tri.isEmpty());
-		tri = part.connectPoint(new Point(3,2,0));
+		tri = part.connectPoint(new DPoint(3,2,0));
 		//And we perform our tests. First on the boundary edges.
                 bps = part.getBoundaryEdges();
-		assertTrue(bps.get(0).equals(new Edge(0,0,0,3,2,0)));
-		assertTrue(bps.get(1).equals(new Edge(3,2,0,2,2,0)));
-		assertTrue(bps.get(2).equals(new Edge(2,2,0,0,0,0)));
+		assertTrue(bps.get(0).equals(new DEdge(0,0,0,3,2,0)));
+		assertTrue(bps.get(1).equals(new DEdge(3,2,0,2,2,0)));
+		assertTrue(bps.get(2).equals(new DEdge(2,2,0,0,0,0)));
 	}
 
 	/**
@@ -372,19 +372,19 @@ public class TestBoundaryPart extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testRetrieveAddedEdges() throws DelaunayError {
-		List<Edge> bps = new ArrayList<Edge>();
-		bps.add(new Edge(7,0,0,6,2,0));
-		bps.add(new Edge(6,2,0,4,4,0));
-		bps.add(new Edge(4,4,0,0,5,0));
+		List<DEdge> bps = new ArrayList<DEdge>();
+		bps.add(new DEdge(7,0,0,6,2,0));
+		bps.add(new DEdge(6,2,0,4,4,0));
+		bps.add(new DEdge(4,4,0,0,5,0));
 		BoundaryPart part = new BoundaryPart(bps);
 		part.setBoundaryEdges(bps);
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(6,5,0));
-		List<Edge> added = part.getAddedEdges();
+		List<DTriangle> tri = part.connectPoint(new DPoint(6,5,0));
+		List<DEdge> added = part.getAddedEdges();
 		assertTrue(added.size()==4);
-		assertTrue(added.contains(new Edge(7,0,0,6,5,0)));
-		assertTrue(added.contains(new Edge(6,2,0,6,5,0)));
-		assertTrue(added.contains(new Edge(4,4,0,6,5,0)));
-		assertTrue(added.contains(new Edge(0,5,0,6,5,0)));
+		assertTrue(added.contains(new DEdge(7,0,0,6,5,0)));
+		assertTrue(added.contains(new DEdge(6,2,0,6,5,0)));
+		assertTrue(added.contains(new DEdge(4,4,0,6,5,0)));
+		assertTrue(added.contains(new DEdge(0,5,0,6,5,0)));
 	}
 
 	/**
@@ -394,18 +394,18 @@ public class TestBoundaryPart extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testRetrieveBadEdges() throws DelaunayError {
-		List<Edge> bps = new ArrayList<Edge>();
-		bps.add(new Edge(7,0,0,6,2,0));
-		bps.add(new Edge(6,2,0,4,4,0));
-		bps.add(new Edge(4,4,0,0,5,0));
+		List<DEdge> bps = new ArrayList<DEdge>();
+		bps.add(new DEdge(7,0,0,6,2,0));
+		bps.add(new DEdge(6,2,0,4,4,0));
+		bps.add(new DEdge(4,4,0,0,5,0));
 		BoundaryPart part = new BoundaryPart(bps);
 		part.setBoundaryEdges(bps);
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(6,5,0));
-		List<Edge> bad = part.getBadEdges();
+		List<DTriangle> tri = part.connectPoint(new DPoint(6,5,0));
+		List<DEdge> bad = part.getBadEdges();
 		assertTrue(bad.size()==3);
-		assertTrue(bad.contains(new Edge(7,0,0,6,2,0)));
-		assertTrue(bad.contains(new Edge(6,2,0,4,4,0)));
-		assertTrue(bad.contains(new Edge(4,4,0,0,5,0)));
+		assertTrue(bad.contains(new DEdge(7,0,0,6,2,0)));
+		assertTrue(bad.contains(new DEdge(6,2,0,4,4,0)));
+		assertTrue(bad.contains(new DEdge(4,4,0,0,5,0)));
 		
 	}
 
@@ -415,54 +415,54 @@ public class TestBoundaryPart extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testRetrieveBadAddedEdgesDegen() throws DelaunayError{
-		List<Edge> bps = new ArrayList<Edge>();
-		Edge cstr = new Edge(0,0,0,8,1,0);
+		List<DEdge> bps = new ArrayList<DEdge>();
+		DEdge cstr = new DEdge(0,0,0,8,1,0);
 		BoundaryPart part = new BoundaryPart(bps, cstr);
-		List<DelaunayTriangle> tri = part.connectPoint(new Point(2,2,0));
+		List<DTriangle> tri = part.connectPoint(new DPoint(2,2,0));
 		assertTrue(tri.isEmpty());
-		List<Edge> bad = part.getBadEdges();
+		List<DEdge> bad = part.getBadEdges();
 		assertTrue(bad.isEmpty());
-		List<Edge> added = part.getAddedEdges();
+		List<DEdge> added = part.getAddedEdges();
 		assertTrue(added.size()==1);
-		assertTrue(added.contains(new Edge(0,0,0,2,2,0)));
-		tri = part.connectPoint(new Point(4,4,0));
+		assertTrue(added.contains(new DEdge(0,0,0,2,2,0)));
+		tri = part.connectPoint(new DPoint(4,4,0));
 		assertTrue(tri.isEmpty());
 		bad = part.getBadEdges();
 		assertTrue(bad.isEmpty());
 		added = part.getAddedEdges();
 		assertTrue(added.size()==1);
-		assertTrue(added.contains(new Edge(2,2,0,4,4,0)));
+		assertTrue(added.contains(new DEdge(2,2,0,4,4,0)));
 		//We add a point that will build two triangles and three edges, but
 		//no bad edges.
-		tri = part.connectPoint(new Point(5,3,0));
+		tri = part.connectPoint(new DPoint(5,3,0));
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,5,3,0), new Edge(5,3,0,2,2,0), new Edge(2,2,0,0,0,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,4,0,5,3,0), new Edge(5,3,0,2,2,0), new Edge(2,2,0,4,4,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(0,0,0,5,3,0), new DEdge(5,3,0,2,2,0), new DEdge(2,2,0,0,0,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(4,4,0,5,3,0), new DEdge(5,3,0,2,2,0), new DEdge(2,2,0,4,4,0))));
 		bad = part.getBadEdges();
 		assertTrue(bad.isEmpty());
 		added = part.getAddedEdges();
 		assertTrue(added.size()==3);
-		assertTrue(added.contains(new Edge(0,0,0,5,3,0)));
-		assertTrue(added.contains(new Edge(2,2,0,5,3,0)));
-		assertTrue(added.contains(new Edge(5,3,0,4,4,0)));
+		assertTrue(added.contains(new DEdge(0,0,0,5,3,0)));
+		assertTrue(added.contains(new DEdge(2,2,0,5,3,0)));
+		assertTrue(added.contains(new DEdge(5,3,0,4,4,0)));
 		//We add a point that will build three triangles and four edges, and
 		//three bad edges.
-		tri = part.connectPoint(new Point(5,6,0));
+		tri = part.connectPoint(new DPoint(5,6,0));
 		assertTrue(tri.size()==3);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,5,6,0), new Edge(5,6,0,2,2,0), new Edge(2,2,0,0,0,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,4,0,5,6,0), new Edge(5,6,0,2,2,0), new Edge(2,2,0,4,4,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,4,0,5,6,0), new Edge(5,6,0,5,3,0), new Edge(5,3,0,4,4,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(0,0,0,5,6,0), new DEdge(5,6,0,2,2,0), new DEdge(2,2,0,0,0,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(4,4,0,5,6,0), new DEdge(5,6,0,2,2,0), new DEdge(2,2,0,4,4,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(4,4,0,5,6,0), new DEdge(5,6,0,5,3,0), new DEdge(5,3,0,4,4,0))));
 		bad = part.getBadEdges();
 		assertTrue(bad.size()==3);
-		assertTrue(bad.contains(new Edge(5,3,0,4,4,0)));
-		assertTrue(bad.contains(new Edge(2,2,0,4,4,0)));
-		assertTrue(bad.contains(new Edge(0,0,0,2,2,0)));
+		assertTrue(bad.contains(new DEdge(5,3,0,4,4,0)));
+		assertTrue(bad.contains(new DEdge(2,2,0,4,4,0)));
+		assertTrue(bad.contains(new DEdge(0,0,0,2,2,0)));
 		added = part.getAddedEdges();
 		assertTrue(added.size()==4);
-		assertTrue(added.contains(new Edge(5,6,0,5,3,0)));
-		assertTrue(added.contains(new Edge(2,2,0,5,6,0)));
-		assertTrue(added.contains(new Edge(5,6,0,4,4,0)));
-		assertTrue(added.contains(new Edge(5,6,0,0,0,0)));
+		assertTrue(added.contains(new DEdge(5,6,0,5,3,0)));
+		assertTrue(added.contains(new DEdge(2,2,0,5,6,0)));
+		assertTrue(added.contains(new DEdge(5,6,0,4,4,0)));
+		assertTrue(added.contains(new DEdge(5,6,0,0,0,0)));
 
 	}
 
@@ -470,11 +470,11 @@ public class TestBoundaryPart extends BaseUtility {
 	 * Simple test that checks we can't have a null boundaryEdges list.
 	 */
 	public void testSetNullBoundaries(){
-		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,1,1,0));
+		BoundaryPart part = new BoundaryPart(new DEdge(0,0,0,1,1,0));
 		part.setBoundaryEdges(null);
-		LinkedList<Edge>  edg = (LinkedList) part.getBoundaryEdges();
+		LinkedList<DEdge>  edg = (LinkedList) part.getBoundaryEdges();
 		assertNotNull(edg);
-		edg = new LinkedList<Edge>();
+		edg = new LinkedList<DEdge>();
 		part.setBoundaryEdges(edg);
 		assertTrue(edg == part.getBoundaryEdges());
 	}
@@ -483,28 +483,28 @@ public class TestBoundaryPart extends BaseUtility {
 	 * Tests the pointIsLower method.
 	 */
 	public void testIsLower() throws DelaunayError{
-		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,4,1,0));
-		assertTrue(part.pointIsLower(new Point(3,0,0)));
-		assertFalse(part.pointIsLower(new Point(3,2,0)));
+		BoundaryPart part = new BoundaryPart(new DEdge(0,0,0,4,1,0));
+		assertTrue(part.pointIsLower(new DPoint(3,0,0)));
+		assertFalse(part.pointIsLower(new DPoint(3,2,0)));
 	}
 
 	/**
 	 * Tests the pointIsUpper method.
 	 */
 	public void testIsUpper() throws DelaunayError {
-		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,4,1,0));
-		assertFalse(part.pointIsUpper(new Point(3,0,0)));
-		assertTrue(part.pointIsUpper(new Point(3,2,0)));
+		BoundaryPart part = new BoundaryPart(new DEdge(0,0,0,4,1,0));
+		assertFalse(part.pointIsUpper(new DPoint(3,0,0)));
+		assertTrue(part.pointIsUpper(new DPoint(3,2,0)));
 	}
 
 	/**
 	 * Tests the pointIsUpper method.
 	 */
 	public void testIsConstraintRightPoint() throws DelaunayError {
-		BoundaryPart part = new BoundaryPart(new Edge(0,0,0,4,1,0));
-		assertFalse(part.isConstraintRightPoint(new Point(3,0,0)));
-		assertFalse(part.isConstraintRightPoint(new Point(0,0,0)));
-		assertTrue(part.isConstraintRightPoint(new Point(4,1,0)));
+		BoundaryPart part = new BoundaryPart(new DEdge(0,0,0,4,1,0));
+		assertFalse(part.isConstraintRightPoint(new DPoint(3,0,0)));
+		assertFalse(part.isConstraintRightPoint(new DPoint(0,0,0)));
+		assertTrue(part.isConstraintRightPoint(new DPoint(4,1,0)));
 	}
 
 	/**
@@ -514,22 +514,22 @@ public class TestBoundaryPart extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testAddConstraintRightPoint() throws DelaunayError {
-		Edge cstr = new Edge(0,0,0,7,2,0);
-		List<Edge> bps = new ArrayList<Edge>();
-		bps.add(new Edge(0,0,0,2,3,0));
-		bps.add(new Edge(2,3,0,2,6,0));
+		DEdge cstr = new DEdge(0,0,0,7,2,0);
+		List<DEdge> bps = new ArrayList<DEdge>();
+		bps.add(new DEdge(0,0,0,2,3,0));
+		bps.add(new DEdge(2,3,0,2,6,0));
 		BoundaryPart bp = new BoundaryPart(bps, cstr);
-		List<DelaunayTriangle> tri = bp.connectPoint(new Point(7,2,0));
+		List<DTriangle> tri = bp.connectPoint(new DPoint(7,2,0));
 		bps = bp.getBoundaryEdges();
 		//We check the boundary edges.
 		assertTrue(bps.size()==2);
-		assertTrue(bps.get(0).equals(new Edge(0,0,0,7,2,0)));
-		assertTrue(bps.get(1).equals(new Edge(7,2,0,2,6,0)));
+		assertTrue(bps.get(0).equals(new DEdge(0,0,0,7,2,0)));
+		assertTrue(bps.get(1).equals(new DEdge(7,2,0,2,6,0)));
 		assertTrue(bps.get(0)==cstr);
 		//And we test the triangles, because we like it.
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,0,0,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,2,6,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(0,0,0,7,2,0), new DEdge(7,2,0,2,3,0), new DEdge(2,3,0,0,0,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(2,6,0,7,2,0), new DEdge(7,2,0,2,3,0), new DEdge(2,3,0,2,6,0))));
 		
 	}
 
@@ -539,68 +539,68 @@ public class TestBoundaryPart extends BaseUtility {
 	 * @throws DelaunayError
 	 */
 	public void testAddPointAndEdge()throws DelaunayError {
-		Edge cstr = new Edge(0,0,0,7,2,0);
-		List<Edge> bps = new ArrayList<Edge>();
-		bps.add(new Edge(0,0,0,2,3,0));
-		bps.add(new Edge(2,3,0,2,6,0));
+		DEdge cstr = new DEdge(0,0,0,7,2,0);
+		List<DEdge> bps = new ArrayList<DEdge>();
+		bps.add(new DEdge(0,0,0,2,3,0));
+		bps.add(new DEdge(2,3,0,2,6,0));
 		BoundaryPart bp = new BoundaryPart(bps, cstr);
-		Edge other = new Edge(7,2,0,2,6,0);
-		List<DelaunayTriangle> tri = bp.connectPoint(new Point(7,2,0), other);
+		DEdge other = new DEdge(7,2,0,2,6,0);
+		List<DTriangle> tri = bp.connectPoint(new DPoint(7,2,0), other);
 		bps = bp.getBoundaryEdges();
 		//We check the boundary edges.
 		assertTrue(bps.size()==2);
-		assertTrue(bps.get(0).equals(new Edge(0,0,0,7,2,0)));
-		assertTrue(bps.get(1).equals(new Edge(7,2,0,2,6,0)));
+		assertTrue(bps.get(0).equals(new DEdge(0,0,0,7,2,0)));
+		assertTrue(bps.get(1).equals(new DEdge(7,2,0,2,6,0)));
 		assertTrue(bps.get(0)==cstr);
 		assertTrue(bps.get(1)==other);
 		//And we test the triangles, because we like it.
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,0,0,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,2,0), new Edge(7,2,0,2,3,0), new Edge(2,3,0,2,6,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(0,0,0,7,2,0), new DEdge(7,2,0,2,3,0), new DEdge(2,3,0,0,0,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(2,6,0,7,2,0), new DEdge(7,2,0,2,3,0), new DEdge(2,3,0,2,6,0))));
 		//Let's try again, but this time other and cstr won't share a point.
-		bps = new LinkedList<Edge>();
-		bps.add(new Edge(0,0,0,2,3,0));
-		bps.add(new Edge(2,3,0,2,6,0));
+		bps = new LinkedList<DEdge>();
+		bps.add(new DEdge(0,0,0,2,3,0));
+		bps.add(new DEdge(2,3,0,2,6,0));
 		bp = new BoundaryPart(bps, cstr);
-		other = new Edge(7,5,0,2,6,0);
-		tri = bp.connectPoint(new Point(7,5,0), other);
+		other = new DEdge(7,5,0,2,6,0);
+		tri = bp.connectPoint(new DPoint(7,5,0), other);
 		//We check the boundary edges.
 		assertTrue(bps.size()==2);
-		assertTrue(bps.get(0).equals(new Edge(0,0,0,7,5,0)));
-		assertTrue(bps.get(1).equals(new Edge(7,5,0,2,6,0)));
+		assertTrue(bps.get(0).equals(new DEdge(0,0,0,7,5,0)));
+		assertTrue(bps.get(1).equals(new DEdge(7,5,0,2,6,0)));
 		assertTrue(bps.get(1)==other);
 		//And we test the triangles, because we like it.
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(0,0,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,0,0,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(2,6,0,7,5,0), new Edge(7,5,0,2,3,0), new Edge(2,3,0,2,6,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(0,0,0,7,5,0), new DEdge(7,5,0,2,3,0), new DEdge(2,3,0,0,0,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(2,6,0,7,5,0), new DEdge(7,5,0,2,3,0), new DEdge(2,3,0,2,6,0))));
 	}
 
 	/**
-	 * Performs a simple split on a boundary Edge.
+	 * Performs a simple split on a boundary DEdge.
 	 * @throws DelaunayError
 	 */
 	public void testSimpleSplit() throws DelaunayError {
 		BoundaryPart bp;
-		List<Edge> bounds = new ArrayList<Edge>();
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,0,0,5,1,0);
+		DEdge cstr = new DEdge(0,0,0,5,1,0);
 		cstr.setLocked(true);
-		bounds.add(new Edge(0,0,0,2,2,0));
-		bounds.add(new Edge(2,2,0,2,4,0));
-		bounds.add(new Edge(2,4,0,0,6,0));
+		bounds.add(new DEdge(0,0,0,2,2,0));
+		bounds.add(new DEdge(2,2,0,2,4,0));
+		bounds.add(new DEdge(2,4,0,0,6,0));
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(2,2,0,5,2,0));
+		BoundaryPart res = bp.split(new DEdge(2,2,0,5,2,0));
 		//and we make our tests.
 		//On the result
-		assertTrue(res.getConstraint().equals(new Edge(2,2,0,5,2,0)));
+		assertTrue(res.getConstraint().equals(new DEdge(2,2,0,5,2,0)));
 		assertTrue(res.getBoundaryEdges().size()==2);
-		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(2,2,0,2,4,0)));
-		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(2,4,0,0,6,0)));
+		assertTrue(res.getBoundaryEdges().get(0).equals(new DEdge(2,2,0,2,4,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new DEdge(2,4,0,0,6,0)));
 		//On the first BP
-		assertTrue(bp.getConstraint().equals(new Edge(0,0,0,5,1,0)));
+		assertTrue(bp.getConstraint().equals(new DEdge(0,0,0,5,1,0)));
 		assertTrue(bp.getBoundaryEdges().size()==1);
-		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new DEdge(0,0,0,2,2,0)));
 	}
 
 	/**
@@ -609,25 +609,25 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitStartMostPoint() throws DelaunayError{
 		BoundaryPart bp;
-		List<Edge> bounds = new ArrayList<Edge>();
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,0,0,5,1,0);
+		DEdge cstr = new DEdge(0,0,0,5,1,0);
 		cstr.setLocked(true);
-		bounds.add(new Edge(0,0,0,2,2,0));
-		bounds.add(new Edge(2,2,0,2,4,0));
-		bounds.add(new Edge(2,4,0,0,6,0));
+		bounds.add(new DEdge(0,0,0,2,2,0));
+		bounds.add(new DEdge(2,2,0,2,4,0));
+		bounds.add(new DEdge(2,4,0,0,6,0));
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(0,0,0,5,2,0));
+		BoundaryPart res = bp.split(new DEdge(0,0,0,5,2,0));
 		//and we make our tests.
 		//On the result
-		assertTrue(res.getConstraint().equals(new Edge(0,0,0,5,2,0)));
+		assertTrue(res.getConstraint().equals(new DEdge(0,0,0,5,2,0)));
 		assertTrue(res.getBoundaryEdges().size()==3);
-		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
-		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(2,2,0,2,4,0)));
-		assertTrue(res.getBoundaryEdges().get(2).equals(new Edge(2,4,0,0,6,0)));
+		assertTrue(res.getBoundaryEdges().get(0).equals(new DEdge(0,0,0,2,2,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new DEdge(2,2,0,2,4,0)));
+		assertTrue(res.getBoundaryEdges().get(2).equals(new DEdge(2,4,0,0,6,0)));
 		//On the first BP
-		assertTrue(bp.getConstraint().equals(new Edge(0,0,0,5,1,0)));
+		assertTrue(bp.getConstraint().equals(new DEdge(0,0,0,5,1,0)));
 		assertTrue(bp.getBoundaryEdges().isEmpty());
 		
 	}
@@ -638,26 +638,26 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitEndMostPoint() throws DelaunayError{
 		BoundaryPart bp;
-		List<Edge> bounds = new ArrayList<Edge>();
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,0,0,5,1,0);
+		DEdge cstr = new DEdge(0,0,0,5,1,0);
 		cstr.setLocked(true);
-		bounds.add(new Edge(0,0,0,2,2,0));
-		bounds.add(new Edge(2,2,0,2,4,0));
-		bounds.add(new Edge(2,4,0,0,6,0));
+		bounds.add(new DEdge(0,0,0,2,2,0));
+		bounds.add(new DEdge(2,2,0,2,4,0));
+		bounds.add(new DEdge(2,4,0,0,6,0));
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(0,6,0,5,2,0));
+		BoundaryPart res = bp.split(new DEdge(0,6,0,5,2,0));
 		//and we make our tests.
 		//On the result
-		assertTrue(res.getConstraint().equals(new Edge(0,6,0,5,2,0)));
+		assertTrue(res.getConstraint().equals(new DEdge(0,6,0,5,2,0)));
 		assertTrue(res.getBoundaryEdges().isEmpty());
 		//On the first BP
-		assertTrue(bp.getConstraint().equals(new Edge(0,0,0,5,1,0)));
+		assertTrue(bp.getConstraint().equals(new DEdge(0,0,0,5,1,0)));
 		assertTrue(bp.getBoundaryEdges().size()==3);
-		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,0,0,2,2,0)));
-		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(2,2,0,2,4,0)));
-		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(2,4,0,0,6,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new DEdge(0,0,0,2,2,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new DEdge(2,2,0,2,4,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new DEdge(2,4,0,0,6,0)));
 	}
 
 	/**
@@ -667,17 +667,17 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitException() throws DelaunayError {
 		BoundaryPart bp;
-		List<Edge> bounds = new ArrayList<Edge>();
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,0,0,5,1,0);
+		DEdge cstr = new DEdge(0,0,0,5,1,0);
 		cstr.setLocked(true);
-		bounds.add(new Edge(0,0,0,2,2,0));
-		bounds.add(new Edge(2,2,0,2,4,0));
-		bounds.add(new Edge(2,4,0,0,6,0));
+		bounds.add(new DEdge(0,0,0,2,2,0));
+		bounds.add(new DEdge(2,2,0,2,4,0));
+		bounds.add(new DEdge(2,4,0,0,6,0));
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp, an exception is supposed to be thrown
 		try{
-			bp.split(new Edge(8,6,0,5,2,0));
+			bp.split(new DEdge(8,6,0,5,2,0));
 			assertTrue(false);
 		}catch (DelaunayError d){
 		}
@@ -691,13 +691,13 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitExceptionEmptyCstr() throws DelaunayError {
 		BoundaryPart bp;
-		List<Edge> bounds = new ArrayList<Edge>();
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,0,0,5,1,0);
+		DEdge cstr = new DEdge(0,0,0,5,1,0);
 		cstr.setLocked(true);
-		bounds.add(new Edge(0,0,0,2,2,0));
-		bounds.add(new Edge(2,2,0,2,4,0));
-		bounds.add(new Edge(2,4,0,0,6,0));
+		bounds.add(new DEdge(0,0,0,2,2,0));
+		bounds.add(new DEdge(2,2,0,2,4,0));
+		bounds.add(new DEdge(2,4,0,0,6,0));
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp, an exception is supposed to be thrown
 		try{
@@ -715,19 +715,19 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitExceptionEmpty() throws DelaunayError {
 		BoundaryPart bp;
-		List<Edge> bounds = new ArrayList<Edge>();
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,0,0,5,1,0);
+		DEdge cstr = new DEdge(0,0,0,5,1,0);
 		cstr.setLocked(true);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp, an exception is supposed to be thrown
 		try{
-			bp.split(new Edge(0,0,0,5,2,0));
+			bp.split(new DEdge(0,0,0,5,2,0));
 			assertTrue(false);
 		}catch (DelaunayError d){
 		}
 		try{
-			bp.split(new Edge(10,0,0,5,2,0));
+			bp.split(new DEdge(10,0,0,5,2,0));
 			assertTrue(false);
 		}catch (DelaunayError d){
 		}
@@ -740,36 +740,36 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitDegen() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,9,0));
 		//and we make our tests.
 		//On the result
-		assertTrue(res.getConstraint().equals(new Edge(12,9,0,10,10,0)));
+		assertTrue(res.getConstraint().equals(new DEdge(12,9,0,10,10,0)));
 		assertTrue(res.getBoundaryEdges().size()==3);
-		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(res.getBoundaryEdges().get(0).equals(new DEdge(10,10,0,8,11,0)));
 		assertTrue(res.getBoundaryEdges().get(0).isShared());
-		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new DEdge(8,11,0,6,12,0)));
 		assertTrue(res.getBoundaryEdges().get(1).isShared());
-		assertTrue(res.getBoundaryEdges().get(2).equals(new Edge(6,12,0,0,13,0)));
+		assertTrue(res.getBoundaryEdges().get(2).equals(new DEdge(6,12,0,0,13,0)));
 		//On the first BP
-		assertTrue(bp.getConstraint().equals(new Edge(6,12,0,15,0,0)));
+		assertTrue(bp.getConstraint().equals(new DEdge(6,12,0,15,0,0)));
 		assertTrue(bp.getBoundaryEdges().size()==2);
-		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new DEdge(8,11,0,6,12,0)));
 		assertTrue(bp.getBoundaryEdges().get(0).isShared());
-		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new DEdge(10,10,0,8,11,0)));
 		assertTrue(bp.getBoundaryEdges().get(1).isShared());
 	}
 
@@ -779,44 +779,44 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitDegenInsertPoint() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg, deg2;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg, deg2;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		deg2 = deg;
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
-		List<DelaunayTriangle> tri = res.connectPoint(new Point(10,11,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,9,0));
+		List<DTriangle> tri = res.connectPoint(new DPoint(10,11,0));
 		//we test the tiangles
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,10,11,0), new Edge(10,11,0,8,11,0), new Edge(8,11,0,10,10,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,10,11,0), new Edge(10,11,0,8,11,0), new Edge(8,11,0,6,12,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(10,10,0,10,11,0), new DEdge(10,11,0,8,11,0), new DEdge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(6,12,0,10,11,0), new DEdge(10,11,0,8,11,0), new DEdge(8,11,0,6,12,0))));
 		//The added and bad edges, now.
-		List<Edge> added = res.getAddedEdges();
-		List<Edge> bad = res.getBadEdges();
+		List<DEdge> added = res.getAddedEdges();
+		List<DEdge> bad = res.getBadEdges();
 		//The added edges
 		assertTrue(added.size()==3);
-		assertTrue(added.contains(new Edge(6,12,0,10,11,0)));
-		assertTrue(added.contains(new Edge(8,11,0,10,11,0)));
-		assertTrue(added.contains(new Edge(10,10,0,10,11,0)));
+		assertTrue(added.contains(new DEdge(6,12,0,10,11,0)));
+		assertTrue(added.contains(new DEdge(8,11,0,10,11,0)));
+		assertTrue(added.contains(new DEdge(10,10,0,10,11,0)));
 		//The bad edges
 		assertTrue(bad.isEmpty());
 		assertFalse(deg2.isDegenerated());
 		//And the boundary
-		List<Edge> bList = res.getBoundaryEdges();
+		List<DEdge> bList = res.getBoundaryEdges();
 		assertTrue(bList.size()==3);
-		assertTrue(bList.get(0).equals(new Edge(10,10,0,10,11,0)));
-		assertTrue(bList.get(1).equals(new Edge(10,11,0,6,12,0)));
-		assertTrue(bList.get(2).equals(new Edge(6,12,0,0,13,0)));
+		assertTrue(bList.get(0).equals(new DEdge(10,10,0,10,11,0)));
+		assertTrue(bList.get(1).equals(new DEdge(10,11,0,6,12,0)));
+		assertTrue(bList.get(2).equals(new DEdge(6,12,0,0,13,0)));
 	}
 
 	/**
@@ -825,48 +825,48 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitDegenInsertPointBis() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg, deg2;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg, deg2;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		deg2 = deg;
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
-		List<DelaunayTriangle> tri = res.connectPoint(new Point(10,14,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,9,0));
+		List<DTriangle> tri = res.connectPoint(new DPoint(10,14,0));
 		//we test the tiangles
 		assertTrue(tri.size()==3);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,10,14,0), new Edge(10,14,0,8,11,0), new Edge(8,11,0,10,10,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,10,14,0), new Edge(10,14,0,8,11,0), new Edge(8,11,0,6,12,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,10,14,0), new Edge(10,14,0,0,13,0), new Edge(0,13,0,6,12,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(10,10,0,10,14,0), new DEdge(10,14,0,8,11,0), new DEdge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(6,12,0,10,14,0), new DEdge(10,14,0,8,11,0), new DEdge(8,11,0,6,12,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(6,12,0,10,14,0), new DEdge(10,14,0,0,13,0), new DEdge(0,13,0,6,12,0))));
 		//The added and bad edges, now.
-		List<Edge> added = res.getAddedEdges();
-		List<Edge> bad = res.getBadEdges();
+		List<DEdge> added = res.getAddedEdges();
+		List<DEdge> bad = res.getBadEdges();
 		//The added edges
 		assertTrue(added.size()==4);
-		assertTrue(added.contains(new Edge(6,12,0,10,14,0)));
-		assertTrue(added.contains(new Edge(8,11,0,10,14,0)));
-		assertTrue(added.contains(new Edge(10,10,0,10,14,0)));
-		assertTrue(added.contains(new Edge(0,13,0,10,14,0)));
+		assertTrue(added.contains(new DEdge(6,12,0,10,14,0)));
+		assertTrue(added.contains(new DEdge(8,11,0,10,14,0)));
+		assertTrue(added.contains(new DEdge(10,10,0,10,14,0)));
+		assertTrue(added.contains(new DEdge(0,13,0,10,14,0)));
 		//The bad edges
 		assertTrue(bad.size()==1);
-		assertTrue(bad.contains(new Edge(0,13,0,6,12,0)));
+		assertTrue(bad.contains(new DEdge(0,13,0,6,12,0)));
 		assertFalse(deg2.isDegenerated());
 		//And the boundary
-		List<Edge> bList = res.getBoundaryEdges();
+		List<DEdge> bList = res.getBoundaryEdges();
 		assertTrue(bList.size()==2);
-		assertTrue(bList.get(0).equals(new Edge(10,10,0,10,14,0)));
-		assertTrue(bList.get(0).getStartPoint().equals(new Point(10,10,0)));
-		assertTrue(bList.get(1).equals(new Edge(10,14,0,0,13,0)));
-		assertTrue(bList.get(1).getStartPoint().equals(new Point(10,14,0)));
+		assertTrue(bList.get(0).equals(new DEdge(10,10,0,10,14,0)));
+		assertTrue(bList.get(0).getStartPoint().equals(new DPoint(10,10,0)));
+		assertTrue(bList.get(1).equals(new DEdge(10,14,0,0,13,0)));
+		assertTrue(bList.get(1).getStartPoint().equals(new DPoint(10,14,0)));
 	}
 
 	/**
@@ -875,45 +875,45 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitDegenInsertPointLower() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg, deg2;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg, deg2;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		deg2 = deg;
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
-		List<DelaunayTriangle> tri = bp.connectPoint(new Point(11,8,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,9,0));
+		List<DTriangle> tri = bp.connectPoint(new DPoint(11,8,0));
 		//we test the tiangles
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,10,10,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,6,12,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(10,10,0,11,8,0), new DEdge(11,8,0,8,11,0), new DEdge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(6,12,0,11,8,0), new DEdge(11,8,0,8,11,0), new DEdge(8,11,0,6,12,0))));
 		//The added and bad edges, now.
-		List<Edge> added = bp.getAddedEdges();
-		List<Edge> bad = bp.getBadEdges();
+		List<DEdge> added = bp.getAddedEdges();
+		List<DEdge> bad = bp.getBadEdges();
 		//The added edges
 		assertTrue(added.size()==3);
-		assertTrue(added.contains(new Edge(8,11,0,11,8,0)));
-		assertTrue(added.contains(new Edge(10,10,0,11,8,0)));
-		assertTrue(added.contains(new Edge(6,12,0,11,8,0)));
+		assertTrue(added.contains(new DEdge(8,11,0,11,8,0)));
+		assertTrue(added.contains(new DEdge(10,10,0,11,8,0)));
+		assertTrue(added.contains(new DEdge(6,12,0,11,8,0)));
 		//The bad edges
 		assertTrue(bad.isEmpty());
 		assertFalse(deg2.isDegenerated());
 		//And the boundary
-		List<Edge> bList = bp.getBoundaryEdges();
+		List<DEdge> bList = bp.getBoundaryEdges();
 		assertTrue(bList.size()==2);
-		assertTrue(bList.get(0).equals(new Edge(6,12,0,11,8,0)));
-		assertTrue(bList.get(0).getStartPoint().equals(new Point(6,12,0)));
-		assertTrue(bList.get(1).equals(new Edge(11,8,0,10,10,0)));
-		assertTrue(bList.get(1).getStartPoint().equals(new Point(11,8,0)));
+		assertTrue(bList.get(0).equals(new DEdge(6,12,0,11,8,0)));
+		assertTrue(bList.get(0).getStartPoint().equals(new DPoint(6,12,0)));
+		assertTrue(bList.get(1).equals(new DEdge(11,8,0,10,10,0)));
+		assertTrue(bList.get(1).getStartPoint().equals(new DPoint(11,8,0)));
 	}
 
 	/**
@@ -922,45 +922,45 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitDegenInsertPointLowerWorse() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg, deg2;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg, deg2;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		deg2 = deg;
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		bp.split(new Edge(10,10,0,12,10,0));
-		List<DelaunayTriangle> tri = bp.connectPoint(new Point(11,8,0));
+		bp.split(new DEdge(10,10,0,12,10,0));
+		List<DTriangle> tri = bp.connectPoint(new DPoint(11,8,0));
 		//we test the tiangles
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(10,10,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,10,10,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(6,12,0,11,8,0), new Edge(11,8,0,8,11,0), new Edge(8,11,0,6,12,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(10,10,0,11,8,0), new DEdge(11,8,0,8,11,0), new DEdge(8,11,0,10,10,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(6,12,0,11,8,0), new DEdge(11,8,0,8,11,0), new DEdge(8,11,0,6,12,0))));
 		//The added and bad edges, now.
-		List<Edge> added = bp.getAddedEdges();
-		List<Edge> bad = bp.getBadEdges();
+		List<DEdge> added = bp.getAddedEdges();
+		List<DEdge> bad = bp.getBadEdges();
 		//The added edges
 		assertTrue(added.size()==3);
-		assertTrue(added.contains(new Edge(8,11,0,11,8,0)));
-		assertTrue(added.contains(new Edge(10,10,0,11,8,0)));
-		assertTrue(added.contains(new Edge(6,12,0,11,8,0)));
+		assertTrue(added.contains(new DEdge(8,11,0,11,8,0)));
+		assertTrue(added.contains(new DEdge(10,10,0,11,8,0)));
+		assertTrue(added.contains(new DEdge(6,12,0,11,8,0)));
 		//The bad edges
 		assertTrue(bad.isEmpty());
 		assertFalse(deg2.isDegenerated());
 		//And the boundary
-		List<Edge> bList = bp.getBoundaryEdges();
+		List<DEdge> bList = bp.getBoundaryEdges();
 		assertTrue(bList.size()==2);
-		assertTrue(bList.get(0).equals(new Edge(6,12,0,11,8,0)));
-		assertTrue(bList.get(0).getStartPoint().equals(new Point(6,12,0)));
-		assertTrue(bList.get(1).equals(new Edge(11,8,0,10,10,0)));
-		assertTrue(bList.get(1).getStartPoint().equals(new Point(11,8,0)));
+		assertTrue(bList.get(0).equals(new DEdge(6,12,0,11,8,0)));
+		assertTrue(bList.get(0).getStartPoint().equals(new DPoint(6,12,0)));
+		assertTrue(bList.get(1).equals(new DEdge(11,8,0,10,10,0)));
+		assertTrue(bList.get(1).getStartPoint().equals(new DPoint(11,8,0)));
 	}
 
 	/**
@@ -969,30 +969,30 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitDegenDEOnly() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,9,0));
 		//and we make our tests.
 		//On the result
-		assertTrue(res.getConstraint().equals(new Edge(12,9,0,10,10,0)));
+		assertTrue(res.getConstraint().equals(new DEdge(12,9,0,10,10,0)));
 		assertTrue(res.getBoundaryEdges().size()==2);
-		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(10,10,0,8,11,0)));
-		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(8,11,0,6,12,0)));
+		assertTrue(res.getBoundaryEdges().get(0).equals(new DEdge(10,10,0,8,11,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new DEdge(8,11,0,6,12,0)));
 		//On the first BP
-		assertTrue(bp.getConstraint().equals(new Edge(6,12,0,15,0,0)));
+		assertTrue(bp.getConstraint().equals(new DEdge(6,12,0,15,0,0)));
 		assertTrue(bp.getBoundaryEdges().size()==2);
-		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(8,11,0,6,12,0)));
-		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new DEdge(8,11,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new DEdge(10,10,0,8,11,0)));
 	}
 
 	/**
@@ -1001,33 +1001,33 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSplitDegenBis() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,6,0,12,0,0);
-		deg = new Edge(0,6,0,4,7,0);
+		DEdge cstr = new DEdge(0,6,0,12,0,0);
+		deg = new DEdge(0,6,0,4,7,0);
 		bounds.add(deg);
-		deg = new Edge(4,7,0,6,9,0);
+		deg = new DEdge(4,7,0,6,9,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,9,0,8,11,0);
+		deg = new DEdge(6,9,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(8,11,0,10,13,0));
+		BoundaryPart res = bp.split(new DEdge(8,11,0,10,13,0));
 		//and we make our tests.
 		//On the result
-		assertTrue(res.getConstraint().equals(new Edge(8,11,0,10,13,0)));
+		assertTrue(res.getConstraint().equals(new DEdge(8,11,0,10,13,0)));
 		assertTrue(res.getBoundaryEdges().size()==2);
-		assertTrue(res.getBoundaryEdges().get(0).equals(new Edge(6,9,0,8,11,0)));
-		assertTrue(res.getBoundaryEdges().get(1).equals(new Edge(4,7,0,6,9,0)));
+		assertTrue(res.getBoundaryEdges().get(0).equals(new DEdge(6,9,0,8,11,0)));
+		assertTrue(res.getBoundaryEdges().get(1).equals(new DEdge(4,7,0,6,9,0)));
 		//On the first BP
-		assertTrue(bp.getConstraint().equals(new Edge(0,6,0,12,0,0)));
+		assertTrue(bp.getConstraint().equals(new DEdge(0,6,0,12,0,0)));
 		assertTrue(bp.getBoundaryEdges().size()==3);
-		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(0,6,0,4,7,0)));
-		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(4,7,0,6,9,0)));
-		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(6,9,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new DEdge(0,6,0,4,7,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new DEdge(4,7,0,6,9,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new DEdge(6,9,0,8,11,0)));
 	}
 
 	/**
@@ -1037,38 +1037,38 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testConnectToSplitDegenDEOnly () throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(0,6,0,12,0,0);
-		deg = new Edge(0,6,0,4,7,0);
+		DEdge cstr = new DEdge(0,6,0,12,0,0);
+		deg = new DEdge(0,6,0,4,7,0);
 		bounds.add(deg);
-		deg = new Edge(4,7,0,6,9,0);
+		deg = new DEdge(4,7,0,6,9,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,9,0,8,11,0);
+		deg = new DEdge(6,9,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(8,11,0,10,13,0));
+		BoundaryPart res = bp.split(new DEdge(8,11,0,10,13,0));
 		//we connect a point to the newly generated BP
-		List<DelaunayTriangle> tri = res.connectPoint(new Point(9,13,0));
+		List<DTriangle> tri = res.connectPoint(new DPoint(9,13,0));
 		assertTrue(tri.size()==2);
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(8,11,0,9,13,0), new Edge(9,13,0,6,9,0), new Edge(6,9,0,8,11,0))));
-		assertTrue(tri.contains(new DelaunayTriangle(new Edge(4,7,0,9,13,0), new Edge(9,13,0,6,9,0), new Edge(6,9,0,4,7,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(8,11,0,9,13,0), new DEdge(9,13,0,6,9,0), new DEdge(6,9,0,8,11,0))));
+		assertTrue(tri.contains(new DTriangle(new DEdge(4,7,0,9,13,0), new DEdge(9,13,0,6,9,0), new DEdge(6,9,0,4,7,0))));
 		//We check the boundary
-		List<Edge> boundEd = res.getBoundaryEdges();
+		List<DEdge> boundEd = res.getBoundaryEdges();
 		assertTrue(boundEd.size()==2);
-		assertTrue(boundEd.contains(new Edge(8,11,0,9,13,0)));
-		assertTrue(boundEd.contains(new Edge(4,7,0,9,13,0)));
-		List<Edge> bad = res.getBadEdges();
-		List<Edge> added = res.getAddedEdges();
+		assertTrue(boundEd.contains(new DEdge(8,11,0,9,13,0)));
+		assertTrue(boundEd.contains(new DEdge(4,7,0,9,13,0)));
+		List<DEdge> bad = res.getBadEdges();
+		List<DEdge> added = res.getAddedEdges();
 		//we test the added edges.
 		assertTrue(added.size()==3);
-		assertTrue(added.contains(new Edge(4,7,0,9,13,0)));
-		assertTrue(added.contains(new Edge(6,9,0,9,13,0)));
-		assertTrue(added.contains(new Edge(8,11,0,9,13,0)));
+		assertTrue(added.contains(new DEdge(4,7,0,9,13,0)));
+		assertTrue(added.contains(new DEdge(6,9,0,9,13,0)));
+		assertTrue(added.contains(new DEdge(8,11,0,9,13,0)));
 		assertTrue(bad.isEmpty());
 	}
 
@@ -1078,21 +1078,21 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSharing() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,9,0));
 		//We make some tests on the original BP
 		assertTrue(bp.getBoundaryEdges().get(0).isShared());
 		assertTrue(bp.getBoundaryEdges().get(1).isShared());
@@ -1108,41 +1108,41 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSharingRemoval() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,9,0));
-		bp.connectPoint(new Point(11,8,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,9,0));
+		bp.connectPoint(new DPoint(11,8,0));
 		//We make some tests on the new BP
 		assertFalse(res.getBoundaryEdges().get(0).isShared());
 		assertFalse(res.getBoundaryEdges().get(1).isShared());
 		assertFalse(res.getBoundaryEdges().get(2).isShared());
-		bounds = new ArrayList<Edge>();
+		bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		res = bp.split(new Edge(10,10,0,12,9,0));
-		res.connectPoint(new Point(11,14,0));
+		res = bp.split(new DEdge(10,10,0,12,9,0));
+		res.connectPoint(new DPoint(11,14,0));
 		//We make some tests on the original BP
 		assertFalse(bp.getBoundaryEdges().get(0).isShared());
 		assertFalse(bp.getBoundaryEdges().get(1).isShared());
@@ -1155,23 +1155,23 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSharingInsertNewDegen() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,11,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,11,0));
 		assertTrue(res.getBoundaryEdges().size()==3);
-		bp.connectPoint(new Point (12,10,0));
+		bp.connectPoint(new DPoint (12,10,0));
 		assertTrue(bp.getBoundaryEdges().size()==3);
 		assertTrue(bp.getBoundaryEdges().get(0).isShared());
 		assertTrue(bp.getBoundaryEdges().get(1).isShared());
@@ -1186,34 +1186,34 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSharingInsertNewDegenFurther() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,11,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,11,0));
 		assertTrue(res.getBoundaryEdges().size()==3);
-		List<DelaunayTriangle> tri = bp.connectPoint(new Point (12,10,0));
+		List<DTriangle> tri = bp.connectPoint(new DPoint (12,10,0));
 		assertTrue(tri.isEmpty());
-		tri = bp.connectPoint(new Point (13,11,0));
+		tri = bp.connectPoint(new DPoint (13,11,0));
 		assertTrue(bp.getBoundaryEdges().size()==5);
 		assertTrue(bp.getBoundaryEdges().get(0).isShared());
-		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(6,12,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new DEdge(6,12,0,8,11,0)));
 		assertTrue(bp.getBoundaryEdges().get(1).isShared());
-		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(8,11,0,10,10,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new DEdge(8,11,0,10,10,0)));
 		assertFalse(bp.getBoundaryEdges().get(2).isDegenerated());
-		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(10,10,0,12,10,0)));
-		assertTrue(bp.getBoundaryEdges().get(3).equals(new Edge(13,11,0,12,10,0)));
-		assertTrue(bp.getBoundaryEdges().get(4).equals(new Edge(10,10,0,13,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new DEdge(10,10,0,12,10,0)));
+		assertTrue(bp.getBoundaryEdges().get(3).equals(new DEdge(13,11,0,12,10,0)));
+		assertTrue(bp.getBoundaryEdges().get(4).equals(new DEdge(10,10,0,13,11,0)));
 		assertTrue(tri.size()==1);
 	}
 
@@ -1224,36 +1224,36 @@ public class TestBoundaryPart extends BaseUtility {
 	 */
 	public void testSharingSwapOrder() throws DelaunayError {
 		BoundaryPart bp;
-		Edge deg;
-		List<Edge> bounds = new ArrayList<Edge>();
+		DEdge deg;
+		List<DEdge> bounds = new ArrayList<DEdge>();
 		//We prepare the first BP
-		Edge cstr = new Edge(6,12,0,15,0,0);
-		deg = new Edge(6,12,0,8,11,0);
+		DEdge cstr = new DEdge(6,12,0,15,0,0);
+		deg = new DEdge(6,12,0,8,11,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(8,11,0,10,10,0);
+		deg = new DEdge(8,11,0,10,10,0);
 		deg.setDegenerated(true);
 		bounds.add(deg);
-		deg = new Edge(6,12,0,0,13,0);
+		deg = new DEdge(6,12,0,0,13,0);
 		bounds.add(deg);
 		bp = new BoundaryPart(bounds, cstr);
 		//We split the first bp
-		BoundaryPart res = bp.split(new Edge(10,10,0,12,6,0));
+		BoundaryPart res = bp.split(new DEdge(10,10,0,12,6,0));
 		assertTrue(res.getBoundaryEdges().size()==3);
-		List<DelaunayTriangle> tri = res.connectPoint(new Point (12,8,0));
+		List<DTriangle> tri = res.connectPoint(new DPoint (12,8,0));
 		assertTrue(tri.isEmpty());
-		tri = res.connectPoint(new Point (14,6,0));
+		tri = res.connectPoint(new DPoint (14,6,0));
 		assertTrue(tri.isEmpty());
-		bp=res.split(new Edge(14,6,0,15,3,0));
+		bp=res.split(new DEdge(14,6,0,15,3,0));
 		assertTrue(bp.getBoundaryEdges().size()==5);
 		assertTrue(bp.getBoundaryEdges().get(0).isShared());
-		assertTrue(bp.getBoundaryEdges().get(0).equals(new Edge(12,8,0,14,6,0)));
+		assertTrue(bp.getBoundaryEdges().get(0).equals(new DEdge(12,8,0,14,6,0)));
 		assertTrue(bp.getBoundaryEdges().get(1).isShared());
-		assertTrue(bp.getBoundaryEdges().get(1).equals(new Edge(12,8,0,10,10,0)));
+		assertTrue(bp.getBoundaryEdges().get(1).equals(new DEdge(12,8,0,10,10,0)));
 		assertTrue(bp.getBoundaryEdges().get(2).isShared());
-		assertTrue(bp.getBoundaryEdges().get(2).equals(new Edge(10,10,0,8,11,0)));
+		assertTrue(bp.getBoundaryEdges().get(2).equals(new DEdge(10,10,0,8,11,0)));
 		assertTrue(bp.getBoundaryEdges().get(3).isShared());
-		assertTrue(bp.getBoundaryEdges().get(3).equals(new Edge(8,11,0,6,12,0)));
-		assertTrue(bp.getBoundaryEdges().get(4).equals(new Edge(0,13,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(3).equals(new DEdge(8,11,0,6,12,0)));
+		assertTrue(bp.getBoundaryEdges().get(4).equals(new DEdge(0,13,0,6,12,0)));
 	}
 }

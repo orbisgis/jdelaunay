@@ -118,13 +118,13 @@ public final class Tools {
 	 * @param minIndex
 	 * @param maxIndex
 	 */
-	public static void quickSortPoints(ArrayList<Point> points,
+	public static void quickSortPoints(ArrayList<DPoint> points,
 			int minIndex, int maxIndex) {
 		int i, j;
 		int enregRef;
 		double cleRef1, cleRef2;
 		boolean found;
-		Point aPoint;
+		DPoint aPoint;
 
 		i = minIndex;
 		j = maxIndex;
@@ -199,7 +199,7 @@ public final class Tools {
 	 * 
 	 * @param points
 	 */
-	protected static void quickSortPoints(ArrayList<Point> points) {
+	protected static void quickSortPoints(ArrayList<DPoint> points) {
 		Tools.quickSortPoints(points, 0, points.size() - 1);
 	}
 
@@ -210,7 +210,7 @@ public final class Tools {
 	 * @param minIndex
 	 * @param maxIndex
 	 */
-	protected static void quickSortEdges(ArrayList<Edge> edges, int minIndex,
+	protected static void quickSortEdges(ArrayList<DEdge> edges, int minIndex,
 			int maxIndex, boolean switchPoints) {
 		int i, j;
 		int enregRef;
@@ -222,7 +222,7 @@ public final class Tools {
 		i = minIndex;
 		j = maxIndex;
 		enregRef = (maxIndex + minIndex) / 2;
-		Edge anEdge = edges.get(enregRef);
+		DEdge anEdge = edges.get(enregRef);
 		cleRef1 = anEdge.getStartPoint().getX();
 		cleRef2 = anEdge.getStartPoint().getY();
 		cleRef3 = anEdge.getEndPoint().getX();
@@ -409,7 +409,7 @@ public final class Tools {
 	 * @param aPoint
 	 * @return
 	 */
-	public static double interpolateZ(Point p1, Point p2, Point aPoint) {
+	public static double interpolateZ(DPoint p1, DPoint p2, DPoint aPoint) {
 		double dist = p1.squareDistance(p2);
 		double z = p2.getZ() - p1.getZ();
 

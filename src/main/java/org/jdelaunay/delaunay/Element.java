@@ -128,7 +128,7 @@ public abstract class Element {
 	 * @param aPoint
 	 * @return bool
 	 */
-	public abstract boolean contains(Point aPoint);
+	public abstract boolean contains(DPoint aPoint);
 	
 	/**
 	 * Check if the coordinate is inside the element

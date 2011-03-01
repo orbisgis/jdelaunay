@@ -22,10 +22,10 @@ public class DelaunayForHydroTest extends BaseUtility {
 		aMesh.setPoints(getPoints());
 		aMesh.processDelaunay();
 
-		List<DelaunayTriangle> triangles = aMesh.getTriangleList();
+		List<DTriangle> triangles = aMesh.getTriangleList();
 
 		int nbFlat = 0;
-		for (DelaunayTriangle myTriangle : triangles) {
+		for (DTriangle myTriangle : triangles) {
 
 			if (myTriangle.isFlatSlope()) {
 				nbFlat++;
@@ -37,7 +37,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 		triangles = aMesh.getTriangleList();
 
 		nbFlat = 0;
-		for (DelaunayTriangle myTriangle : triangles) {
+		for (DTriangle myTriangle : triangles) {
 
 			if (myTriangle.isFlatSlope()) {
 				nbFlat++;
@@ -60,9 +60,9 @@ public class DelaunayForHydroTest extends BaseUtility {
 		
 		HydroNetwork.morphologicalQualification();
 
-		List<Edge> edges = aMesh.getEdges();
+		List<DEdge> edges = aMesh.getEdges();
 
-		for (Edge myEdge : edges) {
+		for (DEdge myEdge : edges) {
 
 			myEdge.getProperty();
 		}

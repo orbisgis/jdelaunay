@@ -24,14 +24,14 @@ public class ConstrainedMesh implements Serializable {
 	private static Logger log = Logger.getLogger(ConstrainedMesh.class);
 	//The list of triangles during the triangulation process.
 	//This list is sorted by using the implementation of Comparable in
-	//DelaunayTriangle.
-	private List<DelaunayTriangle> triangleList;
+	//DTriangle.
+	private List<DTriangle> triangleList;
 	//The list of edges.
-	private List<Edge> edges;
+	private List<DEdge> edges;
 	//The list of points used during the triangulation
-	private List<Point> points;
+	private List<DPoint> points;
 	//The lis of constraints used during the triangulation
-	private List<Edge> constraintEdges;
+	private List<DEdge> constraintEdges;
 	//A list of polygons that will be emptied after the triangulation
 	private List<ConstraintPolygon> polygons;
 	//
@@ -41,7 +41,7 @@ public class ConstrainedMesh implements Serializable {
 	//The two following lists are used only during computation.
 	//The bad edge queue list contains all the edges that coud be changed
 	//during a flip-flap operation
-	private transient List<Edge> badEdgesQueueList;
+	private transient List<DEdge> badEdgesQueueList;
 	//Permits to know if the mesh has been computed or not
 	private boolean meshComputed;
 	//Is the debug level used ?
@@ -71,10 +71,10 @@ public class ConstrainedMesh implements Serializable {
 	 * the points and edges you need before launching a processDelaunay() operation.
 	 */
 	public ConstrainedMesh() {
-		triangleList = new ArrayList<DelaunayTriangle>();
-		edges = new ArrayList<Edge>();
-		constraintEdges = new ArrayList<Edge>();
-		points = new ArrayList<Point>();
+		triangleList = new ArrayList<DTriangle>();
+		edges = new ArrayList<DEdge>();
+		constraintEdges = new ArrayList<DEdge>();
+		points = new ArrayList<DPoint>();
 		polygons = new ArrayList<ConstraintPolygon>();
 		meshComputed = false;
 		precision = 0;
@@ -84,14 +84,14 @@ public class ConstrainedMesh implements Serializable {
 		edgeGID = 0;
 		triangleGID = 0;
 
-		badEdgesQueueList = new LinkedList<Edge>();
+		badEdgesQueueList = new LinkedList<DEdge>();
 	}
 
 	/**
 	 * Get the list of edges that are to be processed by the flip flap algorithm
 	 * @return
 	 */
-	public final List<Edge> getBadEdgesQueueList() {
+	public final List<DEdge> getBadEdgesQueueList() {
 		return badEdgesQueueList;
 	}
 
@@ -99,7 +99,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Set the list of edges that are to be processed by the flip flap algorithm
 	 * @param badEdgesQueueList
 	 */
-	public final void setBadEdgesQueueList(LinkedList<Edge> badEdgesQueueList) {
+	public final void setBadEdgesQueueList(LinkedList<DEdge> badEdgesQueueList) {
 		this.badEdgesQueueList = badEdgesQueueList;
 	}
 
@@ -107,7 +107,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the list of edges that are used as constraints during triangulation
 	 * @return
 	 */
-	public final List<Edge> getConstraintEdges() {
+	public final List<DEdge> getConstraintEdges() {
 		return constraintEdges;
 	}
 
@@ -117,9 +117,9 @@ public class ConstrainedMesh implements Serializable {
 	 * and add all the corresponding points to the point list.
 	 * @param constraintEdges
 	 */
-	public final void setConstraintEdges(ArrayList<Edge> constraint) throws DelaunayError {
-		this.constraintEdges = new ArrayList<Edge>();
-		for (Edge e : constraint) {
+	public final void setConstraintEdges(ArrayList<DEdge> constraint) throws DelaunayError {
+		this.constraintEdges = new ArrayList<DEdge>();
+		for (DEdge e : constraint) {
 			//We lock the edge. It will not be supposed to be switched
 			//during a flip flap.
 			e.setLocked(true);
@@ -135,9 +135,9 @@ public class ConstrainedMesh implements Serializable {
 	 * @param e
 	 *	the edge we want to add
 	 */
-	public final void addConstraintEdge(Edge e) throws DelaunayError {
+	public final void addConstraintEdge(DEdge e) throws DelaunayError {
 		if (constraintEdges == null) {
-			constraintEdges = new ArrayList<Edge>();
+			constraintEdges = new ArrayList<DEdge>();
 		}
 		if(e.getPointLeft().equals(e.getEndPoint())){
 			e.swap();
@@ -168,7 +168,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the list of edges
 	 * @return
 	 */
-	public final List<Edge> getEdges() {
+	public final List<DEdge> getEdges() {
 		return edges;
 	}
 
@@ -176,9 +176,9 @@ public class ConstrainedMesh implements Serializable {
 	 * Set the list of edges
 	 * @param constraintEdges
 	 */
-	public final void setEdges(List<Edge> constraint) throws DelaunayError {
-		this.edges = new ArrayList<Edge>();
-		for (Edge e : constraint) {
+	public final void setEdges(List<DEdge> constraint) throws DelaunayError {
+		this.edges = new ArrayList<DEdge>();
+		for (DEdge e : constraint) {
 			addPoint(e.getStart());
 			addPoint(e.getEnd());
 			addEdge(e);
@@ -190,9 +190,9 @@ public class ConstrainedMesh implements Serializable {
 	 * @param e
 	 *	the edge we want to add
 	 */
-	public final void addEdge(Edge e) {
+	public final void addEdge(DEdge e) {
 		if (edges == null) {
-			edges = new ArrayList<Edge>();
+			edges = new ArrayList<DEdge>();
 		}
 		int constraintIndex = sortedListContains(constraintEdges, e);
 		if (constraintIndex < 0) {
@@ -205,10 +205,10 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
-	 * Remove an Edge from the list of edges.
+	 * Remove an DEdge from the list of edges.
 	 * @param e
 	 */
-	public final void removeEdge(Edge e) {
+	public final void removeEdge(DEdge e) {
 		//edges is a sorted list, using the left right sort. We are supposed
 		//to ensure unicity of objects in it, so we can use the binarysearch directly.
 		int index = Collections.binarySearch(edges, e);
@@ -223,9 +223,9 @@ public class ConstrainedMesh implements Serializable {
 	 * of the edges.
 	 * @return
 	 */
-	public final List<Edge> sortEdgesLeft(List<Edge> inputList) {
-		ArrayList<Edge> outputList = new ArrayList<Edge>();
-		for (Edge e : inputList) {
+	public final List<DEdge> sortEdgesLeft(List<DEdge> inputList) {
+		ArrayList<DEdge> outputList = new ArrayList<DEdge>();
+		for (DEdge e : inputList) {
 			addEdgeToLeftSortedList(outputList, e);
 		}
 		return outputList;
@@ -241,7 +241,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param sorted
 	 * @param edge
 	 */
-	private boolean addEdgeToLeftSortedList(List<Edge> sorted, Edge edge) {
+	private boolean addEdgeToLeftSortedList(List<DEdge> sorted, DEdge edge) {
 		return addToSortedList(edge, sorted);
 	}
 
@@ -250,7 +250,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param edge
 	 * @return
 	 */
-	public final int searchEdge(Edge edge) {
+	public final int searchEdge(DEdge edge) {
 		return Collections.binarySearch(edges, edge);
 	}
 
@@ -290,7 +290,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the list of triangles already computed and added in this mesh
 	 * @return
 	 */
-	public final List<DelaunayTriangle> getTriangleList() {
+	public final List<DTriangle> getTriangleList() {
 		return triangleList;
 	}
 
@@ -298,7 +298,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Add a triangle to the current constrained mesh
 	 * @param triangle
 	 */
-	public final void addTriangle(DelaunayTriangle triangle) {
+	public final void addTriangle(DTriangle triangle) {
 		triangleList.add(triangle);
 		triangleGID++;
 		triangle.setGID(triangleGID);
@@ -310,7 +310,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param tri
 	 * @return
 	 */
-	public final int containsTriangle(DelaunayTriangle tri) {
+	public final int containsTriangle(DTriangle tri) {
 		return sortedListContains(triangleList, tri);
 	}
 
@@ -318,7 +318,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Remove a triangle from the list of triangles
 	 * @param tri
 	 */
-	public final void removeTriangle(DelaunayTriangle tri) {
+	public final void removeTriangle(DTriangle tri) {
 //		//first we search it
 		triangleList.remove(tri);
 	}
@@ -327,7 +327,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the points contained in this mesh
 	 * @return
 	 */
-	public final List<Point> getPoints() {
+	public final List<DPoint> getPoints() {
 		return points;
 	}
 
@@ -338,8 +338,8 @@ public class ConstrainedMesh implements Serializable {
 	 * @param z
 	 * @return
 	 */
-	public final Point getPoint(double x, double y, double z) throws DelaunayError{
-		Point pt = new Point(x,y,z);
+	public final DPoint getPoint(double x, double y, double z) throws DelaunayError{
+		DPoint pt = new DPoint(x,y,z);
 		int c = listContainsPoint(pt);
 		if(c<0){
 			return null;
@@ -370,7 +370,7 @@ public class ConstrainedMesh implements Serializable {
 	 */
 	public final Envelope getBoundingBox() {
 		Envelope env = new Envelope();
-		for (Point p : points) {
+		for (DPoint p : points) {
 			env.expandToInclude(p.getCoordinate());
 		}
 		return env;
@@ -398,16 +398,16 @@ public class ConstrainedMesh implements Serializable {
 	 * any duplication in your set of points...
 	 * @param points
 	 */
-	public final void setPoints(List<Point> pts) throws DelaunayError {
+	public final void setPoints(List<DPoint> pts) throws DelaunayError {
 		if(pts == null){
-			points = new ArrayList<Point>();
+			points = new ArrayList<DPoint>();
 		} else {
 			Collections.sort(pts);
-			points = new ArrayList<Point>();
+			points = new ArrayList<DPoint>();
 			extMaxY = null;
 			extMinY = null;
 			extMinX = null;
-			for(Point pt : pts){
+			for(DPoint pt : pts){
 				updateExtensionPoints(pt);
 			}
 			this.points = pts;
@@ -419,9 +419,9 @@ public class ConstrainedMesh implements Serializable {
 	 * The list of points is supposed to be sorted.
 	 * @param point
 	 */
-	public final void addPoint(Point point) throws DelaunayError {
+	public final void addPoint(DPoint point) throws DelaunayError {
 		if (points == null) {
-			points = new ArrayList<Point>();
+			points = new ArrayList<DPoint>();
 		}
 		updateExtensionPoints(point);
 		boolean res = addToSortedList(point, points);
@@ -442,10 +442,10 @@ public class ConstrainedMesh implements Serializable {
 	 *	y-coordinate minus 1).
 	 * @throws DelaunayError
 	 */
-	public final List<Point> getExtensionPoints() throws DelaunayError{
-		ArrayList<Point> ret = new ArrayList();
-		ret.add(new Point(extMinX, extMaxY, 0));
-		ret.add(new Point(extMinX, extMinY, 0));
+	public final List<DPoint> getExtensionPoints() throws DelaunayError{
+		ArrayList<DPoint> ret = new ArrayList();
+		ret.add(new DPoint(extMinX, extMaxY, 0));
+		ret.add(new DPoint(extMinX, extMinY, 0));
 		return ret;
 	}
 
@@ -455,7 +455,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param pt
 	 * @throws DelaunayError
 	 */
-	private void updateExtensionPoints(Point pt) throws DelaunayError {
+	private void updateExtensionPoints(DPoint pt) throws DelaunayError {
 		if(extMinX == null){
 			if(!points.isEmpty()){
 				throw new DelaunayError("we should have added this coordinate before !");
@@ -508,7 +508,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param p
 	 * @return the index of p, -1 if it's not in the list
 	 */
-	public final int listContainsPoint(Point p) {
+	public final int listContainsPoint(DPoint p) {
 		return sortedListContains(points, p);
 	}
 
@@ -540,37 +540,37 @@ public class ConstrainedMesh implements Serializable {
 		//The event points are the extremities and intersections of the
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
-		ArrayList<Point> eventPoints = new ArrayList<Point>();
+		ArrayList<DPoint> eventPoints = new ArrayList<DPoint>();
 		//We fill the list.
-		for (Edge edge : constraintEdges) {
+		for (DEdge edge : constraintEdges) {
 			addToSortedList(edge.getStart(), eventPoints);
 			addToSortedList(edge.getEnd(), eventPoints);
 		}
 		//we are about to perform the sweepline algorithm
-		Point currentEvent = null;
+		DPoint currentEvent = null;
 		//edgeBuffer will contain the edges sorted vertically
 		VerticalList edgeBuffer = new VerticalList(0);
 		//We keep a shallow copy of constraintEdges...
-		List<Edge> edgeMemory = constraintEdges;
+		List<DEdge> edgeMemory = constraintEdges;
 		//...and we empty it
-		constraintEdges = new ArrayList<Edge>();
+		constraintEdges = new ArrayList<DEdge>();
 		//The absciss where we search the intersections
 		double abs;
 		//Used in the  loop...
 		int i = 0;//The first while
 		int j = 0;//the inner while
-		Edge e1, e2; //the edges that will be compared in the for loop
-		Edge inter1 = null;// the edges resulting of the intersection.
-		Edge inter2 = null;
-		Edge inter3 = null;
-		Edge inter4 = null;
-		Point newEvent = null;//the event that will be added to the eventList
-		Edge edgeEvent = null;//used when the intersection is an edge
-		Point leftMost = null;
-		Point rightMost = null;
+		DEdge e1, e2; //the edges that will be compared in the for loop
+		DEdge inter1 = null;// the edges resulting of the intersection.
+		DEdge inter2 = null;
+		DEdge inter3 = null;
+		DEdge inter4 = null;
+		DPoint newEvent = null;//the event that will be added to the eventList
+		DEdge edgeEvent = null;//used when the intersection is an edge
+		DPoint leftMost = null;
+		DPoint rightMost = null;
 		Element intersection = null;
-		Edge currentMemEdge = null;
-		Edge rm;
+		DEdge currentMemEdge = null;
+		DEdge rm;
 		int memoryPos = 0;
 		int rmCount;
 		int mem;
@@ -608,10 +608,10 @@ public class ConstrainedMesh implements Serializable {
 					e2 = edgeBuffer.get(j);
 					intersection = e1.getIntersection(e2);
 					rmCount = 0;
-					if (intersection instanceof Point) {
+					if (intersection instanceof DPoint) {
 						//We have a single intersection point.
 						//We must check it's not at an extremity.
-						newEvent = (Point) intersection;
+						newEvent = (DPoint) intersection;
 						if (!e1.isExtremity(newEvent) || !e2.isExtremity(newEvent)) {
 							//We've found an intersection between two non-colinear edges
 							//We must check that this intersection point is not
@@ -627,13 +627,13 @@ public class ConstrainedMesh implements Serializable {
 									if(newEvent.equals2D(e1.getPointRight())){
 										newEvent = e1.getPointRight();
 									}
-									inter2 = new Edge(newEvent, e2.getPointLeft() );
+									inter2 = new DEdge(newEvent, e2.getPointLeft() );
 									addConstraintEdge(inter2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
-									inter4 = new Edge(newEvent, e2.getPointRight());
+									inter4 = new DEdge(newEvent, e2.getPointRight());
 									edgeBuffer.addEdge(inter4);
 									rmCount++;
 								} else if (newEvent.equals2D(e2.getPointRight())) {
@@ -651,13 +651,13 @@ public class ConstrainedMesh implements Serializable {
 									if(newEvent.equals2D(e2.getPointRight())){
 										newEvent = e2.getPointRight();
 									}
-									inter1 = new Edge(e1.getPointLeft(), newEvent);
+									inter1 = new DEdge(e1.getPointLeft(), newEvent);
 									addConstraintEdge(inter1);
 									rm = edgeBuffer.remove(j - 1);
 									if (!rm.equals(e1)) {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
-									inter3 = new Edge(e1.getPointRight(), newEvent);
+									inter3 = new DEdge(e1.getPointRight(), newEvent);
 									edgeBuffer.addEdge(inter3);
 									rmCount++;
 								} else if (newEvent.equals2D(e1.getPointRight())) {
@@ -692,13 +692,13 @@ public class ConstrainedMesh implements Serializable {
 							}
 							j = (j - rmCount < 0 ? 0 : j - rmCount);
 						}
-					} else if (intersection instanceof Edge) {
+					} else if (intersection instanceof DEdge) {
 						//The intersection is an edge. There are two possible cases :
 						//The left point of the intersection is at the extremity of e1 and e2 : we
 						//register the right point as an event
 						//The left point is the extremity of e1 OR (exclusive) of e2. It is an event,
 						//and certainly the current one.
-						edgeEvent = (Edge) intersection;
+						edgeEvent = (DEdge) intersection;
 						newEvent = edgeEvent.getPointLeft();
 						//the intersection point is inside one of the edges.
 						//We are supposed to be on it..
@@ -726,11 +726,11 @@ public class ConstrainedMesh implements Serializable {
 							}
 							j--;
 							if (leftMost.compareTo2D(newEvent) == -1) {
-								inter1 = new Edge(leftMost, newEvent);
+								inter1 = new DEdge(leftMost, newEvent);
 							}
 							inter2 = edgeEvent;
 							if (rightMost.compareTo2D(edgeEvent.getPointRight()) == 1) {
-								inter3 = new Edge(edgeEvent.getPointRight(), rightMost);
+								inter3 = new DEdge(edgeEvent.getPointRight(), rightMost);
 							}
 							if (inter1 != null) {
 								if (inter1.getPointRight().compareTo2D(currentEvent) == 1) {
@@ -795,7 +795,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param p
 	 * @throws DelaunayError
 	 */
-	public final void sortEdgesVertically(List<Edge> edgeList, Point p) throws DelaunayError {
+	public final void sortEdgesVertically(List<DEdge> edgeList, DPoint p) throws DelaunayError {
 		sortEdgesVertically(edgeList, p.getX());
 	}
 
@@ -806,12 +806,12 @@ public class ConstrainedMesh implements Serializable {
 	 * @param edgeList
 	 * @param x
 	 */
-	public final void sortEdgesVertically(List<Edge> edgeList, double abs) throws DelaunayError {
+	public final void sortEdgesVertically(List<DEdge> edgeList, double abs) throws DelaunayError {
 		int s = edgeList.size();
 		int i = 0;
 		int c = 0;
-		Edge e1;
-		Edge e2;
+		DEdge e1;
+		DEdge e2;
 		while (i < s - 1) {
 			e1 = edgeList.get(i);
 			e2 = edgeList.get(i + 1);
@@ -827,14 +827,14 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
-	 * This method will insert a new Edge in a vertically sorted list, as described in
+	 * This method will insert a new DEdge in a vertically sorted list, as described in
 	 * sortEdgesVertically.
 	 * Be careful when using this method. In fact, you must use the same absciss
 	 * here that the one which has been used when sorting the list.
 	 * @param edge
 	 * @param edgeList
 	 */
-	public final int insertEdgeVerticalList(Edge edge, List<Edge> edgeList, double abs) throws DelaunayError {
+	public final int insertEdgeVerticalList(DEdge edge, List<DEdge> edgeList, double abs) throws DelaunayError {
 		if (edgeList.isEmpty()) {
 			edgeList.add(edge);
 		}
@@ -847,8 +847,8 @@ public class ConstrainedMesh implements Serializable {
 	 * @param edgeList
 	 * @return
 	 */
-	public final boolean isVerticallySorted(List<Edge> edgeList, double abs) {
-		Edge e1, e2;
+	public final boolean isVerticallySorted(List<DEdge> edgeList, double abs) {
+		DEdge e1, e2;
 		e2 = edgeList.get(0);
 		for (int i = 1; i < edgeList.size(); i++) {
 			e1 = e2;
@@ -870,11 +870,11 @@ public class ConstrainedMesh implements Serializable {
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public final boolean intersectsExistingEdges(Edge edge) throws DelaunayError {
+	public final boolean intersectsExistingEdges(DEdge edge) throws DelaunayError {
 		int inter;
-		for (Edge ed : edges) {
+		for (DEdge ed : edges) {
 			inter = ed.intersects(edge);
-			if (inter == Edge.INTERSECT || inter == Edge.SHARE_EDGE_PART) {
+			if (inter == DEdge.INTERSECT || inter == DEdge.SHARE_EDGE_PART) {
 				return true;
 			}
 		}
@@ -886,9 +886,9 @@ public class ConstrainedMesh implements Serializable {
 	 * the eventList.
 	 * @param edgeList
 	 */
-	public final void addPointsFromNeighbourEdges(List<Edge> edgeList, List<Point> eventList) throws DelaunayError {
-		Edge e1;
-		Edge e2;
+	public final void addPointsFromNeighbourEdges(List<DEdge> edgeList, List<DPoint> eventList) throws DelaunayError {
+		DEdge e1;
+		DEdge e2;
 		Element inter = null;
 		//we check that our paremeters are not null, and that our edge list contains
 		//at least two edges, because they couldn't be intersections otherwise.
@@ -900,10 +900,10 @@ public class ConstrainedMesh implements Serializable {
 				e2 = edgeList.get(i + 1);
 				inter = e1.getIntersection(e2);
 				if (inter != null) {
-					if (inter instanceof Point) {
-						eventList.add((Point) inter);
+					if (inter instanceof DPoint) {
+						eventList.add((DPoint) inter);
 					} else {
-						eventList.add(((Edge) inter).getPointLeft());
+						eventList.add(((DEdge) inter).getPointLeft());
 					}
 				}
 			}
@@ -915,14 +915,14 @@ public class ConstrainedMesh implements Serializable {
 	 * @param left
 	 * @return
 	 */
-	public final List<Edge> getConstraintsFromLeftPoint(Point left) {
+	public final List<DEdge> getConstraintsFromLeftPoint(DPoint left) {
 		//The edge left-left is the minimum edge whose leftpoint is left.
-		List<Edge> retList = new ArrayList();
+		List<DEdge> retList = new ArrayList();
 		if (constraintEdges == null || constraintEdges.isEmpty()) {
 			return retList;
 		}
 		int size = constraintEdges.size();
-		Edge leftSearch = new Edge(left, left);
+		DEdge leftSearch = new DEdge(left, left);
 		int index = Collections.binarySearch(constraintEdges, leftSearch);
 		index = index < 0 ? -index - 1 : index;
 		while (index < size && constraintEdges.get(index).getPointLeft().equals(left)) {
@@ -937,14 +937,14 @@ public class ConstrainedMesh implements Serializable {
 	 * @param left
 	 * @return
 	 */
-	public final List<Edge> getConstraintFromLPVertical(Point left){
-		List<Edge> retList = getConstraintsFromLeftPoint(left);
+	public final List<DEdge> getConstraintFromLPVertical(DPoint left){
+		List<DEdge> retList = getConstraintsFromLeftPoint(left);
 		VerticalComparator vc = new VerticalComparator(left.getX());
 		Collections.sort(retList, vc);
 		//Vertical constraints are managed in a way that put the potential one
 		//linked to left at the beginning of the list. It shoule be the last one.
 		if(!retList.isEmpty() && retList.get(0).isVertical()){
-			Edge tmp = retList.get(0);
+			DEdge tmp = retList.get(0);
 			retList.remove(0);
 			retList.add(tmp);
 		}
@@ -966,31 +966,31 @@ public class ConstrainedMesh implements Serializable {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
 		} else {
 			// general data structures
-			badEdgesQueueList = new LinkedList<Edge>();
-			edges = new ArrayList<Edge>();
-			triangleList = new ArrayList<DelaunayTriangle>();
+			badEdgesQueueList = new LinkedList<DEdge>();
+			edges = new ArrayList<DEdge>();
+			triangleList = new ArrayList<DTriangle>();
 
 			// sort points
 			if (verbose) {
 				log.trace("Getting points");
 			}
-			ListIterator<Point> iterPoint = points.listIterator();
+			ListIterator<DPoint> iterPoint = points.listIterator();
 
-			Point p1 = iterPoint.next();
-			Point p2 = iterPoint.next();
-			Edge e1 = new Edge(p1, p2);
+			DPoint p1 = iterPoint.next();
+			DPoint p2 = iterPoint.next();
+			DEdge e1 = new DEdge(p1, p2);
 			e1 = replaceByConstraint(e1);
-			List<Edge> fromLeft = getConstraintFromLPVertical(p1);
+			List<DEdge> fromLeft = getConstraintFromLPVertical(p1);
 			//This operaton connects the two first points and their linked constraints.
 			Boundary bound = buildStartBoundary(p1, e1, fromLeft, getConstraintFromLPVertical(p2));
-			List<Edge> added ;
-			List<DelaunayTriangle> tri;
+			List<DEdge> added ;
+			List<DTriangle> tri;
 			while(iterPoint.hasNext()){
 				p2=iterPoint.next();
 				fromLeft = getConstraintFromLPVertical(p2);
 				//The insertion is performed here !
 				tri = bound.insertPoint(p2, fromLeft);
-				for(DelaunayTriangle t : tri){
+				for(DTriangle t : tri){
 					triangleGID++;
 					t.setGID(triangleGID);
 				}
@@ -998,7 +998,7 @@ public class ConstrainedMesh implements Serializable {
 
 				//We retrieve the edges that have been added to the mesh.
 				added = bound.getAddedEdges();
-				for(Edge e : added){
+				for(DEdge e : added){
 					edgeGID++;
 					e.setGID(edgeGID);
 				}
@@ -1028,13 +1028,13 @@ public class ConstrainedMesh implements Serializable {
 	 * @param constraintsP1
 	 * @return
 	 */
-	final Boundary buildStartBoundary(Point p1, Edge e1, List<Edge> constraintsP1, List<Edge> constraintsP2){
+	final Boundary buildStartBoundary(DPoint p1, DEdge e1, List<DEdge> constraintsP1, List<DEdge> constraintsP2){
 		BoundaryPart bp;
 		Boundary bound = new Boundary();
-		List<Edge> boundEdges = new LinkedList<Edge>();
+		List<DEdge> boundEdges = new LinkedList<DEdge>();
 		boundEdges.add(e1);
 		//we need two different lists to avoid causing ConcurrentModificationException
-		List<Edge> boundEdgesBis = new LinkedList<Edge>();
+		List<DEdge> boundEdgesBis = new LinkedList<DEdge>();
 		boundEdgesBis.add(e1);
 		//If p2 is not linked to any constraint, then [p1 p2] will be degenerated.
 		//If there are constraints linked to p2, then [p1 p2] will be shared between
@@ -1050,19 +1050,19 @@ public class ConstrainedMesh implements Serializable {
 			//We don't have to manage with any constraint.
 			bp=new BoundaryPart(boundEdges);
 			bps.add(bp);
-			boundEdges = new LinkedList<Edge>();
+			boundEdges = new LinkedList<DEdge>();
 			boundEdges.add(e1);
 			//We add the constraints linked to p2, that will form other boundary parts.
 			fillWithP2Constraints(boundEdgesBis, constraintsP2, bps, e1);
 			if(!bps.isEmpty()){
-				boundEdges = new LinkedList<Edge>();
+				boundEdges = new LinkedList<DEdge>();
 				boundEdges.add(e1);
 				bps.get(bps.size()-1).setBoundaryEdges(boundEdges);
 			}
 			bound.setBoundary(bps);
 		} else {
-			Edge current = constraintsP1.get(0);
-			ListIterator<Edge> iter = constraintsP1.listIterator();
+			DEdge current = constraintsP1.get(0);
+			ListIterator<DEdge> iter = constraintsP1.listIterator();
 			boolean direct = current.getEndPoint().equals(current.getPointRight());
 			if((direct && current.isRight(e1.getPointRight())) || (!direct && current.isLeft(e1.getPointRight())) ){
 				//We can create a boundary part without constraint, as 
@@ -1082,12 +1082,12 @@ public class ConstrainedMesh implements Serializable {
 				//set will be set to true when the constraints linked to p2
 				//will have been added.
 				boolean set = false;
-				Edge mem = iter.next();
+				DEdge mem = iter.next();
 				current = null;
 				while(iter.hasNext()){
 					current = iter.next();
 					if(!set && (current.isRight(e1.getPointRight()) || current.getPointRight().equals(e1.getEndPoint()))){
-						//We must not instanciate a BP where the constraint is a boundary Edge
+						//We must not instanciate a BP where the constraint is a boundary DEdge
 						if(mem.equals(e1)){
 							bps.add(new BoundaryPart(boundEdges));
 						} else {
@@ -1147,10 +1147,10 @@ public class ConstrainedMesh implements Serializable {
 	 * @param bps
 	 *		The list where we will add the BPs
 	 * @param e1
-	 *		The already created Edge
+	 *		The already created DEdge
 	 */
-	private void fillWithP2Constraints(List<Edge> boundaryEdges, List<Edge> constraintsP2, List<BoundaryPart> bps, Edge e1){
-		Edge ed;
+	private void fillWithP2Constraints(List<DEdge> boundaryEdges, List<DEdge> constraintsP2, List<BoundaryPart> bps, DEdge e1){
+		DEdge ed;
 		for(int i = 0; i<constraintsP2.size()-1; i++){
 			ed = constraintsP2.get(i);
 			if(!ed.equals(e1)){
@@ -1174,9 +1174,9 @@ public class ConstrainedMesh implements Serializable {
 	 *
 	 * @param edge
 	 */
-	private Edge replaceByConstraint(Edge edge) {
+	private DEdge replaceByConstraint(DEdge edge) {
 		int index = sortedListContains(constraintEdges, edge);
-		Edge tempEdge = edge;
+		DEdge tempEdge = edge;
 		if (index >= 0) {
 			tempEdge = constraintEdges.get(index);
 			if(!edge.getStartPoint().equals(tempEdge.getStartPoint())){
@@ -1191,9 +1191,9 @@ public class ConstrainedMesh implements Serializable {
 	 */
 	private void processBadEdges() {
 		if (!isMeshComputed()) {
-			LinkedList<Edge> alreadySeen = new LinkedList<Edge>();
+			LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
 			while (!badEdgesQueueList.isEmpty()) {
-				Edge anEdge = badEdgesQueueList.get(0);
+				DEdge anEdge = badEdgesQueueList.get(0);
 				badEdgesQueueList.remove(0);
 
 				boolean doIt = true;
@@ -1208,13 +1208,13 @@ public class ConstrainedMesh implements Serializable {
 					alreadySeen.add(anEdge);
 					// We cannot process marked edges
 					// We check if the two triangles around the edge are ok
-					DelaunayTriangle aTriangle1 = anEdge.getLeft();
-					DelaunayTriangle aTriangle2 = anEdge.getRight();
+					DTriangle aTriangle1 = anEdge.getLeft();
+					DTriangle aTriangle2 = anEdge.getRight();
 					if ((aTriangle1 != null) && (aTriangle2 != null)
 						&& swapTriangle(aTriangle1, aTriangle2, anEdge)) {
 						// Add the triangle"s edges to the bad edges list
-						Edge addEdge;
-						for (int j = 0; j < DelaunayTriangle.PT_NB; j++) {
+						DEdge addEdge;
+						for (int j = 0; j < DTriangle.PT_NB; j++) {
 							addEdge = aTriangle1.getEdge(j);
 							if ((addEdge.getLeft() != null)
 								&& (addEdge.getRight() != null)
@@ -1248,13 +1248,13 @@ public class ConstrainedMesh implements Serializable {
 	 * @param forced
 	 * @return
 	 */
-	private boolean swapTriangle(DelaunayTriangle aTriangle1, DelaunayTriangle aTriangle2,
-		Edge anEdge) {
+	private boolean swapTriangle(DTriangle aTriangle1, DTriangle aTriangle2,
+		DEdge anEdge) {
 
 		boolean exchange = false;
-		Edge anEdge10, anEdge11, anEdge12;
-		Edge anEdge20, anEdge21, anEdge22;
-		Point p1, p2, p3, p4;
+		DEdge anEdge10, anEdge11, anEdge12;
+		DEdge anEdge20, anEdge21, anEdge22;
+		DPoint p1, p2, p3, p4;
 
 		if ((aTriangle1 != null) && (aTriangle2 != null)) {
 			p1 = anEdge.getStartPoint();
@@ -1265,13 +1265,13 @@ public class ConstrainedMesh implements Serializable {
 
 			// Test for each triangle if the remaining point of the
 			// other triangle is inside or not
-			// DelaunayTriangle 1 is p1, p2, p3 or p2, p1, p3
+			// DTriangle 1 is p1, p2, p3 or p2, p1, p3
 			p3 = aTriangle1.getAlterPoint(p1, p2);
 			if (p3 != null && aTriangle2.inCircle(p3) == 1) {
 				exchange = true;
 			}
 
-			// DelaunayTriangle 2 is p2, p1, p4 or p1, p2, p4
+			// DTriangle 2 is p2, p1, p4 or p1, p2, p4
 			p4 = aTriangle2.getAlterPoint(p1, p2);
 			if (p4 != null && aTriangle1.inCircle(p4) == 1) {
 				exchange = true;
@@ -1279,11 +1279,11 @@ public class ConstrainedMesh implements Serializable {
 
 			if (p3 != p4 && exchange) {
 				anEdge10 = anEdge;
-				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.getEdges(), DelaunayTriangle.PT_NB);
-				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.getEdges(), DelaunayTriangle.PT_NB);
+				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.getEdges(), DTriangle.PT_NB);
+				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.getEdges(), DTriangle.PT_NB);
 				anEdge20 = anEdge;
-				anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.getEdges(), DelaunayTriangle.PT_NB);
-				anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.getEdges(), DelaunayTriangle.PT_NB);
+				anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.getEdges(), DTriangle.PT_NB);
+				anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.getEdges(), DTriangle.PT_NB);
 				if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
 					log.error("ERROR");
 				} else {
@@ -1332,15 +1332,15 @@ public class ConstrainedMesh implements Serializable {
 	 *
 	 * @return
 	 */
-	private Edge checkTwoPointsEdge(Point p1, Point p2,
-		Edge[] edgeQueueList, int size) {
+	private DEdge checkTwoPointsEdge(DPoint p1, DPoint p2,
+		DEdge[] edgeQueueList, int size) {
 		// Check if the two points already lead to an existing edge.
 		// If the edge exists it must be in the non-processed edges
-		Edge theEdge = null;
+		DEdge theEdge = null;
 		int i = 0;
 		int max = (edgeQueueList.length < size ? edgeQueueList.length : size);
 		while ((i < max) && (theEdge == null)) {
-			Edge anEdge = edgeQueueList[i];
+			DEdge anEdge = edgeQueueList[i];
 			if (((anEdge.getStartPoint().equals(p1)) && (anEdge.getEndPoint().equals( p2)))
 				|| ((anEdge.getStartPoint().equals(p2)) && (anEdge.getEndPoint().equals(p1)))) {
 				theEdge = anEdge;
@@ -1393,13 +1393,13 @@ public class ConstrainedMesh implements Serializable {
 
 			// Draw triangles
 			if (!triangleList.isEmpty()) {
-				for (DelaunayTriangle aTriangle : triangleList) {
+				for (DTriangle aTriangle : triangleList) {
 					aTriangle.displayObject(g, decalageX, decalageY, minX, minY,
 						scaleX, scaleY);
 				}
 
 //				if (displayCircles) {
-//					for (DelaunayTriangle aTriangle : trianglesQuadTree.getAll()) {
+//					for (DTriangle aTriangle : trianglesQuadTree.getAll()) {
 //						aTriangle.displayObjectCircles(g, decalageX, decalageY);
 //					}
 //				}
@@ -1407,19 +1407,19 @@ public class ConstrainedMesh implements Serializable {
 
 			// Draw lines
 			if (!constraintEdges.isEmpty()) {
-				for (Edge aVertex : constraintEdges) {
+				for (DEdge aVertex : constraintEdges) {
 					aVertex.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 				}
 			}
 
 			if (!edges.isEmpty()) {
-				for (Edge aVertex : edges) {
+				for (DEdge aVertex : edges) {
 					aVertex.displayObject(g, decalageX, decalageY, minX, minY, scaleX, scaleY);
 				}
 			}
 
 			if ((points.size() > 0) && (points.size() < 100)) {
-				for (Point aPoint : points) {
+				for (DPoint aPoint : points) {
 					aPoint.displayObject(g, decalageX, decalageY, minX, minY,
 						scaleX, scaleY);
 				}
@@ -1431,6 +1431,6 @@ public class ConstrainedMesh implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		// our "pseudo-constructor"
 		in.defaultReadObject();
-		badEdgesQueueList = new LinkedList<Edge>();
+		badEdgesQueueList = new LinkedList<DEdge>();
 	}
 }
