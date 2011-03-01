@@ -3,7 +3,7 @@ package org.jdelaunay.delaunay;
 /**
  * Delaunay Package.
  *
- * @author Erwan BOCHER, Adelin PIAU
+ * @author Erwan BOCHER, Adelin PIAU, Alexis GUÉGANNO
  * @date 2010-05-20
  * @revision 2010-11-08
  * @version 2.2
@@ -258,8 +258,9 @@ public final class ConstraintPolygon extends Element {
 		return points;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
+	/**
+	 * Get the minimum boundary of this element.
+	 * @return
 	 */
 	@Override
 	public BoundaryBox getBoundingBox() {
@@ -274,8 +275,10 @@ public final class ConstraintPolygon extends Element {
 		return aBox;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
+	/**
+	 * Check if this polygon contain the point given in argument.
+	 * @param aPoint
+	 * @return
 	 */
 	@Override
 	public boolean contains(Point aPoint) {
@@ -298,15 +301,24 @@ public final class ConstraintPolygon extends Element {
 		return (intersectPolygon && !intersectEdge) || (!intersectPolygon && edgeColinear && !intersectEdge);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#contains(com.vividsolutions.jts.geom.Coordinate)
+	/**
+	 * check if this polygon contain the point given in argument.
+	 * @param coordinate
+	 * @return
+	 * @throws DelaunayError
 	 */
 	@Override
 	public boolean contains(Coordinate coordinate) throws DelaunayError {
 		return polygon.contains(new GeometryFactory().createPoint(coordinate));
 
 	}
-	
+
+	/**
+	 *
+	 * @param anEdge
+	 * @return
+	 * @throws DelaunayError
+	 */
 	public boolean isIntersect(Edge anEdge) throws DelaunayError{
 		boolean intersect=false;
 		for(int i=0;i<edges.size() && !intersect;i++ )
@@ -317,11 +329,19 @@ public final class ConstraintPolygon extends Element {
 		return intersect;
 	}
 
+	/**
+	 * Returns true : the polygon is used by itself...
+	 * @return
+	 */
 	@Override
 	public boolean isUseByPolygon() {
 		return true;
 	}
 
+	/**
+	 * Do nothing.
+	 * @param useByPolygon
+	 */
 	@Override
 	public void setUseByPolygon(boolean useByPolygon) {
 	}

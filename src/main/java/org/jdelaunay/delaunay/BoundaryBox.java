@@ -173,6 +173,11 @@ public class BoundaryBox implements Serializable {
 		return "min x["+minx+"] y["+miny+"] z["+minz+"] | max x["+maxx+"] y["+maxy+"] z["+maxz+"]";
 	}
 
+	/**
+	 * Get the lis of points that define this boundary box.
+	 * @return
+	 * @throws DelaunayError
+	 */
 	public final List<Point> getPoints() throws DelaunayError {
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point(minx, miny, 0));

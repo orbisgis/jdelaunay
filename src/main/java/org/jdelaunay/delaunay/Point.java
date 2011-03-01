@@ -283,8 +283,9 @@ public class Point extends Element implements Comparable<Point> {
 		return coord;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
+	/**
+	 * Get the minimum boundary box of this element.
+	 * @return
 	 */
 	@Override
 	public final BoundaryBox getBoundingBox() {
@@ -294,8 +295,10 @@ public class Point extends Element implements Comparable<Point> {
 		return aBox;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
+	/**
+	 * Check if aPoint can be considered as equal to this.
+	 * @param aPoint
+	 * @return
 	 */
 	@Override
 	public final boolean contains(Point aPoint) {

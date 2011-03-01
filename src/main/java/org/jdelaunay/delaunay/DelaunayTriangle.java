@@ -250,8 +250,9 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 		setBit(3+byteNumber, marked);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
+	/**
+	 * Get the minimal bounding box that encloses this triangle.
+	 * @return
 	 */
 	@Override
 	public final BoundaryBox getBoundingBox() {
@@ -272,7 +273,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
-	 * Get the leftmostp oint of this triangle.
+	 * Get the leftmost point of this triangle.
 	 * @return
 	 */
 	public final Point getLeftMost(){
@@ -545,17 +546,17 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 */
 	protected final int badAngle(double tolarance) {
 		double minAngle = 400;
-		int returndeValue = -1;
+		int returnedValue = -1;
 		for (int k = 0; k < PT_NB; k++) {
 			double angle = getAngle(k);
 			if (angle < minAngle) {
 				minAngle = angle;
 				if (minAngle < tolarance) {
-					returndeValue = k;
+					returnedValue = k;
 				}
 			}
 		}
-		return returndeValue;
+		return returnedValue;
 	}
 
 	/**
@@ -853,7 +854,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	 *
 	 * @param g
 	 */
-	protected final void setColor(Graphics g) {
+	private final void setColor(Graphics g) {
 		if(property>0) {
 			g.setColor(new Color(property));
 		}
@@ -931,7 +932,7 @@ public class DelaunayTriangle extends Element implements Comparable<DelaunayTria
 	}
 
 	/**
-	 * set if edge is use by a polygon.
+	 * set if triangle is used by a polygon.
 	 * @param useByPolygon
 	 */
 	@Override

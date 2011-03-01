@@ -90,6 +90,12 @@ public final class MathUtil {
 		return res < EPSILON;
 	}
 
+	/**
+	 * Compute the difference between two vectors.
+	 * @param v1
+	 * @param v2
+	 * @return v1 - v2
+	 */
 	public static Coordinate differenceVectoriel(Coordinate v1, Coordinate v2) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = v1.x - v2.x;
@@ -98,6 +104,12 @@ public final class MathUtil {
 		return v3;
 	}
 
+	/**
+	 * Compute the sum of two vectors.
+	 * @param v1
+	 * @param v2
+	 * @return v1 + v2
+	 */
 	public static Coordinate sommeVectoriel(Coordinate v1, Coordinate v2) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = v1.x + v2.x;
@@ -118,6 +130,12 @@ public final class MathUtil {
 		return p;
 	}
 
+	/**
+	 * Multiply the vector using the constant.
+	 * @param v1
+	 * @param k
+	 * @return k * v1
+	 */
 	public static Coordinate produit(Coordinate v1, double k) {
 		Coordinate v3 = new Coordinate(0, 0, 0);
 		v3.x = k * v1.x;
@@ -157,14 +175,11 @@ public final class MathUtil {
 		}
 	}
 
-	public static double max(double d1, double d2) {
-		if (d1 > d2) {
-			return d1;
-		} else {
-			return d2;
-		}
-	}
-
+	/**
+	 * Compute the length of the vector defined by v.
+	 * @param v
+	 * @return
+	 */
 	public static double norme(Coordinate v) {
 		return Double.isNaN(v.z) ? Math.sqrt(v.x * v.x + v.y * v.y) : Math
 				.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
@@ -235,8 +250,6 @@ public final class MathUtil {
 
 	 public static Coordinate getIntersection(Coordinate p1, Coordinate p2, Coordinate p3, Coordinate v) {
 	        Coordinate intersection = null;
-
-	        //MyPoint p4 = point[1];
 
 	        // (x2 - x1) t1 - vx t2 = (x3 - x1)
 	        // (y2 - y1) t1 - vy t2 = (y3 - y1)

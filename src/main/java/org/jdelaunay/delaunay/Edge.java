@@ -86,7 +86,9 @@ public class Edge extends Element implements Comparable<Edge> {
 	}
 
 	/**
-	 * Generate a new edge.
+	 * Generate a new edge. The two points that define the Edge are set to null,
+	 * it's up to you to use another constructor or to fill the extremities with
+	 * actual values.
 	 */
 	public Edge() {
 		super();
@@ -120,7 +122,6 @@ public class Edge extends Element implements Comparable<Edge> {
 		this.right = ed.right;
 		this.indicator = ed.indicator;
 		this.property = ed.property;
-//		updateBox();
 	}
 
 	/**
@@ -142,18 +143,6 @@ public class Edge extends Element implements Comparable<Edge> {
 			this.endPoint = p2;
 		} catch (DelaunayError d) {
 			log.error("A problem occured while building the points " + d.getMessage());
-		}
-	}
-
-	/**
-	 * @param i
-	 * @return If i==0, return startPoint else return endPoint.
-	 */
-	public final Point point(int i) {
-		if (i == 0) {
-			return this.startPoint;
-		} else {
-			return this.endPoint;
 		}
 	}
 
@@ -496,8 +485,8 @@ public class Edge extends Element implements Comparable<Edge> {
 		setBit(Tools.BIT_ZUSED, useZ);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#getBoundingBox()
+	/* *
+	 * Get the minimum boundary box of this element.
 	 */
 	@Override
 	public final BoundaryBox getBoundingBox() {
@@ -509,8 +498,10 @@ public class Edge extends Element implements Comparable<Edge> {
 		return box;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.jdelaunay.delaunay.Element#contains(org.jdelaunay.delaunay.Point)
+	/**
+	 * Check if aPoint lies on this edge.
+	 * @param aPoint
+	 * @return
 	 */
 	@Override
 	public final boolean contains(Point aPoint) {

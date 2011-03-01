@@ -65,6 +65,11 @@ public class ConstrainedMesh implements Serializable {
 	private Double extMaxY = null;
 	private Double extMinY = null;
 
+	/**
+	 * Build a new, empty, ConstrainedMesh. It does not conatin any information
+	 * that could be used to build a triangulation. You must fill it with
+	 * the points and edges you need before launching a processDelaunay() operation.
+	 */
 	public ConstrainedMesh() {
 		triangleList = new ArrayList<DelaunayTriangle>();
 		edges = new ArrayList<Edge>();
