@@ -277,17 +277,6 @@ public class TestEdges extends BaseUtility {
 	}
 
 	/**
-	 * Tests the methods who retrieve the points of the edge.
-	 */
-	public void testGetPoint() throws DelaunayError{
-		Edge edge = new Edge(1,2,0,4,9,5);
-		assertTrue(edge.point(0).equals(new Point(1,2,0)));
-		assertTrue(edge.point(1).equals(new Point(4,9,5)));
-		assertTrue(edge.point(42).equals(new Point(4,9,5)));
-
-	}
-
-	/**
 	 * Tests that we are able to effectively set start and end point of an edge
 	 */
 	public void testSetStartEnd() throws DelaunayError{
