@@ -386,10 +386,9 @@ public class Point extends Element implements Comparable<Point> {
 		return (squareDistance(aPoint) < tolerence*tolerence);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * Gives a string representation of this object.
+	 * @return Point GID [x y z]
 	 */
 	@Override
 	public final String toString() {
@@ -414,6 +413,10 @@ public class Point extends Element implements Comparable<Point> {
 		}
 	}
 
+	/**
+	 * Generate an hashcode based on the coordinates of the point.
+	 * @return
+	 */
 	@Override
 	public final int hashCode() {
 		int hash = 7;

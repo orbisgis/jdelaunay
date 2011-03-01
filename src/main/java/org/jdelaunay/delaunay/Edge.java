@@ -1284,8 +1284,9 @@ public class Edge extends Element implements Comparable<Edge> {
 		return gradient;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * Gives a string representation of this object.
+	 * @return "Edge GID [Start : startPoint, End : endPoint]
 	 */
 	@Override
 	public final String toString() {
