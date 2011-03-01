@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,6 +113,17 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		radius = aTriangle.radius;
 	}
 
+	/**
+	 * Get a list of points containing the DPoint that define this triangle.
+	 * @return
+	 */
+	public final List<DPoint> getPoints(){
+		List<DPoint> ret = new ArrayList<DPoint>();
+		ret.add(edges[0].getStartPoint());
+		ret.add(edges[0].getEndPoint());
+		ret.add(getPoint(2));
+		return ret;
+	}
 
 	/**
 	 * Get the ith point
@@ -124,11 +136,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		DPoint p;
 		if (i==0) {
 			p = edges[0].getStartPoint();
-		}
-		else if (i==1) {
+		} else if (i==1) {
 			p = edges[0].getEndPoint();
-		}
-		else {
+		} else {
 			p = edges[1].getStartPoint();
 			if ((p.equals(edges[0].getStartPoint())) || (p.equals(edges[0].getEndPoint()))) {
 				p = edges[1].getEndPoint();
@@ -854,7 +864,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 *
 	 * @param g
 	 */
-	private final void setColor(Graphics g) {
+	private void setColor(Graphics g) {
 		if(property>0) {
 			g.setColor(new Color(property));
 		}

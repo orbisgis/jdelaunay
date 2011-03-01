@@ -558,4 +558,18 @@ public class TestTriangle extends BaseUtility {
 		pt = dt.getAlterPoint(new DPoint(4,5,4),new DPoint(4,4,4));
 		assertNull(pt);
 	}
+
+	/**
+	 *Tests that we retrieve correctly the points that form the given triangle.
+	 * @throws DelaunayError
+	 */
+	public void testGetPoints() throws DelaunayError {
+		DTriangle tri = new DTriangle(new DEdge(0, 0, 0, 2, 2, 0), new DEdge(2, 2, 0, 1, 3, 0), new DEdge(1, 3, 0, 0, 0, 0));
+		List<DPoint> points = tri.getPoints();
+		assertTrue(points.contains(new DPoint(0,0,0)));
+		assertTrue(points.contains(new DPoint(2,2,0)));
+		assertTrue(points.contains(new DPoint(1,3,0)));
+		assertTrue(points.size()==3);
+	}
+
 }
