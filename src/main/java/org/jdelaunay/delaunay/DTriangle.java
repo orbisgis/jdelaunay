@@ -66,25 +66,25 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 *
 	 * @param e1
 	 * @param e2
-	 * @param eptNb
+	 * @param e3
 	 * @throws DelaunayError
 	 */
-	public DTriangle(DEdge e1, DEdge e2, DEdge eptNb) throws DelaunayError {
+	public DTriangle(DEdge e1, DEdge e2, DEdge e3) throws DelaunayError {
 		super();
 		init();
 
 		//We check the integrity of the edges given to build this triangle
-		boolean integrityE1E2 = (e1.isExtremity(e2.getStart()) && ! eptNb.isExtremity((e2.getStart())))
-			|| (e1.isExtremity(e2.getEnd()) && !eptNb.isExtremity(e2.getEnd()));
-		boolean integrityE1EptNb =  (e1.isExtremity(eptNb.getStart()) && ! e2.isExtremity((eptNb.getStart())))
-			|| (e1.isExtremity(eptNb.getEnd()) && !e2.isExtremity(eptNb.getEnd()));
-		boolean integrityEptNbE2= (e2.isExtremity(eptNb.getStart()) && ! e1.isExtremity((eptNb.getStart())))
-			|| (e2.isExtremity(eptNb.getEnd()) && !e1.isExtremity(eptNb.getEnd()));
+		boolean integrityE1E2 = (e1.isExtremity(e2.getStart()) && ! e3.isExtremity((e2.getStart())))
+			|| (e1.isExtremity(e2.getEnd()) && !e3.isExtremity(e2.getEnd()));
+		boolean integrityE1EptNb =  (e1.isExtremity(e3.getStart()) && ! e2.isExtremity((e3.getStart())))
+			|| (e1.isExtremity(e3.getEnd()) && !e2.isExtremity(e3.getEnd()));
+		boolean integrityEptNbE2= (e2.isExtremity(e3.getStart()) && ! e1.isExtremity((e3.getStart())))
+			|| (e2.isExtremity(e3.getEnd()) && !e1.isExtremity(e3.getEnd()));
 
 		if(integrityE1E2 && integrityE1EptNb && integrityEptNbE2){
 			edges[0] = e1;
 			edges[1] = e2;
-			edges[2] = eptNb;
+			edges[2] = e3;
 
 			connectEdges();
 			recomputeCenter();
