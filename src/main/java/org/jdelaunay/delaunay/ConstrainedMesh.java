@@ -1363,12 +1363,12 @@ public class ConstrainedMesh implements Serializable {
 			Envelope theBox = getBoundingBox();
 			double scaleX, scaleY;
 			double minX, minY;
-			int xSize = 1200;
-			int ySize = 600;
-			int decalageX = 10;
-			int decalageY = ySize + 30;
-			int legende = ySize + 60;
-			int bordure = 10;
+			final int xSize = 1200;
+			final int ySize = 600;
+			final int decalageX = 10;
+			final int decalageY = ySize + 30;
+			final int legende = ySize + 60;
+			final int bordure = 10;
 
 			scaleX = xSize / (theBox.getMaxX() - theBox.getMinX());
 			scaleY = ySize / (theBox.getMaxY() - theBox.getMinY());

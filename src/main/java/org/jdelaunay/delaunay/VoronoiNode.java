@@ -11,6 +11,9 @@ import java.util.List;
  */
 class VoronoiNode implements Comparable<VoronoiNode>{
 
+	private static int hashbase = 7;
+	private static int hashmult = 71;
+
 	//The nodes that are linked to this.
 	private List<VoronoiNode> linkedNodes;
 	//The triangle that has generated this node
@@ -121,8 +124,8 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 5;
-		hash = 83 * hash + (this.parent != null ? this.parent.hashCode() : 0);
+		int hash = hashbase;
+		hash = hashmult * hash + (this.parent != null ? this.parent.hashCode() : 0);
 		return hash;
 	}
 
