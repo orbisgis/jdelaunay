@@ -11,8 +11,8 @@ import java.util.List;
  */
 class VoronoiNode implements Comparable<VoronoiNode>{
 
-	private final static int hashbase = 7;
-	private final static int hashmult = 71;
+	private static final int HASHBASE = 7;
+	private static final int HASHMULT = 71;
 
 	//The nodes that are linked to this.
 	private List<VoronoiNode> linkedNodes;
@@ -124,8 +124,8 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 	 */
 	@Override
 	public int hashCode() {
-		int hash = hashbase;
-		hash = hashmult * hash + (this.parent != null ? this.parent.hashCode() : 0);
+		int hash = HASHBASE;
+		hash = HASHMULT * hash + (this.parent != null ? this.parent.hashCode() : 0);
 		return hash;
 	}
 

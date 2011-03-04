@@ -33,8 +33,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	public static final int PT_NB = 3;
 
-	private final static int hashbase = 5;
-	private final static int hashmult = 97;
+	private static final int HASHBASE = 5;
+	private static final int HASHMULT = 97;
 
 	/**
 	 * The array of edges that constitute this triangle
@@ -973,8 +973,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	@Override
 	public final int hashCode() {
-		int hash = hashbase;
-		hash = hashmult * hash + Arrays.deepHashCode(this.edges);
+		int hash = HASHBASE;
+		hash = HASHMULT * hash + Arrays.deepHashCode(this.edges);
 		return hash;
 	}
 

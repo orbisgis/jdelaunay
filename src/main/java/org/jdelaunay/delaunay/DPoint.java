@@ -22,8 +22,8 @@ public class DPoint extends Element implements Comparable<DPoint> {
 
 	private Coordinate coord;
 
-	private final static int hashbase = 7;
-	private final static int hashmult = 67;
+	private static final int HASHBASE = 7;
+	private static final int HASHMULT = 67;
 	/**
 	 * byte number  | function :
 	 * 1			| isOutsideMesh / setOutsideMesh
@@ -421,8 +421,8 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 */
 	@Override
 	public final int hashCode() {
-		int hash = hashbase;
-		hash = hashmult * hash + (this.coord != null ? this.coord.hashCode() : 0);
+		int hash = HASHBASE;
+		hash = HASHMULT * hash + (this.coord != null ? this.coord.hashCode() : 0);
 		return hash;
 	}
 
