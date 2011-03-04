@@ -165,7 +165,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @return
 	 */
 	public final DEdge[] getEdges(){
-		return this.edges;
+		DEdge[] ret = new DEdge[3];
+		System.arraycopy(this.edges, 0, ret, 0, 3);
+		return ret;
 	}
 
 	/**
@@ -840,9 +842,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			y += aPoint.getY();
 			z += aPoint.getZ();
 		}
-		x /= 3.0;
-		y /= 3.0;
-		z /= 3.0;
+		x /= (double) PT_NB;
+		y /= (double) PT_NB;
+		z /= (double) PT_NB;
 		
 		return new DPoint(x, y, z);
 	}
@@ -1005,7 +1007,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param k
 	 * @return
 	 */
-	public double getAngle(int k){
+	public final double getAngle(int k){
 		int k1 = (k + 1) % PT_NB;
 		int k2 = (k1 + 1) % PT_NB;
 
