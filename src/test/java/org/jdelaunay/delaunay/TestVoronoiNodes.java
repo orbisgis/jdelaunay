@@ -21,6 +21,21 @@ public class TestVoronoiNodes extends BaseUtility {
 		assertTrue(vn.getParent()==tri);
 	}
 
+	public void testLocationConstraint() throws DelaunayError {
+		DEdge constr = new DEdge(6, 0, 0, 0, 3, 0);
+		DEdge other = new DEdge(0, 3, 0, 3, 0, 0);
+		constr.setLocked(true);
+		DTriangle tri = new DTriangle(new DEdge(3,0,0,6,0,0), constr, other);
+		VoronoiNode vn = new VoronoiNode(tri);
+		assertTrue(vn.getLocation().equals(tri.getBarycenter()));
+		vn.setParent(tri);
+		assertTrue(vn.getLocation().equals(tri.getBarycenter()));
+		other.setLocked(true);
+		constr.setLocked(false);
+		vn.setParent(tri);
+		assertTrue(vn.getLocation().equals(new DPoint(tri.getCircumCenter())));
+	}
+
 	/**
 	 * Instanciate a voronoi node and change its parent. Check that everything went well.
 	 * @throws DelaunayError
@@ -52,6 +67,9 @@ public class TestVoronoiNodes extends BaseUtility {
 
 	/**
 	 * Checks that the compareTo method is implemented as expected.
+	 * Note that the last case is not supposed to happen with our triangulation
+	 * algorithm : the two neighbour triangles are not delaunay, and are not
+	 * separated by a constraint edge.
 	 * @throws DelaunayError
 	 */
 	public void testComparison() throws DelaunayError {
