@@ -21,11 +21,16 @@ public class TestVoronoiNodes extends BaseUtility {
 		assertTrue(vn.getParent()==tri);
 	}
 
+	/**
+	 * Test that we retrieve the barycenter when the circumcenter is masked by a constraint.
+	 * @throws DelaunayError
+	 */
 	public void testLocationConstraint() throws DelaunayError {
 		DEdge constr = new DEdge(6, 0, 0, 0, 3, 0);
 		DEdge other = new DEdge(0, 3, 0, 3, 0, 0);
 		constr.setLocked(true);
 		DTriangle tri = new DTriangle(new DEdge(3,0,0,6,0,0), constr, other);
+		DTriangle tri2 = new DTriangle(constr, new DEdge(0,3,0,4,3,0), new DEdge(4,3,0,6,0,0));
 		VoronoiNode vn = new VoronoiNode(tri);
 		assertTrue(vn.getLocation().equals(tri.getBarycenter()));
 		vn.setParent(tri);
@@ -34,6 +39,15 @@ public class TestVoronoiNodes extends BaseUtility {
 		constr.setLocked(false);
 		vn.setParent(tri);
 		assertTrue(vn.getLocation().equals(new DPoint(tri.getCircumCenter())));
+	}
+
+	public void testLocationBoundary() throws DelaunayError {
+		DEdge constr = new DEdge(6, 0, 0, 0, 3, 0);
+		DEdge other = new DEdge(0, 3, 0, 3, 0, 0);
+		DTriangle tri = new DTriangle(new DEdge(3,0,0,6,0,0), constr, other);
+		VoronoiNode vn = new VoronoiNode(tri);
+		assertTrue(vn.getLocation().equals(tri.getBarycenter()));
+		
 	}
 
 	/**
@@ -78,15 +92,17 @@ public class TestVoronoiNodes extends BaseUtility {
 		DTriangle tri2 = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,0,4,0) , new DEdge(0,4,0,0,0,0));
 		VoronoiNode vn2 = new VoronoiNode(tri2);
 		assertTrue(vn.compareTo(vn2)==0);
-		tri = new DTriangle(new DEdge(0,0,0,3,0,0), new DEdge(3,0,0,0,3,0) , new DEdge(0,3,0,0,0,0));
+		DEdge ed = new DEdge(3,0,0,0,3,0);
+		tri = new DTriangle(new DEdge(0,0,0,3,0,0), ed  , new DEdge(0,3,0,0,0,0));
 		vn = new VoronoiNode(tri);
-		tri2 = new DTriangle(new DEdge(3,3,0,3,0,0), new DEdge(3,0,0,0,3,0) , new DEdge(0,3,0,3,3,0));
+		tri2 = new DTriangle(new DEdge(3,3,0,3,0,0), ed, new DEdge(0,3,0,3,3,0));
 		vn2 = new VoronoiNode(tri2);
 		assertTrue(vn.compareTo(vn2)==-1);
 		assertTrue(vn.getLocation().equals(vn2.getLocation()));
-		tri = new DTriangle(new DEdge(3,0,0,6,0,0), new DEdge(6,0,0,0,3,0) , new DEdge(0,3,0,3,0,0));
+		ed =  new DEdge(6,0,0,0,3,0);
+		tri = new DTriangle(new DEdge(3,0,0,6,0,0), ed, new DEdge(0,3,0,3,0,0));
 		vn = new VoronoiNode(tri);
-		tri2 = new DTriangle(new DEdge(4,3,0,6,0,0), new DEdge(6,0,0,0,3,0) , new DEdge(0,3,0,4,3,0));
+		tri2 = new DTriangle(new DEdge(4,3,0,6,0,0), ed, new DEdge(0,3,0,4,3,0));
 		vn2 = new VoronoiNode(tri2);
 		assertTrue(vn.compareTo(vn2)==1);
 	}

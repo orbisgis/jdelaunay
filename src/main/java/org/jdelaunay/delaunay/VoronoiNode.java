@@ -150,15 +150,22 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 	/**
 	 * Compute the location (in the 2d space) of this node. It will be the Circumcenter
 	 * if it is visible from every points in this triangle, the barycenter otherwise.
+	 *
+	 * In the current case, we must consider edges of the boundary as if they were
+	 * constrained edges. Indeed we don't want to add points ouside of the
+	 * envelope of the current boundary.
 	 * @throws DelaunayError
 	 */
 	private void computeLocation() throws DelaunayError {
 		DPoint defloc = new DPoint(parent.getCircumCenter());
 		DEdge[] edges = parent.getEdges();
 		DPoint last;
+		boolean twoAssociatedTriangles;
 		for(int i =0; i<DTriangle.PT_NB; i++){
 			last = parent.getAlterPoint(edges[i]);
-			if(edges[i].isLocked() && !edges[i].isRight(last)==edges[i].isRight(defloc) ){
+			twoAssociatedTriangles = edges[i].getRight() != null && edges[i].getLeft()!=null;
+			if((edges[i].isLocked() || !twoAssociatedTriangles)
+					&& !edges[i].isRight(last)==edges[i].isRight(defloc) ){
 				location = parent.getBarycenter();
 				return;
 			}
