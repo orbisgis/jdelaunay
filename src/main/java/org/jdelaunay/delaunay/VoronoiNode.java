@@ -166,4 +166,21 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 		location = defloc;
 	}
 
+	/**
+	 * Replace the node that is equal to alreadySeen, if any, with alreadySeen.
+	 * If none of the edges is equal to alraedySeen, an exception is thrown.
+	 * Note that this method is not public API, and is designed to be used
+	 * by VoronoiGraph only.
+	 * @param alreadySeen
+	 * @throws DelaunayError
+	 */
+	void replaceNode(VoronoiNode alreadySeen) throws DelaunayError {
+		int index = linkedNodes.indexOf(alreadySeen);
+		if(index<0){
+			throw new DelaunayError("Wait... the node given in argument is supposed to be a neighbour of this one!");
+		} else {
+			linkedNodes.set(index, alreadySeen);
+		}
+	}
+
 }

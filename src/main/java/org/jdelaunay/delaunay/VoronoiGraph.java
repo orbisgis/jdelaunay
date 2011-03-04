@@ -6,6 +6,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,6 +22,12 @@ class VoronoiGraph {
 	//The VoronoiNode that has been used as a start point to build this graph.
 	VoronoiNode startNode;
 
+	/**
+	 * Construct a new VoronoiGraph, with a sole triangle as a base. It will be
+	 * fillable later.
+	 * @param base
+	 * @throws DelaunayError
+	 */
 	public VoronoiGraph(DTriangle base) throws DelaunayError{
 		startNode = new VoronoiNode(base);
 		sortedNodes = new ArrayList<VoronoiNode>();
@@ -44,6 +51,24 @@ class VoronoiGraph {
 	}
 
 	/**
+	 * Change this VoronoiGraph start node with startNode
+	 * @param startNode
+	 */
+	public void setStartNode(VoronoiNode startNode) {
+		this.startNode = startNode;
+	}
+
+	/**
+	 * Change this VoronoiGraph start node, using root to create a new
+	 * VoronoiNode.
+	 * @param root
+	 * @throws DelaunayError
+	 */
+	public void setStartNode(DTriangle root) throws DelaunayError{
+		setStartNode(new VoronoiNode(root));
+	}
+
+	/**
 	 * Add a node to the SortedNodes set.
 	 * @param vn
 	 */
@@ -51,4 +76,44 @@ class VoronoiGraph {
 		sortedNodes.add(vn);
 	}
 
+	/**
+	 * Fill the graph until the first not flat triangle is found.
+	 * @throws DelaunayError
+	 */
+	public void fillUntilNotFlatFound() throws DelaunayError {
+		if(startNode.getParent().isFlatSlope()){
+			processNeighbours(startNode);
+		}
+	}
+
+	/**
+	 * Compute the graph recursively.
+	 * @param vn
+	 * @throws DelaunayError
+	 */
+	private void processNeighbours(VoronoiNode vn) throws DelaunayError {
+		List<VoronoiNode> neighbours = vn.getNeighbourNodes();
+		List<VoronoiNode> toBeTreated = new ArrayList<VoronoiNode>();
+		int index;
+		for(VoronoiNode neigh : neighbours){
+			//We don't want to create duplicate nodes.Consequently,
+			//We make a search and replace the unwanted duplicates.
+			index = Collections.binarySearch(sortedNodes, neigh);
+			if(index >=0){
+				vn.replaceNode(sortedNodes.get(index));
+			} else {
+				sortedNodes.add(-index-1, neigh);
+				if(neigh.getParent().isFlatSlope()){
+					toBeTreated.add(neigh);
+				}
+			}
+		}
+		for(VoronoiNode treat : toBeTreated){
+			//we only process the nodes that were not already in the list,
+			//and so either treated, either referenced to be treat in the
+			//stack.
+			processNeighbours(treat);
+		}
+
+	}
 }

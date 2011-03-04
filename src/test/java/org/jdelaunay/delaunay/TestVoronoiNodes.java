@@ -237,11 +237,43 @@ public class TestVoronoiNodes extends BaseUtility {
 	}
 
 	/**
+	 * Check that we are able to replace a neighbour of a node.
+	 * @throws DelaunayError
+	 */
+	public void testReplaceWithAlreadySeen() throws DelaunayError {
+		List<DTriangle> tris = getSampleTriangles();
+		DTriangle tri = tris.get(9);
+		VoronoiNode vn = new VoronoiNode(tri);
+		List<VoronoiNode> neigh = vn.getNeighbourNodes();
+		VoronoiNode seen = null;
+		for(VoronoiNode v : neigh){
+			if(v.getParent().equals(new DTriangle(new DEdge(0,5,0,2,6,0), new DEdge(2,6,0,4,3,0), new DEdge(4,3,0,0,5,0)))){
+				seen = v;
+			}
+		}
+		VoronoiNode next = new VoronoiNode(new DTriangle(new DEdge(0,5,0,2,6,0), new DEdge(2,6,0,4,3,0), new DEdge(4,3,0,0,5,0)));
+		vn.replaceNode(next);
+		assertTrue(vn.getLinkedNodes().get(vn.getLinkedNodes().indexOf(next))==next);
+		assertTrue(vn.getLinkedNodes().get(vn.getLinkedNodes().indexOf(next))!=seen);
+		//We check we still find the 3 nodes we attempt.
+		assertTrue(vn.getLinkedNodes().size()==3);
+		assertTrue(vn.getLinkedNodes().get(2).equals(seen)||vn.getLinkedNodes().get(0).equals(seen)
+			||vn.getLinkedNodes().get(1).equals(seen));
+		next = new VoronoiNode(new DTriangle(new DEdge(8,3,0,5,6,0), new DEdge(5,6,0,4,3,0), new DEdge(4,3,0,8,3,0)));
+		assertTrue(vn.getLinkedNodes().get(2).equals(next)||vn.getLinkedNodes().get(0).equals(next)
+			||vn.getLinkedNodes().get(1).equals(next));
+		next = new VoronoiNode(new DTriangle(new DEdge(2,6,0,5,6,0), new DEdge(5,6,0,1,9,0), new DEdge(1,9,0,2,6,0)));
+		assertTrue(vn.getLinkedNodes().get(2).equals(next)||vn.getLinkedNodes().get(0).equals(next)
+			||vn.getLinkedNodes().get(1).equals(next));
+		
+	}
+
+	/**
 	 * Build a sample of connected triangles that share the exact same edges and points.
 	 * @return
 	 * @throws DelaunayError
 	 */
-	private List<DTriangle> getSampleTriangles() throws DelaunayError {
+	static List<DTriangle> getSampleTriangles() throws DelaunayError {
 		List<DTriangle> ret = new ArrayList<DTriangle>();
 		DPoint p1 = new DPoint(0,5,0);
 		DPoint p2 = new DPoint(1,2,0);
