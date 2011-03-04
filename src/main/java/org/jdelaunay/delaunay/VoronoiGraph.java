@@ -20,7 +20,7 @@ class VoronoiGraph {
 	//The list of nodes contained in this graph, sorted.
 	private List<VoronoiNode> sortedNodes;
 	//The VoronoiNode that has been used as a start point to build this graph.
-	VoronoiNode startNode;
+	private VoronoiNode startNode;
 
 	/**
 	 * Construct a new VoronoiGraph, with a sole triangle as a base. It will be

@@ -1082,11 +1082,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @return isFlat
 	 */
 	public final boolean isFlatSlope() {
-		if (Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > Tools.EPSILON) {
-			return false;
-		} else {
-			return true;
-		}
+		return Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > Tools.EPSILON;
 	}
 
 	/**
