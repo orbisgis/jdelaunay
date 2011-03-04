@@ -1082,7 +1082,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @return isFlat
 	 */
 	public final boolean isFlatSlope() {
-		return Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > Tools.EPSILON;
+		return !(Math.abs(this.startPoint.getZ() - this.endPoint.getZ()) > Tools.EPSILON);
 	}
 
 	/**
@@ -1116,7 +1116,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
-	 * Get edge hashCode as min hasCode of its points
+	 * Get edge hashCode as min hashCode of its points
 	 *
 	 * @param p
 	 * @return
