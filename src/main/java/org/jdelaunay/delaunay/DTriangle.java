@@ -33,6 +33,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	public static final int PT_NB = 3;
 
+	private final static int hashbase = 5;
+	private final static int hashmult = 97;
+
 	/**
 	 * The array of edges that constitute this triangle
 	 */
@@ -165,8 +168,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @return
 	 */
 	public final DEdge[] getEdges(){
-		DEdge[] ret = new DEdge[3];
-		System.arraycopy(this.edges, 0, ret, 0, 3);
+		DEdge[] ret = new DEdge[PT_NB];
+		System.arraycopy(this.edges, 0, ret, 0, PT_NB);
 		return ret;
 	}
 
@@ -503,7 +506,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @return ZValue
 	 */
 	public final double softInterpolateZ(DPoint aPoint) {
-		double weight = 3.0;
+		double weight = (double) PT_NB;
 		double zValue = interpolateZ(aPoint) * weight;
 		
 		// Process connected edges
@@ -970,8 +973,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	@Override
 	public final int hashCode() {
-		int hash = 5;
-		hash = 97 * hash + Arrays.deepHashCode(this.edges);
+		int hash = hashbase;
+		hash = hashmult * hash + Arrays.deepHashCode(this.edges);
 		return hash;
 	}
 
