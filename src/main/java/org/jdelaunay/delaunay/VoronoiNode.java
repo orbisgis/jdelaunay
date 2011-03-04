@@ -9,7 +9,7 @@ import java.util.List;
  * The points of the voronoi graph are the circumcenters of the triangles.
  * @author alexis
  */
-class VoronoiNode {
+class VoronoiNode implements Comparable<VoronoiNode>{
 
 	//The nodes that are linked to this.
 	private List<VoronoiNode> linkedNodes;
@@ -101,21 +101,49 @@ class VoronoiNode {
 		return linkedNodes;
 	}
 
+	/**
+	 * Two VoronoiNodes are equal if and only if their defining triangles are.
+	 * @param obj
+	 * @return
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof VoronoiNode){
-			return parent.equals(((VoronoiNode) obj).parent);
+			return parent.equals(((VoronoiNode) obj).getParent());
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * Compute a hashcode for this triangle node.
+	 * @return
+	 */
 	@Override
 	public int hashCode() {
 		int hash = 5;
 		hash = 83 * hash + (this.parent != null ? this.parent.hashCode() : 0);
 		return hash;
 	}
+
+	/**
+	 * Performs a comparison between two VoronoiNodes.
+	 * We first make a comparison between the location of each node. If their locations
+	 * are equal (i.e. the parent triangles share the same circumcenter), we
+	 * compare the parent triangles.
+	 * @param o
+	 * @return
+	 */
+	@Override
+	public int compareTo(VoronoiNode o) {
+		int c = location.compareTo(o.getLocation());
+		if(c==0){
+			return parent.compareTo(o.getParent());
+		} else {
+			return c;
+		}
+	}
+
 
 
 }
