@@ -572,4 +572,25 @@ public class TestTriangle extends BaseUtility {
 		assertTrue(points.size()==3);
 	}
 
+	/**
+	 * Test that we retrieve a null value when trying to get an edge with number
+	 * not 0, 1 or 2.
+	 */
+	 public void testGetEdgeNullValue() throws DelaunayError {
+		DTriangle tri = new DTriangle(new DEdge(0, 0, 0, 2, 2, 0), new DEdge(2, 2, 0, 1, 3, 0), new DEdge(1, 3, 0, 0, 0, 0));
+		assertNull (tri.getEdge(4));
+		assertNull (tri.getEdge(-1));
+	 }
+
+	 /**
+	  * Test the method that retrieve the angle values at each point of the triangle.
+	  * @throws DelaunayError
+	  */
+	 public void testAngle() throws DelaunayError {
+		DTriangle tri = new DTriangle(new DEdge(0, 0, 0, 2, 2, 0), new DEdge(2, 2, 0, 0, 2, 0), new DEdge(0, 2, 0, 0, 0, 0));
+		assertTrue(Math.abs(tri.getAngle(0)-45)<Tools.EPSILON);
+		assertTrue(Math.abs(tri.getAngle(1)-45)<Tools.EPSILON);
+		assertTrue(Math.abs(tri.getAngle(2)-90)<Tools.EPSILON);
+	 }
+
 }

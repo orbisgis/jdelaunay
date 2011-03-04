@@ -924,6 +924,17 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(mesh.getConstraintEdges().size()==6);
 	}
 
+	public void testProblematicConfig() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge(295881.6,           2260893.7,          0, 295882.89999999997, 2260893.6999999993, 0));
+		mesh.addConstraintEdge(new DEdge(295881.6,           2260893.7,          0, 295886.5999999999,  2260893.6999999993, 0));
+//		mesh.addConstraintEdge(new DEdge(295882.89999999997, 2260893.6999999993, 0, 295884.4,           2260900.7, 0));
+//		mesh.addConstraintEdge(new DEdge(295882.89999999997, 2260893.6999999993, 0, 295886.5999999999,  2260893.6999999993, 0));
+		mesh.forceConstraintIntegrity();
+//		show(mesh);
+		assertTrue(mesh.getConstraintEdges().size()==2);
+	}
+
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number

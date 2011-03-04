@@ -56,12 +56,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Create a new triangle with points and edges
-	 *
+	 * Not intended to be used. Private.
 	 */
-	public DTriangle() {
-		super();
-		init();
+	private DTriangle() {
 	}
 
 	/**
@@ -1008,7 +1005,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param k
 	 * @return
 	 */
-	private double getAngle(int k){
+	public double getAngle(int k){
 		int k1 = (k + 1) % PT_NB;
 		int k2 = (k1 + 1) % PT_NB;
 
