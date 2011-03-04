@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
@@ -26,6 +21,10 @@ public class TestVoronoiNodes extends BaseUtility {
 		assertTrue(vn.getParent()==tri);
 	}
 
+	/**
+	 * Instanciate a voronoi node and change its parent. Check that everything went well.
+	 * @throws DelaunayError
+	 */
 	public void testUpdateParent() throws DelaunayError {
 		DTriangle tri = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,0,4,0) , new DEdge(0,4,0,0,0,0));
 		VoronoiNode vn = new VoronoiNode(tri);
@@ -34,6 +33,19 @@ public class TestVoronoiNodes extends BaseUtility {
 		assertTrue(vn.getParent().equals(tri));
 		assertTrue(vn.getParent() == tri);
 		assertTrue(vn.getLocation().equals(new DPoint(2.5, 2.5, 0)));
+	}
+
+	/**
+	 * performs a equality test.
+	 * @throws DelaunayError
+	 */
+	public void testEquality() throws DelaunayError {
+		DTriangle tri = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,0,4,0) , new DEdge(0,4,0,0,0,0));
+		VoronoiNode vn = new VoronoiNode(tri);
+		DTriangle tri2 = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,0,4,0) , new DEdge(0,4,0,0,0,0));
+		VoronoiNode vn2 = new VoronoiNode(tri2);
+		assertTrue(vn.equals(vn2));
+		assertTrue(vn.hashCode() == vn2.hashCode());
 	}
 
 	/**

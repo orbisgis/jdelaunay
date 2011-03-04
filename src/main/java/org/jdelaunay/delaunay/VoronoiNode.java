@@ -101,4 +101,21 @@ class VoronoiNode {
 		return linkedNodes;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof VoronoiNode){
+			return parent.equals(((VoronoiNode) obj).parent);
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 83 * hash + (this.parent != null ? this.parent.hashCode() : 0);
+		return hash;
+	}
+
+
 }
