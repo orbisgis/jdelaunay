@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 
 /**
- * Delaunay Package.
+ * An horizontal rectangle.
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12

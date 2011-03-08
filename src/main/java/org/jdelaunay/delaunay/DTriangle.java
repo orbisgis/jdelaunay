@@ -1,12 +1,15 @@
 package org.jdelaunay.delaunay;
 
 /**
- * Delaunay Package.
+ * This is the class representing a Triangle in the DelaunayTriangulation. A DTriangle
+ * is made of three edges, each edge sharing a point with the other ones. Consequently,
+ * a DTriangle can be identified thanks to its edges, or thanks to its associated DPoint
+ * instances.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU, Alexis GUEGANNO
  * @date 2009-01-12
- * @revision 2010-12-20
- * @version 2.12-16
+ * @revision 2011-03-08
+ * @version 2.2
  */
 
 import java.awt.Color;
@@ -20,10 +23,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * This is the class representing a Triangle in the DelaunayTriangulation.
- * @author alexis
- */
 public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	/**

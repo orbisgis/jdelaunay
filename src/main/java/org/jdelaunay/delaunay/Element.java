@@ -4,7 +4,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 
 /**
- * Delaunay Package.
+ * Abstract container for all the geometric elements that are used during the triangulation
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12

@@ -1,7 +1,7 @@
 package org.jdelaunay.delaunay;
 
 /**
- * Delaunay Package.
+ * The smallest geometric element of a mesh.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12

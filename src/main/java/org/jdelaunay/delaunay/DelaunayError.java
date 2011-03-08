@@ -1,8 +1,9 @@
 package org.jdelaunay.delaunay;
 /**
- * Delaunay Package.
+ * The exception that is used to describe the kind of errors that can happen when
+ * building or using a ConstrainedMesh or its elements in this library.
  * 
- * @author Jean-Yves MARTIN, Erwan BOCHER
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Alexis GUÉGANNO
  * @date 2009-01-12
  * @version 1.0
  */

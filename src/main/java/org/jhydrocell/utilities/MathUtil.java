@@ -145,37 +145,6 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Describes the sign of the double given in argument.
-	 * @param d
-	 * @return 0 if d ==0, 1 if d>0, -1 otherwise.
-	 */
-	public static int sign(double d) {
-		if (d > 0) {
-			return 1;
-		}
-		else if (d < 0) {
-			return -1;
-		}
-		else {
-			return 0;
-		}
-	}
-
-	/**
-	 *
-	 * @param d1
-	 * @param d2
-	 * @return
-	 */
-	public static double min(double d1, double d2) {
-		if (d1 < d2) {
-			return d1;
-		} else {
-			return d2;
-		}
-	}
-
-	/**
 	 * Compute the length of the vector defined by v.
 	 * @param v
 	 * @return
@@ -185,6 +154,11 @@ public final class MathUtil {
 				.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
 
+	/**
+	 * Compute the vector of length one that is colinear to v.
+	 * @param v
+	 * @return
+	 */
 	public static Coordinate normeVectoriel(Coordinate v) {
 		double norme = norme(v);
 		Coordinate vNorme = (Coordinate) v.clone();
@@ -227,14 +201,13 @@ public final class MathUtil {
 	}
 
 	/**
-	 * Arrrondi une valeur double a p chiffre apres la virgule
+	 * Approximate the double v with 10^-p precision.
 	 *
 	 * @param v
-	 *            valeur double a arrondir
+	 *            double to approximate
 	 * @param p
-	 *            precision (nombre de chiffres apres la virgule a prendre en
-	 *            compte)
-	 * @return v arrondi a p chiffre apres la virgule
+	 *            precision 
+	 * @return an approximation of v.
 	 */
 
 	public static double roundDouble(double v, int p) {
@@ -248,6 +221,14 @@ public final class MathUtil {
 		return vRounded;
 	}
 
+	/**
+	 * Compute the intersection between [p1 p2] and [p3 v]
+	 * @param p1
+	 * @param p2
+	 * @param p3
+	 * @param v
+	 * @return
+	 */
 	 public static Coordinate getIntersection(Coordinate p1, Coordinate p2, Coordinate p3, Coordinate v) {
 	        Coordinate intersection = null;
 

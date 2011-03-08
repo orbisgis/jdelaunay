@@ -1,7 +1,17 @@
 package org.jdelaunay.delaunay;
 
 /**
- * Delaunay Package.
+ * An edge in the tringulation. A DEdge is formed with two DPoint instances.
+ *
+ * A DEdge is linked to up to two DTriangle : one on its left, and one on its right.
+ * This DEdge is an edge of these DTriangle. The left and right sides are relative
+ * to the orientation of the edge.
+ *
+ * Indeed, a DEdge has a start and an end. If you want to know the leftmost point,
+ * you can use getPointLeft (resp getPointRight for the rightmost point). The leftmost
+ * point is not necessarily the start point.
+ *
+ * To swap the start and the end, you can use the swap() method.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
  * @date 2009-01-12

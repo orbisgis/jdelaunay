@@ -26,9 +26,18 @@ public final class HydroTriangleUtil {
 		Coordinate n = new Coordinate();
 
 		// calcul de la normale par produit vectoriel
-		n.x = (triangle.getPoint(1).getY() - triangle.getPoint(0).getY()) * (triangle.getPoint(2).getZ() - triangle.getPoint(0).getZ()) - (triangle.getPoint(1).getZ() - triangle.getPoint(0).getZ()) * (triangle.getPoint(2).getY() - triangle.getPoint(0).getY());
-		n.y = (triangle.getPoint(1).getZ() - triangle.getPoint(0).getZ()) * (triangle.getPoint(2).getX() - triangle.getPoint(0).getX()) - (triangle.getPoint(1).getX() - triangle.getPoint(0).getX()) * (triangle.getPoint(2).getZ() - triangle.getPoint(0).getZ());
-		n.z = (triangle.getPoint(1).getX() - triangle.getPoint(0).getX()) * (triangle.getPoint(2).getY() - triangle.getPoint(0).getY()) - (triangle.getPoint(1).getY() - triangle.getPoint(0).getY()) * (triangle.getPoint(2).getX() - triangle.getPoint(0).getX());
+		n.x =	(triangle.getPoint(1).getY() - triangle.getPoint(0).getY()) *
+				(triangle.getPoint(2).getZ() - triangle.getPoint(0).getZ()) -
+			(triangle.getPoint(1).getZ() - triangle.getPoint(0).getZ()) *
+				(triangle.getPoint(2).getY() - triangle.getPoint(0).getY());
+		n.y =	(triangle.getPoint(1).getZ() - triangle.getPoint(0).getZ()) *
+				(triangle.getPoint(2).getX() - triangle.getPoint(0).getX()) -
+			(triangle.getPoint(1).getX() - triangle.getPoint(0).getX()) *
+				(triangle.getPoint(2).getZ() - triangle.getPoint(0).getZ());
+		n.z =	(triangle.getPoint(1).getX() - triangle.getPoint(0).getX()) *
+				(triangle.getPoint(2).getY() - triangle.getPoint(0).getY()) -
+			(triangle.getPoint(1).getY() - triangle.getPoint(0).getY()) *
+				(triangle.getPoint(2).getX() - triangle.getPoint(0).getX());
 		// normage du vecteur
 		double norme = Math.sqrt(n.x * n.x + n.y * n.y + n.z * n.z);
 		n.x = n.x / norme;

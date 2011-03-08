@@ -16,6 +16,21 @@ import org.apache.log4j.Logger;
 /**
  * This class is used to compute the constrained delaunay triangulation on a set of
  * points and constraint edges. The constraints can be validated before the triangulation.
+ *
+ * After the processing of the mesh with processDelaunay, the ConstrainedMesh can
+ * be identified with three set of data, plus its input constraint edges. The three
+ * sets are :
+ *
+ *   * The points of the mesh.
+ *
+ *   * The edges of the mesh.
+ *
+ *   * The triangles of the mesh.
+ *
+ * When processing elevation data, you can use the removeFlatTriangles method to
+ * be sure that none of the triangles are horizontal. This can be useful when the
+ * triangulation is supposed to be used for hydrology.
+ *
  * @author alexis
  */
 public class ConstrainedMesh implements Serializable {

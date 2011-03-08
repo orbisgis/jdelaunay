@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Delaunay Package.
+ * A set of utility methods
  *
  * @author Jean-Yves MARTIN, Alexis GUEGANNO
  * @date 2009-01-12
