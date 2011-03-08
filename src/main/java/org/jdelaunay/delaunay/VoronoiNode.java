@@ -207,7 +207,7 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 		for(int i=0; i<DTriangle.PT_NB; i++){
 			if(!edges[i].equals(line) ){
 				int inter =edges[i].intersects(ray);
-				if(inter ==1 || inter ==3 || inter == 4){
+				if(inter == DEdge.INTERSECT || inter ==DEdge.SHARE_EXTREMITY || inter == DEdge.SHARE_EDGE_PART){
 					stop = false;
 					nextEd = edges[i];
 					if(nextEd.isLocked()){

@@ -113,8 +113,6 @@ public class ConstrainedMesh implements Serializable {
 
 	/**
 	 * Set the list of edges that are used as constraints during triangulation
-	 * As we can't be sure the constraintEdges is already sorted, we sort it first
-	 * and add all the corresponding points to the point list.
 	 * @param constraintEdges
 	 */
 	public final void setConstraintEdges(ArrayList<DEdge> constraint) throws DelaunayError {
@@ -123,9 +121,7 @@ public class ConstrainedMesh implements Serializable {
 			//We lock the edge. It will not be supposed to be switched
 			//during a flip flap.
 			e.setLocked(true);
-			if(e.getPointLeft().equals(e.getEndPoint())){
-				e.swap();
-			}
+			fixConstraintDirection(e);
 			addConstraintEdge(e);
 		}
 	}
@@ -139,9 +135,7 @@ public class ConstrainedMesh implements Serializable {
 		if (constraintEdges == null) {
 			constraintEdges = new ArrayList<DEdge>();
 		}
-		if(e.getPointLeft().equals(e.getEndPoint())){
-			e.swap();
-		}
+		fixConstraintDirection(e);
 		e.setLocked(true);
 		addEdgeToLeftSortedList(constraintEdges, e);
 		int index = Collections.binarySearch(points, e.getStartPoint());
@@ -1028,7 +1022,7 @@ public class ConstrainedMesh implements Serializable {
 	 * This method will compute a triangulation again - the insertion is not incremental.
 	 * @throws DelaunayError
 	 */
-	public void removeFlatTriangles() throws DelaunayError {
+	public final void removeFlatTriangles() throws DelaunayError {
 		//if the mesh has not been computed, we throw an exception.
 		if(!meshComputed){
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
@@ -1060,9 +1054,7 @@ public class ConstrainedMesh implements Serializable {
 		for(DEdge e : constraintEdges){
 			e.setLeft(null);
 			e.setRight(null);
-			if(e.getStartPoint().equals(e.getPointRight())){
-				e.swap();
-			}
+			fixConstraintDirection(e);
 		}
 		processDelaunay();
 	}
@@ -1395,6 +1387,17 @@ public class ConstrainedMesh implements Serializable {
 			}
 		}
 		return theEdge;
+	}
+
+	/**
+	 * We must be sure that the start point of the constraint is its left point
+	 * before beginning the triangulation computation.
+	 * @param ed
+	 */
+	private void fixConstraintDirection(DEdge ed){
+		if(ed.getPointRight().equals(ed.getStartPoint())){
+			ed.swap();
+		}
 	}
 
 	/**

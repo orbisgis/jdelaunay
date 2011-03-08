@@ -211,7 +211,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * during the flat removal operation.
 	 * @return
 	 */
-	public boolean isSeenForFlatRemoval() {
+	public final boolean isSeenForFlatRemoval() {
 		return seenForFlatRemoval;
 	}
 
@@ -220,7 +220,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * process flat triangles only once during the flat tiangles removal operation.
 	 * @param seenForFlatRemoval
 	 */
-	void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
+	final void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
 		this.seenForFlatRemoval = seenForFlatRemoval;
 	}
 	

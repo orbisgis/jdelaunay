@@ -285,6 +285,23 @@ public class TestVoronoiNodes extends BaseUtility {
 	}
 
 	/**
+	 * Check we catch an exception when using replaceNode in an unexpected way.
+	 * @throws DelaunayError
+	 */
+	public void testReplaceNodeException() throws DelaunayError {
+		DTriangle tri1 = new DTriangle(new DEdge(0,0,0,3,3,0), new DEdge(3,3,0,2,5,0), new DEdge(2, 5, 0, 0, 0, 0));
+		DTriangle tri2 = new DTriangle(new DEdge(8, 8, 0, 9, 9, 0), new DEdge(9, 9, 0, 5, 7, 0), new DEdge(5, 7, 0, 8, 8, 0));
+		VoronoiNode v1 = new VoronoiNode(tri1);
+		VoronoiNode v2 = new VoronoiNode(tri2);
+		try{
+			v1.replaceNode(v2);
+			assertTrue(false);
+		} catch(DelaunayError d){
+			assertTrue(true);
+		}
+	}
+
+	/**
 	 * Build a sample of connected triangles that share the exact same edges and points.
 	 * @return
 	 * @throws DelaunayError
