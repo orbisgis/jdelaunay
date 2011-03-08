@@ -355,44 +355,45 @@ public final class HydroNetwork {
 			if (aPoint != null) {
 				if (lastPoint == null) {
 					// First point of the list
-					if (listIntermediate.contains(aPoint)) {
+					if (!listIntermediate.contains(aPoint)) {
 						// Already an intermediate point => do nothing
-					} else if (listExit.contains(aPoint)) {
-						// It is an exit
-						// It is also an entry
-						// => becomes an intermediate
-						listExit.remove(aPoint);
-						listIntermediate.add(aPoint);
-					} else if (!listEntry.contains(aPoint)) {
-						// New entry
-						listEntry.add(aPoint);
+						if (listExit.contains(aPoint)) {
+							// It is an exit
+							// It is also an entry
+							// => becomes an intermediate
+							listExit.remove(aPoint);
+							listIntermediate.add(aPoint);
+						} else if (!listEntry.contains(aPoint)) {
+							// New entry
+							listEntry.add(aPoint);
+						}
 					}
 					// else it is in Entry
 				} else {
 					// Intermediate point
-					if (listIntermediate.contains(aPoint)) {
+					if (!listIntermediate.contains(aPoint)) {
 						// Already an intermediate point => do nothing
-					} else if (listExit.contains(aPoint)) {
-						// It is an exit
-						if (count > 0) {
-							// and not the last point
+						if (listExit.contains(aPoint)) {
+							// It is an exit
+							if (count > 0) {
+								// and not the last point
+								// => becomes an intermediate
+								listExit.remove(aPoint);
+								listIntermediate.add(aPoint);
+							}
+						} else if (listEntry.contains(aPoint)) {
+							// It is an entry
 							// => becomes an intermediate
-							listExit.remove(aPoint);
+							listEntry.remove(aPoint);
 							listIntermediate.add(aPoint);
+						} else if (count > 0) {
+							// new point => add it to Intermediate
+							listIntermediate.add(aPoint);
+						} else {
+							// new point and Last point => Exit
+							listExit.add(aPoint);
 						}
-					} else if (listEntry.contains(aPoint)) {
-						// It is an entry
-						// => becomes an intermediate
-						listEntry.remove(aPoint);
-						listIntermediate.add(aPoint);
-					} else if (count > 0) {
-						// new point => add it to Intermediate
-						listIntermediate.add(aPoint);
-					} else {
-						// new point and Last point => Exit
-						listExit.add(aPoint);
 					}
-
 					// Link lastPoint to new point
 					DEdge anEdge = new DEdge(lastPoint, aPoint);
 					anEdge.addProperty(listDefinition);
