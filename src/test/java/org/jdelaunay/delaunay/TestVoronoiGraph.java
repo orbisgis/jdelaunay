@@ -206,4 +206,52 @@ public class TestVoronoiGraph extends BaseUtility{
 		assertTrue(vg.getSortedNodes().contains(new VoronoiNode(new DTriangle(new DEdge(8,3,0,5,6,0),
 					new DEdge(5,6,0,8,6,0), new DEdge(8,6,0,8,3,0)))));
 	}
+
+	/**
+	 * Tests that a not flat triangle is stored when filling the graph
+	 * @throws DelaunayError
+	 */
+	public void testRetrieveNotFlat() throws DelaunayError {
+		List<DTriangle> tris = TestVoronoiNodes.getSampleTriangles();
+		DTriangle tri = tris.get(9);
+		DTriangle tri7 = tris.get(7);
+		DTriangle tri6 = tris.get(6);
+		List<DPoint> points = tri7.getPoints();
+		for(DPoint p : points){
+			if(p.equals(new DPoint(1,2,0))){
+				p.setZ(8);
+			}
+		}
+		VoronoiGraph vg = new  VoronoiGraph(tri);
+		vg.fillUntilNotFlatFound();
+		assertTrue(vg.getNotFlat().getParent().equals(tri7) || vg.getNotFlat().getParent().equals(tri6));
+	}
+
+	/**
+	 * Tests that not-flat triangles are not all added to the graph.
+	 * The graph must just contain the ones that are linked to a flat-node
+	 * contained in the graph.
+	 * @throws DelaunayError
+	 */
+	public void testProcessFlatGraph() throws DelaunayError {
+		List<DTriangle> tris = TestVoronoiNodes.getSampleTriangles();
+		DTriangle tri = tris.get(9);
+		DTriangle tri7 = tris.get(7);
+		DTriangle tri6 = tris.get(6);
+		DTriangle tri5 = tris.get(5);
+		List<DPoint> points = tri6.getPoints();
+		for(DPoint p : points){
+			if(p.equals(new DPoint(1,2,0))){
+				p.setZ(8);
+			}
+			if(p.equals(new DPoint(4,0,0))){
+				p.setZ(8);
+			}
+		}
+		VoronoiGraph vg = new  VoronoiGraph(tri);
+		vg.fillUntilNotFlatFound();
+		assertTrue(vg.getNotFlat().getParent().equals(tri7) || vg.getNotFlat().getParent().equals(tri5));
+		assertTrue(vg.getSortedNodes().size()==9);
+		assertFalse(vg.getSortedNodes().contains(new VoronoiNode(tri6)));
+	}
 }

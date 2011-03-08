@@ -21,6 +21,8 @@ class VoronoiGraph {
 	private List<VoronoiNode> sortedNodes;
 	//The VoronoiNode that has been used as a start point to build this graph.
 	private VoronoiNode startNode;
+	//The first not flat node that has been found
+	private VoronoiNode notFlat;
 
 	/**
 	 * Construct a new VoronoiGraph, with a sole triangle as a base. It will be
@@ -32,6 +34,7 @@ class VoronoiGraph {
 		startNode = new VoronoiNode(base);
 		sortedNodes = new ArrayList<VoronoiNode>();
 		addNode(startNode);
+		notFlat = null;
 	}
 
 	/**
@@ -48,6 +51,14 @@ class VoronoiGraph {
 	 */
 	public VoronoiNode getStartNode() {
 		return startNode;
+	}
+
+	/**
+	 * Return the first not-flat triangle encountered during the triangulation.
+	 * @return
+	 */
+	public VoronoiNode getNotFlat() {
+		return notFlat;
 	}
 
 	/**
@@ -105,6 +116,8 @@ class VoronoiGraph {
 				sortedNodes.add(-index-1, neigh);
 				if(neigh.getParent().isFlatSlope()){
 					toBeTreated.add(neigh);
+				} else if(notFlat == null){
+					notFlat = neigh;
 				}
 			}
 		}
