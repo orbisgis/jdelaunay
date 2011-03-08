@@ -40,12 +40,13 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * The array of edges that constitute this triangle
 	 */
 	private DEdge[] edges;
-
-	private double xCenter, yCenter;
+	//The coordinates of the center of the circle.
+	private double xCenter, yCenter, zCenter;
 	private double radius;
 	
 	private int indicator;
 
+	private boolean seenForFlatRemoval;
 
 	/**
 	 * Initialize data structure This method is called by every constructor
@@ -54,8 +55,10 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		this.edges = new DEdge[PT_NB];
 		this.xCenter = 0;
 		this.yCenter = 0;
+		zCenter = 0;
 		this.radius = -1;
 		this.indicator = 0;
+		seenForFlatRemoval = false;
 	}
 
 	/**
@@ -200,7 +203,25 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @return
 	 */
 	public final Coordinate getCircumCenter() {
-		return new Coordinate(this.xCenter, this.yCenter, 0.0);
+		return new Coordinate(this.xCenter, this.yCenter, zCenter);
+	}
+
+	/**
+	 * check if this triangle has already been encountered (and marked if flat)
+	 * during the flat removal operation.
+	 * @return
+	 */
+	public boolean isSeenForFlatRemoval() {
+		return seenForFlatRemoval;
+	}
+
+	/**
+	 * Set the value of the seenForFlatRemoval attribute, that is used to
+	 * process flat triangles only once during the flat tiangles removal operation.
+	 * @param seenForFlatRemoval
+	 */
+	void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
+		this.seenForFlatRemoval = seenForFlatRemoval;
 	}
 	
 	@Override
@@ -339,8 +360,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	/**
 	 * Recompute the center of the circle that joins the ptNb points : the CircumCenter
+	 * @throws DelaunayError
 	 */
-	protected final void recomputeCenter() {
+	protected final void recomputeCenter() throws DelaunayError {
 		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
@@ -371,6 +393,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 			xCenter = cx;
 			yCenter = cy;
+			zCenter = interpolateZ(new DPoint(cx, cy, 0));
 
 			radius = p1.squareDistance2D(xCenter, yCenter);
 		} else {
@@ -470,20 +493,20 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	public final double interpolateZ(DPoint aPoint) {
 		double zValue = 0;
 
-		DPoint p1,p2,pptNb;
+		DPoint p1,p2,p3;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
-		pptNb = edges[1].getStartPoint();
-		if ((pptNb.equals(p1))||(pptNb.equals(p2))) {
-			pptNb = edges[1].getEndPoint();
+		p3 = edges[1].getStartPoint();
+		if ((p3.equals(p1))||(p3.equals(p2))) {
+			p3 = edges[1].getEndPoint();
 		}
 
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
 		double uz = p2.getZ() - p1.getZ();
-		double vx = pptNb.getX() - p1.getX();
-		double vy = pptNb.getY() - p1.getY();
-		double vz = pptNb.getZ() - p1.getZ();
+		double vx = p3.getX() - p1.getX();
+		double vy = p3.getY() - p1.getY();
+		double vz = p3.getZ() - p1.getZ();
 
 		double a = uy * vz - uz * vy;
 		double b = uz * vx - ux * vz;
@@ -685,7 +708,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	/**
 	 * Check if the triangle is flat or not.
-	 * Check if the ptNb points have the same Z.
+	 * Check if the 3 points have the same Z.
 	 *
 	 * @return isFlat
 	 */

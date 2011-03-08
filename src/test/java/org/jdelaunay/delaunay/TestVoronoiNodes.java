@@ -38,7 +38,7 @@ public class TestVoronoiNodes extends BaseUtility {
 		other.setLocked(true);
 		constr.setLocked(false);
 		vn.setParent(tri);
-		assertTrue(vn.getLocation().equals(new DPoint(tri.getCircumCenter())));
+		assertTrue(vn.getLocation().equals(new DPoint(tri.getBarycenter())));
 	}
 
 	public void testLocationBoundary() throws DelaunayError {
@@ -104,7 +104,7 @@ public class TestVoronoiNodes extends BaseUtility {
 		vn = new VoronoiNode(tri);
 		tri2 = new DTriangle(new DEdge(4,3,0,6,0,0), ed, new DEdge(0,3,0,4,3,0));
 		vn2 = new VoronoiNode(tri2);
-		assertTrue(vn.compareTo(vn2)==1);
+		assertTrue(vn.compareTo(vn2)==-1);
 	}
 
 	/**

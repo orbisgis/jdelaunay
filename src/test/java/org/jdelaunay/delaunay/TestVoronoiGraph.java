@@ -254,4 +254,27 @@ public class TestVoronoiGraph extends BaseUtility{
 		assertTrue(vg.getSortedNodes().size()==9);
 		assertFalse(vg.getSortedNodes().contains(new VoronoiNode(tri6)));
 	}
+
+	public void testZComputation() throws DelaunayError {
+		DPoint p1 = new DPoint(0,4,0);
+		DPoint p2 = new DPoint(3,7,0);
+		DPoint p3 = new DPoint(5,5,0);
+		DPoint p4= new DPoint(3,0,10);
+		DEdge e1 = new DEdge(p1, p2);
+		e1.setLocked(true);
+		DEdge e2 = new DEdge(p2, p3);
+		e2.setLocked(true);
+		DEdge e3 = new DEdge(p1, p3);
+		DEdge e4 = new DEdge(p1, p4);
+		DEdge e5 = new DEdge(p3, p4);
+		DTriangle t1 = new DTriangle(e1, e2, e3);
+		DTriangle t2 = new DTriangle(e4, e5, e3);
+		VoronoiGraph vg = new VoronoiGraph(t1);
+		vg.fillUntilNotFlatFound();
+		vg.assignZValues();
+		for(VoronoiNode vn : vg.getSortedNodes()){
+			assertTrue(vn.getLocation().getZ() < 10);
+			assertTrue(vn.getLocation().getZ() > 0);
+		}
+	}
 }

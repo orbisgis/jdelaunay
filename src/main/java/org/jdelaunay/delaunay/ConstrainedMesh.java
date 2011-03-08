@@ -1022,6 +1022,52 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
+	 * This operation remove the flat triangles by inserting new points in the mesh,
+	 * that come from the skeleton of the already computed mesh.
+	 * This method must be used after a previous call to processDelaunay().
+	 * This method will compute a triangulation again - the insertion is not incremental.
+	 * @throws DelaunayError
+	 */
+	public void removeFlatTriangles() throws DelaunayError {
+		//if the mesh has not been computed, we throw an exception.
+		if(!meshComputed){
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
+		}
+		if((!triangleList.isEmpty() && triangleList.get(0).isSeenForFlatRemoval())){
+			for(DTriangle tri : triangleList){
+				tri.setSeenForFlatRemoval(false);
+			}
+		}
+		List<DPoint> newPoints = new ArrayList<DPoint>();
+		VoronoiGraph vg;
+		for(DTriangle tri : triangleList){
+			if(!tri.isSeenForFlatRemoval()){
+				vg = new VoronoiGraph(tri);
+				vg.fillUntilNotFlatFound();
+				vg.assignZValues();
+				if(vg.getNotFlat()!=null){
+					newPoints.addAll(vg.getSkeletonPoints());
+				}
+			}
+		}
+		for(DPoint pt : newPoints){
+			pt.setGID(++pointGID);
+		}
+		points.addAll(newPoints);
+		Collections.sort(points);
+		setMeshComputed(false);
+		triangleList = new ArrayList<DTriangle>();
+		for(DEdge e : constraintEdges){
+			e.setLeft(null);
+			e.setRight(null);
+			if(e.getStartPoint().equals(e.getPointRight())){
+				e.swap();
+			}
+		}
+		processDelaunay();
+	}
+
+	/**
 	 * Build the boundary needed to begin the building of the mesh.
 	 * @param p1
 	 * @param e1
@@ -1189,7 +1235,7 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Process the flip-flop algorithm on the list of triangles
 	 */
-	private void processBadEdges() {
+	private void processBadEdges() throws DelaunayError {
 		if (!isMeshComputed()) {
 			LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
 			while (!badEdgesQueueList.isEmpty()) {
@@ -1249,7 +1295,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @return
 	 */
 	private boolean swapTriangle(DTriangle aTriangle1, DTriangle aTriangle2,
-		DEdge anEdge) {
+		DEdge anEdge) throws DelaunayError {
 
 		boolean exchange = false;
 		DEdge anEdge10, anEdge11, anEdge12;
@@ -1357,7 +1403,7 @@ public class ConstrainedMesh implements Serializable {
 	 *
 	 * @param g
 	 */
-	//NOSONAR
+	//NO-SONAR
 	public final void displayObject(Graphics g) {
 		try {
 			Envelope theBox = getBoundingBox();
@@ -1428,6 +1474,7 @@ public class ConstrainedMesh implements Serializable {
 			log.warn("Problem during rendering\n", e);
 		}
 	}
+	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
 		// our "pseudo-constructor"
 		in.defaultReadObject();

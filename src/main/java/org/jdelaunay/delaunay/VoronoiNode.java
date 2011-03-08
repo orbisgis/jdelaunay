@@ -160,17 +160,67 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 		DPoint defloc = new DPoint(parent.getCircumCenter());
 		DEdge[] edges = parent.getEdges();
 		DPoint last;
+		//To be sure that the current edge is connected to two triangles, as we don't want to
+		//add points outside the current mesh.
 		boolean twoAssociatedTriangles;
 		for(int i =0; i<DTriangle.PT_NB; i++){
 			last = parent.getAlterPoint(edges[i]);
 			twoAssociatedTriangles = edges[i].getRight() != null && edges[i].getLeft()!=null;
-			if((edges[i].isLocked() || !twoAssociatedTriangles)
-					&& !edges[i].isRight(last)==edges[i].isRight(defloc) ){
-				location = parent.getBarycenter();
-				return;
+			//If the circumcenter is right to one edge where the last point is
+			//on the left (or the contrary) we must make further process.
+			if(!edges[i].isRight(last)==edges[i].isRight(defloc)){
+				if((edges[i].isLocked() || !twoAssociatedTriangles)){
+					//If the center is on the other side of the constraint, we stop our progress.
+					location = parent.getBarycenter();
+					return;
+				} else {
+					//We must check we don't intersect a constraint.
+					defloc = checkLocationValidity(defloc, new DEdge(defloc, parent.getAlterPoint(edges[i])),edges[i], parent);
+					if(defloc==null){
+						location = parent.getBarycenter();
+						return;
+					}
+				}
 			}
 		}
 		location = defloc;
+	}
+
+	/**
+	 * This method tries to find an intersection between ray (which is an edge
+	 * between the triangle and its circumcenter) and a constraint edge.
+	 * @param center
+	 * @param ray
+	 * @param line
+	 * @param prev
+	 * @return
+	 * @throws DelaunayError
+	 */
+	private DPoint checkLocationValidity(final DPoint center, DEdge ray, DEdge line, DTriangle prev) throws DelaunayError {
+		DTriangle next = line.getOtherTriangle(prev);
+		if(next==null){
+			return null;
+		}
+		boolean stop = true;
+		DEdge[] edges = next.getEdges();
+		DEdge nextEd = null;
+		for(int i=0; i<DTriangle.PT_NB; i++){
+			if(!edges[i].equals(line) ){
+				int inter =edges[i].intersects(ray);
+				if(inter ==1 || inter ==3 || inter == 4){
+					stop = false;
+					nextEd = edges[i];
+					if(nextEd.isLocked()){
+						return null;
+					}
+				}
+			}
+		}
+		if(stop){
+			return center;
+		} else {
+			return checkLocationValidity(center, ray, nextEd, next);
+		}
 	}
 
 	/**

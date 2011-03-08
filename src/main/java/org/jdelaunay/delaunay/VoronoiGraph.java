@@ -88,6 +88,18 @@ class VoronoiGraph {
 	}
 
 	/**
+	 * Get the list of points that should be added to the mesh.
+	 * @return
+	 */
+	public List<DPoint> getSkeletonPoints() {
+		List<DPoint> ret = new ArrayList<DPoint>();
+		for(VoronoiNode vn : sortedNodes){
+			ret.add(vn.getLocation());
+		}
+		return ret;
+	}
+
+	/**
 	 * Fill the graph until the first not flat triangle is found.
 	 * @throws DelaunayError
 	 */
@@ -103,6 +115,7 @@ class VoronoiGraph {
 	 * @throws DelaunayError
 	 */
 	private void processNeighbours(VoronoiNode vn) throws DelaunayError {
+		vn.getParent().setSeenForFlatRemoval(true);
 		List<VoronoiNode> neighbours = vn.getNeighbourNodes();
 		List<VoronoiNode> toBeTreated = new ArrayList<VoronoiNode>();
 		int index;
@@ -128,5 +141,65 @@ class VoronoiGraph {
 			processNeighbours(treat);
 		}
 
+	}
+
+	/**
+	 * If possible, assign a meaningful Z value to each point of the generated part
+	 * of the skeleton.
+	 * @throws DelaunayError
+	 */
+	//The method used here is presented by Dakowicz and Gold in "Extracting meaningful
+	//slopes from terrain contours".
+	public void assignZValues() throws DelaunayError {
+		if(notFlat != null){
+			//We need the radius and the Z value of the center of the
+			//first non-flat triangle we found.
+			double radiusNF = notFlat.getParent().getRadius();
+			double zCenter = notFlat.getParent().getCircumCenter().z;
+			double zMin = notFlat.getParent().getPoints().get(0).getZ();
+			double zMax = notFlat.getParent().getPoints().get(0).getZ();
+			for(int i=1; i<DTriangle.PT_NB; i++){
+				zMin = zMin < notFlat.getParent().getPoints().get(i).getZ() ? zMin :
+						notFlat.getParent().getPoints().get(i).getZ();
+				zMax = zMax < notFlat.getParent().getPoints().get(i).getZ() ?
+						notFlat.getParent().getPoints().get(i).getZ() : zMax;
+			}
+			//We can process each node iteratively
+			for(VoronoiNode vn : sortedNodes){
+				if(vn.getParent().isFlatSlope()){
+					setZValue(radiusNF, zCenter, vn, zMin, zMax);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Compute and assign a Z value to the voronoi node vn, given the radius of
+	 * the triangle used for comparison, and the height of its circumcenter.
+	 * @param radius
+	 * @param center
+	 * @param vn
+	 * @throws DelaunayError
+	 */
+	private void setZValue(double radius, double cHeight, VoronoiNode vn, double zMin, double zMax) throws DelaunayError {
+		DPoint location = vn.getLocation();
+		double vnRadius = 0;
+		if(vn.getLocation().equals(new DPoint(vn.getParent().getCircumCenter()))){
+			vnRadius = vn.getParent().getRadius();
+		} else {
+			List<Double> dists = new ArrayList<Double>();
+			for(int i=0; i<DTriangle.PT_NB; i++){
+				dists.add(location.squareDistance(vn.getParent().getPoint(i)));
+			}
+			vnRadius = Collections.min(dists);
+		}
+		double flatHeight = vn.getParent().getPoint(0).getZ();
+		double computedZ = (vnRadius/radius) * cHeight + (1-vnRadius/radius) * flatHeight;
+		if(computedZ < zMin){
+			computedZ = zMin;
+		} else if(computedZ > zMax){
+			computedZ = zMax;
+		}
+		location.setZ(computedZ);
 	}
 }
