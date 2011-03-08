@@ -15,25 +15,71 @@ public class DelaunayError extends Exception {
 	private int code;
 
 	// error codes
+	/**
+	 * An error has been thrown, but it shouldn't happen...
+	 */
 	public static final int DELAUNAY_ERROR_NO_ERROR = 0;
+	/**
+	 * There is no mesh to work with.
+	 */
 	public static final int DELAUNAY_ERROR_NO_MESH = 100;
+	/**
+	 * The mesh has not been generated, and it should have.
+	 */
 	public static final int DELAUNAY_ERROR_NOT_GENERATED = 101;
+	/**
+	 * The mesh has been generated, and it shouldn't.
+	 */
 	public static final int DELAUNAY_ERROR_GENERATED = 102;
+	/**
+	 * We haven't found enough points to process our operation.
+	 */
 	public static final int DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND = 103;
+	/**
+	 * The points are too close.
+	 */
 	public static final int DELAUNAY_ERROR_PROXIMITY = 104;
+	/**
+	 * can't find the asked point.
+	 */
 	public static final int DELAUNAY_ERROR_POINT_NOT_FOUND = 105;
+	/**
+	 * Failed at connecting the point to the mesh.
+	 */
 	public static final int DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT = 106;
+	/**
+	 * Failed at splitting a boundary part.
+	 */
 	public static final int DELAUNAY_ERROR_CAN_NOT_SPLIT_BP = 107;
-	
+	/**
+	 * The point has not been inserted during the triangulation.
+	 */
 	public static final int DELAUNAY_ERROR_NON_INSERTED_POINT = 200;
+	/**
+	 * The topology is wrong.
+	 */
 	public static final int DELAUNAY_ERROR_INCORRECT_TOPOLOGY = 201;
+
 	public static final int DELAUNAY_ERROR_OUTSIDE_TRIANGLE = 202;
+	/**
+	 * Failed at removing an edge.
+	 */
 	public static final int DELAUNAY_ERROR_REMOVING_EDGE = 203;
-	
+	/**
+	 * 
+	 */
 	public static final int DELAUNAY_ERROR_ERROR_POINT_XYZ = 300;
-	
+	/**
+	 * Bad call to a method
+	 */
 	public static final int DELAUNAY_ERROR_INVALID_CALL = 998;
+	/**
+	 * Inner error.
+	 */
 	public static final int DELAUNAY_ERROR_INTERNAL_ERROR = 999;
+	/**
+	 * Other error
+	 */
 	public static final int DELAUNAY_ERROR_MISC = 1000;
 
 	private String message="";
