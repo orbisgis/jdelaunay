@@ -423,4 +423,12 @@ public class TestEdges extends BaseUtility {
 		assertTrue(bb.getPoints().contains(new DPoint(0,0,0)));
 		assertTrue(bb.getPoints().contains(new DPoint(2,2,0)));
 	}
+
+	public void testGetUpperPoint() throws DelaunayError {
+		DPoint p1 = new DPoint(0,5,7);
+		DPoint p2 = new DPoint(9,6,3);
+		DEdge d = new DEdge(p2, p1);
+		assertTrue(d.getUpperPoint().equals(p1));
+		assertTrue(d.getUpperPoint()==p1);
+	}
 }

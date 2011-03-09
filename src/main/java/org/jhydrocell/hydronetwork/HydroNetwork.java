@@ -14,6 +14,7 @@ import org.jhydrocell.utilities.HydroPolygonUtil;
 import org.jhydrocell.utilities.MathUtil;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.ArrayList;
 
 public final class HydroNetwork {
 	private ConstrainedMesh theMesh;
@@ -237,8 +238,8 @@ public final class HydroNetwork {
 			 * The code below is used to insert new talweg in the TIN
 			 */
 
-//			ArrayList<DPoint> listPointAtraiter = new ArrayList<DPoint>();
-//			ArrayList<DTriangle> listTriangles = new ArrayList<DTriangle>();
+			ArrayList<DPoint> listPointAtraiter = new ArrayList<DPoint>();
+			ArrayList<DTriangle> listTriangles = new ArrayList<DTriangle>();
 
 			for (DEdge edge : theMesh.getEdges()) {
 
@@ -248,14 +249,14 @@ public final class HydroNetwork {
 						|| (!edge.hasProperty(HydroProperties.RIGHTCOLINEAR))
 						|| (!edge.hasProperty(HydroProperties.DOUBLECOLINEAR))) {
 
-//					DPoint uperPoint = theMesh.findUperPoint(edge);
+					DPoint uperPoint = edge.getUpperPoint();
 
-//					if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
-//						if (!listPointAtraiter.contains(uperPoint)) {
-//							listPointAtraiter.add(uperPoint);
-//
-//						}
-//					}
+					if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
+						if (!listPointAtraiter.contains(uperPoint)) {
+							listPointAtraiter.add(uperPoint);
+
+						}
+					}
 				}
 			}
 		}
