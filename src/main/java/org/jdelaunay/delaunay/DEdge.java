@@ -1074,7 +1074,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * return the point of the edge that have the greatest Z coordinate.
 	 * @return
 	 */
-	public DPoint getUpperPoint() {
+	public final DPoint getUpperPoint() {
 		return startPoint.getZ() > endPoint.getZ() ? startPoint : endPoint;
 	}
 
