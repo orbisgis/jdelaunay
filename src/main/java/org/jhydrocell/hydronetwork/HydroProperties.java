@@ -10,11 +10,29 @@ package org.jhydrocell.hydronetwork;
 
 public final class HydroProperties {
 	// Constraints types
+	/**
+	 * The object is a wall
+	 */
 	public static final int WALL = 1;
+	/**
+	 * The object is a sewer
+	 */
 	public static final int SEWER = 1 << 1;
+	/**
+	 * the object is a road
+	 */
 	public static final int ROAD = 1 << 2;
+	/**
+	 * The object is a ditch
+	 */
 	public static final int DITCH = 1 << 3;
+	/**
+	 * The object is a river
+	 */
 	public static final int RIVER = 1 << 4;
+	/**
+	 * The object is a parcel
+	 */
 	public static final int PARCEL = 1 << 5;
 
 	// Topographic types
