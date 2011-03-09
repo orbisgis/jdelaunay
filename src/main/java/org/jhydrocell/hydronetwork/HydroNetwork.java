@@ -239,7 +239,6 @@ public final class HydroNetwork {
 			 */
 
 			ArrayList<DPoint> listPointAtraiter = new ArrayList<DPoint>();
-			ArrayList<DTriangle> listTriangles = new ArrayList<DTriangle>();
 
 			for (DEdge edge : theMesh.getEdges()) {
 
@@ -251,11 +250,8 @@ public final class HydroNetwork {
 
 					DPoint uperPoint = edge.getUpperPoint();
 
-					if (uperPoint.hasProperty(HydroProperties.TALWEG)) {
-						if (!listPointAtraiter.contains(uperPoint)) {
+					if (uperPoint.hasProperty(HydroProperties.TALWEG) && !listPointAtraiter.contains(uperPoint)) {
 							listPointAtraiter.add(uperPoint);
-
-						}
 					}
 				}
 			}
