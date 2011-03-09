@@ -257,8 +257,7 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 			for(int i=0; i<DTriangle.PT_NB; i++){
 				dists.add(location.squareDistance(getParent().getPoint(i)));
 			}
-			double ret = Collections.min(dists);
-			return ret;
+			return Collections.min(dists);
 		}
 	}
 
