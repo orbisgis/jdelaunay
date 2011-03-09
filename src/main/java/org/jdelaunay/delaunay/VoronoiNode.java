@@ -1,6 +1,7 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -237,6 +238,27 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 			throw new DelaunayError("Wait... the node given in argument is supposed to be a neighbour of this one!");
 		} else {
 			linkedNodes.set(index, alreadySeen);
+		}
+	}
+
+	/**
+	 * Gets the radius of this VoronoiNode. It will be the radius of the circumcenter
+	 * if the location of this is the circumcenter of its parent triangle, or
+	 * the minimum distance between the barycenter and the points of the triangle
+	 * otherwise.
+	 * @return
+	 * @throws DelaunayError
+	 */
+	double getRadius() throws DelaunayError {
+		if(location.equals(new DPoint(parent.getCircumCenter()))){
+			return parent.getRadius();
+		} else {
+			List<Double> dists = new ArrayList<Double>();
+			for(int i=0; i<DTriangle.PT_NB; i++){
+				dists.add(location.squareDistance(getParent().getPoint(i)));
+			}
+			double ret = Collections.min(dists);
+			return ret;
 		}
 	}
 

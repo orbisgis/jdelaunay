@@ -302,6 +302,22 @@ public class TestVoronoiNodes extends BaseUtility {
 	}
 
 	/**
+	 * Test the getRadius method.
+	 * @throws DelaunayError
+	 */
+	public void testgetRadius() throws DelaunayError {
+		DEdge constr = new DEdge(6, 0, 0, 0, 3, 0);
+		DEdge other = new DEdge(0, 3, 0, 3, 0, 0);
+		DTriangle tri = new DTriangle(new DEdge(3,0,0,6,0,0), constr, other);
+		DTriangle tri2 = new DTriangle(constr, new DEdge(0,3,0,5,5,0), new DEdge(5,5,0,6,0,0));
+		VoronoiNode vn = new VoronoiNode(tri2);
+		assertTrue(vn.getRadius() == vn.getParent().getRadius());
+		tri = new DTriangle(new DEdge(3,0,0,6,0,0), new DEdge(6, 0, 0, 0, 3, 0), new DEdge(0, 3, 0, 3, 0, 0));
+		vn = new VoronoiNode(tri);
+		assertTrue(vn.getRadius() != tri.getRadius());
+	}
+
+	/**
 	 * Build a sample of connected triangles that share the exact same edges and points.
 	 * @return
 	 * @throws DelaunayError
