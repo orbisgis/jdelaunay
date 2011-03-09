@@ -1054,7 +1054,7 @@ public class ConstrainedMesh implements Serializable {
 				vg = new VoronoiGraph(tri);
 				vg.fillUntilNotFlatFound();
 				vg.assignZValues();
-				if(vg.getNotFlat()!=null){
+				if(vg.isUseful()){
 					newPoints.addAll(vg.getSkeletonPoints());
 				}
 			}

@@ -18,6 +18,8 @@ class VoronoiGraph {
 	private VoronoiNode startNode;
 	//The first not flat node that has been found
 	private VoronoiNode notFlat;
+	//True if this graph can be used to insert points in the mesh.
+	private boolean useful = false;
 
 	/**
 	 * Construct a new VoronoiGraph, with a sole triangle as a base. It will be
@@ -54,6 +56,15 @@ class VoronoiGraph {
 	 */
 	public VoronoiNode getNotFlat() {
 		return notFlat;
+	}
+
+	/**
+	 * returns true if the location's values have been changed by a call to
+	 * assignZValues.
+	 * @return
+	 */
+	public boolean isUseful() {
+		return useful;
 	}
 
 	/**
@@ -146,26 +157,96 @@ class VoronoiGraph {
 	//The method used here is presented by Dakowicz and Gold in "Extracting meaningful
 	//slopes from terrain contours".
 	public void assignZValues() throws DelaunayError {
-		if(notFlat != null){
-			//We need the radius and the Z value of the center of the
-			//first non-flat triangle we found.
-			double radiusNF = notFlat.getParent().getRadius();
-			double zCenter = notFlat.getParent().getCircumCenter().z;
-			double zMin = notFlat.getParent().getPoints().get(0).getZ();
-			double zMax = notFlat.getParent().getPoints().get(0).getZ();
-			for(int i=1; i<DTriangle.PT_NB; i++){
-				zMin = zMin < notFlat.getParent().getPoints().get(i).getZ() ? zMin :
-						notFlat.getParent().getPoints().get(i).getZ();
-				zMax = zMax < notFlat.getParent().getPoints().get(i).getZ() ?
-						notFlat.getParent().getPoints().get(i).getZ() : zMax;
-			}
-			//We can process each node iteratively
-			for(VoronoiNode vn : sortedNodes){
-				if(vn.getParent().isFlatSlope()){
-					setZValue(radiusNF, zCenter, vn, zMin, zMax);
+		useful = false;
+		if(notFlat == null){
+			useful = assignZValuesWithoutNotFlat();
+		} else {
+			useful = assignZValuesWithNotFlat();
+		}
+	}
+
+	/**
+	 * We try to remove flat triangles even when we can't connect the partial voronoi
+	 * graph to a non-flat triangle. We are going to look at the triangles that
+	 * are behind the curve lines to detemine if we are on a pit or on the top
+	 * of a hill.
+	 * @return true if the location points are useful after a call to this method.
+	 *		They are useful if their Z has been set.
+	 * @throws DelaunayError
+	 */
+	private boolean assignZValuesWithoutNotFlat() throws DelaunayError {
+		//true if the flat area is upper than its sides.
+		boolean upper = false;
+		boolean set = false;
+		double maxRadius = 0.0;
+		double currentRad;
+		double height = sortedNodes.get(0).getParent().getPoint(0).getZ();
+		double delta;
+		DTriangle otherT ;
+		DEdge[]  edges;
+		double extZ;
+		for(VoronoiNode vn : sortedNodes){
+			currentRad = vn.getRadius();
+			maxRadius = maxRadius < currentRad ? currentRad : maxRadius;
+			edges = vn.getParent().getEdges();
+			for(int i = 0; i<DTriangle.PT_NB; i++){
+				if(edges[i].isLocked()){
+					otherT = edges[i].getOtherTriangle(vn.getParent());
+					if(otherT != null){
+						extZ = otherT.getAlterPoint(edges[i]).getZ();
+						if(!set && Math.abs(extZ - height)>Tools.EPSILON){
+							set = true;
+							upper = height > extZ;
+						} else if(upper && !(height-extZ > -Tools.EPSILON) || !upper && !(extZ -height > -Tools.EPSILON)){
+							return false;
+						}
+					}
 				}
 			}
 		}
+		if(!set){
+			return false;
+		}
+		//And here we assign the values. If we're here, then we are in a manageable
+		//situation
+		for(VoronoiNode vn : sortedNodes){
+			currentRad = vn.getRadius();
+			delta = currentRad/maxRadius;
+			if(upper){
+				vn.getLocation().setZ(height + delta);
+			} else {
+				vn.getLocation().setZ(height - delta);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Method used to compute the Z of the locations when a non flat triangle
+	 * has been connected to the graph
+	 * @return true, as the points are always usable after a call to this method.
+	 * @throws DelaunayError
+	 */
+	private boolean assignZValuesWithNotFlat() throws DelaunayError {
+		//We need the radius and the Z value of the center of the
+		//first non-flat triangle we found.
+		double radiusNF = notFlat.getParent().getRadius();
+		double zCenter = notFlat.getParent().getCircumCenter().z;
+		double zMin = notFlat.getParent().getPoints().get(0).getZ();
+		double zMax = notFlat.getParent().getPoints().get(0).getZ();
+		for(int i=1; i<DTriangle.PT_NB; i++){
+			zMin = zMin < notFlat.getParent().getPoints().get(i).getZ() ? zMin :
+					notFlat.getParent().getPoints().get(i).getZ();
+			zMax = zMax < notFlat.getParent().getPoints().get(i).getZ() ?
+					notFlat.getParent().getPoints().get(i).getZ() : zMax;
+		}
+		//We can process each node iteratively
+		for(VoronoiNode vn : sortedNodes){
+			if(vn.getParent().isFlatSlope()){
+				setZValue(radiusNF, zCenter, vn, zMin, zMax);
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -178,16 +259,7 @@ class VoronoiGraph {
 	 */
 	private void setZValue(double radius, double cHeight, VoronoiNode vn, double zMin, double zMax) throws DelaunayError {
 		DPoint location = vn.getLocation();
-		double vnRadius = 0;
-		if(vn.getLocation().equals(new DPoint(vn.getParent().getCircumCenter()))){
-			vnRadius = vn.getParent().getRadius();
-		} else {
-			List<Double> dists = new ArrayList<Double>();
-			for(int i=0; i<DTriangle.PT_NB; i++){
-				dists.add(location.squareDistance(vn.getParent().getPoint(i)));
-			}
-			vnRadius = Collections.min(dists);
-		}
+		double vnRadius = vn.getRadius();
 		double flatHeight = vn.getParent().getPoint(0).getZ();
 		double computedZ = (vnRadius/radius) * cHeight + (1-vnRadius/radius) * flatHeight;
 		if(computedZ < zMin){

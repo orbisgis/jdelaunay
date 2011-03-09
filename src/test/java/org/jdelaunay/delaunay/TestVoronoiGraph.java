@@ -255,6 +255,10 @@ public class TestVoronoiGraph extends BaseUtility{
 		assertFalse(vg.getSortedNodes().contains(new VoronoiNode(tri6)));
 	}
 
+	/**
+	 * Makes tests on the computation of the ZValue of the location of the Vn.
+	 * @throws DelaunayError
+	 */
 	public void testZComputation() throws DelaunayError {
 		DPoint p1 = new DPoint(0,4,0);
 		DPoint p2 = new DPoint(3,7,0);
@@ -276,5 +280,87 @@ public class TestVoronoiGraph extends BaseUtility{
 			assertTrue(vn.getLocation().getZ() < 10);
 			assertTrue(vn.getLocation().getZ() > 0);
 		}
+	}
+
+	/**
+	 * Compute ZValues for a VoronoiGraph that contains only flat triangles
+	 * and that is lower than its neighbours
+	 * 
+	 * @throws DelaunayError
+	 */
+	public void testZIsolatedPartLower() throws DelaunayError {
+		List<DTriangle> tris = TestVoronoiNodes.getSampleTriangles();
+		DTriangle tri = tris.get(9);
+		tri.getEdges()[0].setLocked(true);
+		tri.getEdges()[1].setLocked(true);
+		tri.getEdges()[2].setLocked(true);
+		tri = tris.get(1);
+		DPoint dp = tri.getAlterPoint(new DEdge(2,6,0,5,6,0));
+		dp.setZ(8);
+		tri = tris.get(4);
+		dp = tri.getAlterPoint(new DEdge(4,3,0,5,6,0));
+		dp.setZ(6);
+		tri = tris.get(8);
+		dp = tri.getAlterPoint(new DEdge(2,6,0,4,3,0));
+		dp.setZ(5);
+		tri = tris.get(9);
+		VoronoiGraph vg = new VoronoiGraph(tri);
+		vg.assignZValues();
+		assertTrue(vg.getSortedNodes().get(0).getLocation().getZ()<0);
+	}
+
+	/**
+	 * Compute ZValues for a VoronoiGraph that contains only flat triangles
+	 * and that is upper than its neighbours
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testZIsolatedPartUpper() throws DelaunayError {
+		List<DTriangle> tris = TestVoronoiNodes.getSampleTriangles();
+		DTriangle tri = tris.get(9);
+		tri.getEdges()[0].setLocked(true);
+		tri.getEdges()[1].setLocked(true);
+		tri.getEdges()[2].setLocked(true);
+		tri = tris.get(1);
+		DPoint dp = tri.getAlterPoint(new DEdge(2,6,0,5,6,0));
+		dp.setZ(-8);
+		tri = tris.get(4);
+		dp = tri.getAlterPoint(new DEdge(4,3,0,5,6,0));
+		dp.setZ(-6);
+		tri = tris.get(8);
+		dp = tri.getAlterPoint(new DEdge(2,6,0,4,3,0));
+		dp.setZ(-5);
+		tri = tris.get(9);
+		VoronoiGraph vg = new VoronoiGraph(tri);
+		vg.assignZValues();
+		assertTrue(vg.getSortedNodes().get(0).getLocation().getZ()>0);
+	}
+
+	/**
+	 * Compute ZValues for a VoronoiGraph that contains only flat triangles
+	 * and that is upper than some of its neighbours lower than the others.
+	 * The z coordinate of the location is not supposed to be changed, here.
+	 *
+	 * @throws DelaunayError
+	 */
+	public void testZIsolatedPartIntermediate() throws DelaunayError {
+		List<DTriangle> tris = TestVoronoiNodes.getSampleTriangles();
+		DTriangle tri = tris.get(9);
+		tri.getEdges()[0].setLocked(true);
+		tri.getEdges()[1].setLocked(true);
+		tri.getEdges()[2].setLocked(true);
+		tri = tris.get(1);
+		DPoint dp = tri.getAlterPoint(new DEdge(2,6,0,5,6,0));
+		dp.setZ(-8);
+		tri = tris.get(4);
+		dp = tri.getAlterPoint(new DEdge(4,3,0,5,6,0));
+		dp.setZ(-6);
+		tri = tris.get(8);
+		dp = tri.getAlterPoint(new DEdge(2,6,0,4,3,0));
+		dp.setZ(5);
+		tri = tris.get(9);
+		VoronoiGraph vg = new VoronoiGraph(tri);
+		vg.assignZValues();
+		assertTrue(vg.getSortedNodes().get(0).getLocation().getZ()==0);
 	}
 }
