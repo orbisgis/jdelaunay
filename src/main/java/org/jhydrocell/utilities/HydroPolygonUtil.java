@@ -14,6 +14,10 @@ import com.vividsolutions.jts.geom.Triangle;
 import com.vividsolutions.jts.util.Assert;
 import org.jdelaunay.delaunay.Tools;
 
+/**
+ * A set of utility method for triangles, consider as clockwise polygons.
+ * @author alexis
+ */
 public final class HydroPolygonUtil {
 
 	private double valeurPente = -1.0;
@@ -25,6 +29,10 @@ public final class HydroPolygonUtil {
 
 	private GeometryFactory gf = new GeometryFactory();
 
+	/**
+	 * Create a new instance of this class. Essential, as methods here are not static.
+	 * @param myTriangle
+	 */
 	public HydroPolygonUtil(DTriangle myTriangle) {
 
 		Coordinate p1 = myTriangle.getPoint(0).getCoordinate();
@@ -74,7 +82,7 @@ public final class HydroPolygonUtil {
 
 	/**
 	 *
-	 * @return steepest path vector of the face also direction
+	 * @return steepest path vector of the face
 	 */
 	public Coordinate get3DVector() {
 		if (pente == null) {

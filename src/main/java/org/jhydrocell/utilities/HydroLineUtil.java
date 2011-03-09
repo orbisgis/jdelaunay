@@ -10,6 +10,10 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import org.jdelaunay.delaunay.Tools;
 
+/**
+ * Utility methods
+ * @author erwan, jean-yves
+ */
 public class HydroLineUtil {
 
 	private Coordinate pente = null;
@@ -22,6 +26,11 @@ public class HydroLineUtil {
 
 	private GeometryFactory gf = new GeometryFactory();
 
+	/**
+	 * Constructor, takes a DEdge that will be used to compute some of the operations
+	 * performed by this class.
+	 * @param myEdge
+	 */
 	public HydroLineUtil(DEdge myEdge) {
 
 		DPoint pt1 = myEdge.getStartPoint();
@@ -33,7 +42,7 @@ public class HydroLineUtil {
 	}
 
 	/**
-	 *
+	 * Get the slope of the associated DEdge.
 	 * @return pente de l'edge (dz/distance horizontale)
 	 */
 	public final double getSlope() {
@@ -52,7 +61,7 @@ public class HydroLineUtil {
 	}
 
 	/**
-	 * Pente topographique exprimée en degrées
+	 * Topographic slop, in degrees
 	 *
 	 * @return
 	 */
@@ -83,7 +92,7 @@ public class HydroLineUtil {
 	}
 
 	/**
-	 *
+	 * Get the vector defined by this edge.
 	 * @return vecteur de l'edge
 	 */
 	public final Coordinate get3DVector() {

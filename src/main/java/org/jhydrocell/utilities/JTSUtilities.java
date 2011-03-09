@@ -4,6 +4,10 @@ import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Triangle;
 
+/**
+ * Utility methods to handle JTS operators.
+ * @author alexis
+ */
 public final class JTSUtilities {
 
 	/**
