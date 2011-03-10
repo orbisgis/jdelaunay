@@ -1075,6 +1075,113 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
+	 * Refine the mesh, using the Rupper's algorithm.
+	 * @throws DelaunayError
+	 */
+	public void refineMesh() throws DelaunayError {
+		for(DEdge ed : edges){
+			if(ed.isEncroached()){
+				splitEncroachedEdge(ed);
+			}
+		}
+	}
+
+	/**
+	 * Split the edges that have benn found to be encroached.
+	 * @param ed
+	 * @throws DelaunayError
+	 */
+	void splitEncroachedEdge(DEdge ed) throws DelaunayError {
+		//We must try to avoid creation of new objects. Rather use getters and setters
+		//instead, as we will not be forced to use sorted sets this way.
+		DTriangle left = ed.getLeft();
+		DTriangle right = ed.getRight();
+		DPoint middle = ed.getMiddle();
+		//The newly generated edge.
+		DEdge secondHalf = new DEdge(middle, ed.getEndPoint());
+		DEdge ed1 = null;
+		DEdge last1 = null;
+		DEdge startOp1 = null;
+		DTriangle other1 = null;
+		if(left != null){
+			ed1 = new DEdge(middle, left.getAlterPoint(ed));
+			last1 = left.getOppositeEdge(ed.getEndPoint());
+			startOp1 = left.getOppositeEdge(ed.getStartPoint());
+			other1 = new DTriangle(ed1, secondHalf, startOp1);
+		}
+		DEdge ed2 = null;
+		DEdge last2 = null;
+		DEdge startOp2 = null;
+		DTriangle other2 = null;
+		if(right != null){
+			ed2 = new DEdge(middle, right.getAlterPoint(ed));
+			last2 = right.getOppositeEdge(ed.getEndPoint());
+			startOp2 = right.getOppositeEdge(ed.getStartPoint());
+			other2 = new DTriangle(ed2, secondHalf, startOp2);
+		}
+		//this new edge is locked if ed was.
+		secondHalf.setLocked(ed.isLocked());
+		//We must set a new end to ed.
+		ed.setEndPoint(middle);
+		badEdgesQueueList = new LinkedList<DEdge>();
+		//We try to process the left triangle of the encroached edge
+		if(left != null){
+			//we must replace an edge of left
+			int indexExc = left.getEdgeIndex(startOp1);
+			left.setEdge(indexExc, ed1);
+			//We set the right and left triangles of each edge properly
+			ed1.setLeft(left);
+			ed1.setRight(other1);
+			if(startOp1.isRight(middle)){
+				startOp1.setRight(other1);
+			} else {
+				startOp1.setLeft(other1);
+			}
+			secondHalf.setLeft(other1);
+			//We add the new triangle to the list of triangles.
+			triangleList.add(other1);
+			//We fill the bad edges queue.
+			badEdgesQueueList.add(last1);
+			badEdgesQueueList.add(ed1);
+			badEdgesQueueList.add(startOp1);
+			edges.add(ed1);
+		}
+		//We try to process the right triangle of the encroached edge
+		if(right != null){
+			//we must replace an edge of right
+			int indexExc = right.getEdgeIndex(startOp2);
+			right.setEdge(indexExc, ed2);
+			//We set the right and left triangles of each edge properly
+			ed2.setRight(left);
+			ed2.setLeft(other2);
+			if(startOp2.isRight(middle)){
+				startOp2.setRight(other2);
+			} else {
+				startOp2.setLeft(other2);
+			}
+			secondHalf.setRight(other2);
+			//We add the new triangle to the list of triangles.
+			triangleList.add(other2);
+			//We fill the bad edges queue.
+			badEdgesQueueList.add(last2);
+			badEdgesQueueList.add(ed2);
+			badEdgesQueueList.add(startOp2);
+			edges.add(ed2);
+		}
+		//We perform the filap flap operations.
+		processBadEdges();
+		//The algorithm is recursive, let's continue !
+		constraintEdges.add(secondHalf);
+		edges.add(secondHalf);
+		if(ed.isEncroached()){
+			splitEncroachedEdge(ed);
+		}
+		if(secondHalf.isEncroached()){
+			splitEncroachedEdge(secondHalf);
+		}
+	}
+
+	/**
 	 * Build the boundary needed to begin the building of the mesh.
 	 * @param p1
 	 * @param e1
