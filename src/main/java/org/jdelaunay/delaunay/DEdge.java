@@ -1079,6 +1079,44 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
+	 * Get the middle of the segment, in 3 dimensions.
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public final DPoint getMiddle() throws DelaunayError {
+		double dx = endPoint.getX() - startPoint.getX();
+		double dy = endPoint.getY() - startPoint.getY();
+		double dz = endPoint.getZ() - startPoint.getZ();
+		return new DPoint(startPoint.getX()+dx/2, startPoint.getY()+dy/2, startPoint.getZ()+dz/2);
+	}
+
+	/**
+	 * An edge is said to be encroached in a mesh if there is a point lying
+	 * in the circle it is the diameter of.
+	 * @return
+	 *		true if there is such a point.
+	 * @throws DelaunayError
+	 */
+	public boolean isEncroached() throws DelaunayError{
+		DPoint middle = getMiddle();
+		double length = getSquared2DLength();
+		DPoint other ;
+		if(left!=null){
+			other = left.getAlterPoint(this);
+			if(other.squareDistance2D(middle)<length){
+				return true;
+			}
+		}
+		if(right!=null){
+			other = right.getAlterPoint(this);
+			if(other.squareDistance2D(middle)<length){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Swap the 2 points of the edge
 	 * also swap connected triangles
 	 */

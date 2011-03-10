@@ -431,4 +431,31 @@ public class TestEdges extends BaseUtility {
 		assertTrue(d.getUpperPoint().equals(p1));
 		assertTrue(d.getUpperPoint()==p1);
 	}
+
+	public void testGetMiddle() throws DelaunayError {
+		DPoint p1 = new DPoint(2,4,10);
+		DPoint p2 = new DPoint(8,0,-2);
+		DEdge d1 = new DEdge(p1, p2);
+		DEdge d2 = new DEdge(p2, p1);
+		assertTrue(d1.getMiddle().equals(new DPoint(5,2,4)));
+		assertTrue(d1.getMiddle().equals(d2.getMiddle()));
+	}
+
+	public void testIsEncroached() throws DelaunayError {
+		DPoint p1 = new DPoint(0,3,0);
+		DPoint p2 = new DPoint(6,0,0);
+		DPoint p3 = new DPoint(3,0,0);
+		DEdge e1 = new DEdge(p1, p2);
+		DEdge e2 = new DEdge(p2, p3);
+		DEdge e3 = new DEdge(p3, p1);
+		DTriangle t = new DTriangle(e1, e2, e3);
+		assertTrue(e1.isEncroached());
+		assertFalse(e2.isEncroached());
+		assertFalse(e3.isEncroached());
+		DPoint p4 = new DPoint(1,1,0);
+		DEdge e4 = new DEdge(p1, p4);
+		DEdge e5 = new DEdge(p3, p4);
+		DTriangle t2 = new DTriangle(e3, e4, e5);
+		assertTrue(e3.isEncroached());
+	}
 }
