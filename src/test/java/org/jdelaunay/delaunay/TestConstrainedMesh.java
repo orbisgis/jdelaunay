@@ -1222,5 +1222,13 @@ public class TestConstrainedMesh extends BaseUtility {
 						new DEdge(2,4.5,0,2,3,0),
 						new DEdge(2,3,0,0,3,0))));
 		assertTrue(mesh.getEdges().size()==11);
+		assertTrue(mesh.getPoints().size()==6);
+		assertTrue(mesh.getPoints().contains(new DPoint(3,0,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(2,4.5,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(2,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(4,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(8,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(0,3,0)));
+		assertGIDUnicity(mesh);
 	}
 }

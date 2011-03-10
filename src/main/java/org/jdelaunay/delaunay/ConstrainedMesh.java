@@ -1097,17 +1097,22 @@ public class ConstrainedMesh implements Serializable {
 		DTriangle left = ed.getLeft();
 		DTriangle right = ed.getRight();
 		DPoint middle = ed.getMiddle();
+		middle.setGID(++pointGID);
+		points.add(middle);
 		//The newly generated edge.
 		DEdge secondHalf = new DEdge(middle, ed.getEndPoint());
+		secondHalf.setGID(++edgeGID);
 		DEdge ed1 = null;
 		DEdge last1 = null;
 		DEdge startOp1 = null;
 		DTriangle other1 = null;
 		if(left != null){
 			ed1 = new DEdge(middle, left.getAlterPoint(ed));
+			ed1.setGID(++edgeGID);
 			last1 = left.getOppositeEdge(ed.getEndPoint());
 			startOp1 = left.getOppositeEdge(ed.getStartPoint());
 			other1 = new DTriangle(ed1, secondHalf, startOp1);
+			other1.setGID(++triangleGID);
 		}
 		DEdge ed2 = null;
 		DEdge last2 = null;
@@ -1115,9 +1120,11 @@ public class ConstrainedMesh implements Serializable {
 		DTriangle other2 = null;
 		if(right != null){
 			ed2 = new DEdge(middle, right.getAlterPoint(ed));
+			ed2.setGID(++edgeGID);
 			last2 = right.getOppositeEdge(ed.getEndPoint());
 			startOp2 = right.getOppositeEdge(ed.getStartPoint());
 			other2 = new DTriangle(ed2, secondHalf, startOp2);
+			other2.setGID(++triangleGID);
 		}
 		//this new edge is locked if ed was.
 		secondHalf.setLocked(ed.isLocked());
