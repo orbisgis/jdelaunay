@@ -1078,7 +1078,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Refine the mesh, using the Rupper's algorithm.
 	 * @throws DelaunayError
 	 */
-	public void refineMesh() throws DelaunayError {
+	public final void refineMesh() throws DelaunayError {
 		for(DEdge ed : edges){
 			if(ed.isEncroached()){
 				splitEncroachedEdge(ed);
@@ -1091,7 +1091,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param ed
 	 * @throws DelaunayError
 	 */
-	void splitEncroachedEdge(DEdge ed) throws DelaunayError {
+	final void splitEncroachedEdge(DEdge ed) throws DelaunayError {
 		//We must try to avoid creation of new objects. Rather use getters and setters
 		//instead, as we will not be forced to use sorted sets this way.
 		DTriangle left = ed.getLeft();
