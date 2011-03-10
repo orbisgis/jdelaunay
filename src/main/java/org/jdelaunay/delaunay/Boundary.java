@@ -126,10 +126,12 @@ final class Boundary {
 				led.add(ed);
 				bp=new BoundaryPart(led);
 				boundary.add(0, bp);
+				addedTri = bp.connectPoint(pt);
+				bp.getAddedEdges().add(ed);
 			} else {
 				bp = boundary.get(index);
+				addedTri = bp.connectPoint(pt);
 			}
-			addedTri = bp.connectPoint(pt);
 			setBadEdges(bp.getBadEdges());
 			setAddedEdges(bp.getAddedEdges());
 			if(constraints != null && !constraints.isEmpty()){
