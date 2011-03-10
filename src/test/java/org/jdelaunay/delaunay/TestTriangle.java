@@ -593,4 +593,23 @@ public class TestTriangle extends BaseUtility {
 		assertTrue(Math.abs(tri.getAngle(2)-90)<Tools.EPSILON);
 	 }
 
+	 /**
+	  * Checks that we retrieve the good index when using getEdgeIndex
+	  * @throws DelaunayError
+	  */
+	 public void testGetEdgeIndex() throws DelaunayError {
+		DEdge e1 = new DEdge(0, 0, 0, 2, 2, 0);
+		DEdge e2 = new DEdge(2, 2, 0, 0, 2, 0);
+		DEdge e3 = new DEdge(0, 2, 0, 0, 0, 0);
+		DTriangle tri = new DTriangle(e1, e2, e3);
+		DEdge e4 = new DEdge(0, 0, 0, 2, 2, 0);
+		int index = tri.getEdgeIndex(e4);
+		assertTrue(tri.getEdges()[index].equals(e1));
+		assertTrue(tri.getEdges()[index]==e1);
+		assertTrue(tri.getEdges()[index]!=e4);
+		e4 = new DEdge(8,8,8,9,9,9);
+		assertTrue(tri.getEdgeIndex(e4)==-1);
+
+	 }
+
 }

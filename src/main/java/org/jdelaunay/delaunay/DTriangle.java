@@ -176,6 +176,22 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
+	 * Get the index of the edge in the triangle.
+	 * @param ed
+	 * @return
+	 *		The index of the edge in its array of edges, -1 if ed
+	 *		is not an edge of this triangle.
+	 */
+	public final int getEdgeIndex(DEdge ed){
+		for(int i=0; i<PT_NB; i++){
+			if(edges[i].equals(ed)){
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
 	 * Set the ith edge
 	 *
 	 * @param i
