@@ -41,7 +41,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	//a point to the mesh that can't see any point of the boundary, because of
 	//the existing constraints.
 	private transient boolean degenerated = false;
-	//An DEdge is said to be shared when it is used by two differents BoundaryParts
+	//A DEdge is said to be shared when it is used by two differents BoundaryParts
 	//during the building of the mesh.
 	private transient boolean shared = false;
 	/**
@@ -1097,9 +1097,12 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 *		true if there is such a point.
 	 * @throws DelaunayError
 	 */
-	public boolean isEncroached() throws DelaunayError{
+	public final boolean isEncroached() throws DelaunayError{
+		if(!isLocked() && left != null && right != null){
+			return false;
+		}
 		DPoint middle = getMiddle();
-		double length = getSquared2DLength();
+		double length = getSquared2DLength()/4.0;
 		DPoint other ;
 		if(left!=null){
 			other = left.getAlterPoint(this);

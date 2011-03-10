@@ -448,10 +448,17 @@ public class TestEdges extends BaseUtility {
 		DEdge e1 = new DEdge(p1, p2);
 		DEdge e2 = new DEdge(p2, p3);
 		DEdge e3 = new DEdge(p3, p1);
+		e1.setLocked(true);
+		e2.setLocked(true);
+		e3.setLocked(true);
 		DTriangle t = new DTriangle(e1, e2, e3);
 		assertTrue(e1.isEncroached());
 		assertFalse(e2.isEncroached());
 		assertFalse(e3.isEncroached());
+		DTriangle t3 = new DTriangle(e1, new DEdge(6,0,0,4,3,0), new DEdge(4,3,0,0,3,0));
+		assertTrue(e1.isEncroached());
+		e1.setLocked(false);
+		assertFalse(e1.isEncroached());
 		DPoint p4 = new DPoint(1,1,0);
 		DEdge e4 = new DEdge(p1, p4);
 		DEdge e5 = new DEdge(p3, p4);
