@@ -95,6 +95,12 @@ public final class HydroTriangleUtil {
 		return pente;
 	}
 
+	/**
+	 * Returns true if the triangle is turned toward the edge my edge.
+	 * @param myEdge
+	 * @param triangle
+	 * @return
+	 */
 	public static boolean getPenteVersEdge(DEdge myEdge, DTriangle triangle) {
 		boolean res = false;
 
@@ -130,6 +136,12 @@ public final class HydroTriangleUtil {
 		return res;
 	}
 
+	/**
+	 * Returns true if the triangle connected to the left of the edge is pouring
+	 * into it.
+	 * @param edge
+	 * @return
+	 */
 	public static boolean isLeftTriangleGoToEdge(DEdge edge) {
 		if (edge.getLeft() != null) {
 			DPoint p = edge.getLeft().getAlterPoint(edge);
@@ -142,6 +154,12 @@ public final class HydroTriangleUtil {
 		return false;
 	}
 
+	/**
+	 * Returns true if the triangle connected to the right of the edge is pouring
+	 * into it.
+	 * @param edge
+	 * @return
+	 */
 	public static boolean isRightTriangleGoToEdge(DEdge edge) {
 		if (edge.getRight() != null) {
 			DPoint p = edge.getRight().getAlterPoint(edge);
