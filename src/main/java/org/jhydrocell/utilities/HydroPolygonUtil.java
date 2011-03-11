@@ -152,6 +152,12 @@ public final class HydroPolygonUtil {
 		return valeurPente;
 	}
 
+	/**
+	 * Returns true if the slope of the triangle associated to this object is
+	 * oriented to the edge myEdge
+	 * @param myEdge
+	 * @return
+	 */
 	public boolean getPenteVersEdge(DEdge myEdge) {
 		boolean res = false;
 
@@ -200,6 +206,10 @@ public final class HydroPolygonUtil {
 		return Math.abs(getSlope()) * 100;
 	}
 
+	/**
+	 * Retrieve the centroid of the triangle.
+	 * @return
+	 */
 	public Coordinate getCentroid() {
 
 		return new Coordinate(p.getInteriorPoint().getX(), p.getInteriorPoint()

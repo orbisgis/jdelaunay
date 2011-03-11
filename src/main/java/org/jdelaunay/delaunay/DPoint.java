@@ -1,5 +1,10 @@
 package org.jdelaunay.delaunay;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import com.vividsolutions.jts.geom.Coordinate;
+
+
 /**
  * The smallest geometric element of a mesh.
  *
@@ -8,12 +13,6 @@ package org.jdelaunay.delaunay;
  * @revision 2010-11-08
  * @version 2.1
  */
-
-import java.awt.Color;
-import java.awt.Graphics;
-
-import com.vividsolutions.jts.geom.Coordinate;
-
 public class DPoint extends Element implements Comparable<DPoint> {
 	/**
 	 * 
