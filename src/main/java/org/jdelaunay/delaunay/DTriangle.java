@@ -373,6 +373,21 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
+	 * Determines if pt lies on one of the edges of this triangle.
+	 * @param pt
+	 * @return
+	 *		true if it does.
+	 */
+	public final boolean isOnAnEdge(DPoint pt) {
+		for(int i = 0; i<PT_NB;i++){
+			if(edges[i].contains(pt)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Recompute the center of the circle that joins the ptNb points : the CircumCenter
 	 * @throws DelaunayError
 	 */

@@ -262,6 +262,26 @@ public class TestTriangle extends BaseUtility {
 	}
 
 	/**
+	 * Tests whether a point is on one of the edges that form this triangle or not.
+	 * @throws DelaunayError
+	 */
+	public void testIsOnAnEdge() throws DelaunayError {
+		DPoint p1 = new DPoint(0,0,0);
+		DPoint p2 = new DPoint(0,3,0);
+		DPoint p3 = new DPoint(3,0,0);
+		DEdge e1 = new DEdge(p1,p2);
+		DEdge e2 = new DEdge(p2,p3);
+		DEdge e3 = new DEdge(p3,p1);
+		DTriangle t1 =new DTriangle(e1, e2, e3);
+		assertTrue(t1.isOnAnEdge(new DPoint(1,0,0)));
+		assertTrue(t1.isOnAnEdge(new DPoint(0,0,0)));
+		assertTrue(t1.isOnAnEdge(new DPoint(1.5,1.5,0)));
+		assertTrue(t1.isOnAnEdge(new DPoint(0,2,0)));
+		assertFalse(t1.isOnAnEdge(new DPoint(1,8,0)));
+		assertFalse(t1.isOnAnEdge(new DPoint(1,1,0)));
+	}
+
+	/**
 	 * Performs equality tests between triangles.
 	 */
 	public void testTrianglesEquality() throws DelaunayError{
