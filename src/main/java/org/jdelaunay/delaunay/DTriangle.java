@@ -1044,13 +1044,14 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * retrieve the angle between number k.
+	 * retrieve the angle, in degrees, at vertex number k.
 	 * @param k
 	 * @return
 	 */
 	public final double getAngle(int k){
 		int k1 = (k + 1) % PT_NB;
 		int k2 = (k1 + 1) % PT_NB;
+		final double degreesPI = 180d;
 
 		DPoint p1 = this.getPoint(k);
 		DPoint p2 = this.getPoint(k1);
@@ -1065,7 +1066,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 		return Math.acos(Math.sqrt(((dp * dp))
 				/ ((ux * ux + uy * uy) * (vx * vx + vy * vy))))
-				* (180d / Math.PI);
+				* (degreesPI / Math.PI);
 
 	}
 }

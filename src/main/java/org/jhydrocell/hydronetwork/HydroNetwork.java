@@ -19,11 +19,11 @@ import java.util.ArrayList;
 public final class HydroNetwork {
 	private ConstrainedMesh theMesh;
 
-	private LinkedList<DPoint> listEntry;
-	private LinkedList<DPoint> listExit;
-	private LinkedList<DPoint> listIntermediate;
-	private LinkedList<DEdge> listEdges;
-	private LinkedList<DPoint> listPrepare;
+	private List<DPoint> listEntry;
+	private List<DPoint> listExit;
+	private List<DPoint> listIntermediate;
+	private List<DEdge> listEdges;
+	private List<DPoint> listPrepare;
 	private int listDefinition;
 	private boolean connectToSurface;
 
@@ -262,7 +262,7 @@ public final class HydroNetwork {
 	 * post process the edges according to their type
 	 */
 	private void postProcessEdges() {
-		LinkedList<DEdge> addedEdges = new LinkedList<DEdge>();
+		List<DEdge> addedEdges = new LinkedList<DEdge>();
 		List<DEdge> theEdges = theMesh.getEdges();
 		for (DEdge anEdge : theEdges) {
 			if (anEdge.hasProperty(HydroProperties.WALL)) {
@@ -330,7 +330,7 @@ public final class HydroNetwork {
 	 * @param theList
 	 * @throws DelaunayError
 	 */
-	private void setNewBranch(LinkedList theList) throws DelaunayError {
+	private void setNewBranch(List theList) throws DelaunayError {
 		DPoint lastPoint = null;
 		int count = theList.size();
 		DPoint aPoint = null;
@@ -618,7 +618,7 @@ public final class HydroNetwork {
 	 * @param sewerPoint
 	 * @throws DelaunayError
 	 */
-	public void sewerSet(LinkedList<DPoint> sewerList) throws DelaunayError {
+	public void sewerSet(List<DPoint> sewerList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.SEWER, false);
 		}
@@ -657,7 +657,7 @@ public final class HydroNetwork {
 	 * @param ditchList
 	 * @throws DelaunayError
 	 */
-	public void ditchSet(LinkedList<DPoint> ditchList) throws DelaunayError {
+	public void ditchSet(List<DPoint> ditchList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.DITCH);
 		}
@@ -696,7 +696,7 @@ public final class HydroNetwork {
 	 * @param riverList
 	 * @throws DelaunayError
 	 */
-	public void riverSet(LinkedList<DPoint> riverList) throws DelaunayError {
+	public void riverSet(List<DPoint> riverList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.RIVER);
 		}
@@ -735,7 +735,7 @@ public final class HydroNetwork {
 	 * @param wallList
 	 * @throws DelaunayError
 	 */
-	public void wallSet(LinkedList<DPoint> wallList) throws DelaunayError {
+	public void wallSet(List<DPoint> wallList) throws DelaunayError {
 		if (listDefinition == HydroProperties.NONE) {
 			branchStart(HydroProperties.WALL);
 		}
