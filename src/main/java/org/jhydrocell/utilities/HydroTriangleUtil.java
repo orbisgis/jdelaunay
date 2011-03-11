@@ -8,7 +8,7 @@ import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 
 /**
- * A set of utility methods used to manage triangles. Methods are static here.
+ * A set of utility methods used to manage triangles for hydrology. Methods are static here.
  * @author alexis
  */
 public final class HydroTriangleUtil {
