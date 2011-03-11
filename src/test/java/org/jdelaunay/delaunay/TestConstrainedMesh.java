@@ -1183,6 +1183,10 @@ public class TestConstrainedMesh extends BaseUtility {
 //		show(mesh);
 	}
 
+	/**
+	 * Process a single encroached DEdge in a mesh.
+	 * @throws DelaunayError
+	 */
 	public void testSplitEncroachedEdges() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		DEdge e1 = new DEdge(0,3,0,8,3,0);
@@ -1190,7 +1194,7 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addPoint(new DPoint(3, 0, 0));
 		mesh.addPoint(new DPoint(2, 4.5, 0));
 		mesh.processDelaunay();
-		mesh.splitEncroachedEdge(e1);
+		mesh.splitEncroachedEdge(e1,0.1);
 //		show(mesh);
 		assertTrue(mesh.getTriangleList().size()==6);
 		assertTrue(mesh.getConstraintEdges().size()==3);
@@ -1225,6 +1229,71 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(mesh.getPoints().size()==6);
 		assertTrue(mesh.getPoints().contains(new DPoint(3,0,0)));
 		assertTrue(mesh.getPoints().contains(new DPoint(2,4.5,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(2,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(4,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(8,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(0,3,0)));
+		assertGIDUnicity(mesh);
+	}
+
+	/**
+	 * Test the removal of an encroached DEdge, with a watershed that will
+	 * block a split.
+	 * @throws DelaunayError
+	 */
+	public void testEncroachedThreshold()  throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge e1 = new DEdge(0,3,0,8,3,0);
+		mesh.addConstraintEdge(e1);
+		mesh.addPoint(new DPoint(3, 0, 0));
+		mesh.addPoint(new DPoint(1, 3.5, 0));
+		mesh.processDelaunay();
+		mesh.splitEncroachedEdge(e1,1.5);
+//		show(mesh);
+		assertTrue(mesh.getTriangleList().size()==6);
+		assertTrue(mesh.getConstraintEdges().size()==3);
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(0,3,0,2,3,0)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(4,3,0,2,3,0)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(4,3,0,8,3,0)));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(0,3,0,3,0,0),
+						new DEdge(3,0,0,2,3,0),
+						new DEdge(2,3,0,0,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(4,3,0,3,0,0),
+						new DEdge(3,0,0,2,3,0),
+						new DEdge(2,3,0,4,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(4,3,0,3,0,0),
+						new DEdge(3,0,0,8,3,0),
+						new DEdge(8,3,0,4,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(4,3,0,1,3.5,0),
+						new DEdge(1,3.5,0,8,3,0),
+						new DEdge(8,3,0,4,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(4,3,0,1,3.5,0),
+						new DEdge(1,3.5,0,2,3,0),
+						new DEdge(2,3,0,4,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(0,3,0,1,3.5,0),
+						new DEdge(1,3.5,0,2,3,0),
+						new DEdge(2,3,0,0,3,0))));
+		assertTrue(mesh.getEdges().size()==11);
+		assertTrue(mesh.getEdges().contains(new DEdge(1,3.5,0,0,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(1,3.5,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(1,3.5,0,4,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(1,3.5,0,8,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(0,3,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(4,3,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(4,3,0,8,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,0,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,4,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,8,3,0)));
+		assertTrue(mesh.getPoints().size()==6);
+		assertTrue(mesh.getPoints().contains(new DPoint(3,0,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(1,3.5,0)));
 		assertTrue(mesh.getPoints().contains(new DPoint(2,3,0)));
 		assertTrue(mesh.getPoints().contains(new DPoint(4,3,0)));
 		assertTrue(mesh.getPoints().contains(new DPoint(8,3,0)));

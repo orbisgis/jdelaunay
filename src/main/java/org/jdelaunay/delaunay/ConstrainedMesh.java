@@ -1076,12 +1076,14 @@ public class ConstrainedMesh implements Serializable {
 
 	/**
 	 * Refine the mesh, using the Rupper's algorithm.
+	 * @param minLength
+	 *		The minimum length of an edge that could be inserted during the refinement.
 	 * @throws DelaunayError
 	 */
-	public final void refineMesh() throws DelaunayError {
+	public final void refineMesh(double minLength) throws DelaunayError {
 		for(DEdge ed : edges){
 			if(ed.isEncroached()){
-				splitEncroachedEdge(ed);
+				splitEncroachedEdge(ed, minLength);
 			}
 		}
 	}
@@ -1089,23 +1091,31 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Split the edges that have benn found to be encroached.
 	 * @param ed
+	 *		The edge to be split.
+	 * @param minLength
+	 *		The threshold used to determine the minimum length of an
+	 *		edge that could be added by splitting an encroached edge.
 	 * @throws DelaunayError
 	 */
-	final void splitEncroachedEdge(DEdge ed) throws DelaunayError {
+	final void splitEncroachedEdge(DEdge ed, double minLength) throws DelaunayError {
 		//We must try to avoid creation of new objects. Rather use getters and setters
 		//instead, as we will not be forced to use sorted sets this way.
 		DTriangle left = ed.getLeft();
 		DTriangle right = ed.getRight();
 		DPoint middle = ed.getMiddle();
-		middle.setGID(++pointGID);
-		points.add(middle);
 		//The newly generated edge.
 		DEdge secondHalf = new DEdge(middle, ed.getEndPoint());
+		if(secondHalf.getSquared2DLength() < minLength*minLength){
+			return;
+		}
+		middle.setGID(++pointGID);
+		points.add(middle);
 		secondHalf.setGID(++edgeGID);
 		DEdge ed1 = null;
 		DEdge last1 = null;
 		DEdge startOp1 = null;
 		DTriangle other1 = null;
+		//We prepare the objects that will be added after ed will have been split.
 		if(left != null){
 			ed1 = new DEdge(middle, left.getAlterPoint(ed));
 			ed1.setGID(++edgeGID);
@@ -1181,10 +1191,10 @@ public class ConstrainedMesh implements Serializable {
 		constraintEdges.add(secondHalf);
 		edges.add(secondHalf);
 		if(ed.isEncroached()){
-			splitEncroachedEdge(ed);
+			splitEncroachedEdge(ed, minLength);
 		}
 		if(secondHalf.isEncroached()){
-			splitEncroachedEdge(secondHalf);
+			splitEncroachedEdge(secondHalf, minLength);
 		}
 	}
 
