@@ -1,5 +1,13 @@
 package org.jdelaunay.delaunay;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import org.apache.log4j.Logger;
+
 /**
  * An edge in the tringulation. A DEdge is formed with two DPoint instances.
  *
@@ -18,14 +26,6 @@ package org.jdelaunay.delaunay;
  * @revision 2010-11-08
  * @version 1.2
  */
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import org.apache.log4j.Logger;
-
 public class DEdge extends Element implements Comparable<DEdge> {
 
 	//The logger supposed to report errors to the user.
