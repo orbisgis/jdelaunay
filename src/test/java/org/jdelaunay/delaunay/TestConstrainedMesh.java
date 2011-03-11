@@ -1300,4 +1300,76 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(mesh.getPoints().contains(new DPoint(0,3,0)));
 		assertGIDUnicity(mesh);
 	}
+
+	public void testEncroachedEdgeTwoRecursiveCalls() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge e1 = new DEdge(0,3,0,8,3,0);
+		mesh.addConstraintEdge(e1);
+		mesh.addPoint(new DPoint(3, 0, 0));
+		mesh.addPoint(new DPoint(3, 3.5, 0));
+		mesh.processDelaunay();
+		mesh.splitEncroachedEdge(e1,0.01);
+//		show(mesh);
+		assertTrue(mesh.getTriangleList().size()==8);
+		assertTrue(mesh.getConstraintEdges().size()==4);
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(0,3,0,2,3,0)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(3,3,0,2,3,0)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(4,3,0,3,3,0)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(4,3,0,8,3,0)));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(0,3,0,3,0,0),
+						new DEdge(3,0,0,2,3,0),
+						new DEdge(2,3,0,0,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(3,3,0,3,0,0),
+						new DEdge(3,0,0,2,3,0),
+						new DEdge(2,3,0,3,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(3,3,0,3,0,0),
+						new DEdge(3,0,0,4,3,0),
+						new DEdge(4,3,0,3,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(4,3,0,3,0,0),
+						new DEdge(3,0,0,8,3,0),
+						new DEdge(8,3,0,4,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(4,3,0,3,3.5,0),
+						new DEdge(3,3.5,0,8,3,0),
+						new DEdge(8,3,0,4,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(4,3,0,3,3.5,0),
+						new DEdge(3,3.5,0,3,3,0),
+						new DEdge(3,3,0,4,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(2,3,0,3,3.5,0),
+						new DEdge(3,3.5,0,3,3,0),
+						new DEdge(3,3,0,2,3,0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+						new DEdge(0,3,0,3,3.5,0),
+						new DEdge(3,3.5,0,2,3,0),
+						new DEdge(2,3,0,0,3,0))));
+		assertTrue(mesh.getEdges().size()==14);
+		assertTrue(mesh.getEdges().contains(new DEdge(3,3.5,0,0,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,3.5,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,3.5,0,3,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,3.5,0,4,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,3.5,0,8,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(0,3,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,3,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(4,3,0,3,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(4,3,0,8,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,0,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,2,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,3,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,4,3,0)));
+		assertTrue(mesh.getEdges().contains(new DEdge(3,0,0,8,3,0)));
+		assertTrue(mesh.getPoints().size()==7);
+		assertTrue(mesh.getPoints().contains(new DPoint(3,0,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(3,3.5,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(2,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(3,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(4,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(8,3,0)));
+		assertTrue(mesh.getPoints().contains(new DPoint(0,3,0)));
+	}
 }

@@ -758,16 +758,14 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param pt
 	 */
 	public final DEdge getOppositeEdge(DPoint pt){
-		if(!contains(pt)){
+		if(!belongsTo(pt)){
 			return null;
 		}
 		if(!edges[0].contains(pt)){
 			return edges[0];
-		}
-		else if(!edges[1].contains(pt)){
+		} else if(!edges[1].contains(pt)){
 			return edges[1];
-		}
-		else {
+		} else {
 			return edges[2];
 		} 
 
