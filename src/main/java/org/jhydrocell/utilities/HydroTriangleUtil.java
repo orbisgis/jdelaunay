@@ -13,7 +13,6 @@ import com.vividsolutions.jts.geom.Coordinate;
  */
 public final class HydroTriangleUtil {
 
-//	private GeometryFactory gf = new GeometryFactory();
 	/**
 	 * Empty default constructor, it is not supposed to be called.
 	 */
@@ -211,40 +210,7 @@ public final class HydroTriangleUtil {
 
 		return valeurPente;
 	}
-
-//	public boolean getPenteVersEdge(DEdge myEdge) {
-//		boolean res = false;
-//
-//		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
-//		// sur e
-//		Coordinate A = myEdge.getStartPoint().getCoordinate();
-//		Coordinate B = myEdge.getEndPoint().getCoordinate();
-//		int i = 0;
-//		while (!(i == 4 || (!triangle.getPoint(i).getCoordinate().equals3D(A) && !triangle.getPoint(i).getCoordinate().equals3D(B))))
-//			i++;
-//		// Assert.isTrue(i!=4,"edge n'appartenant pas au triangle");
-//		if (i == 4)
-//			return res; // e n'appartient pas au triangle
-//
-//		Coordinate C = triangle.getPoint(i).getCoordinate();
-//		Coordinate AB = MathUtil.DifferenceVectoriel(B, A);
-//		Coordinate AC = MathUtil.DifferenceVectoriel(C, A);
-//		// orientation CCW
-//		if (MathUtil.ProduitVectoriel(AB, AC).z < 0) {
-//			// echange A et B
-//			Coordinate D = A;
-//			A = B;
-//			B = D;
-//			AB = MathUtil.DifferenceVectoriel(B, A);
-//			AC = MathUtil.DifferenceVectoriel(C, A);
-//		}
-//		// test d'intersection entre AB et P
-//		Coordinate P = this.get3DVector();
-//
-//		res = MathUtil.ProduitVectoriel(AB, P).z < 0;
-//
-//		return res;
-//	}
+	
 	/**
 	 * Pente topographique exprimée en degrées
 	 *
@@ -262,24 +228,5 @@ public final class HydroTriangleUtil {
 	public static double getSlopeInDegree(DTriangle triangle) {
 		return Math.round(360 / (2 * Math.PI) * Math.atan(getSlopeInPourcent(triangle) / 100));
 	}
-//	public Coordinate getCentroid() {
-//
-//		return new Coordinate(p.getInteriorPoint().getX(), p.getInteriorPoint()
-//				.getY());
-//	}
-//	public Coordinate getPenteEdgeIntersect(LineString e, Coordinate p) {
-//		Coordinate I = null;
-//
-//		Coordinate eVector = MathUtil.getVector(e.getStartPoint()
-//				.getCoordinate(), e.getEndPoint().getCoordinate());
-//
-//		// Coordinate AB = MathUtil.DifferenceVectoriel(B, A);
-//		Coordinate P = this.get3DVector();
-//		I = MathUtil.CalculIntersection(e.getStartPoint().getCoordinate(),
-//				eVector, p, P);
-//		Assert.isTrue(I != null,
-//				"Intersection detectee mais non verifiee par calcul");
-//
-//		return I;
-//	}
+	
 }
