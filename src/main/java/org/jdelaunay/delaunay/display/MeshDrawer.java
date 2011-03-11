@@ -1,4 +1,10 @@
 package org.jdelaunay.delaunay.display;
+
+import java.awt.Graphics;
+import javax.swing.JFrame;
+
+import org.jdelaunay.delaunay.ConstrainedMesh;
+
 /**
  * Delaunay Package.
  *
@@ -6,13 +12,6 @@ package org.jdelaunay.delaunay.display;
  * @date 2009-01-12
  * @version 1.0
  */
-
-import java.awt.Graphics;
-import javax.swing.JFrame;
-
-import org.jdelaunay.delaunay.ConstrainedMesh;
-
-
 public class MeshDrawer extends JFrame {
         private static final long serialVersionUID = 1L;
         private ConstrainedMesh myMesh;

@@ -1,5 +1,10 @@
 package org.jdelaunay.delaunay;
 
+import java.util.ArrayList;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+
 /**
  * Delaunay Package.
  *
@@ -8,13 +13,6 @@ package org.jdelaunay.delaunay;
  * @revision 2010-11-08
  * @version 2.2
  */
-
-import java.util.ArrayList;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
-
 public final class ConstraintPolygon extends Element {
 
 	/**

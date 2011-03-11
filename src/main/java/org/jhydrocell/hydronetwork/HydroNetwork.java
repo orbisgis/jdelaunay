@@ -16,6 +16,10 @@ import org.jhydrocell.utilities.MathUtil;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 
+/**
+ * The representation of a hydrologic network, based on a constrained triangulation.
+ * @author alexis
+ */
 public final class HydroNetwork {
 	private ConstrainedMesh theMesh;
 
