@@ -1081,7 +1081,10 @@ public class ConstrainedMesh implements Serializable {
 	 * @throws DelaunayError
 	 */
 	public final void refineMesh(double minLength) throws DelaunayError {
-		for(DEdge ed : edges){
+		int sizeEdges = edges.size();
+		DEdge ed;
+		for(int i = 0; i< sizeEdges; i++){
+			ed = edges.get(i);
 			if(ed.isEncroached()){
 				splitEncroachedEdge(ed, minLength);
 			}
