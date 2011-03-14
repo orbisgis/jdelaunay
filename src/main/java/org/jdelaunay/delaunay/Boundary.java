@@ -106,7 +106,8 @@ final class Boundary {
 		List<DEdge> tmpAdded;
 		if(indices.size()==1){
 			//parts contain only one BoundaryPart : the point is not the right
-			//extremity of a constraint linked to the edge.
+			//extremity of a constraint linked to the edge, unless it is the righ extremity
+			//of the constraint of the lowest BP.
 			//We can connect it directly : it won't provoke the
 			//removal of any BoundaryPart
 			int index = indices.get(0);
@@ -131,6 +132,11 @@ final class Boundary {
 			} else {
 				bp = boundary.get(index);
 				addedTri = bp.connectPoint(pt);
+				//If we've added the right point of the constraint of the lowest boundary,
+				//we must set the said constraint to null.
+				if(index==0 && bp.getConstraint() != null && bp.getConstraint().getPointRight().equals(pt)){
+					bp.setConstraint(null);
+				}
 			}
 			setBadEdges(bp.getBadEdges());
 			setAddedEdges(bp.getAddedEdges());

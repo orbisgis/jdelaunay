@@ -995,6 +995,73 @@ public class TestConstrainedMesh extends BaseUtility {
 
 	}
 
+	public void testLowestConstraintManagement() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (298508.5, 2258710.7, 0.0, 298541.30000000005, 2258672.200000001, 0.0));
+		mesh.addConstraintEdge(new DEdge (298508.5, 2258710.7, 0.0, 298542.5, 2258759.5999999996, 0.0));
+		mesh.addConstraintEdge(new DEdge (298509.10000000003, 2258861.1000000006, 0.0, 298516.9, 2258927.7, 0.0));
+		mesh.addConstraintEdge(new DEdge (298509.10000000003, 2258861.1000000006, 0.0, 298540.29999999993, 2258842.299999999, 0.0));
+		mesh.addConstraintEdge(new DEdge (298569.0999999999, 2258616.299999999, 0.0, 298571.99999999994, 2258623.999999999, 0.0));
+		mesh.processDelaunay();
+		assertTrue(mesh.getTriangleList().size()==8);
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298508.5, 2258710.7, 0.0,
+								298541.30000000005, 2258672.200000001, 0.0),
+							new DEdge(298541.30000000005, 2258672.200000001, 0.0,
+								298542.5, 2258759.5999999996, 0.0),
+							new DEdge(298542.5, 2258759.5999999996, 0.0,
+								298508.5, 2258710.7, 0.0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298508.5, 2258710.7, 0.0,
+								298509.10000000003, 2258861.1000000006, 0.0),
+							new DEdge(298509.10000000003, 2258861.1000000006, 0.0,
+								298542.5, 2258759.5999999996, 0.0),
+							new DEdge(298542.5, 2258759.5999999996, 0.0,
+								298508.5, 2258710.7, 0.0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298540.29999999993, 2258842.299999999, 0.0,
+								298509.10000000003, 2258861.1000000006, 0.0),
+							new DEdge(298509.10000000003, 2258861.1000000006, 0.0,
+								298542.5, 2258759.5999999996, 0.0),
+							new DEdge(298542.5, 2258759.5999999996, 0.0,
+								298540.29999999993, 2258842.299999999, 0.0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298540.29999999993, 2258842.299999999, 0.0,
+								298571.99999999994, 2258623.999999999, 0.0),
+							new DEdge(298571.99999999994, 2258623.999999999, 0.0,
+								298542.5, 2258759.5999999996, 0.0),
+							new DEdge(298542.5, 2258759.5999999996, 0.0,
+								298540.29999999993, 2258842.299999999, 0.0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298541.30000000005, 2258672.200000001, 0.0,
+								298571.99999999994, 2258623.999999999, 0.0),
+							new DEdge(298571.99999999994, 2258623.999999999, 0.0,
+								298542.5, 2258759.5999999996, 0.0),
+							new DEdge(298542.5, 2258759.5999999996, 0.0,
+								298541.30000000005, 2258672.200000001, 0.0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298541.30000000005, 2258672.200000001, 0.0,
+								298571.99999999994, 2258623.999999999, 0.0),
+							new DEdge(298571.99999999994, 2258623.999999999, 0.0,
+								298569.0999999999, 2258616.299999999, 0.0),
+							new DEdge(298569.0999999999, 2258616.299999999, 0.0,
+								298541.30000000005, 2258672.200000001, 0.0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298541.30000000005, 2258672.200000001, 0.0,
+								298508.5, 2258710.7, 0.0),
+							new DEdge(298508.5, 2258710.7, 0.0,
+								298569.0999999999, 2258616.299999999, 0.0),
+							new DEdge(298569.0999999999, 2258616.299999999, 0.0,
+								298541.30000000005, 2258672.200000001, 0.0))));
+		assertTrue(mesh.getTriangleList().contains(new DTriangle(
+							new DEdge(298540.29999999993, 2258842.299999999, 0.0,
+								298509.10000000003, 2258861.1000000006, 0.0),
+							new DEdge(298509.10000000003, 2258861.1000000006, 0.0,
+								298516.9, 2258927.7, 0.0),
+							new DEdge(298516.9, 2258927.7, 0.0,
+								298540.29999999993, 2258842.299999999, 0.0))));
+	}
+
 	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError
