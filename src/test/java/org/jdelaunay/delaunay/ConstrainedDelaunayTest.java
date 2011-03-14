@@ -386,57 +386,106 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==4);
 		assertTrue(mesh.listContainsPoint(new DPoint(1,1,0))>-1);
 
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testPointOnEdge() throws DelaunayError {
 		//(1,1,0) lies on the first edge and is an extremity of the second one.
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(0,0,0), new DPoint(2,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,1,0), new DPoint(2,0,0)));
-		mesh.forceConstraintIntegrity();edgeList = mesh.getConstraintEdges();
+		mesh.forceConstraintIntegrity();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
 		assertTrue(mesh.listContainsPoint(new DPoint(1,1,0))>-1);
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testPointOnEdgeBis() throws DelaunayError {
 
 		//idem, but changing the edges order
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,1,0), new DPoint(2,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(0,2,0), new DPoint(2,0,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
 		assertTrue(mesh.listContainsPoint(new DPoint(1,1,0))>-1);
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testShareExtremity() throws DelaunayError {
 
 		//The two edges don't intersect, they just share an extremity.
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,1,0), new DPoint(2,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,1,0), new DPoint(2,0,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==2);
 		assertTrue(mesh.listContainsPoint(new DPoint(1,1,0))>-1);
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testPointOnVertical() throws DelaunayError {
 
 		//one extremity of an edge relies the other, which is vertical
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,1,0), new DPoint(2,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,2,0), new DPoint(1,0,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
 		assertTrue(mesh.listContainsPoint(new DPoint(1,1,0))>-1);
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testOverlappingVertical() throws DelaunayError {
 
 		//two vertical overlapping edges
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(2,1,0), new DPoint(2,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(2,4,0), new DPoint(2,0,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testThreeEdges() throws DelaunayError {
 
 		//the third edge is "between" the two first, which intersect and
 		//whose intersection lies after the right point of the third one.
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(2,1,0), new DPoint(3,6,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,4,0), new DPoint(7,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(0,2,0), new DPoint(2,3,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==5);
                 DEdge e1 = edgeList.get(0);
                 DEdge e2;
@@ -445,18 +494,27 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                         e1 = edgeList.get(i);
                         assertTrue(e2.sortLeftRight(e1)==-1);
                 }
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testTwoCrosses() throws DelaunayError {
 
 		//two "crosses", one left from the first
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(4,1,0), new DPoint(5,6,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(4,4,0), new DPoint(10,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(0,2,0), new DPoint(2,3,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(0,2,0), new DPoint(2,3,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(0,4,0), new DPoint(2,1,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==8);
-                e1 = edgeList.get(0);
+                DEdge e1 = edgeList.get(0);
+                DEdge e2;
 //		System.out.println(e1);
                 for(int i = 1; i<edgeList.size();i++){
                         e2 = e1;
@@ -484,16 +542,25 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                         assertTrue(e2.sortLeftRight(e1)==-1);
                 }
 //		System.out.println();
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testTriangle() throws DelaunayError {
 
 		//three edges intersect and form a triangle
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(0,3,0), new DPoint(5,3,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,4,0), new DPoint(3,1,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(1,0,0), new DPoint(5,4,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==9);
-                e1 = edgeList.get(0);
+                DEdge e1 = edgeList.get(0);
+		DEdge e2;
 //		System.out.println(e1);
                 for(int i = 1; i<edgeList.size();i++){
                         e2 = e1;
@@ -502,13 +569,21 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                         assertTrue(e2.sortLeftRight(e1)==-1);
                 }
 //		System.out.println();
+	}
+	/**
+	 * This test checks that intersections are well processed by the sweep line
+	 * algorithm.
+	 * It obviously directly depends on the previous tests, and on the algorithms checked
+	 * in these tests.
+	 */
+	public void testOtherConfigs() throws DelaunayError {
 
 		//
-		mesh = new ConstrainedMesh();
+		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(new DPoint(2,1,0), new DPoint(2,2,0)));
 		mesh.addConstraintEdge(new DEdge(new DPoint(2,4,0), new DPoint(2,0,0)));
 		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==3);
 
 		mesh = new ConstrainedMesh();
@@ -517,15 +592,6 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.addConstraintEdge(new DEdge(new DPoint(7,7,0), new DPoint(13,5,0)));
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
-		assertTrue(edgeList.size()==5);
-
-		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new DEdge(new DPoint(1,3,0), new DPoint(10,6,0)));
-		mesh.addConstraintEdge(new DEdge(new DPoint(7,5,0), new DPoint(13,7,0)));
-		mesh.addConstraintEdge(new DEdge(new DPoint(7,7,0), new DPoint(10,3,0)));
-		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
-		assertTrue(edgeList.size()==6);
 
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(23.754617414248024,25.03430079155673,8.321899736147756,29.974500344589934,23.130254996554104,8.9565816678153));
@@ -552,22 +618,6 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(edgeList.size()==2);
 
 		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new DEdge(new DPoint(1,1,0), new DPoint(2,2,0)));
-		mesh.addConstraintEdge(new DEdge(new DPoint(0,2,0), new DPoint(2,0,0)));
-		mesh.addConstraintEdge(new DEdge(new DPoint(0,0,0), new DPoint(2,1,0)));
-		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
-		assertTrue(edgeList.size()==6);
-		assertTrue(mesh.listContainsPoint(new DPoint(1,1,0))>-1);
-                assertTrue(sillyCheckIntersection(edgeList));
-                e1 = edgeList.get(0);
-                for(int i = 1; i<edgeList.size();i++){
-                        e2 = e1;
-                        e1 = edgeList.get(i);
-                        assertTrue(e2.sortLeftRight(e1)==-1);
-                }
-
-		mesh = new ConstrainedMesh();
 		DEdge edge1 = new DEdge(29.04662741160085,52.16572027299656,68.38018218763128 , 21.70784635428322,52.702506064941865,70.26548339515645);
 		mesh.addConstraintEdge(edge1);
 		DEdge edge2 = new DEdge(32.696545765031715,62.25043024404333,48.051049255488714 , 27.630378535764756,51.60370887400286,81.41914742448961);
@@ -575,29 +625,6 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.forceConstraintIntegrity();
 		edgeList = mesh.getConstraintEdges();
 		assertTrue(edgeList.size()==4);
-
-		mesh = new ConstrainedMesh();
-		mesh.addConstraintEdge(new DEdge(50, 17, 11,1 ,32, 6));
-		mesh.addConstraintEdge(new DEdge(97, 30, 99,46, 1, 98));
-		mesh.addConstraintEdge(new DEdge(63, 17, 56,91, 26, 35));
-		mesh.addConstraintEdge(new DEdge(59, 12, 96,47, 35, 24));
-		mesh.addConstraintEdge(new DEdge(44, 44, 10,72, 7, 27));
-		mesh.addConstraintEdge(new DEdge(29, 9, 35,33, 67 ,39));
-		mesh.addConstraintEdge(new DEdge(4, 5, 18,89, 12, 17));
-		mesh.addConstraintEdge(new DEdge(38, 81, 70,33, 35, 36));
-		mesh.addConstraintEdge(new DEdge(70, 74, 55,2, 2, 64));
-		mesh.addConstraintEdge(new DEdge(51, 50, 47,8, 21, 73));
-		edgeList = mesh.getConstraintEdges();
-                e1 = edgeList.get(0);
-                for(int i = 1; i<edgeList.size();i++){
-                        e2 = e1;
-                        e1 = edgeList.get(i);
-                        assertTrue(e2.sortLeftRight(e1)==-1);
-                }
-
-		mesh.forceConstraintIntegrity();
-		edgeList = mesh.getConstraintEdges();
-                assertTrue(sillyCheckIntersection(edgeList));
 
 //                mesh = new ConstrainedMesh();
 //                List<DEdge> randomEdges = getRandomEdges(100);
@@ -630,6 +657,62 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 //		assertTrue(bool);
 	}
 
+	public void testMixedCrossIntersection() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+//		mesh.addConstraintEdge(new DEdge(50, 17, 11,1 ,32, 6));
+//		mesh.addConstraintEdge(new DEdge(97, 30, 99,46, 1, 98));
+//		mesh.addConstraintEdge(new DEdge(63, 17, 56,91, 26, 35));
+//		mesh.addConstraintEdge(new DEdge(59, 12, 96,47, 35, 24));
+//		mesh.addConstraintEdge(new DEdge(44, 44, 10,72, 7, 27));
+		mesh.addConstraintEdge(new DEdge(29, 9, 35,33, 67 ,39));
+		mesh.addConstraintEdge(new DEdge(4, 5, 18,89, 12, 17));
+//		mesh.addConstraintEdge(new DEdge(38, 81, 70,33, 35, 36));
+		mesh.addConstraintEdge(new DEdge(70, 74, 55,2, 2, 64));
+		mesh.addConstraintEdge(new DEdge(51, 50, 47,8, 21, 73));
+		List<DEdge> edgeList = mesh.getConstraintEdges();
+                DEdge e1 = edgeList.get(0);
+		DEdge e2;
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+
+		mesh.forceConstraintIntegrity();
+//		show(mesh);
+		edgeList = mesh.getConstraintEdges();
+                assertTrue(sillyCheckIntersection(edgeList));
+	}
+
+	public void testIntersectColinearEdges() throws DelaunayError {
+		//two crossing edges
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge(new DPoint(1,3,0), new DPoint(10,6,0)));
+		mesh.addConstraintEdge(new DEdge(new DPoint(7,5,0), new DPoint(13,7,0)));
+		mesh.addConstraintEdge(new DEdge(new DPoint(7,7,0), new DPoint(10,3,0)));
+		mesh.forceConstraintIntegrity();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==6);
+	}
+
+	public void testThreeCrossingEdges() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge(new DPoint(1,1,0), new DPoint(2,2,0)));
+		mesh.addConstraintEdge(new DEdge(new DPoint(0,2,0), new DPoint(2,0,0)));
+		mesh.addConstraintEdge(new DEdge(new DPoint(0,0,0), new DPoint(2,1,0)));
+		mesh.forceConstraintIntegrity();
+		List<DEdge> edgeList = mesh.getConstraintEdges();
+		assertTrue(edgeList.size()==6);
+		assertTrue(mesh.listContainsPoint(new DPoint(1,1,0))>-1);
+                assertTrue(sillyCheckIntersection(edgeList));
+                DEdge e1 = edgeList.get(0);
+		DEdge e2;
+                for(int i = 1; i<edgeList.size();i++){
+                        e2 = e1;
+                        e1 = edgeList.get(i);
+                        assertTrue(e2.sortLeftRight(e1)==-1);
+                }
+	}
 
 	/**
 	 * Tests the intersectsExistingEdges method
@@ -928,11 +1011,12 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(new DEdge(295881.6,           2260893.7,          0, 295882.89999999997, 2260893.6999999993, 0));
 		mesh.addConstraintEdge(new DEdge(295881.6,           2260893.7,          0, 295886.5999999999,  2260893.6999999993, 0));
-//		mesh.addConstraintEdge(new DEdge(295882.89999999997, 2260893.6999999993, 0, 295884.4,           2260900.7, 0));
-//		mesh.addConstraintEdge(new DEdge(295882.89999999997, 2260893.6999999993, 0, 295886.5999999999,  2260893.6999999993, 0));
+		mesh.addConstraintEdge(new DEdge(295882.89999999997, 2260893.6999999993, 0, 295884.4,           2260900.7, 0));
+		mesh.addConstraintEdge(new DEdge(295882.89999999997, 2260893.6999999993, 0, 295886.5999999999,  2260893.6999999993, 0));
 		mesh.forceConstraintIntegrity();
+		mesh.processDelaunay();
 //		show(mesh);
-		assertTrue(mesh.getConstraintEdges().size()==2);
+		assertTrue(mesh.getConstraintEdges().size()==3);
 	}
 
 	/**

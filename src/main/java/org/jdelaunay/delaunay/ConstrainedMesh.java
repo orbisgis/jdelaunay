@@ -628,6 +628,8 @@ public class ConstrainedMesh implements Serializable {
 							//intersection.
 							if (newEvent.equals2D(currentEvent)) {
 								//We process the intersection.
+								newEvent.setX(abs);
+								List<DEdge> toBeInsert = new ArrayList<DEdge>();
 								if (!newEvent.equals2D(e2.getPointLeft()) && !newEvent.equals2D(e2.getPointRight())) {
 									//newEvent lies on e2, and is not an extremity
 									if(newEvent.equals2D(e1.getPointLeft())){
@@ -643,7 +645,7 @@ public class ConstrainedMesh implements Serializable {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									inter4 = new DEdge(newEvent, e2.getPointRight());
-									edgeBuffer.addEdge(inter4);
+									toBeInsert.add(inter4);
 									rmCount++;
 								} else if (newEvent.equals2D(e2.getPointRight())) {
 									addConstraintEdge(e2);
@@ -667,7 +669,7 @@ public class ConstrainedMesh implements Serializable {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									inter3 = new DEdge(e1.getPointRight(), newEvent);
-									edgeBuffer.addEdge(inter3);
+									toBeInsert.add(inter3);
 									rmCount++;
 								} else if (newEvent.equals2D(e1.getPointRight())) {
 									addConstraintEdge(e1);
@@ -676,6 +678,9 @@ public class ConstrainedMesh implements Serializable {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									rmCount++;
+								}
+								for(DEdge yed : toBeInsert){
+									edgeBuffer.addEdge(yed);
 								}
 								j = (j - rmCount < 0 ? 0 : j - rmCount);
 							} else { // the intersection will be processed later.

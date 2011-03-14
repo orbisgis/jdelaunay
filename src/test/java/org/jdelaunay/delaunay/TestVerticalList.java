@@ -360,4 +360,11 @@ public class TestVerticalList extends BaseUtility{
 		assertTrue(vList.get(2).equals(new DEdge(0,4,0,6,8,0)));
 
 	}
+
+	public void testVerticalSort() throws DelaunayError {
+		VerticalComparator vc = new VerticalComparator(30.60612691466083);
+		DEdge e1 = new DEdge(8.0, 21.0, 73.0,51.0, 50.0, 47.0);
+		DEdge e2 = new DEdge(70.0, 74.0, 55.0,30.60612691466083, 32.288840262582056, 32.60256458544183);
+		assertTrue(vc.compare(e1, e2)==1);
+	}
 }

@@ -78,18 +78,18 @@ public class VerticalComparator implements Comparator<DEdge>, Serializable {
 			c=-2;
 		} else {
 			//We can perform the comparison.
-			c = pEdge1.compareTo2D(pEdge2);
+			c = comparePoints(pEdge1,pEdge2);
 			if (c == 0) {
 				//We have an intersection. (pEdge1 and pEdge2 are equal)
 				if(edge1.isVertical()){
-					c = edge1.getPointRight().compareTo2D(edge2.getPointRight());
+					c = comparePoints(edge1.getPointRight(),edge2.getPointRight());
 					if(edge1.getPointLeft().equals(pEdge1)){
 						c = 1;
 					} else if(edge1.getPointRight().equals(pEdge1)){
 						c = -1;
 					}
 				} else if(edge2.isVertical()){
-					c = edge2.getPointRight().compareTo2D(edge1.getPointRight());
+					c = comparePoints(edge2.getPointRight(),edge1.getPointRight());
 					if(edge2.getPointLeft().equals(pEdge2)){
 						c = -1;
 					} else if(edge2.getPointRight().equals(pEdge2)){
@@ -103,9 +103,9 @@ public class VerticalComparator implements Comparator<DEdge>, Serializable {
 					double cT = deltaYT / deltaXT;
 					double cO = deltaYO / deltaXO;
 					if(-Tools.EPSILON < cT - cO && cT - cO < Tools.EPSILON){
-						c = edge1.getPointRight().compareTo2D(edge2.getPointRight());
+						c = comparePoints(edge1.getPointRight(),edge2.getPointRight());
 						if(c==0){
-							c = edge1.getPointLeft().compareTo2D(edge2.getPointLeft());
+							c = comparePoints(edge1.getPointLeft(),edge2.getPointLeft());
 						}
 					} else if(cT < cO){
 						c = -1;
@@ -118,4 +118,30 @@ public class VerticalComparator implements Comparator<DEdge>, Serializable {
 		return c;
 	}
 
+	/**
+	 * Inner method of comparison between two points. we don't use any epsilon here
+	 * to take in account the loss of precision we face when using double values.
+	 * @param p1
+	 * @param p2
+	 * @return
+	 */
+	private int comparePoints(DPoint p1, DPoint p2){
+		double x1 = p1.getX();
+		double x2 = p2.getX();
+		if(x1 < x2){
+			return -1;
+		} else if(x1 > x2){
+			return 1;
+		} else {
+			double y1 = p1.getY();
+			double y2 = p2.getY();
+			if(y1 < y2){
+				return -1;
+			} else if(y1 > y2){
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	}
 }

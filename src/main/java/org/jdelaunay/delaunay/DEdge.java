@@ -1052,6 +1052,12 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @throws DelaunayError
 	 */
 	public final DPoint getPointFromItsX(double abs) throws DelaunayError {
+		//We don't want to approximate accidentally our extremities !
+		if(Math.abs(getPointLeft().getX() - abs)<Tools.EPSILON){
+			return getPointLeft();
+		} else if(Math.abs(getPointRight().getX() - abs)<Tools.EPSILON){
+			return getPointRight();
+		}
 		double deltaX = (startPoint.getX() - endPoint.getX());
 		double dX = (deltaX < 0 ? -deltaX : deltaX);
 		double p = (abs - startPoint.getX()) / (endPoint.getX() - startPoint.getX());
