@@ -452,6 +452,13 @@ public class TestEdges extends BaseUtility {
 		assertTrue(((DEdge) elt).getPointRight().getY()==2260113.9000000004);
 	}
 
+	public void testPrecisionNearPoint() throws DelaunayError {
+		DEdge e1 = new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.70000000007, 2260059.000000001, 0.0);
+		DEdge e2 = new DEdge (300640.3, 2260085.2, 0.0, 300641.4000000001, 2260085.4000000013, 0.0);
+		Element  elt = e1.getIntersection(e2);
+		assertTrue(elt instanceof DPoint);
+	}
+
 	public void testIntersectionParallel() throws DelaunayError {
 		DEdge e1 = new DEdge(0,0,0,5,0,0);
 		DEdge e2 = new DEdge(0,0,0,4,0.0000000001,0);

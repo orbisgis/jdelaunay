@@ -1077,6 +1077,24 @@ public class TestConstrainedMesh extends BaseUtility {
 	}
 
 	/**
+	 * This configuration, that comes from the Nantes landuse, caused problems in the triangulation
+	 * computation.
+	 * @throws DelaunayError
+	 */
+	public void testParcellaireExcerpt() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (300640.3, 2260085.2, 0.0, 300641.4000000001, 2260085.4000000013, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.10000000003, 2259945.6000000006, 0.0, 300641.3, 2259944.8000000007, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.4000000001, 2260085.4000000013, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.70000000007, 2260059.000000001, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.3, 2260113.9000000004, 0.0, 300641.3, 2260119.5, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.70000000007, 2260059.000000001, 0.0, 300670.80000000005, 2260054.4000000013, 0.0));
+		mesh.forceConstraintIntegrity();
+		mesh.processDelaunay();
+//		show(mesh);
+	}
+
+	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError
 	 */

@@ -361,6 +361,22 @@ public class TestVerticalList extends BaseUtility{
 
 	}
 
+	/**
+	 * Sort problem encountered in the fragmented land data from chezine.
+	 * @throws DelaunayError
+	 */
+	public void testSortProblem() throws DelaunayError {
+		VerticalList vList = new VerticalList();
+		DEdge e1 = new DEdge (300640.3, 2260085.2, 0.0, 300641.4000000001, 2260085.4000000013, 0.0);
+		DEdge e2 = new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.4000000001, 2260085.4000000013, 0.0);
+		vList.addEdge(e1);
+		vList.addEdge(e2);
+		vList.setAbs(300641.29999999993);
+		assertTrue(vList.get(0).equals(e1));
+		assertTrue(new VerticalComparator(300641.29999999993).compare(e1, e2)==-1);
+
+	}
+
 	public void testVerticalSort() throws DelaunayError {
 		VerticalComparator vc = new VerticalComparator(30.60612691466083);
 		DEdge e1 = new DEdge(8.0, 21.0, 73.0,51.0, 50.0, 47.0);

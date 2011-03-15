@@ -75,7 +75,7 @@ public class VerticalList {
 	 */
 	public final void setAbs(double abs) throws DelaunayError{
 		resetVolatileAttributes();
-		if(Math.abs(abs-comp.getAbs())>Tools.EPSILON){
+		if(abs!=comp.getAbs()){
 			comp.setAbs(abs);
 			sort();
 		}
