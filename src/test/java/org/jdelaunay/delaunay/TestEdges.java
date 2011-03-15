@@ -441,6 +441,24 @@ public class TestEdges extends BaseUtility {
 		assertTrue(d1.getMiddle().equals(d2.getMiddle()));
 	}
 
+	public void testIntersectionAlmostVerticalEdges() throws DelaunayError {
+		DEdge e2 = new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.3, 2260119.5, 0.0);
+		DEdge e1 = new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.3, 2260113.9000000004, 0.0);
+		Element elt = e2.getIntersection(e1);
+		assertTrue(elt instanceof DEdge);
+		assertTrue(((DEdge) elt).getPointLeft().getX()==300641.29999999993);
+		assertTrue(((DEdge) elt).getPointLeft().getY()==2260093.5);
+		assertTrue(((DEdge) elt).getPointRight().getX()==300641.3);
+		assertTrue(((DEdge) elt).getPointRight().getY()==2260113.9000000004);
+	}
+
+	public void testIntersectionParallel() throws DelaunayError {
+		DEdge e1 = new DEdge(0,0,0,5,0,0);
+		DEdge e2 = new DEdge(0,0,0,4,0.0000000001,0);
+		Element elt = e2.getIntersection(e1);
+		assertTrue(elt instanceof DEdge);
+	}
+
 	public void testIsEncroached() throws DelaunayError {
 		DPoint p1 = new DPoint(0,3,0);
 		DPoint p2 = new DPoint(6,0,0);

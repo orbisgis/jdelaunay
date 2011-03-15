@@ -1062,6 +1062,20 @@ public class TestConstrainedMesh extends BaseUtility {
 								298540.29999999993, 2258842.299999999, 0.0))));
 	}
 
+	public void testVerticalEdgePrecisionProblem() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (300638.4000000001, 2260120.0, 0.0, 300641.3, 2260119.5, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.3, 2260113.9000000004, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.3, 2260119.5, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.29999999993, 2260093.5, 0.0, 300641.4000000001, 2260085.4000000013, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.29999999993, 2260093.5, 0.0, 300671.9, 2260092.5999999996, 0.0));
+		mesh.addConstraintEdge(new DEdge (300641.3, 2260113.9000000004, 0.0, 300641.3, 2260119.5, 0.0));
+		mesh.forceConstraintIntegrity();
+		mesh.processDelaunay();
+//		show(mesh);
+		assertTrue(mesh.getTriangleList().size()==6);
+	}
+
 	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError

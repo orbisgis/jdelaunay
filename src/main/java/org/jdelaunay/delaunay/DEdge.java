@@ -661,7 +661,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 		// d = (x4 - x3) (y2 - y1) - (x2 - x1) * (y4 - y3)
 		double d = deltaXT * deltaYO - deltaYT * deltaXO;
-		if (Math.abs(d) > Tools.EPSILON2) {
+		if (Math.abs(d) > Tools.EPSILON) {
 			//The two edges are not colinear.
 			if(p1.compareTo2D(p4)==1 || p3.compareTo2D(p2)==1){
 				return null;
@@ -716,14 +716,14 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			} else {//we have one supporting line
 				//t13 is the position of the point three on the edge 1->2
 				double t13, t14, t21, t22;
-				if (Math.abs(deltaXO) < Tools.EPSILON2) {
+				if (Math.abs(deltaXO) < Tools.EPSILON) {
 					t13 = c2 / deltaYO;
 					t14 = (p4.getY() - p1.getY()) / (deltaYO);
 				} else {
 					t13 = c1 / deltaXO;
 					t14 = (p4.getX() - p1.getX()) / (deltaXO);
 				}
-				if (Math.abs(deltaXT) > Tools.EPSILON2) {
+				if (Math.abs(deltaXT) > Tools.EPSILON) {
 					t21 = -c1 / deltaXT;
 					t22 = (p2.getX() - p3.getX()) / deltaXT;
 				} else {
