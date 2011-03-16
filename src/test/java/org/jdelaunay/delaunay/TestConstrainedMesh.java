@@ -1091,6 +1091,8 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(new DEdge (300641.70000000007, 2260059.000000001, 0.0, 300670.80000000005, 2260054.4000000013, 0.0));
 		mesh.forceConstraintIntegrity();
 		mesh.processDelaunay();
+		List<DTriangle> triangles = mesh.getTriangleList();
+		assertTrue(triangles.size()==13);
 //		show(mesh);
 	}
 
