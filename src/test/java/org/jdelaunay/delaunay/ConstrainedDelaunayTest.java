@@ -1019,6 +1019,14 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(mesh.getConstraintEdges().size()==3);
 	}
 
+	public void testIntersectVertical() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (296458.5, 2254707.7, 0.0, 296459.50000000006, 2254696.6000000006, 0.0));
+		mesh.addConstraintEdge(new DEdge (296459.00000000006, 2254700.6000000006, 0.0, 296459.0, 2254703.700000001, 0.0));
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().size()==4);
+	}
+
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number

@@ -78,7 +78,8 @@ public class VerticalComparator implements Comparator<DEdge>, Serializable {
 			c=-2;
 		} else {
 			//We can perform the comparison.
-			c = comparePoints(pEdge1,pEdge2);
+			c = pEdge1.getY()<pEdge2.getY() ? -1 : 1;
+			c = pEdge1.getY()==pEdge2.getY() ? 0 : c;
 			if (c == 0) {
 				//We have an intersection. (pEdge1 and pEdge2 are equal)
 				if(edge1.isVertical()){

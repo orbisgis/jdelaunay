@@ -1097,6 +1097,40 @@ public class TestConstrainedMesh extends BaseUtility {
 	}
 
 	/**
+	 * This configuration caused some problems, as an intersection was not seen by the
+	 * intersection algorithm.
+	 * @throws DelaunayError
+	 */
+	public void testMistyIntersection() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (296448.7, 2254716.8, 0.0, 296449.60000000003, 2254721.9000000013, 0.0));
+		mesh.addConstraintEdge(new DEdge (296448.8, 2254721.9000000004, 0.0, 296449.0999999999, 2254720.5999999987, 0.0));
+		mesh.addConstraintEdge(new DEdge (296449.0999999999, 2254720.5999999987, 0.0, 296450.9, 2254714.3, 0.0));
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().size()==5);
+		mesh.processDelaunay();
+//		show(mesh);
+		List<DTriangle> triangles = mesh.getTriangleList();
+		assertTrue(triangles.size()==6);
+
+	}
+
+	/**
+	 * A point were missing, due to a problem when managing vertical constraints.
+	 * @throws DelaunayError
+	 */
+	public void testMissingIntersectionPoint() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (296458.5, 2254707.7, 0.0, 296459.50000000006, 2254696.6000000006, 0.0));
+		mesh.addConstraintEdge(new DEdge (296459.00000000006, 2254700.6000000006, 0.0, 296459.0, 2254703.700000001, 0.0));
+		mesh.addConstraintEdge(new DEdge (296459.00000000006, 2254700.6000000006, 0.0, 296459.3, 2254697.5, 0.0));
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().size()==5);
+		mesh.processDelaunay();
+//		show(mesh);
+	}
+
+	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError
 	 */

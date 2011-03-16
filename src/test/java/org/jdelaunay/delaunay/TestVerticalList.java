@@ -377,6 +377,25 @@ public class TestVerticalList extends BaseUtility{
 
 	}
 
+	/**
+	 * A configuration that caused a problem in the sweep line algorithm, in the fragmented
+	 * land data from the chezine area. The two edges have really closed slopes,
+	 * and share an edge (wich is the left one for one, and the right one for
+	 * the other)
+	 * @throws DelaunayError
+	 */
+	public void testCommonMiddle() throws DelaunayError {
+		VerticalList vList = new VerticalList();
+		DEdge e1 = new DEdge (296448.8, 2254721.9000000004, 0.0, 296449.0999999999, 2254720.5999999987, 0.0);
+		DEdge e2 = new DEdge (296449.0999999999, 2254720.5999999987, 0.0, 296450.9, 2254714.3, 0.0);
+		vList.addEdge(e1);
+		vList.addEdge(e2);
+		vList.setAbs(296449.0999999999);
+		assertTrue(vList.get(1).equals(e2));
+		assertTrue(new VerticalComparator(296449.0999999999).compare(e1, e2)==-1);
+		
+	}
+
 	public void testVerticalSort() throws DelaunayError {
 		VerticalComparator vc = new VerticalComparator(30.60612691466083);
 		DEdge e1 = new DEdge(8.0, 21.0, 73.0,51.0, 50.0, 47.0);

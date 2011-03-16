@@ -240,7 +240,7 @@ public class VerticalList {
 		while (i < s - 1) {
 			e1 = constraintsList.get(i);
 			e2 = constraintsList.get(i + 1);
-			c = e1.verticalSort(e2, comp.getAbs());
+			c = comp.compare(e1, e2);
 			if (c == 1) {
 				constraintsList.set(i, e2);
 				constraintsList.set(i + 1, e1);

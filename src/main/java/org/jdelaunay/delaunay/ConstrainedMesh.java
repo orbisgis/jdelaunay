@@ -703,6 +703,7 @@ public class ConstrainedMesh implements Serializable {
 									throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 								}
 								rmCount++;
+								j--;
 							}
 							j = (j - rmCount < 0 ? 0 : j - rmCount);
 						}
@@ -775,6 +776,9 @@ public class ConstrainedMesh implements Serializable {
 						}
 
 					} else {
+						//if the current event is the right point of e1, we
+						//can remove e1 from the buffer and add it to
+						//the constraints.
 						if (e1.getPointRight().equals2D(currentEvent)) {
 							addConstraintEdge(e1);
 							rm = edgeBuffer.remove(j - 1);
