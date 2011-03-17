@@ -536,6 +536,21 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
+	 * Get the euclidean distance between p and the line defined by this edge.
+	 * @param p
+	 * @return
+	 */
+	public final double getDistance2D(DPoint p){
+		if(this.isVertical()){
+			return Math.abs(p.getX() - startPoint.getX());
+		} else {
+			double a = (endPoint.getY() - startPoint.getY())/(endPoint.getX()-startPoint.getX());
+			double b = endPoint.getY() - a * endPoint.getX();
+			return Math.abs(a * p.getX() - p.getY() + b)/Math.sqrt(1+a*a);
+		}
+	}
+
+	/**
 	 * Check if this and other intersect.
 	 * @param other
 	 * @return intersection :<br/>
@@ -702,6 +717,21 @@ public class DEdge extends Element implements Comparable<DEdge> {
 					}
 					intersection = new DPoint(x, y, z);
 
+				}
+			} else if ((-Tools.EPSILON <= t1) && (t1 <= 1 + Tools.EPSILON) && (-Tools.EPSILON <= t2)
+				&& (t2 <= 1 + Tools.EPSILON)) {
+				if(getDistance2D(p1)<Tools.EPSILON){
+					return p1;
+				}
+				if(getDistance2D(p2)<Tools.EPSILON){
+					return p2;
+				}
+				DEdge other = new DEdge(p1, p2);
+				if(other.getDistance2D(p3)<Tools.EPSILON){
+					return p3;
+				}
+				if(other.getDistance2D(p4)<Tools.EPSILON){
+					return p4;
 				}
 			}
 		} else { //d==0 : the two edges are colinear

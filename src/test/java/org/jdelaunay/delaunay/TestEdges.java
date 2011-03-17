@@ -490,4 +490,16 @@ public class TestEdges extends BaseUtility {
 		DTriangle t2 = new DTriangle(e3, e4, e5);
 		assertTrue(e3.isEncroached());
 	}
+
+	/**
+	 * Test the getDistance method.
+	 * @throws DelaunayError
+	 */
+	public void testGetDistance() throws DelaunayError {
+		DEdge e1 = new DEdge (0,0,0,2,2,2);
+		DPoint p = new DPoint(1,2,0);
+		assertTrue(Math.abs(e1.getDistance2D(p) - Math.sqrt(2)/2)<Tools.EPSILON);
+		e1 = new DEdge(0,0,0,0,2,0);
+		assertTrue(e1.getDistance2D(p)==1);
+	}
 }

@@ -743,7 +743,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
         /**
          * This test represents a special configuration with 4 edges. They all intersect
          * in a really small area, and that can cause some problems when computing
-         * thee intersection.
+         * the intersection.
          * @throws DelaunayError
          */
         public void testAnotherIntersection() throws DelaunayError{
@@ -1025,6 +1025,22 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.addConstraintEdge(new DEdge (296459.00000000006, 2254700.6000000006, 0.0, 296459.0, 2254703.700000001, 0.0));
 		mesh.forceConstraintIntegrity();
 		assertTrue(mesh.getConstraintEdges().size()==4);
+	}
+
+	public void testIntersectionFromBatiIndiff() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge e1 = new DEdge (298282.1, 2230167.4, 37.7, 298284, 2230171.3, 37.7);
+		DEdge e2 = new DEdge (298280.1, 2230163.2, 37.6, 298283.9634490876, 2230171.313243084, 37.7);
+		Element inter = e1.getIntersection(e2);
+		assertNotNull(inter);
+		mesh.addConstraintEdge(e1);
+		mesh.addConstraintEdge(e2);
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().size()==3);
+		mesh.processDelaunay();
+//		show(mesh);
+		assertTrue(mesh.getTriangleList().size()==3);
+		
 	}
 
 	/**
