@@ -491,6 +491,13 @@ public class TestEdges extends BaseUtility {
 		assertTrue(e3.isEncroached());
 	}
 
+	public void testNotSeenOverlap() throws DelaunayError {
+		DEdge e2 = new DEdge (311785.4, 2251488.2, 25.7, 311792.0, 2251487.1, 25.9);
+		DEdge e1 = new DEdge (311784.2, 2251488.4, 25.7, 311792.0, 2251487.1, 25.9);
+		Element inter = e1.getIntersection(e2);
+		assertNotNull(inter);
+	}
+
 	/**
 	 * Test the getDistance method.
 	 * @throws DelaunayError

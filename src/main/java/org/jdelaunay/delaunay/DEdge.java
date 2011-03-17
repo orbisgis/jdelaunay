@@ -741,7 +741,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			} else {
 				test = c1 / deltaXO - c2 / deltaYO;
 			}
-			if (Math.abs(test) > Tools.EPSILON2) {//the two supporting lines are different
+			if (Math.abs(test) > Tools.EPSILON) {//the two supporting lines are different
 				intersection = null;
 			} else {//we have one supporting line
 				//t13 is the position of the point three on the edge 1->2

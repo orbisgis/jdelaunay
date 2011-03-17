@@ -1131,6 +1131,25 @@ public class TestConstrainedMesh extends BaseUtility {
 	}
 
 	/**
+	 * A problematic configuration from buildings of the Nantes area.
+	 * @throws DelaunayError
+	 */
+	public void testProblemConfigBati() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (311784.2, 2251488.4, 25.7, 311792.0, 2251487.1, 25.9));
+		mesh.addConstraintEdge(new DEdge (311784.9, 2251484.8, 27.0, 311785.4, 2251488.2, 25.7));
+		mesh.addConstraintEdge(new DEdge (311784.9, 2251484.8, 27.0, 311791.9, 2251483.8, 27.9));
+		mesh.addConstraintEdge(new DEdge (311785.4, 2251488.2, 25.7, 311792.0, 2251487.1, 25.9));
+		mesh.forceConstraintIntegrity();
+//		try{
+		mesh.processDelaunay();
+//		}catch(Exception e){
+//			System.out.println("youhou");
+//		}
+//		show(mesh);
+	}
+
+	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError
 	 */
