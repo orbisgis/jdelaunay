@@ -1131,7 +1131,8 @@ public class TestConstrainedMesh extends BaseUtility {
 	}
 
 	/**
-	 * A problematic configuration from buildings of the Nantes area.
+	 * A problematic configuration from buildings of the Nantes area. Two overlapping
+	 * constraint edges were not merged during the processing of the constraints intersections.
 	 * @throws DelaunayError
 	 */
 	public void testProblemConfigBati() throws DelaunayError {
