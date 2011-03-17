@@ -1152,6 +1152,34 @@ public class TestConstrainedMesh extends BaseUtility {
 //		show(mesh);
 	}
 
+	public void testinsertEdgeOnePoint() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge(5,5,0,5,5,0));
+		assertTrue(mesh.getConstraintEdges().isEmpty());
+		assertTrue(mesh.getPoints().size()==1);
+	}
+
+	/**
+	 * The triangulation is broken when an edge where extremities are both the same
+	 * is encountered.
+	 * @throws DelaunayError
+	 */
+	public void testProblemParcCourbe() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (294226.6664782842, 2262000.0, 0.0, 294240.0, 2261994.374985099, 0.0));
+		mesh.addConstraintEdge(new DEdge (294226.6664782842, 2262000.0, 0.0, 294240.0, 2262015.6519720037, 0.0));
+		mesh.addConstraintEdge(new DEdge (294240.0, 2261994.374985099, 0.0, 294260.0, 2261996.7213647845, 0.0));
+		mesh.addConstraintEdge(new DEdge (294240.0, 2262015.6519720037, 0.0, 294260.0, 2262048.163176333, 0.0));
+		mesh.addConstraintEdge(new DEdge (294260.0, 2261996.7213647845, 0.0, 294300.0, 2261968.5714285714, 0.0));
+		mesh.addConstraintEdge(new DEdge (294260.0, 2262048.163176333, 0.0, 294340.0, 2262079.375104308, 0.0));
+		mesh.addConstraintEdge(new DEdge (294273.1999999893, 2261630.0, 0.0, 294273.1999999893, 2261630.0, 0.0));
+		mesh.addConstraintEdge(new DEdge (294273.1999999893, 2261630.0, 0.0, 294337.19999999995, 2261623.999999999, 0.0));
+		mesh.addConstraintEdge(new DEdge (294300.0, 2261968.5714285714, 0.0, 294320.0, 2261965.7970565795, 0.0));
+		mesh.forceConstraintIntegrity();
+		mesh.processDelaunay();
+		assertTrue(true);
+	}
+
 	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError

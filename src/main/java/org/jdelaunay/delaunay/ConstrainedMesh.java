@@ -151,8 +151,6 @@ public class ConstrainedMesh implements Serializable {
 			constraintEdges = new ArrayList<DEdge>();
 		}
 		fixConstraintDirection(e);
-		e.setLocked(true);
-		addEdgeToLeftSortedList(constraintEdges, e);
 		int index = Collections.binarySearch(points, e.getStartPoint());
 		if(index < 0 ){
 			updateExtensionPoints(e.getStartPoint());
@@ -162,6 +160,11 @@ public class ConstrainedMesh implements Serializable {
 		} else {
 			e.setStartPoint(points.get(index));
 		}
+		if(e.getStartPoint().equals(e.getEndPoint())){
+			return;
+		}
+		e.setLocked(true);
+		addEdgeToLeftSortedList(constraintEdges, e);
 		index = Collections.binarySearch(points, e.getEndPoint());
 		if(index < 0 ){
 			updateExtensionPoints(e.getEndPoint());
