@@ -1141,11 +1141,13 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(new DEdge (311784.9, 2251484.8, 27.0, 311791.9, 2251483.8, 27.9));
 		mesh.addConstraintEdge(new DEdge (311785.4, 2251488.2, 25.7, 311792.0, 2251487.1, 25.9));
 		mesh.forceConstraintIntegrity();
-//		try{
 		mesh.processDelaunay();
-//		}catch(Exception e){
-//			System.out.println("youhou");
-//		}
+		assertTrue(mesh.getTriangleList().size()==3);
+		assertTrue(mesh.getConstraintEdges().size()==4);
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311784.2, 2251488.4, 25.7,311785.4, 2251488.2, 25.7)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311785.4, 2251488.2, 25.7,311792.0, 2251487.1, 25.9)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311785.4, 2251488.2, 25.7,311784.9, 2251484.8, 27.0)));
+		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311784.9, 2251484.8, 27.0,311791.9, 2251483.8, 27.9)));
 //		show(mesh);
 	}
 
