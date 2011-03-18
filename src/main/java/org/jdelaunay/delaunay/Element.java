@@ -19,6 +19,8 @@ public abstract class Element {
 	private static final long serialVersionUID = 5437683478248244942L;
 	private int gid;
 	protected int property;
+	//An identifier to use correspondance maps externally, to affect properties efficiently.
+	private int externalGID;
 
 	/**
 	 * Default initialization
@@ -26,6 +28,7 @@ public abstract class Element {
 	private void init() {
 		this.gid = -1;
 		this.property = 0;
+		externalGID = -1;
 	}
 	/**
 	 * default constructor
@@ -114,7 +117,24 @@ public abstract class Element {
 	public final void removeProperties() {
 		this.property = 0;
 	}
-	
+
+	/**
+	 * Set an external GID, referencing this object for an external use, and 
+	 * eventually make correspondances with an external attributes table.
+	 * @param externalGID
+	 */
+	public void setExternalGID(int externalGID) {
+		this.externalGID = externalGID;
+	}
+
+	/**
+	 * get the external GID associated to the object (-1 if it has not been set)
+	 * @return
+	 */
+	public int getExternalGID() {
+		return externalGID;
+	}
+
 	/**
 	 * Computed bounding box
 	 * 

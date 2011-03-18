@@ -23,4 +23,11 @@ public class TestElement extends BaseUtility {
 		assertTrue(pt.getProperty()==0);
 	}
 
+	public void testExternalGID() throws DelaunayError {
+		DPoint pt = new DPoint (0,0,0);
+		assertTrue(pt.getExternalGID() == -1);
+		pt.setExternalGID(5);
+		assertTrue(pt.getExternalGID() == 5);
+	}
+
 }
