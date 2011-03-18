@@ -519,4 +519,11 @@ public class TestEdges extends BaseUtility {
 		e1 = new DEdge(0,0,0,0,2,0);
 		assertTrue(e1.getDistance2D(p)==1);
 	}
+
+	public void testHeight() throws DelaunayError {
+		DEdge e1 = new DEdge(0,0,0,5,5,5);
+		assertTrue(e1.getHeight()==0);
+		e1.setHeight(8);
+		assertTrue(e1.getHeight()==8);
+	}
 }

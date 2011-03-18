@@ -36,6 +36,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	private static final long serialVersionUID = 1L;
 	private DPoint startPoint, endPoint;
 	private DTriangle left, right;
+	//If this edge is an obstacle, it must have a height
+	private double height ;
 	//An edge is considered to be degenerated if it is connected to the boundary
 	//of the mesh, but is not part of any triangle. It is the case when adding 
 	//a point to the mesh that can't see any point of the boundary, because of
@@ -93,6 +95,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		left = null;
 		right = null;
 		indicator = 0;
+		height = 0;
 	}
 
 	/**
@@ -292,7 +295,23 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 		this.endPoint = p;
 	}
-	
+
+	/**
+	 * Get the height of the edge.
+	 * @return
+	 */
+	public double getHeight() {
+		return height;
+	}
+
+	/**
+	 * Set the height of the edge
+	 * @param height
+	 */
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
 	/**
 	 * Get the point of this edge that is on the left from the other. 
 	 * We use the order relation defined in DPoint. Consequently, with a vertical
