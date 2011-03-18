@@ -1318,6 +1318,18 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
+	 * This method wil force the point marked as the end of the edge to be the point
+	 * with the lower altitude.
+	 */
+	public void forceTopographicOrientation() {
+		double zEnd = endPoint.getZ();
+		double zStart = startPoint.getZ();
+		if(zStart < zEnd){
+			swap();
+		}
+	}
+
+	/**
 	 * Realization of Compare. We use sortLeftRight here to sort our edges,
 	 * not a vertical sort or something else...
 	 * @param edge

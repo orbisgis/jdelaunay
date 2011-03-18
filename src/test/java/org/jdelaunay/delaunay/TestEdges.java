@@ -526,4 +526,20 @@ public class TestEdges extends BaseUtility {
 		e1.setHeight(8);
 		assertTrue(e1.getHeight()==8);
 	}
+
+	public void testForceTopographicOrientation() throws DelaunayError {
+		DEdge e1 = new DEdge(0,0,0,5,5,5);
+		assertTrue(e1.getStartPoint().equals(new DPoint(0,0,0)));
+		DTriangle d1 = new DTriangle(e1, new DEdge(5,5,5,4,1,0), new DEdge(4,1,0,0,0,0));
+		DTriangle d2 = new DTriangle(e1, new DEdge(5,5,5,1,3,0), new DEdge(1,3,0,0,0,0));
+		e1.forceTopographicOrientation();
+		assertTrue(e1.getEndPoint().equals(new DPoint(0,0,0)));
+		assertTrue(e1.getRight().equals(new DTriangle(e1, new DEdge(5,5,5,1,3,0), new DEdge(1,3,0,0,0,0))));
+		e1.forceTopographicOrientation();
+		assertTrue(e1.getEndPoint().equals(new DPoint(0,0,0)));
+		assertTrue(e1.getRight().equals(new DTriangle(e1, new DEdge(5,5,5,1,3,0), new DEdge(1,3,0,0,0,0))));
+
+
+		
+	}
 }
