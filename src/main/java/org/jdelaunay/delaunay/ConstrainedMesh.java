@@ -687,6 +687,8 @@ public class ConstrainedMesh implements Serializable {
 								}
 								j = (j - rmCount < 0 ? 0 : j - rmCount);
 							} else { // the intersection will be processed later.
+								ensurePointPosition(e2, newEvent);
+								ensurePointPosition(e1, newEvent);
 								addToSortedList(newEvent, eventPoints);
 							}
 						} else {
@@ -698,8 +700,8 @@ public class ConstrainedMesh implements Serializable {
 									throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 								}
 								rmCount++;
-							}
-							if (e1.getPointRight().equals2D(currentEvent)) {
+							} else if (e1.getPointRight().equals2D(currentEvent)) {
+								//We must not remove two edges in the same move.
 								addConstraintEdge(e1);
 								rm = edgeBuffer.remove(j - 1);
 								if (!rm.equals(e1)) {
@@ -806,6 +808,17 @@ public class ConstrainedMesh implements Serializable {
 				edgeBuffer.remove(0);
 			}
 			i++;
+		}
+	}
+
+	private void ensurePointPosition(DEdge e, DPoint p) {
+		if(e.getStart().equals2D(p)){
+			e.getStart().setX(p.getX());
+			e.getStart().setY(p.getY());
+		}
+		if(e.getEnd().equals2D(p)){
+			e.getEnd().setX(p.getX());
+			e.getEnd().setY(p.getY());
 		}
 	}
 

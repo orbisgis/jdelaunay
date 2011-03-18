@@ -1143,13 +1143,13 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(new DEdge (311785.4, 2251488.2, 25.7, 311792.0, 2251487.1, 25.9));
 		mesh.forceConstraintIntegrity();
 		mesh.processDelaunay();
-		assertTrue(mesh.getTriangleList().size()==3);
+//		show(mesh);
+		assertTrue(mesh.getTriangleList().size()==4);
 		assertTrue(mesh.getConstraintEdges().size()==4);
 		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311784.2, 2251488.4, 25.7,311785.4, 2251488.2, 25.7)));
 		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311785.4, 2251488.2, 25.7,311792.0, 2251487.1, 25.9)));
 		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311785.4, 2251488.2, 25.7,311784.9, 2251484.8, 27.0)));
 		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311784.9, 2251484.8, 27.0,311791.9, 2251483.8, 27.9)));
-//		show(mesh);
 	}
 
 	public void testinsertEdgeOnePoint() throws DelaunayError {
@@ -1180,6 +1180,38 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(true);
 	}
 
+	/**
+	 * A problematic configuration that appeared when merging data from many sources.
+	 * @throws DelaunayError
+	 */
+	public void testProblemFusion() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (299371.8, 2258651.5, 52.4, 299374.2, 2258651.2, 52.4));
+		mesh.addConstraintEdge(new DEdge (299372.0990874965, 2258656.8206091495, 52.4, 299379.8, 2258656.9000000004, 0.0));
+		mesh.addConstraintEdge(new DEdge (299373.0, 2258651.200000001, 0.0, 299379.9, 2258651.200000001, 0.0));
+		mesh.addConstraintEdge(new DEdge (299374.152991453, 2258645.700000001, 0.0, 299374.2, 2258651.2, 52.4));
+		mesh.forceConstraintIntegrity();
+		mesh.processDelaunay();
+//		show(mesh);
+		assertTrue(mesh.getTriangleList().size()==7);
+		assertTrue(mesh.getConstraintEdges().size()==5);
+	}
+
+	/**
+	 * A problematic configuration that appeared when merging data from many sources.
+	 * @throws DelaunayError
+	 */
+	public void testConfigurationFusion() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (302313.2, 2256208.7, 0.0, 302320.4000000001, 2256209.500000001, 0.0));
+		mesh.addConstraintEdge(new DEdge (302313.7, 2256215.9, 48.2, 302314.1, 2256208.8, 48.0));
+		mesh.addConstraintEdge(new DEdge (302313.7, 2256215.9, 48.2, 302320.1, 2256216.6, 48.0));
+		mesh.addConstraintEdge(new DEdge (302314.1, 2256208.8, 48.0, 302321.2, 2256209.6, 48.0));
+		mesh.forceConstraintIntegrity();
+		mesh.processDelaunay();
+//		show(mesh);
+		assertCoherence(mesh);
+	}
 	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError

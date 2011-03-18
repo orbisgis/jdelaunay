@@ -380,7 +380,7 @@ public class TestVerticalList extends BaseUtility{
 	/**
 	 * A configuration that caused a problem in the sweep line algorithm, in the fragmented
 	 * land data from the chezine area. The two edges have really closed slopes,
-	 * and share an edge (wich is the left one for one, and the right one for
+	 * and share an point (wich is the left one for one, and the right one for
 	 * the other)
 	 * @throws DelaunayError
 	 */

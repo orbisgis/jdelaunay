@@ -498,6 +498,16 @@ public class TestEdges extends BaseUtility {
 		assertNotNull(inter);
 	}
 
+	public void testProblematicIntersectionFusion() throws DelaunayError {
+		DEdge e1 = new DEdge (299371.8, 2258651.5, 52.4, 299374.2, 2258651.2, 52.4);
+		DEdge e2 = new DEdge (299373.0, 2258651.200000001, 0.0, 299379.9, 2258651.200000001, 0.0);
+		Element inter = e1.getIntersection(e2);
+		assertNotNull(inter);
+		e2 = new DEdge (299374.152991453, 2258645.700000001, 0.0, 299374.2, 2258651.2, 52.4);
+		inter = e1.getIntersection(e2);
+		assertNotNull(inter);
+	}
+
 	/**
 	 * Test the getDistance method.
 	 * @throws DelaunayError
