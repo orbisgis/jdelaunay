@@ -602,6 +602,22 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		return area<0 ? -area : area ;
 	}
 
+	public final DPoint getNormalVector() throws DelaunayError {
+		//We first perform a vectorial product between two of the edges
+		double dx1 = edges[0].getStartPoint().getX() - edges[0].getEndPoint().getX();
+		double dy1 = edges[0].getStartPoint().getY() - edges[0].getEndPoint().getY();
+		double dz1 = edges[0].getStartPoint().getZ() - edges[0].getEndPoint().getZ();
+		double dx2 = edges[1].getStartPoint().getX() - edges[1].getEndPoint().getX();
+		double dy2 = edges[1].getStartPoint().getY() - edges[1].getEndPoint().getY();
+		double dz2 = edges[1].getStartPoint().getZ() - edges[1].getEndPoint().getZ();
+		DPoint vec = new DPoint(dy1*dz2 - dz1*dy2, dz1 * dx2 - dx1 * dz2, dx1 * dy2 - dy1 * dx2);
+		double length = Math.sqrt(vec.squareDistance(new DPoint(0,0,0)));
+		vec.setX(vec.getX()/length);
+		vec.setY(vec.getY()/length);
+		vec.setZ(vec.getZ()/length);
+		return vec;
+	}
+
 	/**
 	 * check if one of the triangle's angle is less than minimum
 	 *

@@ -1245,7 +1245,7 @@ public class TestConstrainedMesh extends BaseUtility {
 
 		}
 //		assertTrue(mesh.getTriangleList().size()==11);
-		show(mesh);
+//		show(mesh);
 	}
 	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
