@@ -551,4 +551,16 @@ public class TestEdges extends BaseUtility {
 		e = new DEdge(0,0,0,0,0,5);
 		assertTrue(Double.isNaN(e.getSlope()));
 	}
+
+        public void testRetrieveGoodZ() throws DelaunayError {
+                DEdge e1 = new DEdge(0,0,0,5,5,0);
+                DEdge e2 = new DEdge(0,5,5,5,0,9);
+                e1.setProperty(2);
+                e2.setProperty(6);
+                DPoint inter = (DPoint) e1.getIntersection(e2);
+                assertTrue(inter.getZ()==7);
+                e1.setProperty(8);
+                inter = (DPoint) e1.getIntersection(e2);
+                assertTrue(inter.getZ()==0);
+        }
 }

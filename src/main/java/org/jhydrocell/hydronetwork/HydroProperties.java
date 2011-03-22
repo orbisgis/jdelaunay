@@ -13,27 +13,27 @@ public final class HydroProperties {
 	/**
 	 * The object is a wall
 	 */
-	public static final int WALL = 1;
+	private static int WALL = 0;
 	/**
 	 * The object is a sewer
 	 */
-	public static final int SEWER = 1 << 1;
+	private static int SEWER = 0;
 	/**
 	 * the object is a road
 	 */
-	public static final int ROAD = 1 << 2;
+	private static int ROAD = 0;
 	/**
 	 * The object is a ditch
 	 */
-	public static final int DITCH = 1 << 3;
+	private static int DITCH = 0;
 	/**
 	 * The object is a river
 	 */
-	public static final int RIVER = 1 << 4;
+	private static int RIVER = 0;
 	/**
 	 * The object is a parcel
 	 */
-	public static final int PARCEL = 1 << 5;
+	private static int PARCEL = 0;
 
 	// Topographic types
 	public static final int RIDGE = 1 << 10;
@@ -90,19 +90,6 @@ public final class HydroProperties {
 	 */
 	private static String propertyToString(int aProperty) {
 		switch (aProperty) {
-		case WALL:
-			return "wall";
-		case SEWER:
-			return "sewer";
-		case ROAD:
-			return "road";
-		case DITCH:
-			return "ditch";
-		case RIVER:
-			return "river";
-		case PARCEL:
-			return "parcel";
-			
 		case RIDGE:
 			return "ridge";
 		case TALWEG:
@@ -133,7 +120,98 @@ public final class HydroProperties {
 			return "";
 		}
 	}
-	
+
+        /**
+         * Set the weight associated to the wall property
+         * @param weight
+         */
+        public static void setWallWeight(int weight){
+                WALL = weight;
+        }
+
+        /**
+         * Get the weight associated to the wall property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static int getWallWeight(){
+                return WALL;
+        }
+        /**
+         * Set the weight associated to the sewer property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static void setSewerWeight(int weight){
+                SEWER = weight;
+        }
+
+        /**
+         * Get the weight associated to the sewer property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static int getSewerWeight(){
+                return WALL;
+        }
+        /**
+         * Set the weight associated to the ditch property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static void setDitchWeight(int weight){
+                DITCH = weight;
+        }
+
+        /**
+         * Get the weight associated to the ditch property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static int getDitchWeight(){
+                return WALL;
+        }
+        /**
+         * Set the weight associated to the road property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static void setRoadWeight(int weight){
+                 ROAD= weight;
+        }
+
+        /**
+         * Get the weight associated to the road property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static int getRoadWeight(){
+                return WALL;
+        }
+        /**
+         * Set the weight associated to the river property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static void setRiverWeight(int weight){
+                 RIVER = weight;
+        }
+
+        /**
+         * Get the weight associated to the river property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static int getRiverWeight(){
+                return WALL;
+        }
+        /**
+         * Set the weight associated to the parcel property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static void setParcelWeight(int weight){
+                 PARCEL = weight;
+        }
+
+        /**
+         * Get the weight associated to the parcel property. This value must be between 0 and 1023 !
+         * @param weight
+         */
+        public static int getParcelWeight(){
+                return WALL;
+        }
+
 	/**
 	 * return int from string definition
 	 * 

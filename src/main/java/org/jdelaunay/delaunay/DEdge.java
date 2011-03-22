@@ -858,7 +858,12 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @throws DelaunayError 
 	 */
 	public final Element getIntersection(DEdge anEdge) throws DelaunayError {
-		return getIntersection(anEdge.startPoint, anEdge.endPoint);
+                int proper = anEdge.getProperty();
+                if(proper > getProperty()){
+                        return getIntersection(anEdge.startPoint, anEdge.endPoint, true);
+                } else {
+                        return getIntersection(anEdge.startPoint, anEdge.endPoint);
+                }
 	}
 
 	/**
