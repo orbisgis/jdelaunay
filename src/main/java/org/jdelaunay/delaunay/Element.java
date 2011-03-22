@@ -87,7 +87,8 @@ public abstract class Element {
 	}
 
 	/**
-	 * add property value
+	 * add property value. Properties are managed, with this method, by making
+	 * a or operation on the bits of the underlying int.
 	 * @param property
 	 */
 	public final void addProperty(int property) {

@@ -542,4 +542,13 @@ public class TestEdges extends BaseUtility {
 
 		
 	}
+
+	public void testGetSlope() throws DelaunayError {
+		DEdge e = new DEdge(0,0,0,5,0,5);
+		assertEquals(e.getSlope(), 1, Tools.EPSILON);
+		assertEquals(e.getSlopeInDegree(), 45, Tools.EPSILON);
+		assertTrue(e.getDirectionVector().equals(new DPoint(5/Math.sqrt(50),0,5/Math.sqrt(50))));
+		e = new DEdge(0,0,0,0,0,5);
+		assertTrue(Double.isNaN(e.getSlope()));
+	}
 }

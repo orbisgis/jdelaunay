@@ -881,6 +881,41 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
+	 * Get the slope of the edge
+	 * @return
+	 */
+	public final double getSlope() {
+		double dz = endPoint.getZ() - startPoint.getZ();
+		double projSize = get2DLength();
+		if(Math.abs(projSize)<Tools.EPSILON){
+			return Double.NaN;
+		} else {
+			return dz / projSize;
+		}
+	}
+
+	/**
+	 * Get the slope of the edge in degree.
+	 * @return
+	 */
+	public final double getSlopeInDegree() {
+		return Math.toDegrees(Math.atan(getSlope()));
+	}
+
+	/**
+	 * Get the direction vector of the associated line.
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public final DPoint getDirectionVector() throws DelaunayError {
+		double x = endPoint.getX() - startPoint.getX();
+		double y = endPoint.getY() - startPoint.getY();
+		double z = endPoint.getZ() - startPoint.getZ();
+		double size = get3DLength();
+		return new DPoint(x/size, y/size, z/size);
+	}
+
+	/**
 	 * check if the point is between the extremities of the edge (on the
 	 * xy-plane)
 	 *
