@@ -1229,6 +1229,24 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(mesh.getTriangleList().size()==11);
 //		show(mesh);
 	}
+
+	public void testConfigRoadFusionBis() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (303972.0, 2256261.1, 37.3, 304006.4, 2256262.5, 36.7));
+		mesh.addConstraintEdge(new DEdge (303974.1, 2256255.5, 37.1, 303998.8, 2256209.9, 36.5));
+		mesh.addConstraintEdge(new DEdge (303991.7, 2256233.6, 42.6, 304001.6, 2256238.8, 41.8));
+		mesh.addConstraintEdge(new DEdge (303996.6, 2256232.6, 39.6, 304003.4, 2256236.1, 39.6));
+		mesh.addConstraintEdge(new DEdge (303996.7, 2256230.3, 41.1, 303997.6, 2256230.7, 41.1));
+		mesh.addConstraintEdge(new DEdge (303996.7, 2256230.3, 41.1, 303998.2, 2256227.3, 42.5));
+		mesh.forceConstraintIntegrity();
+		try{
+		mesh.processDelaunay();
+		} catch(Exception e){
+
+		}
+//		assertTrue(mesh.getTriangleList().size()==11);
+		show(mesh);
+	}
 	/**
 	 * This configuration caused a problem because of a bad insertion in the boundary.
 	 * @throws DelaunayError
