@@ -1239,12 +1239,12 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(new DEdge (303996.7, 2256230.3, 41.1, 303997.6, 2256230.7, 41.1));
 		mesh.addConstraintEdge(new DEdge (303996.7, 2256230.3, 41.1, 303998.2, 2256227.3, 42.5));
 		mesh.forceConstraintIntegrity();
-		try{
+//		try{
 		mesh.processDelaunay();
-		} catch(Exception e){
-
-		}
-//		assertTrue(mesh.getTriangleList().size()==11);
+//		} catch(Exception e){
+//
+//		}
+		assertTrue(mesh.getTriangleList().size()==15);
 //		show(mesh);
 	}
 	/**

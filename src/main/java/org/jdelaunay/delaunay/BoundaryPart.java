@@ -444,12 +444,14 @@ final class BoundaryPart {
 	 * @return
 	 */
 	private DEdge connectToShared(ListIterator<DEdge> iter, DEdge share, DPoint point,
-			List<DTriangle> tri, DEdge prevAdd, DEdge nextCstr) throws DelaunayError {
+			List<DTriangle> tri, DEdge prev, DEdge nextCstr) throws DelaunayError {
 		DEdge ret = null;
 		//The shared DEdge is supposed to be oriented with the start point on
 		//the right. We must determine if we need to consider it as in
 		//reverse order.
+		DEdge prevAdd = prev;
 		boolean reverse = false;
+		boolean prevUsed = false;
 		boolean connectedToPrev = false;
 		connectedToPrev = prevAdd != null &&
 				(share.isExtremity(prevAdd.getStartPoint())
@@ -459,6 +461,19 @@ final class BoundaryPart {
 			reverse = share.isLeft(constraint.getPointLeft());
 			connectedToConstraint = share.isExtremity(constraint.getStartPoint())
 					|| share.isExtremity(constraint.getEndPoint());
+			if(!connectedToConstraint){
+				iter.previous();
+				if(iter.hasPrevious()){
+					DEdge temp = iter.previous();
+					if(temp.getEndPoint().equals(share.getStartPoint())){
+						prevAdd = temp;
+						connectedToConstraint=true;
+						prevUsed = true;
+					}
+					iter.next();
+				}
+				iter.next();
+			}
 			if(!connectedToConstraint && !connectedToPrev){
 				return prevAdd;
 			}
@@ -543,14 +558,14 @@ final class BoundaryPart {
 			share.setShared(false);
 			//share must be swapped.
 			share.swap();
-		} else if(prevAdd != null){
+		} else if(prevAdd != null && !prevUsed){
 			//we must add the prevAdd edge, as it is now part of the boundary.
 			iter.previous();
 			iter.add(prevAdd);
 			iter.next();
 		}
 
-		return ret == null ? prevAdd : ret;
+		return ret == null && !prevUsed ? prevAdd : ret;
 	}
 
 	/**

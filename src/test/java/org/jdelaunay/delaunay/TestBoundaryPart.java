@@ -1171,6 +1171,10 @@ public class TestBoundaryPart extends BaseUtility {
 		//We split the first bp
 		BoundaryPart res = bp.split(new DEdge(10,10,0,12,11,0));
 		assertTrue(res.getBoundaryEdges().size()==3);
+		assertTrue(bp.getBoundaryEdges().get(0).isShared());
+		assertTrue(bp.getBoundaryEdges().get(1).isShared());
+		assertTrue(res.getBoundaryEdges().get(0).isShared());
+		assertTrue(res.getBoundaryEdges().get(1).isShared());
 		bp.connectPoint(new DPoint (12,10,0));
 		assertTrue(bp.getBoundaryEdges().size()==3);
 		assertTrue(bp.getBoundaryEdges().get(0).isShared());
@@ -1255,5 +1259,21 @@ public class TestBoundaryPart extends BaseUtility {
 		assertTrue(bp.getBoundaryEdges().get(3).isShared());
 		assertTrue(bp.getBoundaryEdges().get(3).equals(new DEdge(8,11,0,6,12,0)));
 		assertTrue(bp.getBoundaryEdges().get(4).equals(new DEdge(0,13,0,6,12,0)));
+	}
+
+	public void testYetAnotherSharedEdge() throws DelaunayError {
+		BoundaryPart bp;
+		DEdge constr = new DEdge(0,5,0,10,0,0);
+		DEdge e1 = new DEdge(0,5,0,3,4,0);
+		List<DEdge> bound = new ArrayList<DEdge>();
+		bound.add(e1);
+		e1 = new DEdge(3,4,0,6,5,0);
+		e1.setShared(true);
+		bound.add(e1);
+		bp = new BoundaryPart(bound, constr);
+		List<DTriangle> out = bp.connectPoint(new DPoint(7,4,0));
+		assertTrue(out.size()==1);
+		assertTrue(out.contains(new DTriangle(new DEdge(3,4,0,7,4,0), new DEdge(7,4,0,6,5,0), new DEdge(6,5,0,3,4,0))));
+
 	}
 }
