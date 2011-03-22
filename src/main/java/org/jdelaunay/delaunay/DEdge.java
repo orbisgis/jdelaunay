@@ -300,7 +300,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * Get the height of the edge.
 	 * @return
 	 */
-	public double getHeight() {
+	public final double getHeight() {
 		return height;
 	}
 
@@ -308,7 +308,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * Set the height of the edge
 	 * @param height
 	 */
-	public void setHeight(double height) {
+	public final void setHeight(double height) {
 		this.height = height;
 	}
 
@@ -1321,7 +1321,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * This method wil force the point marked as the end of the edge to be the point
 	 * with the lower altitude.
 	 */
-	public void forceTopographicOrientation() {
+	public final void forceTopographicOrientation() {
 		double zEnd = endPoint.getZ();
 		double zStart = startPoint.getZ();
 		if(zStart < zEnd){

@@ -123,7 +123,7 @@ public abstract class Element {
 	 * eventually make correspondances with an external attributes table.
 	 * @param externalGID
 	 */
-	public void setExternalGID(int externalGID) {
+	public final void setExternalGID(int externalGID) {
 		this.externalGID = externalGID;
 	}
 
@@ -131,7 +131,7 @@ public abstract class Element {
 	 * get the external GID associated to the object (-1 if it has not been set)
 	 * @return
 	 */
-	public int getExternalGID() {
+	public final int getExternalGID() {
 		return externalGID;
 	}
 

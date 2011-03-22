@@ -192,6 +192,7 @@ final class Boundary {
 				bad.addAll(bp.getBadEdges());
 				tmpAdded = bp.getAddedEdges();
 				if(tmpAdded.size()>1) {
+					added.get(added.size()-1).setDegenerated(false);
 					added.addAll(tmpAdded.subList(1, tmpAdded.size()));
 				}
 			}
