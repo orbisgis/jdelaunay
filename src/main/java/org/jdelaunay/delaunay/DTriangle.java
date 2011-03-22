@@ -602,6 +602,11 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		return area<0 ? -area : area ;
 	}
 
+	/**
+	 * Get the normal vector to this triangle, of length 1.
+	 * @return
+	 * @throws DelaunayError
+	 */
 	public final DPoint getNormalVector() throws DelaunayError {
 		//We first perform a vectorial product between two of the edges
 		double dx1 = edges[0].getStartPoint().getX() - edges[0].getEndPoint().getX();
@@ -616,6 +621,41 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		vec.setY(vec.getY()/length);
 		vec.setZ(vec.getZ()/length);
 		return vec;
+	}
+
+	/**
+	 * Get the vector with the highest down slope in the plan associated to this triangle.
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public final DPoint getSteepestVector() throws DelaunayError {
+		DPoint normal = getNormalVector();
+		if(Math.abs(normal.getX())<Tools.EPSILON && Math.abs(normal.getY())<Tools.EPSILON){
+			return new DPoint(0,0,0);
+		}
+		DPoint pente;
+		if (Math.abs(normal.getX())<Tools.EPSILON) {
+			pente = new DPoint(0, 1, - normal.getY() /  normal.getZ());
+		} else if (Math.abs(normal.getY())<Tools.EPSILON) {
+			pente = new DPoint(1, 0, -normal.getX() / normal.getZ());
+		} else {
+			pente = new DPoint(normal.getX() / normal.getY(), 1, -1 / normal.getZ() *
+				(normal.getX() * normal.getX() / normal.getY() + normal.getY()));
+		}
+		//We want the vector to be low-oriented.
+		if(pente.getZ()>Tools.EPSILON){
+			pente.setX(-pente.getX());
+			pente.setY(-pente.getY());
+			pente.setZ(-pente.getZ());
+		}
+		//We normalize it
+		double length = Math.sqrt(pente.squareDistance(new DPoint(0,0,0)));
+		if(length > Tools.EPSILON){
+			pente.setX(pente.getX()/length);
+			pente.setY(pente.getY()/length);
+			pente.setZ(pente.getZ()/length);
+		}
+		return pente;
 	}
 
 	/**

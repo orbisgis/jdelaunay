@@ -646,4 +646,18 @@ public class TestTriangle extends BaseUtility {
 		 
 	 }
 
+	 public void testGetSteepestVector() throws DelaunayError {
+		DEdge e1 = new DEdge(0, 0, 0, 2, 2, 0);
+		DEdge e2 = new DEdge(2, 2, 0, 0, 2, 0);
+		DEdge e3 = new DEdge(0, 2, 0, 0, 0, 0);
+		DTriangle tri = new DTriangle(e1, e2, e3);
+		assertTrue(tri.getSteepestVector().equals(new DPoint(0,0,0)));
+		e1 = new DEdge(0, 0, 0, 2, 0, 2);
+		e2 = new DEdge(2, 0 ,2, 0, 2, 0);
+		e3 = new DEdge(0, 2, 0, 0, 0, 0);
+		tri = new DTriangle(e1, e2, e3);
+		assertTrue(tri.getSteepestVector().equals(new DPoint(-1/Math.sqrt(2),0,-1/Math.sqrt(2))));
+
+	 }
+
 }
