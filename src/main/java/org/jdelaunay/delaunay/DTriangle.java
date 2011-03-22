@@ -973,8 +973,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param g
 	 */
 	private void setColor(Graphics g) {
-		if(property>0) {
-			g.setColor(new Color(property));
+		if(getProperty()>0) {
+			g.setColor(new Color(getProperty()));
 		}
 		else if (isFlatSlope()) {
 			g.setColor(Color.green);

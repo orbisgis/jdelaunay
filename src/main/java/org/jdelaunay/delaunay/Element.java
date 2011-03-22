@@ -18,7 +18,7 @@ public abstract class Element {
 	 */
 	private static final long serialVersionUID = 5437683478248244942L;
 	private int gid;
-	protected int property;
+	private int property;
 	//An identifier to use correspondance maps externally, to affect properties efficiently.
 	private int externalGID;
 

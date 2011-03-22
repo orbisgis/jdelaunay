@@ -134,7 +134,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		this.left = ed.left;
 		this.right = ed.right;
 		this.indicator = ed.indicator;
-		this.property = ed.property;
+		setProperty(ed.getProperty());
 	}
 
 	/**
