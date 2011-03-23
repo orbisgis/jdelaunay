@@ -24,6 +24,7 @@ public final class Tools {
 	public static final int BIT_POLYGON = 4;
 	public static final int BIT_ZUSED = 5;
 	public static final int BIT_MARKED = 6;
+        
 
 
 	/**
@@ -458,6 +459,50 @@ public final class Tools {
 		//(-insertPosition -1) otherwise. Consequently, if index > 0
 		//we are sure that elt is in the list.
 		return index;
+	}
+
+        /**
+         * Compute the vector product from the vectors v1 and v2 represented with DPoint
+         * @param v1
+         * @param v2
+         * @return
+         * @throws DelaunayError
+         */
+	public static DPoint vectorProduct(DPoint v1, DPoint v2) throws DelaunayError {
+		DPoint v3 = new DPoint(0, 0, 0);
+		v3.setX( v1.getY() * v2.getZ() - v1.getZ() * v2.getY());
+		v3.setY( v1.getZ() * v2.getX() - v1.getX() * v2.getZ());
+		v3.setZ( v1.getX() * v2.getY() - v1.getY() * v2.getX());
+		return v3;
+	}
+
+        /**
+	 * Checks that the vectors resulting from v1 and v2 are colinear.
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	public static boolean isColinear(DPoint v1, DPoint v2) {
+		double res = 0;
+		res += Math.abs(v1.getY() * v2.getZ() - v1.getZ() * v2.getY());
+		res += Math.abs(v1.getZ() * v2.getX() - v1.getX() * v2.getZ());
+		res += Math.abs(v1.getX() * v2.getY() - v1.getY() * v2.getX());
+		return res < EPSILON;
+	}
+
+        /**
+	 * Compute the difference between two vectors.
+	 * @param v1
+	 * @param v2
+	 * @return v1 - v2
+         * @throws 
+	 */
+	public static DPoint vectorialDiff(DPoint v1, DPoint v2) throws DelaunayError {
+		DPoint v3 = new DPoint(0, 0, 0);
+		v3.setX( v1.getX() - v2.getX());
+		v3.setY(v1.getY() - v2.getY());
+		v3.setZ(v1.getZ() - v2.getZ());
+		return v3;
 	}
 
 

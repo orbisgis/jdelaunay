@@ -193,7 +193,7 @@ class VoronoiGraph {
 				if(edges[i].isLocked()){
 					otherT = edges[i].getOtherTriangle(vn.getParent());
 					if(otherT != null){
-						extZ = otherT.getAlterPoint(edges[i]).getZ();
+						extZ = otherT.getOppositePoint(edges[i]).getZ();
 						if(!set && Math.abs(extZ - height)>Tools.EPSILON){
 							set = true;
 							upper = height > extZ;

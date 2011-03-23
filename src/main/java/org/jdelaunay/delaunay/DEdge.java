@@ -1,5 +1,6 @@
 package org.jdelaunay.delaunay;
 
+import com.vividsolutions.jts.algorithm.Angle;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -1201,13 +1202,13 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		double length = getSquared2DLength()/4.0;
 		DPoint other ;
 		if(left!=null){
-			other = left.getAlterPoint(this);
+			other = left.getOppositePoint(this);
 			if(other.squareDistance2D(middle)<length){
 				return true;
 			}
 		}
 		if(right!=null){
-			other = right.getAlterPoint(this);
+			other = right.getOppositePoint(this);
 			if(other.squareDistance2D(middle)<length){
 				return true;
 			}
@@ -1464,6 +1465,64 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		return gradient;
 	}
 
+        /**
+	 * Compute the aspect of an edge.
+         * Aspect is measured clockwise in degrees from 0, due north, to 360, again due north, coming full circle.
+	 * @return 
+	 */
+	public final double getSlopeAspect() {
+			Coordinate c1 = startPoint.getCoordinate();
+			Coordinate c2 = endPoint.getCoordinate();
+			// l'ordre des coordonnees correspond a l'orientation de l'arc
+			// "sommet haut vers sommet bas"
+			double angleAxeXrad = c1.z >= c2.z ? Angle.angle(c1, c2) : Angle
+					.angle(c2, c1);
+			// on considere que l'axe nord correspond a l'axe Y positif
+			double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
+			double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
+			// on renvoie toujours une valeur d'angle >= 0		
+		
+		return angleAxeNorddeg < 0.0 ? 360.0 + angleAxeNorddeg
+					: angleAxeNorddeg;
+	}
+
+	/**
+	 * Returns true if the triangle connected to the left of the edge is pouring
+	 * into it.
+	 * @param edge
+	 * @return
+         * @throws DelaunayError
+	 */
+	public final boolean isLeftTriangleGoToEdge() throws DelaunayError {
+		if (left != null) {
+			DPoint p = left.getOppositePoint(this);
+			if (p.getZ() < startPoint.getZ() && p.getZ() < endPoint.getZ()) {
+				return false;
+			}
+
+			return left.isTopoOrientedToEdge(this);
+		}
+		return false;
+	}
+
+	/**
+	 * Returns true if the triangle connected to the right of the edge is pouring
+	 * into it.
+	 * @param edge
+	 * @return
+         * @throws DelaunayError
+	 */
+	public final boolean isRightTriangleGoToEdge() throws DelaunayError {
+		if (right != null) {
+			DPoint p = right.getOppositePoint(this);
+			if (p.getZ() < startPoint.getZ() && p.getZ() < endPoint.getZ()) {
+				return false;
+			}
+
+			return right.isTopoOrientedToEdge(this);
+		}
+		return false;
+	}
 	/**
 	 * Gives a string representation of this object.
 	 * @return "DEdge GID [Start : startPoint, End : endPoint]

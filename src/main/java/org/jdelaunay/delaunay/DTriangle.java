@@ -1,5 +1,6 @@
 package org.jdelaunay.delaunay;
 
+import com.vividsolutions.jts.algorithm.Angle;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
@@ -440,7 +441,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		// we connect edges to the triangle
 		for (int i=0; i<PT_NB; i++) {
 			// Start point should be start
-			DPoint aPoint = this.getAlterPoint(edges[i]);
+			DPoint aPoint = this.getOppositePoint(edges[i]);
 			if (edges[i].isLeft(aPoint)) {
 				if (edges[i].getLeft() == null) {
 					edges[i].setLeft(this);
@@ -840,7 +841,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param ed
 	 * @return alterPoint
 	 */
-	public final DPoint getAlterPoint(DEdge ed) {
+	public final DPoint getOppositePoint(DEdge ed) {
 		DPoint start = ed.getStartPoint();
 		DPoint end = ed.getEndPoint();
 		return getAlterPoint(start, end);
@@ -1158,6 +1159,82 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		return Math.acos(Math.sqrt(((dp * dp))
 				/ ((ux * ux + uy * uy) * (vx * vx + vy * vy))))
 				* (degreesPI / Math.PI);
-
 	}
+
+     
+
+        /**
+	 * Compute the slop of the triangle in percent
+	 *
+	 * @return
+         * @throws
+	 */
+	public final double getSlopeInPercent() throws DelaunayError {
+		return Math.abs(getSlope()) * 100;
+	}
+
+
+        /**
+	 * Compute the azimut of the triangle in degrees between nord and steeepest vector.
+         * Aspect is measured clockwise in degrees from 0, due north, to 360, again due north, coming full circle.
+	 * @return
+         * @throws
+	 */
+	public final double getSlopeAspect() throws DelaunayError {
+		double orientationPente;
+		Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
+		Coordinate c2 = getSteepestVector().getCoordinate();
+		if (c2.z > 0.0) {
+			c2.setCoordinate(new Coordinate(-c2.x, -c2.y, -c2.z));
+		}
+		// l'ordre des coordonnees correspond a l'orientation de l'arc
+		// "sommet haut vers sommet bas"
+		double angleAxeXrad = Angle.angle(c1, c2);
+		// on considere que l'axe nord correspond a l'axe Y positif
+		double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
+		double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
+		// on renvoie toujours une valeur d'angle >= 0
+		orientationPente = angleAxeNorddeg < 0.0 ? 360.0 + angleAxeNorddeg
+			: angleAxeNorddeg;
+		return orientationPente;
+	}
+
+        /**
+	 * Returns true if the triangle is turned toward the edge my edge.
+	 * @param ed
+	 * @param triangle
+	 * @return
+	 */
+	public final boolean isTopoOrientedToEdge(DEdge ed) throws DelaunayError {
+		boolean res = false;
+		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
+		// sur e
+		DPoint a = ed.getStartPoint();
+		DPoint b = ed.getEndPoint();
+		int i = 0;
+                if(!this.belongsTo(a) || !belongsTo(b)){
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_OUTSIDE_TRIANGLE);
+                }
+
+
+		DPoint c = getOppositePoint(ed);
+		DPoint ab = Tools.vectorialDiff(b, a);
+		DPoint ac = Tools.vectorialDiff(c, a);
+		// orientation CCW
+		if (Tools.vectorProduct(ab, ac).getZ() < 0) {
+			// echange A et B
+			DPoint d = a;
+			a = b;
+			b = d;
+			ab = Tools.vectorialDiff(b, a);
+		}
+		// test d'intersection entre AB et P
+		DPoint p =getSteepestVector();
+
+		res = Tools.vectorProduct(ab, p).getZ() < 0;
+
+		return res;
+	}
+
+        
 }

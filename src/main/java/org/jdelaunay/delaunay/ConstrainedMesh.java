@@ -1177,7 +1177,7 @@ public class ConstrainedMesh implements Serializable {
 		DTriangle other1 = null;
 		//We prepare the objects that will be added after ed will have been split.
 		if(left != null){
-			ed1 = new DEdge(middle, left.getAlterPoint(ed));
+			ed1 = new DEdge(middle, left.getOppositePoint(ed));
 			ed1.setGID(++edgeGID);
 			last1 = left.getOppositeEdge(ed.getEndPoint());
 			startOp1 = left.getOppositeEdge(ed.getStartPoint());
@@ -1189,7 +1189,7 @@ public class ConstrainedMesh implements Serializable {
 		DEdge startOp2 = null;
 		DTriangle other2 = null;
 		if(right != null){
-			ed2 = new DEdge(middle, right.getAlterPoint(ed));
+			ed2 = new DEdge(middle, right.getOppositePoint(ed));
 			ed2.setGID(++edgeGID);
 			last2 = right.getOppositeEdge(ed.getEndPoint());
 			startOp2 = right.getOppositeEdge(ed.getStartPoint());
