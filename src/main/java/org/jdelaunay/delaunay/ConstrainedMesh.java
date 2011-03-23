@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -65,6 +66,9 @@ public class ConstrainedMesh implements Serializable {
 	private int pointGID;
 	private int edgeGID;
 	private int triangleGID;
+	//We need a hashmap to classify the weights of the edges, according to their
+	//properties.
+	private HashMap<Integer, Integer> weights;
 	// constants
 	public static final int MIN_POINTS_NUMBER = 3;
 	public static final int MAXITER = 5;
@@ -98,7 +102,7 @@ public class ConstrainedMesh implements Serializable {
 		pointGID = 0;
 		edgeGID = 0;
 		triangleGID = 0;
-
+		weights = new HashMap<Integer, Integer>();
 		badEdgesQueueList = new LinkedList<DEdge>();
 	}
 
@@ -522,6 +526,34 @@ public class ConstrainedMesh implements Serializable {
 	 */
 	public final int listContainsPoint(DPoint p) {
 		return sortedListContains(points, p);
+	}
+
+	/**
+	 * Get the table that currently contains the weights used to attribute the
+	 * Z value when processing the intersection.
+	 * @return
+	 */
+	public HashMap<Integer, Integer> getWeights() {
+		return weights;
+	}
+
+	/**
+	 * Set the table of weights that are used when processing the intersection between
+	 * edges, during the call to <code>forceConstraintsIntegrity()</code>.
+	 *
+	 * Keys of the map match the property of each edge. Note that we are working on bits,
+	 * and than the expected wlues will certainly be power of 2 (ie 1, 2, 4, 8...).
+	 *
+	 * Check the <code>Element</code> javadoc for more information about
+	 * <code>property</code>
+	 *
+	 * @param weights
+	 */
+	public void setWeights(HashMap<Integer, Integer> weights) {
+		if(weights == null){
+			weights = new HashMap<Integer, Integer>();
+		}
+		this.weights = weights;
 	}
 
 	/**

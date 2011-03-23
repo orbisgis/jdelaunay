@@ -90,6 +90,13 @@ public abstract class Element {
 	/**
 	 * add property value. Properties are managed, with this method, by making
 	 * a or operation on the bits of the underlying int.
+	 *
+	 * We are marking bits on an int, where each bit can be associated (externally)
+	 * to a given property. To mark the bit number 5, for instance, you must add the
+	 * property 16 (as the only bit set to 1 in 16 is the fifth one).
+	 *
+	 * If you add the property 25, you will set the bits 5, 3 and 2 to 1
+	 *
 	 * @param property
 	 */
 	public final void addProperty(int property) {
