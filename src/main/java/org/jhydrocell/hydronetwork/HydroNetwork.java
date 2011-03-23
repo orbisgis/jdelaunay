@@ -2,7 +2,7 @@ package org.jhydrocell.hydronetwork;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.ArrayList;
 
 import org.jdelaunay.delaunay.DelaunayError;
 import org.jdelaunay.delaunay.DEdge;
@@ -11,71 +11,78 @@ import org.jdelaunay.delaunay.DPoint;
 import org.jdelaunay.delaunay.DTriangle;
 import org.jhydrocell.utilities.HydroLineUtil;
 import org.jhydrocell.utilities.MathUtil;
-
-import com.vividsolutions.jts.geom.Coordinate;
 import org.jhydrocell.utilities.HydroTriangleUtil;
+import org.jhydrocell.utilities.HydroPolygonUtil;
 
 /**
  * The representation of a hydrologic network, based on a constrained triangulation.
- * @author alexis
+ * @author alexis, kwyhr
  */
-public final class HydroNetwork {
-
-        private ConstrainedMesh theMesh;
-        private List<DPoint> listEntry;
-        private List<DPoint> listExit;
-        private List<DPoint> listIntermediate;
-        private List<DEdge> listEdges;
-        private List<DPoint> listPrepare;
-        private int listDefinition;
-        private boolean connectToSurface;
+public class HydroNetwork extends ConstrainedMesh {
+        // Sewer elements
+        private ArrayList<DPoint> listEntryPoints;
+        private ArrayList<DPoint> listSewerPoints;
+        private ArrayList<DEdge> ListServerEdges;
 
         /**
          * Global initialization
          */
         private void init() {
-                theMesh = null;
-
-                listEntry = new LinkedList<DPoint>();
-                listExit = new LinkedList<DPoint>();
-                listIntermediate = new LinkedList<DPoint>();
-                listEdges = new LinkedList<DEdge>();
-                listPrepare = new LinkedList<DPoint>();
-                listDefinition = 0;
-                connectToSurface = true;
+                listEntryPoints = new ArrayList<DPoint>();
+                listSewerPoints = new ArrayList<DPoint>();
+                ListServerEdges = new ArrayList<DEdge>();
         }
 
         /**
-         * Constructor
+         * Standart constructor
          */
         public HydroNetwork() {
+                super();
                 init();
         }
 
         /**
-         * Constructor
+         * Get underground sewer edges
+         *
+         * @return ListServerEdges
          */
-        public HydroNetwork(ConstrainedMesh aMesh) {
-                init();
-                theMesh = aMesh;
+        public ArrayList<DEdge> getSewerEdges() {
+                return this.ListServerEdges;
         }
 
+        /**
+         * Get sewer entries (points connected to the ssurface)
+         *
+         * @return listEntryPoints
+         */
+        public ArrayList<DPoint> getSewerEntries() {
+                return this.listEntryPoints;
+        }
+
+        /**
+         * Get underground and surface sewer points
+         *
+         * @return listSewerPoints
+         */
+        public ArrayList<DPoint> getSewerPoints() {
+                return this.listSewerPoints;
+        }
+
+        // ----------------------------------------------------------------
+        
         /**
          * Morphological qualification
          *
          * @throws DelaunayError
          */
         public void morphologicalQualification() throws DelaunayError {
-                if (theMesh == null) {
-                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NO_MESH);
-                } else if (!theMesh.isMeshComputed()) {
+                if (!this.isMeshComputed()) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 } else {
-
                         // Edges : topographic qualifications
-                        for (DEdge edge : theMesh.getEdges()) {
-                                edge.forceTopographicOrientation();
+                        for (DEdge edge : this.getEdges()) {
                                 HydroLineUtil hydroLineUtil = new HydroLineUtil(edge);
+                                HydroPolygonUtil hydroPolygonUtil = null;
                                 DTriangle aTriangleLeft = edge.getLeft();
                                 DTriangle aTriangleRight = edge.getRight();
 
@@ -200,7 +207,7 @@ public final class HydroNetwork {
          */
         private void postProcessEdges() {
                 List<DEdge> addedEdges = new LinkedList<DEdge>();
-                List<DEdge> theEdges = theMesh.getEdges();
+                List<DEdge> theEdges = this.getEdges();
                 for (DEdge anEdge : theEdges) {
                         if (anEdge.hasProperty(HydroProperties.getWallWeight())) {
                                 // Process wall : duplicate edge and changes connections
@@ -208,7 +215,6 @@ public final class HydroNetwork {
                                         // Something to do if and only if there are two triangles
                                         // connected
                                         DEdge newEdge = new DEdge(anEdge);
-
                                         // Changes left triangle connection
                                         DTriangle aTriangle = anEdge.getLeft();
                                         for (int i = 0; i < 3; i++) {
@@ -235,460 +241,297 @@ public final class HydroNetwork {
 
         // ----------------------------------------------------------------
         /**
-         * Defines a new branch type
+         * Create a new point on the Mesh surface. Set the hydroProperty to the point.
          *
-         * @param branchType
-         * @param connectToSurface
+         * @param x
+         * @param y
+         * @param z
+         * @param hydroProperty
+         * @return thePoint the DPoint point created
          * @throws DelaunayError
          */
-        private void branchStart(int branchType, boolean connectToSurface)
+        private DPoint createPointOnSurface(double x, double y, double z, int hydroProperty)
                 throws DelaunayError {
-                this.listEntry = new LinkedList<DPoint>();
-                this.listExit = new LinkedList<DPoint>();
-                this.listIntermediate = new LinkedList<DPoint>();
-                this.listEdges = new LinkedList<DEdge>();
-                this.listDefinition = branchType;
-                this.connectToSurface = connectToSurface;
-        }
-
-        /**
-         * Defines a new branch type on the surface
-         *
-         * @param branchType
-         * @throws DelaunayError
-         */
-        private void branchStart(int branchType) throws DelaunayError {
-                branchStart(branchType, true);
-        }
-
-        /**
-         * defines a new branch
-         *
-         * @param theList
-         * @throws DelaunayError
-         */
-        private void setNewBranch(List theList) throws DelaunayError {
-                DPoint lastPoint = null;
-                int count = theList.size();
                 DPoint aPoint = null;
-                Coordinate aCoordinate = null;
-                ListIterator iterList = theList.listIterator();
-                while (iterList.hasNext()) {
-                        Object item = iterList.next();
-                        if (item instanceof DPoint) {
-                                aPoint = (DPoint) item;
-                        } else if (item instanceof Coordinate) {
-                                aCoordinate = (Coordinate) item;
-                                aPoint = new DPoint(aCoordinate.x, aCoordinate.y,
-                                        aCoordinate.z);
+                if (this.isMeshComputed()) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
+                } else {
+                        aPoint = this.getPoint(x, y, z);
+                        if (aPoint == null) {
+                                // Point is not in the Messh.
+                                // Create point and add it to the Mesh point list
+                                aPoint = new DPoint(x, y, z);
+                                this.addPoint(aPoint);
+                        }
+                        aPoint.setProperty(hydroProperty);
+                }
+                return aPoint;
+        }
+
+        /**
+         * Create a new point on the Mesh surface. Set the hydroProperty to the point.
+         *
+         * @param aPoint
+         * @param hydroProperty
+         * @return thePoint : the DPoint
+         * @throws DelaunayError
+         */
+        private DPoint createPointOnSurface(DPoint aPoint, int hydroProperty)
+                throws DelaunayError {
+                // Search for the point
+                if (aPoint == null) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (this.isMeshComputed()) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
+                } else {
+                        if (!this.getPoints().contains(aPoint)) {
+                                // Point is not in the Mesh.
+                                // Add point to Mesh the point list
+                                this.addPoint(aPoint);
+                        }
+                        aPoint.setProperty(hydroProperty);
+                }
+                return aPoint;
+        }
+
+        /**
+         * Add a sewer entry. The point is added to the list of points of the Mesh.
+         * It will be used for the delaunay triangularization.
+         *
+         * @param x
+         * @param y
+         * @param z
+         * @return thePoint : the DPoint
+         * @throws DelaunayError
+         */
+        public DPoint addSewerEntry(double x, double y, double z)
+                throws DelaunayError {
+                // Add point to the Mesh
+                DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.getSewerWeight());
+
+                // And add it to the sewer points
+                this.listEntryPoints.add(sewerPoint);
+                this.listSewerPoints.add(sewerPoint);
+
+                return sewerPoint;
+        }
+
+        /**
+         * Add a sewer entry. The point is added to the list of points of the Mesh.
+         * It will be used for the delaunay triangularization.
+         *
+         * @param sewerPoint
+         * @return thePoint : the DPoint
+         * @throws DelaunayError
+         */
+        public DPoint addSewerEntry(DPoint sewerPoint) throws DelaunayError {
+                // Add point to the Mesh
+                sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.getSewerWeight());
+
+                // And add it to the sewer points
+                this.listEntryPoints.add(sewerPoint);
+                this.listSewerPoints.add(sewerPoint);
+
+                return sewerPoint;
+        }
+
+        /**
+         * Add a sewer exit. The point is added to the list of points of the Mesh.
+         * It will be used for the delaunay triangularization.
+         *
+         * @param x
+         * @param y
+         * @param z
+         * @return thePoint : the DPoint
+         * @throws DelaunayError
+         */
+        public DPoint addSewerExit(double x, double y, double z)
+                throws DelaunayError {
+                // Add point to the Mesh
+                return addSewerEntry(x, y, z);
+        }
+
+        /**
+         * Add a sewer exit. The point is added to the list of points of the Mesh.
+         * It will be used for the delaunay triangularization.
+         *
+         * @param sewerPoint
+         * @return thePoint : the DPoint
+         * @throws DelaunayError
+         */
+        public DPoint addSewerExit(DPoint sewerPoint) throws DelaunayError {
+                // Add point to the Mesh
+                return addSewerEntry(sewerPoint);
+        }
+
+        /**
+         * Add a sewer point (neither start or exit). The point is not on the
+         * surface. It is not added to the Mesh Points. It will not be used in
+         * the Delaunay triangularization
+         *
+         * @param x
+         * @param y
+         * @param z
+         * @return thePoint : the DPoint
+         * @throws DelaunayError
+         */
+        public DPoint addSewerPoint(double x, double y, double z)
+                throws DelaunayError {
+                DPoint sewerPoint = null;
+                // Create a new point
+                if (this.isMeshComputed()) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
+                } else {
+                        sewerPoint = new DPoint(x, y, z);
+                        sewerPoint.setProperty(HydroProperties.getSewerWeight());
+                        this.listSewerPoints.add(sewerPoint);
+                }
+                return sewerPoint;
+        }
+
+        /**
+         * Add a sewer point (neither start or exit). The point is not on the
+         * surface. It is not added to the Mesh Points. It will not be used in
+         * the Delaunay triangularization
+         *
+         * @param x
+         * @param y
+         * @param z
+         * @return thePoint : the DPoint
+         * @throws DelaunayError
+         */
+        public DPoint addSewerPoint(DPoint sewerPoint)
+                throws DelaunayError {
+                // Create a new point
+                if (sewerPoint == null) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (this.isMeshComputed()) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
+                } else {
+                        sewerPoint.setProperty(HydroProperties.getSewerWeight());
+                        this.listSewerPoints.add(sewerPoint);
+                }
+                return sewerPoint;
+        }
+
+        /**
+         * Look for a sewer that already connects the two points
+         *
+         * @param sewerPoint1
+         * @param sewerPoint2
+         * @return theEdge : the edge that connects the two sewer points, null if it does not exist
+         */
+        private DEdge searchSewerEdge(DPoint sewerPoint1, DPoint sewerPoint2) {
+                DEdge found = null;
+
+                // Process edges until we find it
+                int theSize = this.ListServerEdges.size();
+                int i = 0;
+                while ((i < theSize) && (found == null)) {
+                        DEdge anEdge = this.ListServerEdges.get(i);
+                        // Points can be start or end of the edge
+                        if ((sewerPoint1 == anEdge.getStart()) && (sewerPoint2 == anEdge.getEnd())) {
+                                found = anEdge;
+                        } else if ((sewerPoint2 == anEdge.getStart()) && (sewerPoint1 == anEdge.getEnd())) {
+                                found = anEdge;
                         } else {
-                                aPoint = null;
+                                i++;
                         }
+                }
+                return found;
+        }
 
-                        count--;
-                        if (aPoint != null) {
-                                if (lastPoint == null) {
-                                        // First point of the list
-                                        if (!listIntermediate.contains(aPoint)) {
-                                                // Already an intermediate point => do nothing
-                                                if (listExit.contains(aPoint)) {
-                                                        // It is an exit
-                                                        // It is also an entry
-                                                        // => becomes an intermediate
-                                                        listExit.remove(aPoint);
-                                                        listIntermediate.add(aPoint);
-                                                } else if (!listEntry.contains(aPoint)) {
-                                                        // New entry
-                                                        listEntry.add(aPoint);
-                                                }
-                                        }
-                                        // else it is in Entry
-                                } else {
-                                        // Intermediate point
-                                        if (!listIntermediate.contains(aPoint)) {
-                                                // Already an intermediate point => do nothing
-                                                if (listExit.contains(aPoint)) {
-                                                        // It is an exit
-                                                        if (count > 0) {
-                                                                // and not the last point
-                                                                // => becomes an intermediate
-                                                                listExit.remove(aPoint);
-                                                                listIntermediate.add(aPoint);
-                                                        }
-                                                } else if (listEntry.contains(aPoint)) {
-                                                        // It is an entry
-                                                        // => becomes an intermediate
-                                                        listEntry.remove(aPoint);
-                                                        listIntermediate.add(aPoint);
-                                                } else if (count > 0) {
-                                                        // new point => add it to Intermediate
-                                                        listIntermediate.add(aPoint);
-                                                } else {
-                                                        // new point and Last point => Exit
-                                                        listExit.add(aPoint);
-                                                }
-                                        }
-                                        // Link lastPoint to new point
-                                        DEdge anEdge = new DEdge(lastPoint, aPoint);
-                                        anEdge.addProperty(listDefinition);
-                                        listEdges.add(anEdge);
-                                }
-                                // other informations
-                                aPoint.addProperty(listDefinition);
+        /**
+         * Connect two sewer points.  Add SEWER property to the points and to the edge.
+         *
+         * @param sewerPoint1
+         * @param sewerPoint2
+         * @throws DelaunayError
+         */
+        public void setSewerConnection(DPoint sewerPoint1, DPoint sewerPoint2)
+                throws DelaunayError {
+                if (sewerPoint1 == null) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (sewerPoint2 == null) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (!this.listSewerPoints.contains(sewerPoint1)) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (!this.listSewerPoints.contains(sewerPoint2)) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else {
+                        if (searchSewerEdge(sewerPoint1, sewerPoint2) == null) {
+                                // Create edge and add it to the sewer edge list
+                                DEdge anEdge = new DEdge(sewerPoint1, sewerPoint2);
+                                this.ListServerEdges.add(anEdge);
 
-                                lastPoint = aPoint;
+                                // Add sewer property
+                                sewerPoint1.setProperty(HydroProperties.getSewerWeight());
+                                sewerPoint2.setProperty(HydroProperties.getSewerWeight());
+                                anEdge.setProperty(HydroProperties.getSewerWeight());
                         }
                 }
         }
 
-        /**
-         * Validate branch and end that branch type
-         *
-         * @throws DelaunayError
-         */
-        private void branchValidate() throws DelaunayError {
-//		DTriangle referenceTriangle = null;
-//		List<DEdge> edges = theMesh.getEdges();
-//		List<DPoint> points = theMesh.getPoints();
-//
-//		// add every entry point to the mesh
-//		for (DPoint aPoint : listEntry) {
-//			if (points.contains(aPoint)) {
-//				// Already in the points list => do noting
-//			} else {
-//				aPoint.setMarked(0, true);//TODO check me
-//				referenceTriangle = theMesh.getTriangle(aPoint);
-//				if (referenceTriangle != null) {
-//					// Connect it to the surface
-//					double zValue = referenceTriangle.softInterpolateZ(aPoint);
-//					aPoint.setZ(zValue);
-//
-//					theMesh.addPoint(referenceTriangle, aPoint);
-//				} else {
-//					theMesh.addPoint(aPoint);
-//				}
-//			}
-//		}
-//
-//		// add every intermediate point to the point list
-//		// do not include them in the mesh
-//		for (DPoint aPoint : listIntermediate) {
-//			if (points.contains(aPoint)) {
-//				// Already in the points list => do noting
-//			} else {
-//				points.add(aPoint);
-//				aPoint.setMarked(0, true);//TODO check me
-//				referenceTriangle = theMesh.getTriangle(aPoint);
-//				if (referenceTriangle != null) {
-//					double zValue = referenceTriangle.softInterpolateZ(aPoint);
-//					if (connectToSurface) {
-//						// Connect it to the surface
-//						aPoint.setZ(zValue);
-//
-//						theMesh.addPoint(referenceTriangle, aPoint);
-//					} else {
-//						if (aPoint.getZ() > zValue) {
-//							aPoint.setZ(zValue - 1.0);
-//						}
-//					}
-//				} else if (connectToSurface) {
-//					theMesh.addPoint(aPoint);
-//				}
-//			}
-//		}
-//
-//		// add every exit point to the mesh
-//		for (DPoint aPoint : listExit) {
-//			if (points.contains(aPoint)) {
-//				// Already in the points list => do noting
-//			} else {
-//				aPoint.setMarked(0, true);//TODO check me
-//				referenceTriangle = theMesh.getTriangle(aPoint);
-//				if (referenceTriangle != null) {
-//					// Connect it to the surface
-//					double zValue = referenceTriangle.softInterpolateZ(aPoint);
-//					aPoint.setZ(zValue);
-//
-//					theMesh.addPoint(referenceTriangle, aPoint);
-//				} else {
-//					theMesh.addPoint(aPoint);
-//				}
-//			}
-//		}
-//
-//		// add edges
-//		for (DEdge anEdge : listEdges) {
-//			anEdge.setMarked(0,true); //FIXME check if it's good ( old version : anEdge.setMarked(true); )
-//			if (connectToSurface) {
-//				theMesh.addEdge(anEdge);
-//			}
-//			else {
-//				anEdge.setOutsideMesh(true);
-//				edges.add(anEdge);
-//			}
-//		}
-//
-//		// Reset informations
-//		listEntry = new LinkedList<DPoint>();
-//		listExit = new LinkedList<DPoint>();
-//		listIntermediate = new LinkedList<DPoint>();
-//		listEdges = new LinkedList<DEdge>();
-//		listDefinition = 0;
-//		connectToSurface = true;
-        }
-
         // ----------------------------------------------------------------
         /**
-         * add a sewer entry
+         * Look for an edge that already connects the two points.
          *
-         * @param x
-         * @param y
-         * @param z
+         * @param point1
+         * @param point2
+         * @return theEdge : the edge that connects the two points, null if it does not exist
+         */
+        private DEdge searchEdge(DPoint point1, DPoint point2) {
+                DEdge found = null;
+
+                // Process edges until we find it
+                int theSize = this.getEdges().size();
+                int i = 0;
+                while ((i < theSize) && (found == null)) {
+                        DEdge anEdge = this.getEdges().get(i);
+                        if ((point1 == anEdge.getStart()) && (point2 == anEdge.getEnd())) {
+                                found = anEdge;
+                        } else if ((point2 == anEdge.getStart()) && (point1 == anEdge.getEnd())) {
+                                found = anEdge;
+                        } else {
+                                i++;
+                        }
+                }
+                return found;
+        }
+
+        /**
+         * connect two points to build a hydro Edge. Add property to the points and to the edge.
+         *
+         * @param point1
+         * @param point2
+         * @param hydroProperty
          * @throws DelaunayError
          */
-        public void addSewerEntry(double x, double y, double z)
+        public void createHydroEdge(DPoint point1, DPoint point2, int hydroProperty)
                 throws DelaunayError {
-                // Search for the point
-                DPoint sewerPoint = theMesh.getPoint(x, y, z);
-                addSewerEntry(sewerPoint);
-        }
+                if (point1 == null) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (point2 == null) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (!this.listSewerPoints.contains(point1)) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else if (!this.listSewerPoints.contains(point2)) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
+                } else {
+                        DEdge anEdge = searchEdge(point1, point2);
+                        if (anEdge == null) {
+                                // Edge does not exist => create it
+                                anEdge = new DEdge(point1, point2);
 
-        /**
-         * add a sewer entry
-         *
-         * @param sewerPoint
-         * @throws DelaunayError
-         */
-        public void addSewerEntry(DPoint sewerPoint) throws DelaunayError {
-                listPrepare = new LinkedList<DPoint>();
-                listPrepare.add(sewerPoint);
-        }
+                                // And add it to the constraints
+                                this.addEdge(anEdge);
+                        }
 
-        /**
-         * add a sewer exit
-         *
-         * @param x
-         * @param y
-         * @param z
-         * @throws DelaunayError
-         */
-        public void addSewerExit(double x, double y, double z) throws DelaunayError {
-                // Search for the point
-                DPoint sewerPoint = theMesh.getPoint(x, y, z);
-                addSewerExit(sewerPoint);
-        }
-
-        /**
-         * add a sewer exit
-         *
-         * @param sewerPoint
-         * @throws DelaunayError
-         */
-        public void addSewerExit(DPoint sewerPoint) throws DelaunayError {
-                listPrepare.add(sewerPoint);
-                sewerSet(listPrepare);
-                listPrepare = new LinkedList<DPoint>();
-        }
-
-        /**
-         * add a sewer point (neither start or exit
-         *
-         * @param x
-         * @param y
-         * @param z
-         * @throws DelaunayError
-         */
-        public void addSewerPoint(double x, double y, double z)
-                throws DelaunayError {
-                // Search for the point
-                DPoint aPoint = theMesh.getPoint(x, y, z);
-                addSewerPoint(aPoint);
-        }
-
-        /**
-         * add a sewer point (neither start or exit
-         *
-         * @param sewerPoint
-         * @throws DelaunayError
-         */
-        public void addSewerPoint(DPoint sewerPoint) throws DelaunayError {
-                listPrepare.add(sewerPoint);
-        }
-
-        /**
-         * use a sewer point to start a new branch
-         *
-         * @param x
-         * @param y
-         * @param z
-         * @throws DelaunayError
-         */
-        public void setSewerPoint(double x, double y, double z)
-                throws DelaunayError {
-                // Search for the point
-                addSewerEntry(x, y, z);
-        }
-
-        /**
-         * use a sewer point to start a new branch
-         *
-         * @param sewerPoint
-         * @throws DelaunayError
-         */
-        public void setSewerPoint(DPoint sewerPoint) throws DelaunayError {
-                addSewerEntry(sewerPoint);
-        }
-
-        // ----------------------------------------------------------------
-        /**
-         * Start sewers definition
-         *
-         * @throws DelaunayError
-         */
-        public void sewerStart() throws DelaunayError {
-                branchStart(HydroProperties.getSewerWeight(), false);
-        }
-
-        /**
-         * define a new sewer branch
-         *
-         * @param sewerPoint
-         * @throws DelaunayError
-         */
-        public void sewerSet(List<DPoint> sewerList) throws DelaunayError {
-                if (listDefinition == HydroProperties.NONE) {
-                        branchStart(HydroProperties.getSewerWeight(), false);
-                } else if (listDefinition != HydroProperties.getSewerWeight()) {
-                        branchValidate();
-                        branchStart(HydroProperties.getSewerWeight(), false);
+                        // Add property
+                        point1.setProperty(hydroProperty);
+                        point2.setProperty(hydroProperty);
+                        anEdge.setProperty(hydroProperty);
                 }
-                setNewBranch(sewerList);
-        }
-
-        /**
-         * Validate and end sewer definition
-         *
-         * @throws DelaunayError
-         */
-        public void sewerValidate() throws DelaunayError {
-                if (listDefinition != HydroProperties.NONE) {
-                        branchValidate();
-                }
-                listDefinition = HydroProperties.NONE;
-        }
-
-        // ----------------------------------------------------------------
-        /**
-         * Start ditches definition
-         *
-         * @throws DelaunayError
-         */
-        public void ditchStart() throws DelaunayError {
-                branchStart(HydroProperties.getDitchWeight());
-        }
-
-        /**
-         * define a new ditch branch
-         *
-         * @param ditchList
-         * @throws DelaunayError
-         */
-        public void ditchSet(List<DPoint> ditchList) throws DelaunayError {
-                if (listDefinition == HydroProperties.NONE) {
-                        branchStart(HydroProperties.getDitchWeight());
-                } else if (listDefinition != HydroProperties.getDitchWeight()) {
-                        branchValidate();
-                        branchStart(HydroProperties.getDitchWeight());
-                }
-                setNewBranch(ditchList);
-        }
-
-        /**
-         * Validate and end ditches definition
-         *
-         * @throws DelaunayError
-         */
-        public void ditchValidate() throws DelaunayError {
-                if (listDefinition != HydroProperties.NONE) {
-                        branchValidate();
-                }
-                listDefinition = HydroProperties.NONE;
-        }
-
-        // ----------------------------------------------------------------
-        /**
-         * Start rivers definition
-         *
-         * @throws DelaunayError
-         */
-        public void riverStart() throws DelaunayError {
-                branchStart(HydroProperties.getRiverWeight());
-        }
-
-        /**
-         * define a new river branch
-         *
-         * @param riverList
-         * @throws DelaunayError
-         */
-        public void riverSet(List<DPoint> riverList) throws DelaunayError {
-                if (listDefinition == HydroProperties.NONE) {
-                        branchStart(HydroProperties.getRiverWeight());
-                } else if (listDefinition != HydroProperties.getRiverWeight()) {
-                        branchValidate();
-                        branchStart(HydroProperties.getRiverWeight());
-                }
-                setNewBranch(riverList);
-        }
-
-        /**
-         * Validate and end rivers definition
-         *
-         * @throws DelaunayError
-         */
-        public void riverValidate() throws DelaunayError {
-                if (listDefinition != HydroProperties.NONE) {
-                        branchValidate();
-                }
-                listDefinition = HydroProperties.NONE;
-        }
-
-        // ----------------------------------------------------------------
-        /**
-         * Start walls definition
-         *
-         * @throws DelaunayError
-         */
-        public void wallStart() throws DelaunayError {
-                branchStart(HydroProperties.getWallWeight());
-        }
-
-        /**
-         * define a new wall branch
-         *
-         * @param wallList
-         * @throws DelaunayError
-         */
-        public void wallSet(List<DPoint> wallList) throws DelaunayError {
-                if (listDefinition == HydroProperties.NONE) {
-                        branchStart(HydroProperties.getWallWeight());
-                } else if (listDefinition != HydroProperties.getWallWeight()) {
-                        branchValidate();
-                        branchStart(HydroProperties.getWallWeight());
-                }
-                setNewBranch(wallList);
-        }
-
-        /**
-         * Validate and end walls definition
-         *
-         * @throws DelaunayError
-         */
-        public void wallValidate() throws DelaunayError {
-                if (listDefinition != HydroProperties.NONE) {
-                        branchValidate();
-                }
-                listDefinition = HydroProperties.NONE;
         }
         // ----------------------------------------------------------------
 }
