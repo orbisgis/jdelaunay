@@ -6,6 +6,7 @@
 package org.jdelaunay.delaunay;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.HashMap;
 
 /**
  * Tests some of the methods defined in DEdge.
@@ -563,4 +564,25 @@ public class TestEdges extends BaseUtility {
                 inter = (DPoint) e1.getIntersection(e2);
                 assertTrue(inter.getZ()==0);
         }
+
+	public void testGetMaxWeight() throws DelaunayError {
+		DEdge e1 = new DEdge(0,0,0,2,2,5);
+		e1.addProperty(1);
+		e1.addProperty(2);
+		e1.addProperty(4);
+		e1.addProperty(8);
+		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+		map.put(1, 5);
+		map.put(2, 10);
+		map.put(4, 40);
+		map.put(8, 70);
+		map.put(16, 20);
+		map.put(32, 30);
+		map.put(64, 40);
+		assertEquals(e1.getMaxWeight(map), 70);
+		map.remove(1);
+		map.put(1, 80);
+		assertEquals(e1.getMaxWeight(map), 80);
+
+	}
 }

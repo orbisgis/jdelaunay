@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 /**
@@ -1267,6 +1268,23 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		}else{
 			return false;
 		}
+	}
+
+	/**
+	 * Get the weight of this DEdge. This property will be used, fo instance,
+	 * by the forceConstraintIntegrity in ConstrainedMesh, to decide which Z value
+	 * to use when computing a new intersection.
+	 * @param map
+	 * @return
+	 */
+	public int getMaxWeight(HashMap<Integer, Integer> map){
+		int weight = -1;
+		for(int i=1; i<10; i++){
+			if(hasProperty(i) && map.containsKey(i)){
+				weight = weight < map.get(i) ? map.get(i) : weight;
+			}
+		}
+		return weight;
 	}
 
 	/**
