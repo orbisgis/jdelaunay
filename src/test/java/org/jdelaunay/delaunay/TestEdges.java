@@ -556,11 +556,15 @@ public class TestEdges extends BaseUtility {
         public void testRetrieveGoodZ() throws DelaunayError {
                 DEdge e1 = new DEdge(0,0,0,5,5,0);
                 DEdge e2 = new DEdge(0,5,5,5,0,9);
+		HashMap<Integer,Integer> weights = new HashMap<Integer,Integer>();
+		weights.put(2, 2);
+		weights.put(8, 4);
+		weights.put(16, 6);
                 e1.setProperty(2);
-                e2.setProperty(6);
-                DPoint inter = (DPoint) e1.getIntersection(e2);
+                e2.setProperty(8);
+                DPoint inter = (DPoint) e1.getIntersection(e2,weights);
                 assertTrue(inter.getZ()==7);
-                e1.setProperty(8);
+                e1.setProperty(16);
                 inter = (DPoint) e1.getIntersection(e2);
                 assertTrue(inter.getZ()==0);
         }

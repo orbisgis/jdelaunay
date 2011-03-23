@@ -201,7 +201,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 List<DEdge> addedEdges = new LinkedList<DEdge>();
                 List<DEdge> theEdges = this.getEdges();
                 for (DEdge anEdge : theEdges) {
-                        if (anEdge.hasProperty(HydroProperties.getWallWeight())) {
+                        if (anEdge.hasProperty(HydroProperties.WALL)) {
                                 // Process wall : duplicate edge and changes connections
                                 if ((anEdge.getLeft() != null) && (anEdge.getRight() != null)) {
                                         // Something to do if and only if there are two triangles
@@ -299,7 +299,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
         public DPoint addSewerEntry(double x, double y, double z)
                 throws DelaunayError {
                 // Add point to the Mesh
-                DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.getSewerWeight());
+                DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.SEWER);
 
                 // And add it to the sewer points
                 this.listEntryPoints.add(sewerPoint);
@@ -318,7 +318,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          */
         public DPoint addSewerEntry(DPoint sewerPoint) throws DelaunayError {
                 // Add point to the Mesh
-                sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.getSewerWeight());
+                sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.SEWER);
 
                 // And add it to the sewer points
                 this.listEntryPoints.add(sewerPoint);
@@ -375,7 +375,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
                 } else {
                         sewerPoint = new DPoint(x, y, z);
-                        sewerPoint.setProperty(HydroProperties.getSewerWeight());
+                        sewerPoint.setProperty(HydroProperties.SEWER);
                         this.listSewerPoints.add(sewerPoint);
                 }
                 return sewerPoint;
@@ -400,7 +400,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 } else if (this.isMeshComputed()) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
                 } else {
-                        sewerPoint.setProperty(HydroProperties.getSewerWeight());
+                        sewerPoint.setProperty(HydroProperties.SEWER);
                         this.listSewerPoints.add(sewerPoint);
                 }
                 return sewerPoint;
@@ -457,9 +457,9 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                 this.listServerEdges.add(anEdge);
 
                                 // Add sewer property
-                                sewerPoint1.setProperty(HydroProperties.getSewerWeight());
-                                sewerPoint2.setProperty(HydroProperties.getSewerWeight());
-                                anEdge.setProperty(HydroProperties.getSewerWeight());
+                                sewerPoint1.setProperty(HydroProperties.SEWER);
+                                sewerPoint2.setProperty(HydroProperties.SEWER);
+                                anEdge.setProperty(HydroProperties.SEWER);
                         }
                 }
         }

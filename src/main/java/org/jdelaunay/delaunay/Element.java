@@ -1,6 +1,10 @@
 package org.jdelaunay.delaunay;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.jhydrocell.hydronetwork.HydroProperties;
 
 
 /**
@@ -17,7 +21,7 @@ public abstract class Element {
 	 * 
 	 */
 	private static final long serialVersionUID = 5437683478248244942L;
-	public static final int WEIGHT_CLASSIFICATION_NUMBER = 10;
+	public static final List<Integer> WEIGHTED_PROPERTIES;
 	private int gid;
 	private int property;
 	//An identifier to use correspondance maps externally, to affect properties efficiently.
@@ -25,6 +29,17 @@ public abstract class Element {
 
 	//If this edge is an obstacle, it must have a height
 	private double height ;
+	static {
+		WEIGHTED_PROPERTIES = new ArrayList<Integer>();
+		WEIGHTED_PROPERTIES.add(HydroProperties.WALL);
+		WEIGHTED_PROPERTIES.add(HydroProperties.SEWER);
+		WEIGHTED_PROPERTIES.add(HydroProperties.ROAD);
+		WEIGHTED_PROPERTIES.add(HydroProperties.DITCH);
+		WEIGHTED_PROPERTIES.add(HydroProperties.RIVER);
+		WEIGHTED_PROPERTIES.add(HydroProperties.URBAN_PARCEL);
+		WEIGHTED_PROPERTIES.add(HydroProperties.RURAL_PARCEL);
+		WEIGHTED_PROPERTIES.add(HydroProperties.LEVEL);
+	}
 	/**
 	 * Default initialization
 	 */
@@ -130,6 +145,23 @@ public abstract class Element {
 		this.property = 0;
 	}
 
+
+	/**
+	 * Get the weight of this DEdge. This property will be used, fo instance,
+	 * by the forceConstraintIntegrity in ConstrainedMesh, to decide which Z value
+	 * to use when computing a new intersection.
+	 * @param map
+	 * @return
+	 */
+	public int getMaxWeight(Map<Integer, Integer> map){
+		int weight = -1;
+		for(Integer i : Element.WEIGHTED_PROPERTIES){
+			if(hasProperty(i) && map.containsKey(i)){
+				weight = weight < map.get(i) ? map.get(i) : weight;
+			}
+		}
+		return weight;
+	}
 	/**
 	 * Set an external GID, referencing this object for an external use, and 
 	 * eventually make correspondances with an external attributes table.

@@ -1,5 +1,8 @@
 package org.jhydrocell.hydronetwork;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Hydronetwork Package.
  *
@@ -13,27 +16,35 @@ public final class HydroProperties {
 	/**
 	 * The object is a wall
 	 */
-	private static int WALL = 0;
+	public static final int WALL = 1;
 	/**
 	 * The object is a sewer
 	 */
-	private static int SEWER = 0;
+	public static final int SEWER = 1<<1;
 	/**
 	 * the object is a road
 	 */
-	private static int ROAD = 0;
+	public static final int ROAD = 1<<2;
 	/**
 	 * The object is a ditch
 	 */
-	private static int DITCH = 0;
+	public static final int DITCH = 1<<3;
 	/**
 	 * The object is a river
 	 */
-	private static int RIVER = 0;
+	public static final int RIVER = 1<<4;
 	/**
-	 * The object is a parcel
+	 * The object is an urban parcel
 	 */
-	private static int PARCEL = 0;
+	public static final int URBAN_PARCEL = 1<<5;
+	/**
+	 * The object is a rural parcel
+	 */
+	public static final int RURAL_PARCEL = 1<<6;
+	/**
+	 * The object is a level line
+	 */
+	public static final int LEVEL = 1<<7;
 
 	// Topographic types
 	public static final int RIDGE = 1 << 10;
@@ -90,6 +101,22 @@ public final class HydroProperties {
 	 */
 	private static String propertyToString(int aProperty) {
 		switch (aProperty) {
+		case WALL:
+			return "wall";
+		case SEWER:
+			return "sewer";
+		case ROAD:
+			return "road";
+		case DITCH:
+			return "ditch";
+		case RIVER:
+			return "river";
+		case URBAN_PARCEL:
+			return "urban parcel";
+		case RURAL_PARCEL:
+			return "rural parcel";
+		case LEVEL:
+			return "level line";
 		case RIDGE:
 			return "ridge";
 		case TALWEG:
@@ -120,97 +147,6 @@ public final class HydroProperties {
 			return "";
 		}
 	}
-
-        /**
-         * Set the weight associated to the wall property
-         * @param weight
-         */
-        public static void setWallWeight(int weight){
-                WALL = weight;
-        }
-
-        /**
-         * Get the weight associated to the wall property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static int getWallWeight(){
-                return WALL;
-        }
-        /**
-         * Set the weight associated to the sewer property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static void setSewerWeight(int weight){
-                SEWER = weight;
-        }
-
-        /**
-         * Get the weight associated to the sewer property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static int getSewerWeight(){
-                return SEWER;
-        }
-        /**
-         * Set the weight associated to the ditch property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static void setDitchWeight(int weight){
-                DITCH = weight;
-        }
-
-        /**
-         * Get the weight associated to the ditch property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static int getDitchWeight(){
-                return DITCH;
-        }
-        /**
-         * Set the weight associated to the road property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static void setRoadWeight(int weight){
-                 ROAD= weight;
-        }
-
-        /**
-         * Get the weight associated to the road property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static int getRoadWeight(){
-                return ROAD;
-        }
-        /**
-         * Set the weight associated to the river property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static void setRiverWeight(int weight){
-                 RIVER = weight;
-        }
-
-        /**
-         * Get the weight associated to the river property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static int getRiverWeight(){
-                return RIVER;
-        }
-        /**
-         * Set the weight associated to the parcel property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static void setParcelWeight(int weight){
-                 PARCEL = weight;
-        }
-
-        /**
-         * Get the weight associated to the parcel property. This value must be between 0 and 1023 !
-         * @param weight
-         */
-        public static int getParcelWeight(){
-                return PARCEL;
-        }
 
 	/**
 	 * return int from string definition

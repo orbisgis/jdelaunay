@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
@@ -68,7 +69,7 @@ public class ConstrainedMesh implements Serializable {
 	private int triangleGID;
 	//We need a hashmap to classify the weights of the edges, according to their
 	//properties.
-	private HashMap<Integer, Integer> weights;
+	private Map<Integer, Integer> weights;
 	// constants
 	public static final int MIN_POINTS_NUMBER = 3;
 	public static final int MAXITER = 5;
@@ -98,7 +99,6 @@ public class ConstrainedMesh implements Serializable {
 		meshComputed = false;
 		precision = 0;
 		tolerance = Tools.EPSILON;
-
 		pointGID = 0;
 		edgeGID = 0;
 		triangleGID = 0;
@@ -533,7 +533,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Z value when processing the intersection.
 	 * @return
 	 */
-	public HashMap<Integer, Integer> getWeights() {
+	public Map<Integer, Integer> getWeights() {
 		return weights;
 	}
 
@@ -650,7 +650,7 @@ public class ConstrainedMesh implements Serializable {
 					j = j < 1 ? 1 : j;
 					e1 = edgeBuffer.get(j - 1);
 					e2 = edgeBuffer.get(j);
-					intersection = e1.getIntersection(e2);
+					intersection = e1.getIntersection(e2,weights);
 					rmCount = 0;
 					if (intersection instanceof DPoint) {
 						//We have a single intersection point.
@@ -674,12 +674,14 @@ public class ConstrainedMesh implements Serializable {
 										newEvent = e1.getPointRight();
 									}
 									inter2 = new DEdge(newEvent, e2.getPointLeft() );
+									inter2.setProperty(e2.getProperty());
 									addConstraintEdge(inter2);
 									rm = edgeBuffer.remove(j);
 									if (!rm.equals(e2)) {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									inter4 = new DEdge(newEvent, e2.getPointRight());
+									inter4.setProperty(e2.getProperty());
 									toBeInsert.add(inter4);
 									rmCount++;
 								} else if (newEvent.equals2D(e2.getPointRight())) {
@@ -698,12 +700,14 @@ public class ConstrainedMesh implements Serializable {
 										newEvent = e2.getPointRight();
 									}
 									inter1 = new DEdge(e1.getPointLeft(), newEvent);
+									inter1.setProperty(e1.getProperty());
 									addConstraintEdge(inter1);
 									rm = edgeBuffer.remove(j - 1);
 									if (!rm.equals(e1)) {
 										throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 									}
 									inter3 = new DEdge(e1.getPointRight(), newEvent);
+									inter3.setProperty(e1.getProperty());
 									toBeInsert.add(inter3);
 									rmCount++;
 								} else if (newEvent.equals2D(e1.getPointRight())) {

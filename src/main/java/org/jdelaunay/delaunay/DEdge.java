@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import java.util.HashMap;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
@@ -694,12 +694,28 @@ public class DEdge extends Element implements Comparable<DEdge> {
 				// it intersects
 				if (t2 <= Tools.EPSILON2) {
 					intersection = p3;
+					if(!useCoordZOfp1p2){
+						double z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
+						p3.setZ(z);
+					}
 				} else if (t2 >= 1 - Tools.EPSILON2) {
 					intersection = p4;
+					if(!useCoordZOfp1p2){
+						double z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
+						p4.setZ(z);
+					}
 				} else if (t1 <= Tools.EPSILON2) {
 					intersection = p1;
+					if(useCoordZOfp1p2){
+						double z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
+						p1.setZ(z);
+					}
 				} else if (t1 >= 1 - Tools.EPSILON2) {
 					intersection = p2;
+					if(useCoordZOfp1p2){
+						double z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
+						p2.setZ(z);
+					}
 				} else {
 					// x = x2 t1 + (1 - t1) x1
 					// y = y2 t1 + (1 - t1) y1
@@ -836,17 +852,30 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * intersects two edges returns null if there is no intersection
 	 *
-	 * @param anEdge
+	 * @param ed
 	 * @return intersection
 	 * @throws DelaunayError 
 	 */
-	public final Element getIntersection(DEdge anEdge) throws DelaunayError {
-                int proper = anEdge.getProperty();
-                if(proper > getProperty()){
-                        return getIntersection(anEdge.startPoint, anEdge.endPoint, true);
-                } else {
-                        return getIntersection(anEdge.startPoint, anEdge.endPoint);
-                }
+	public final Element getIntersection(DEdge ed) throws DelaunayError {
+		return getIntersection(ed.startPoint, ed.endPoint);
+	}
+
+	/**
+	 * Get the intersection, using the weights given in argument to compute the z :
+	 * we will use the z from the edge with the highest weight.
+	 * @param ed
+	 * @param weights
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public final Element getIntersection(DEdge ed, Map<Integer,Integer> weights) throws DelaunayError {
+		int wt = getMaxWeight(weights);
+		int wo = ed.getMaxWeight(weights);
+		if(wo>wt){
+			return getIntersection(ed.startPoint, ed.endPoint,true);
+		} else {
+			return getIntersection(ed.startPoint, ed.endPoint);
+		}
 	}
 
 	/**
@@ -1250,23 +1279,6 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		}else{
 			return false;
 		}
-	}
-
-	/**
-	 * Get the weight of this DEdge. This property will be used, fo instance,
-	 * by the forceConstraintIntegrity in ConstrainedMesh, to decide which Z value
-	 * to use when computing a new intersection.
-	 * @param map
-	 * @return
-	 */
-	public int getMaxWeight(HashMap<Integer, Integer> map){
-		int weight = -1;
-		for(int i=1; i<Element.WEIGHT_CLASSIFICATION_NUMBER; i++){
-			if(hasProperty(i) && map.containsKey(i)){
-				weight = weight < map.get(i) ? map.get(i) : weight;
-			}
-		}
-		return weight;
 	}
 
 	/**
