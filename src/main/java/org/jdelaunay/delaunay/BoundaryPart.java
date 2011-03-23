@@ -55,7 +55,7 @@ final class BoundaryPart {
 	/**
 	 * Constructor used when the constraint linked to this part of the boundary
 	 * is null.
-	 * 
+	 *
 	 * This can happen for the lowest part of the boundary, fo instance.
 	 * @param bound
 	 */
@@ -75,7 +75,7 @@ final class BoundaryPart {
 		setConstraint(cstr);
 		boundaryEdges = new LinkedList<DEdge>();
 	}
-	
+
 	/**
 	 * Get the list of edges associated to this part of the boundary.
 	 * @return
@@ -451,6 +451,11 @@ final class BoundaryPart {
 		//reverse order.
 		DEdge prevAdd = prev;
 		boolean reverse = false;
+		//In seom cases, when we must connect a new point to the mesh, but if we don't
+		//have added any edge, we must be able to study the configuration a little deeper.
+		//Indeed, if the edge is not connected to the constraint of the boundary part,
+		//but must be considered in direct order, there are cases where we can
+		//create triangles that are forgotten otherwise.
 		boolean prevUsed = false;
 		boolean connectedToPrev = false;
 		connectedToPrev = prevAdd != null &&
@@ -462,16 +467,25 @@ final class BoundaryPart {
 			connectedToConstraint = share.isExtremity(constraint.getStartPoint())
 					|| share.isExtremity(constraint.getEndPoint());
 			if(!connectedToConstraint){
+				//We check that the current shared edge is connected to the previous
+				//edge in the boundary in direct order. If it is, we must
+				//consider to connect the point to this shared edge.
 				iter.previous();
 				if(iter.hasPrevious()){
 					DEdge temp = iter.previous();
 					if(temp.getEndPoint().equals(share.getStartPoint())){
 						prevAdd = temp;
+						//We are in direct order. We consider that the share edge
+						//is connected to the constraint, and we set prevUsed to true,
+						//in order not to return a false mem
+						//value in the end.
 						connectedToConstraint=true;
 						prevUsed = true;
 					}
+					//We come back
 					iter.next();
 				}
+				//We come back
 				iter.next();
 			}
 			if(!connectedToConstraint && !connectedToPrev){
@@ -564,7 +578,8 @@ final class BoundaryPart {
 			iter.add(prevAdd);
 			iter.next();
 		}
-
+		//we don't want to return prevAdd if prevUsed has been set to true,
+		//as in this case there is not really an edge previously connected to the mesh.
 		return ret == null && !prevUsed ? prevAdd : ret;
 	}
 
@@ -703,7 +718,7 @@ final class BoundaryPart {
 				//current is not degenerated anymore
 				current.setDegenerated(false);
 			}
-			
+
 		}
 		//We must finalize our process :
 		if(isUpper){
