@@ -48,8 +48,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 
 	public void testEdgesMorphologicalClassification() throws DelaunayError {
 
-		ConstrainedMesh aMesh = new ConstrainedMesh();
-		HydroNetwork HydroNetwork = new HydroNetwork(aMesh);
+		HydroNetwork aMesh = new HydroNetwork();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
@@ -58,7 +57,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 		
 		
 		
-		HydroNetwork.morphologicalQualification();
+		aMesh.morphologicalQualification();
 
 		List<DEdge> edges = aMesh.getEdges();
 
