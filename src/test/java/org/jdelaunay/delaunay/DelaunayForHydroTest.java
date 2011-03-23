@@ -2,7 +2,7 @@ package org.jdelaunay.delaunay;
 
 import java.util.List;
 
-import org.jhydrocell.hydronetwork.HydroNetwork;
+import org.jhydrocell.hydronetwork.HydroTINBuilder;
 
 
 public class DelaunayForHydroTest extends BaseUtility {
@@ -47,7 +47,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 
 	public void testEdgesMorphologicalClassification() throws DelaunayError {
 
-		HydroNetwork aMesh = new HydroNetwork();
+		HydroTINBuilder aMesh = new HydroTINBuilder();
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());

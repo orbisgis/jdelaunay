@@ -165,7 +165,7 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 		//add points outside the current mesh.
 		boolean twoAssociatedTriangles;
 		for(int i =0; i<DTriangle.PT_NB; i++){
-			last = parent.getAlterPoint(edges[i]);
+			last = parent.getOppositePoint(edges[i]);
 			twoAssociatedTriangles = edges[i].getRight() != null && edges[i].getLeft()!=null;
 			//If the circumcenter is right to one edge where the last point is
 			//on the left (or the contrary) we must make further process.
@@ -176,7 +176,7 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 					return;
 				} else {
 					//We must check we don't intersect a constraint.
-					defloc = checkLocationValidity(defloc, new DEdge(defloc, parent.getAlterPoint(edges[i])),edges[i], parent);
+					defloc = checkLocationValidity(defloc, new DEdge(defloc, parent.getOppositePoint(edges[i])),edges[i], parent);
 					if(defloc==null){
 						location = parent.getBarycenter();
 						return;
