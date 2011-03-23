@@ -23,6 +23,8 @@ public abstract class Element {
 	//An identifier to use correspondance maps externally, to affect properties efficiently.
 	private int externalGID;
 
+	//If this edge is an obstacle, it must have a height
+	private double height ;
 	/**
 	 * Default initialization
 	 */
@@ -30,6 +32,7 @@ public abstract class Element {
 		this.gid = -1;
 		this.property = 0;
 		externalGID = -1;
+		height = 0;
 	}
 	/**
 	 * default constructor
@@ -144,6 +147,21 @@ public abstract class Element {
 		return externalGID;
 	}
 
+	/**
+	 * Get the height of the edge.
+	 * @return
+	 */
+	public final double getHeight() {
+		return height;
+	}
+
+	/**
+	 * Set the height of the edge
+	 * @param height
+	 */
+	public final void setHeight(double height) {
+		this.height = height;
+	}
 	/**
 	 * Computed bounding box
 	 * 
