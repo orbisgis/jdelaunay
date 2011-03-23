@@ -1,6 +1,5 @@
 package org.jdelaunay.delaunay;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jhydrocell.hydronetwork.HydroNetwork;
