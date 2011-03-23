@@ -1279,7 +1279,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 */
 	public int getMaxWeight(HashMap<Integer, Integer> map){
 		int weight = -1;
-		for(int i=1; i<10; i++){
+		for(int i=1; i<Element.WEIGHT_CLASSIFICATION_NUMBER; i++){
 			if(hasProperty(i) && map.containsKey(i)){
 				weight = weight < map.get(i) ? map.get(i) : weight;
 			}

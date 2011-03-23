@@ -17,6 +17,7 @@ public abstract class Element {
 	 * 
 	 */
 	private static final long serialVersionUID = 5437683478248244942L;
+	public static final int WEIGHT_CLASSIFICATION_NUMBER = 10;
 	private int gid;
 	private int property;
 	//An identifier to use correspondance maps externally, to affect properties efficiently.
