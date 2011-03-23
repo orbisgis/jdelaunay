@@ -660,4 +660,14 @@ public class TestTriangle extends BaseUtility {
 
 	 }
 
+	 public void testGetSlope() throws DelaunayError {
+		DEdge e1 = new DEdge(0, 0, 0, 2, 0, 2);
+		DEdge e2 = new DEdge(2, 0 ,2, 0, 2, 0);
+		DEdge e3 = new DEdge(0, 2, 0, 0, 0, 0);
+		DTriangle tri = new DTriangle(e1, e2, e3);
+		assertEquals(tri.getSlope(), -1, Tools.EPSILON);
+		assertEquals(tri.getSlopeInDegree(), -45, Tools.EPSILON);
+
+	 }
+
 }

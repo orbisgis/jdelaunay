@@ -658,6 +658,29 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		return pente;
 	}
 
+
+	/**
+	 * Get the slope of this DTrioangle. Be careful, as the returned value will be negative
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public double getSlope() throws DelaunayError {
+		DPoint steep = getSteepestVector();
+		DEdge ed = new DEdge(new DPoint(0,0,0), steep);
+		return ed.getSlope();
+	}
+
+	/**
+	 * get the slope of this DTriangle, in degrees. Be careful, as the returned value will be negative.
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public double getSlopeInDegree() throws DelaunayError {
+		DPoint steep = getSteepestVector();
+		DEdge ed = new DEdge(new DPoint(0,0,0), steep);
+		return ed.getSlopeInDegree();
+	}	
+
 	/**
 	 * check if one of the triangle's angle is less than minimum
 	 *
