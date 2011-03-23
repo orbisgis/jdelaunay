@@ -149,7 +149,7 @@ public final class HydroProperties {
          * @param weight
          */
         public static int getSewerWeight(){
-                return WALL;
+                return SEWER;
         }
         /**
          * Set the weight associated to the ditch property. This value must be between 0 and 1023 !
@@ -164,7 +164,7 @@ public final class HydroProperties {
          * @param weight
          */
         public static int getDitchWeight(){
-                return WALL;
+                return DITCH;
         }
         /**
          * Set the weight associated to the road property. This value must be between 0 and 1023 !
@@ -179,7 +179,7 @@ public final class HydroProperties {
          * @param weight
          */
         public static int getRoadWeight(){
-                return WALL;
+                return ROAD;
         }
         /**
          * Set the weight associated to the river property. This value must be between 0 and 1023 !
@@ -194,7 +194,7 @@ public final class HydroProperties {
          * @param weight
          */
         public static int getRiverWeight(){
-                return WALL;
+                return RIVER;
         }
         /**
          * Set the weight associated to the parcel property. This value must be between 0 and 1023 !
@@ -209,7 +209,7 @@ public final class HydroProperties {
          * @param weight
          */
         public static int getParcelWeight(){
-                return WALL;
+                return PARCEL;
         }
 
 	/**
