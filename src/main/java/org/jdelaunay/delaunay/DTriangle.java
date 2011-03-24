@@ -1211,7 +1211,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		// sur e
 		DPoint a = ed.getStartPoint();
 		DPoint b = ed.getEndPoint();
-		int i = 0;
                 if(!this.belongsTo(a) || !belongsTo(b)){
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_OUTSIDE_TRIANGLE);
                 }
@@ -1235,6 +1234,25 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 		return res;
 	}
+
+
+        /**
+         * Compute the intersection point according the steepest vector.
+         * We assume that the point is in the Triangle
+         * @return DPoint
+         * @throws DelaunayError
+         */
+        public final DPoint getSteepestIntersectionPoint(DPoint dPoint) throws DelaunayError{
+                if (isInside(dPoint)){
+                for (DEdge dEdge : edges) {
+                       if (isTopoOrientedToEdge(dEdge)) {
+                                        return Tools.computeIntersection(dEdge.getStartPoint(), dEdge.getDirectionVector(), dPoint, getSteepestVector());
+                        }
+                }
+                }
+                return null;
+
+        }
 
         
 }

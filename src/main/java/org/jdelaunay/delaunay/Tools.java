@@ -505,5 +505,39 @@ public final class Tools {
 		return v3;
 	}
 
+        /**
+	 * Calcule le point d'intersection de 2 droites coplanaires
+	 *
+	 * @param p1
+	 *            point de la premiere droite
+	 * @param v1
+	 *            vecteur directeur de la premiere droite
+	 * @param p2
+	 *            point de la seconde droite
+	 * @param v2
+	 *            vecteur directeur de la seconde droite
+	 * @return coordonnees du point d'intersection des 2 droites ou null si les
+	 *         droites sont parrallèles
+         * @throws DelaunayError
+	 */
+
+	public static DPoint computeIntersection(DPoint p1, DPoint v1,
+			DPoint p2, DPoint v2) throws DelaunayError {
+		double delta;
+		double k;
+		DPoint i = null;
+		// methode de Cramer pour determiner l'intersection de 2 droites du plan
+		delta = v1.getX() * (-v2.getY()) - (-v1.getY()) * v2.getX();
+		if (delta != 0) {
+			k = ((p2.getX() - p1.getX()) * (-v2.getY()) - (p2.getY() - p1.getY()) * (-v2.getX())) / delta;
+			i = new DPoint();
+			i.setX(p1.getX() + k * v1.getX());
+			i.setY(p1.getY() + k * v1.getY());
+			i.setZ(p1.getZ() + k * v1.getZ());
+		}
+		return i;
+	}
+
+
 
 }
