@@ -1112,11 +1112,15 @@ public class ConstrainedMesh implements Serializable {
 		VoronoiGraph vg;
 		for(DTriangle tri : triangleList){
 			if(!tri.isSeenForFlatRemoval()){
-				vg = new VoronoiGraph(tri);
-				vg.fillUntilNotFlatFound();
-				vg.assignZValues();
-				if(vg.isUseful()){
-					newPoints.addAll(vg.getSkeletonPoints());
+				if(tri.isFlatSlope()){
+					vg = new VoronoiGraph(tri);
+					vg.fillUntilNotFlatFound();
+					vg.assignZValues();
+					if(vg.isUseful()){
+						newPoints.addAll(vg.getSkeletonPoints());
+					}
+				} else {
+					tri.setSeenForFlatRemoval(true);
 				}
 			}
 		}
