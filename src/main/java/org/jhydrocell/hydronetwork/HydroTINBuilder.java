@@ -194,43 +194,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 }
         }
 
-        /**
-         * post process the edges according to their type
-         */
-        private void postProcessEdges() {
-                List<DEdge> addedEdges = new LinkedList<DEdge>();
-                List<DEdge> theEdges = this.getEdges();
-                for (DEdge anEdge : theEdges) {
-                        if (anEdge.hasProperty(HydroProperties.WALL)) {
-                                // Process wall : duplicate edge and changes connections
-                                if ((anEdge.getLeft() != null) && (anEdge.getRight() != null)) {
-                                        // Something to do if and only if there are two triangles
-                                        // connected
-                                        DEdge newEdge = new DEdge(anEdge);
-                                        // Changes left triangle connection
-                                        DTriangle aTriangle = anEdge.getLeft();
-                                        for (int i = 0; i < 3; i++) {
-                                                if (aTriangle.getEdge(i) == anEdge) {
-                                                        aTriangle.setEdge(i, newEdge);
-                                                }
-                                        }
-
-                                        // Changes edges connections
-                                        newEdge.setRight(null);
-                                        anEdge.setLeft(null);
-
-                                        // add the new edge
-                                        addedEdges.add(newEdge);
-                                }
-                        }
-                }
-
-                // add edges to the structure
-                for (DEdge anEdge : addedEdges) {
-                        theEdges.add(anEdge);
-                }
-        }
-
+        
         // ----------------------------------------------------------------
         /**
          * Create a new point on the Mesh surface. Set the hydroProperty to the point.

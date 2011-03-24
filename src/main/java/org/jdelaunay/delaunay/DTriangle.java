@@ -1246,7 +1246,11 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 if (isInside(dPoint)){
                 for (DEdge dEdge : edges) {
                        if (isTopoOrientedToEdge(dEdge)) {
-                                        return Tools.computeIntersection(dEdge.getStartPoint(), dEdge.getDirectionVector(), dPoint, getSteepestVector());
+                               DPoint pt = Tools.computeIntersection(dEdge.getStartPoint(), dEdge.getDirectionVector(), dPoint, getSteepestVector());
+                               if (dEdge.contains(pt)){
+                                return pt;
+                               }
+                                       
                         }
                 }
                 }
