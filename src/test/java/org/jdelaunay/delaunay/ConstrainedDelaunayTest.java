@@ -1109,9 +1109,9 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.forceConstraintIntegrity();
 		constraints = mesh.getConstraintEdges();
 		assertTrue(constraints.size()==6);
-		assertTrue(mesh.getPoints().contains(new DPoint(2,2,40)));
+		assertTrue(mesh.getPoints().contains(new DPoint(2,2,40)));		
 
-		
+
 	}
 
 	/**

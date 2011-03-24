@@ -668,16 +668,18 @@ public class ConstrainedMesh implements Serializable {
 							//the current event point. If it is, we must process the
 							if (newEvent.equals2D(currentEvent)) {
 								//intersection.
-								w1 = e1.getMaxWeight(weights);
-								w2 = e2.getMaxWeight(weights);
-								if(w1<maxWeight && w2<maxWeight){
-									if(Double.isNaN(z)){
-										throw new DelaunayError("you're not supposed to have a NaN here !");
+								if(!weights.isEmpty()){
+									w1 = e1.getMaxWeight(weights);
+									w2 = e2.getMaxWeight(weights);
+									if(w1<maxWeight && w2<maxWeight){
+										if(Double.isNaN(z)){
+											throw new DelaunayError("you're not supposed to have a NaN here !");
+										}
+										newEvent.setZ(z);
+									}else{
+										maxWeight=Math.max(w1,w2);
+										z = newEvent.getZ();
 									}
-									newEvent.setZ(z);
-								}else{
-									maxWeight=Math.max(w1,w2);
-									z = newEvent.getZ();
 								}
 								//We process the intersection.
 								newEvent.setX(abs);

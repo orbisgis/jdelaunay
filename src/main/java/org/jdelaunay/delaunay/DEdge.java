@@ -781,6 +781,12 @@ public class DEdge extends Element implements Comparable<DEdge> {
 				if (-Tools.EPSILON2 < t13 && t13 < 1 + Tools.EPSILON2) {
 					if (-Tools.EPSILON2 < t14 && t14 < 1 + Tools.EPSILON2) {
                                                 //p3 and p4 are both on the edge [p1 p2]
+						if(!useCoordZOfp1p2){
+							double z = p2.getZ() * t14 + (1 - t14) * p1.getZ();
+							p4.setZ(z);
+							z = p2.getZ() * t13 + (1 - t13) * p1.getZ();
+							p3.setZ(z);
+						}
 						intersection = new DEdge(p3, p4);
 					} else {
                                                 //p4 is not on [p1 p2]
@@ -869,12 +875,15 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @throws DelaunayError
 	 */
 	public final Element getIntersection(DEdge ed, Map<Integer,Integer> weights) throws DelaunayError {
+		if(weights.isEmpty()){
+			return getIntersection(ed.startPoint, ed.endPoint, false);
+		}
 		int wt = getMaxWeight(weights);
 		int wo = ed.getMaxWeight(weights);
 		if(wo>wt){
 			return getIntersection(ed.startPoint, ed.endPoint,true);
 		} else {
-			return getIntersection(ed.startPoint, ed.endPoint);
+			return getIntersection(ed.startPoint, ed.endPoint, false);
 		}
 	}
 
