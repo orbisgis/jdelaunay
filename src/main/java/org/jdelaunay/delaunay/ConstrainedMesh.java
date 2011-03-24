@@ -619,6 +619,12 @@ public class ConstrainedMesh implements Serializable {
 		int rmCount;
 		int mem;
 		while (i < eventPoints.size()) {
+			//The max weight used to compute the current intersection
+			int maxWeight = Integer.MIN_VALUE;
+			//We must remember what the z value was.
+			Double z = Double.NaN;
+			int w1;
+			int w2;
 			//We retrieve the event about to be processed.
 			currentEvent = eventPoints.get(i);
 			//We retrieve the absciss of the current event
@@ -660,8 +666,19 @@ public class ConstrainedMesh implements Serializable {
 							//We've found an intersection between two non-colinear edges
 							//We must check that this intersection point is not
 							//the current event point. If it is, we must process the
-							//intersection.
 							if (newEvent.equals2D(currentEvent)) {
+								//intersection.
+								w1 = e1.getMaxWeight(weights);
+								w2 = e2.getMaxWeight(weights);
+								if(w1<maxWeight && w2<maxWeight){
+									if(Double.isNaN(z)){
+										throw new DelaunayError("you're not supposed to have a NaN here !");
+									}
+									newEvent.setZ(z);
+								}else{
+									maxWeight=Math.max(w1,w2);
+									z = newEvent.getZ();
+								}
 								//We process the intersection.
 								newEvent.setX(abs);
 								List<DEdge> toBeInsert = new ArrayList<DEdge>();

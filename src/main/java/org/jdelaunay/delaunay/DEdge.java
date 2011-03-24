@@ -694,25 +694,25 @@ public class DEdge extends Element implements Comparable<DEdge> {
 				// it intersects
 				if (t2 <= Tools.EPSILON2) {
 					intersection = p3;
-					if(!useCoordZOfp1p2){
+					if(useCoordZOfp1p2){
 						double z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
 						p3.setZ(z);
 					}
 				} else if (t2 >= 1 - Tools.EPSILON2) {
 					intersection = p4;
-					if(!useCoordZOfp1p2){
+					if(useCoordZOfp1p2){
 						double z = p2.getZ() * t1 + (1 - t1) * p1.getZ();
 						p4.setZ(z);
 					}
 				} else if (t1 <= Tools.EPSILON2) {
 					intersection = p1;
-					if(useCoordZOfp1p2){
+					if(!useCoordZOfp1p2){
 						double z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
 						p1.setZ(z);
 					}
 				} else if (t1 >= 1 - Tools.EPSILON2) {
 					intersection = p2;
-					if(useCoordZOfp1p2){
+					if(!useCoordZOfp1p2){
 						double z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
 						p2.setZ(z);
 					}

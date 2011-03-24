@@ -2,7 +2,9 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import org.jhydrocell.hydronetwork.HydroProperties;
 
 public class ConstrainedDelaunayTest extends BaseUtility {
 
@@ -1040,6 +1042,75 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		mesh.processDelaunay();
 //		show(mesh);
 		assertTrue(mesh.getTriangleList().size()==3);
+		
+	}
+
+	public void testWeightManagement() throws DelaunayError {
+		ConstrainedMesh mesh;
+		List<DEdge> constraints;
+		DEdge e1 = new DEdge(0,0,80, 4,4,80);
+		DEdge e2 = new DEdge(0,2,40, 4,2,40);
+		DEdge e3 = new DEdge(0,4,60, 4,0,60);
+		//We prepare our properties
+		e1.setProperty(HydroProperties.WALL);
+		e2.setProperty(HydroProperties.RIVER);
+		e3.setProperty(HydroProperties.LEVEL);
+		HashMap<Integer, Integer> weights = new HashMap<Integer, Integer>();
+		weights.put(HydroProperties.WALL,10);
+		weights.put(HydroProperties.RIVER,20);
+		weights.put(HydroProperties.LEVEL,30);
+		//we fill the mesh
+		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(e3);
+		mesh.addConstraintEdge(e2);
+		mesh.addConstraintEdge(e1);
+		mesh.setWeights(weights);
+		mesh.forceConstraintIntegrity();
+		constraints = mesh.getConstraintEdges();
+		assertTrue(constraints.size()==6);
+		assertTrue(mesh.getPoints().contains(new DPoint(2,2,60)));
+		assertFalse(mesh.getPoints().contains(new DPoint(2,2,80)));
+		//We prepare our properties
+		weights.put(HydroProperties.WALL,40);
+		weights.put(HydroProperties.RIVER,20);
+		weights.put(HydroProperties.LEVEL,30);
+		e1 = new DEdge(0,0,80, 4,4,80);
+		e2 = new DEdge(0,2,40, 4,2,40);
+		e3 = new DEdge(0,4,60, 4,0,60);
+		e1.setProperty(HydroProperties.WALL);
+		e2.setProperty(HydroProperties.RIVER);
+		e3.setProperty(HydroProperties.LEVEL);
+		//we fill the mesh
+		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(e3);
+		mesh.addConstraintEdge(e2);
+		mesh.addConstraintEdge(e1);
+		mesh.setWeights(weights);
+		mesh.forceConstraintIntegrity();
+		constraints = mesh.getConstraintEdges();
+		assertTrue(constraints.size()==6);
+		assertTrue(mesh.getPoints().contains(new DPoint(2,2,80)));
+		//We prepare our properties
+		weights.put(HydroProperties.WALL,40);
+		weights.put(HydroProperties.RIVER,50);
+		weights.put(HydroProperties.LEVEL,30);
+		e1 = new DEdge(0,0,80, 4,4,80);
+		e2 = new DEdge(0,2,40, 4,2,40);
+		e3 = new DEdge(0,4,60, 4,0,60);
+		e1.setProperty(HydroProperties.WALL);
+		e2.setProperty(HydroProperties.RIVER);
+		e3.setProperty(HydroProperties.LEVEL);
+		//we fill the mesh
+		mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(e3);
+		mesh.addConstraintEdge(e2);
+		mesh.addConstraintEdge(e1);
+		mesh.setWeights(weights);
+		mesh.forceConstraintIntegrity();
+		constraints = mesh.getConstraintEdges();
+		assertTrue(constraints.size()==6);
+		assertTrue(mesh.getPoints().contains(new DPoint(2,2,40)));
+
 		
 	}
 
