@@ -32,7 +32,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 		}
 
 		assertTrue(nbFlat > 0);
-//		aMesh.removeFlatTriangles();
+		aMesh.removeFlatTriangles();
 		triangles = aMesh.getTriangleList();
 
 		nbFlat = 0;
@@ -42,7 +42,7 @@ public class DelaunayForHydroTest extends BaseUtility {
 				nbFlat++;
 			}
 		}
-//		assertTrue(nbFlat == 0);
+		assertTrue(nbFlat == 0);
 	}
 
 	public void testEdgesMorphologicalClassification() throws DelaunayError {
@@ -51,7 +51,6 @@ public class DelaunayForHydroTest extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getPoints());
-//		aMesh.setMax(1300, 700);
 		aMesh.processDelaunay();
 		
 		
