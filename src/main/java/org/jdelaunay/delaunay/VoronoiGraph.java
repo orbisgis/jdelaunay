@@ -272,7 +272,18 @@ class VoronoiGraph {
 	private boolean assignZValuesWithNotFlat() throws DelaunayError {
 		//We need the radius and the Z value of the center of the
 		//first non-flat triangle we found.
-		double zCenter = notFlat.getLocation().getZ();
+		double flatZ = lastFlat.getParent().getPoint(0).getZ();
+		DTriangle dt = notFlat.getParent();
+		double zCenter=Double.NaN;
+		for(int i=0; i<DTriangle.PT_NB;i++){
+			if(Math.abs(dt.getPoint(i).getZ()-flatZ)>Tools.EPSILON){
+				zCenter = dt.getPoint(i).getZ();
+				break;
+			}
+		}
+		if(Double.isNaN(zCenter)){
+			throw new DelaunayError("Well... this triangle was supposed not to be flat. U mad ?");
+		}
 		double flatHeight = lastFlat.getParent().getPoint(0).getZ();
 		int length = getMaxLength(lastFlat)+1;
 		double delta = (zCenter - flatHeight)/(length+1);
