@@ -17,7 +17,8 @@ public class TestVoronoiNodes extends BaseUtility {
 		DTriangle tri = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,0,4,0) , new DEdge(0,4,0,0,0,0));
 		VoronoiNode vn = new VoronoiNode(tri);
 		assertTrue(vn.getLinkedNodes().isEmpty());
-		assertTrue(vn.getLocation().equals(new DPoint(2,2,0)));
+		DPoint comp = new DPoint(4.0/3.0,4.0/3.0,0);
+		assertTrue(vn.getLocation().equals(comp));
 		assertTrue(vn.getParent()==tri);
 	}
 
@@ -61,7 +62,7 @@ public class TestVoronoiNodes extends BaseUtility {
 		vn.setParent(tri);
 		assertTrue(vn.getParent().equals(tri));
 		assertTrue(vn.getParent() == tri);
-		assertTrue(vn.getLocation().equals(new DPoint(2.5, 2.5, 0)));
+		assertTrue(vn.getLocation().equals(new DPoint(5.0/3.0, 5.0/3.0, 0)));
 	}
 
 	/**
@@ -98,7 +99,7 @@ public class TestVoronoiNodes extends BaseUtility {
 		tri2 = new DTriangle(new DEdge(3,3,0,3,0,0), ed, new DEdge(0,3,0,3,3,0));
 		vn2 = new VoronoiNode(tri2);
 		assertTrue(vn.compareTo(vn2)==-1);
-		assertTrue(vn.getLocation().equals(vn2.getLocation()));
+		assertFalse(vn.getLocation().equals(vn2.getLocation()));
 		ed =  new DEdge(6,0,0,0,3,0);
 		tri = new DTriangle(new DEdge(3,0,0,6,0,0), ed, new DEdge(0,3,0,3,0,0));
 		vn = new VoronoiNode(tri);
@@ -305,13 +306,13 @@ public class TestVoronoiNodes extends BaseUtility {
 	 * Test the getRadius method.
 	 * @throws DelaunayError
 	 */
-	public void testgetRadius() throws DelaunayError {
+	public void testGetRadius() throws DelaunayError {
 		DEdge constr = new DEdge(6, 0, 0, 0, 3, 0);
 		DEdge other = new DEdge(0, 3, 0, 3, 0, 0);
 		DTriangle tri = new DTriangle(new DEdge(3,0,0,6,0,0), constr, other);
 		DTriangle tri2 = new DTriangle(constr, new DEdge(0,3,0,5,5,0), new DEdge(5,5,0,6,0,0));
 		VoronoiNode vn = new VoronoiNode(tri2);
-		assertTrue(vn.getRadius() == vn.getParent().getRadius());
+		assertFalse(vn.getRadius() == vn.getParent().getRadius());
 		tri = new DTriangle(new DEdge(3,0,0,6,0,0), new DEdge(6, 0, 0, 0, 3, 0), new DEdge(0, 3, 0, 3, 0, 0));
 		vn = new VoronoiNode(tri);
 		assertTrue(vn.getRadius() != tri.getRadius());

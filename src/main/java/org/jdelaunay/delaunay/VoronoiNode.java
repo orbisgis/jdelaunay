@@ -177,33 +177,7 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 	 * @throws DelaunayError
 	 */
 	private void computeLocation() throws DelaunayError {
-		DPoint defloc = new DPoint(parent.getCircumCenter());
-		DEdge[] edges = parent.getEdges();
-		DPoint last;
-		//To be sure that the current edge is connected to two triangles, as we don't want to
-		//add points outside the current mesh.
-		boolean twoAssociatedTriangles;
-		for(int i =0; i<DTriangle.PT_NB; i++){
-			last = parent.getOppositePoint(edges[i]);
-			twoAssociatedTriangles = edges[i].getRight() != null && edges[i].getLeft()!=null;
-			//If the circumcenter is right to one edge where the last point is
-			//on the left (or the contrary) we must make further process.
-			if(!edges[i].isRight(last)==edges[i].isRight(defloc)){
-				if((edges[i].isLocked() || !twoAssociatedTriangles)){
-					//If the center is on the other side of the constraint, we stop our progress.
-					location = parent.getBarycenter();
-					return;
-				} else {
-					//We must check we don't intersect a constraint.
-					defloc = checkLocationValidity(defloc, new DEdge(defloc, parent.getOppositePoint(edges[i])),edges[i], parent);
-					if(defloc==null){
-						location = parent.getBarycenter();
-						return;
-					}
-				}
-			}
-		}
-		location = defloc;
+		location = parent.getBarycenter();
 	}
 
 	/**
@@ -269,15 +243,11 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 	 * @throws DelaunayError
 	 */
 	double getRadius() throws DelaunayError {
-		if(location.equals(new DPoint(parent.getCircumCenter()))){
-			return parent.getRadius();
-		} else {
-			List<Double> dists = new ArrayList<Double>();
-			for(int i=0; i<DTriangle.PT_NB; i++){
-				dists.add(location.squareDistance(getParent().getPoint(i)));
-			}
-			return Collections.min(dists);
+		List<Double> dists = new ArrayList<Double>();
+		for(int i=0; i<DTriangle.PT_NB; i++){
+			dists.add(location.squareDistance(getParent().getPoint(i)));
 		}
+		return Collections.min(dists);
 	}
 
 }

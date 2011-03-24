@@ -476,4 +476,51 @@ public class TestVoronoiGraph extends BaseUtility{
 		int dep = vg.getMaxDepth();
 		assertTrue(dep==4 || dep==5);		
 	}
+
+	/**
+	 * A test on the graph depth computation with a loop.
+	 * @throws DelaunayError
+	 */
+	public void testGraphDepthLoopSetZ() throws DelaunayError {
+		DPoint p1 = new DPoint(0,0,10);
+		DPoint p2 = new DPoint(4,0,0);
+		DPoint p3 = new DPoint(0,3,0);
+		DPoint p4 = new DPoint(4,4,0);
+		DPoint p5 = new DPoint(5,7,0);
+		DPoint p6 = new DPoint(7,2,0);
+		DPoint p7 = new DPoint(7,4,0);
+		DPoint p8 = new DPoint(9,6,0);
+		DEdge e1 = new DEdge(p1, p2);
+		DEdge e2 = new DEdge(p1, p3);
+		DEdge e3 = new DEdge(p3, p2);
+		DEdge e4 = new DEdge(p4, p3);
+		DEdge e5 = new DEdge(p4, p2);
+		DEdge e6 = new DEdge(p5, p2);
+		DEdge e7 = new DEdge(p4, p5);
+		DEdge e8 = new DEdge(p5, p7);
+		DEdge e9 = new DEdge(p4, p7);
+		DEdge e10 = new DEdge(p4, p6);
+		DEdge e11 = new DEdge(p3, p6);
+		DEdge e12 = new DEdge(p6, p7);
+		DEdge e13 = new DEdge(p7, p8);
+		DEdge e14 = new DEdge(p5, p8);
+		DTriangle dt1 = new DTriangle (e1, e2, e3);
+		DTriangle dt2 = new DTriangle (e4, e5, e3);
+		DTriangle dt3 = new DTriangle (e5, e6, e7);
+		DTriangle dt4 = new DTriangle (e7, e8, e9);
+		DTriangle dt5 = new DTriangle (e10, e12, e9);
+		DTriangle dt6 = new DTriangle (e10, e4, e11);
+		DTriangle dt7 = new DTriangle (e8, e14, e13);
+		e6.setLocked(true);
+		e14.setLocked(true);
+		e13.setLocked(true);
+		e12.setLocked(true);
+		e11.setLocked(true);
+		VoronoiGraph vg = new VoronoiGraph(dt7);
+		vg.fillUntilNotFlatFound();
+		vg.assignZValues();
+		for(VoronoiNode vn : vg.getSortedNodes()){
+			assertTrue(vn.getLocation().getZ()<10 && vn.getLocation().getZ()>0);
+		}
+	}
 }
