@@ -21,6 +21,8 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 	private DTriangle parent;
 	//The point where the node is actually located.
 	private DPoint location;
+	//The node has been seen when processing the depth of the graph
+	private boolean seen;
 
 	/**
 	 * Create a new VoronoiNode, given the Dtriangle parent that will determine
@@ -29,6 +31,7 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 	 */
 	public VoronoiNode(DTriangle par) throws DelaunayError{
 		linkedNodes = new ArrayList<VoronoiNode>();
+		seen = false;
 		parent = par;
 		computeLocation();
 	}
@@ -103,6 +106,22 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 			}
 		}
 		return linkedNodes;
+	}
+
+	/**
+	 * True if the node has been seen when computing the depth of the graph.
+	 * @return
+	 */
+	final boolean isSeen() {
+		return seen;
+	}
+
+	/**
+	 * Set to true when the node is seen when computing the depth of the graph.
+	 * @param seen
+	 */
+	final void setSeen(boolean seen) {
+		this.seen = seen;
 	}
 
 	/**

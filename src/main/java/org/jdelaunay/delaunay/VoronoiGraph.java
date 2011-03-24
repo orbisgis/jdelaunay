@@ -12,17 +12,29 @@ import java.util.List;
  */
 class VoronoiGraph {
 
-	//The list of nodes contained in this graph, sorted.
+	/**
+	 * The list of nodes contained in this graph, sorted.
+	 */
 	private List<VoronoiNode> sortedNodes;
-	//The VoronoiNode that has been used as a start point to build this graph.
+	/**
+	 * The VoronoiNode that has been used as a start point to build this graph.
+	 */
 	private VoronoiNode startNode;
-	//The first not flat node that has been found
+	/**
+	 * The first not flat node that has been found
+	 */
 	private VoronoiNode notFlat;
-	//True if this graph can be used to insert points in the mesh.
+	/**
+	 * The last flat node that has been found
+	 */
+	private VoronoiNode lastFlat;
+	/**
+	 * True if this graph can be used to insert points in the mesh.
+	 */
 	private boolean useful = false;
 
 	/**
-	 * Construct a new VoronoiGraph, with a sole triangle as a base. It will be
+	 * Build a new VoronoiGraph, with a sole triangle as a base. It will be
 	 * fillable later.
 	 * @param base
 	 * @throws DelaunayError
@@ -137,6 +149,7 @@ class VoronoiGraph {
 					toBeTreated.add(neigh);
 				} else if(notFlat == null){
 					notFlat = neigh;
+					lastFlat = vn;
 				}
 			}
 		}
@@ -247,6 +260,35 @@ class VoronoiGraph {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Get the max depth of the graph.
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public final int getMaxDepth() throws DelaunayError{
+		for(VoronoiNode vn : sortedNodes){
+			vn.setSeen(false);
+		}
+		return lastFlat != null ? getMaxLength(lastFlat) : -1;
+	}
+
+	/**
+	 * Compute recursively the depth of the graph.
+	 * @param vn
+	 * @return
+	 * @throws DelaunayError
+	 */
+	private int getMaxLength(VoronoiNode vn) throws DelaunayError {
+		int length = 0;
+		vn.setSeen(true);
+		for(VoronoiNode voro : vn.getLinkedNodes()){
+			if(!voro.isSeen()){
+				length = Math.max(length, getMaxLength(voro));
+			}
+		}
+		return length+1;
 	}
 
 	/**

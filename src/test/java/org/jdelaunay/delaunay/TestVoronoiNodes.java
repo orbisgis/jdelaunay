@@ -317,6 +317,14 @@ public class TestVoronoiNodes extends BaseUtility {
 		assertTrue(vn.getRadius() != tri.getRadius());
 	}
 
+	public void testIsSeen() throws DelaunayError {
+		DTriangle tri = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,0,4,0) , new DEdge(0,4,0,0,0,0));
+		VoronoiNode vn = new VoronoiNode(tri);
+		assertFalse(vn.isSeen());
+		vn.setSeen(true);
+		assertTrue(vn.isSeen());
+	}
+
 	/**
 	 * Build a sample of connected triangles that share the exact same edges and points.
 	 * @return
