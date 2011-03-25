@@ -427,6 +427,19 @@ public class ConstrainedMesh implements Serializable {
 				updateExtensionPoints(pt);
 			}
 			this.points = pts;
+			//We must be sure that we don't have duplicates in the list
+			ListIterator<DPoint> iter = points.listIterator();
+			if(iter.hasNext()){
+				DPoint e1 = iter.next();
+				DPoint e2;
+				while(iter.hasNext()){
+					e2=e1;
+					e1=iter.next();
+					if(e1.equals(e2)){
+						iter.remove();
+					}
+				}
+			}
 		}
 	}
 

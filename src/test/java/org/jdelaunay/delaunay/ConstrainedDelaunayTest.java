@@ -226,6 +226,27 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		}
 	}
 
+	public void testSetPoints() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		List<DPoint> points = new ArrayList<DPoint>();
+		points.add(new DPoint(0,78,6));
+		points.add(new DPoint(0,78,6));
+		points.add(new DPoint(34,78,6));
+		points.add(new DPoint(2,6,6));
+		points.add(new DPoint(5,2,6));
+		points.add(new DPoint(65,32,6));
+		points.add(new DPoint(54,79,6));
+		points.add(new DPoint(71,58,6));
+		points.add(new DPoint(10,8,6));
+		mesh.setPoints(points);
+		List<DPoint> pts = mesh.getPoints();
+		for(int i=0; i<pts.size();i++){
+			for(int j=0; j<pts.size();j++){
+				assertTrue(i==j || !pts.get(i).equals(pts.get(j)));
+			}
+		}
+	}
+
 	/**
 	 * We want to check that we correctly insert new edges in an already
 	 * "vertically sorted" list.
