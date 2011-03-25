@@ -95,7 +95,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			recomputeCenter();
 			radius = e1.getStartPoint().squareDistance2D(xCenter, yCenter);
 		} else {
-			throw new DelaunayError("Problem while generating the Triangle");
+			throw new DelaunayError("Problem while generating the Triangle : "+
+				integrityE1E2 +" "+ integrityE1EptNb+" "+integrityEptNbE2);
 		}
 	}
 

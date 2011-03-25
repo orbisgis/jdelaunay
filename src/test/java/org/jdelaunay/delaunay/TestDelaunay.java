@@ -1,7 +1,6 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
-import java.util.ListIterator;
 
 public class TestDelaunay extends BaseUtility {
 	/**
@@ -13,34 +12,17 @@ public class TestDelaunay extends BaseUtility {
 		aMesh.setPrecision(1.0e-3);
 		aMesh.setVerbose(true);
 		aMesh.setPoints(getRandomPoints(100));
+
 		
 		long start = System.currentTimeMillis();
 		
 		aMesh.processDelaunay();
-		
 		long end = System.currentTimeMillis();
 		System.out.println("Duration " + (end-start)+"ms");
+//		show(aMesh);
 		assertTrue(true);
 		System.out.println("end");
 	}
-
-	/**
-	 * test GIDs
-	 * Check GIDs for DPoint, Edges and Triangles
-	 * GIDs must exist for each element (GID >= 0).
-	 * GIDs are unique for each kind of element.
-	 *
-	 * @throws DelaunayError
-	 */
-//	public void testGIDS() throws DelaunayError {
-//		ConstrainedMesh aMesh = new ConstrainedMesh();
-//		aMesh.setPrecision(1.0e-3);
-//		aMesh.setVerbose(true);
-//		aMesh.setPoints(getPoints());
-//		aMesh.processDelaunay();
-//
-//		assertGIDUnicity(aMesh);
-//	}
 
 	/**
 	 * Test points at the same location in 3D
