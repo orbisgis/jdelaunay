@@ -597,12 +597,13 @@ public class ConstrainedMesh implements Serializable {
 		//The event points are the extremities and intersections of the
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
-		ArrayList<DPoint> eventPoints = new ArrayList<DPoint>();
+		List<DPoint> eventPoints = points;
+//		ArrayList<DPoint> eventPoints = new ArrayList<DPoint>();
 		//We fill the list.
-		for (DEdge edge : constraintEdges) {
-			addToSortedList(edge.getStart(), eventPoints);
-			addToSortedList(edge.getEnd(), eventPoints);
-		}
+//		for (DEdge edge : constraintEdges) {
+//			addToSortedList(edge.getStart(), eventPoints);
+//			addToSortedList(edge.getEnd(), eventPoints);
+//		}
 		//we are about to perform the sweepline algorithm
 		DPoint currentEvent = null;
 		//edgeBuffer will contain the edges sorted vertically
@@ -692,6 +693,9 @@ public class ConstrainedMesh implements Serializable {
 									}else{
 										maxWeight=Math.max(w1,w2);
 										z = newEvent.getZ();
+                                                                                //We want to keep the z value in the actual event,
+                                                                                //as it won't be erased by the new one.
+                                                                                currentEvent.setZ(z);
 									}
 								}
 								//We process the intersection.
@@ -848,7 +852,23 @@ public class ConstrainedMesh implements Serializable {
 							throw new DelaunayError("We should already be on this event point");
 						}
 
-					} else {
+					} else if(e1.contains(currentEvent) && !e1.isExtremity(currentEvent)){
+                                                DEdge inter = new DEdge(e1.getPointLeft(),currentEvent);
+                                                inter.setProperty(e1.getProperty());
+                                                inter.setLocked(e1.isLocked());
+                                                addConstraintEdge(inter);
+                                                if(e1.getStartPoint().equals(e1.getPointLeft()) ){
+                                                        e1.setStartPoint(currentEvent);
+                                                } else {
+                                                        e1.setEndPoint(currentEvent);
+                                                }
+                                                if(!weights.isEmpty()){
+                                                        int w = e1.getMaxWeight(weights);
+                                                        if(w>maxWeight){
+                                                                maxWeight = w;
+                                                        }
+                                                }
+                                        } else {
 						//if the current event is the right point of e1, we
 						//can remove e1 from the buffer and add it to
 						//the constraints.
@@ -865,6 +885,18 @@ public class ConstrainedMesh implements Serializable {
 					j++;
 					if(edgeBuffer.size()>0 && j>=edgeBuffer.size()){
 						e2 = edgeBuffer.get(edgeBuffer.size()-1);
+                                                if(e2.contains(currentEvent) && !e2.isExtremity(currentEvent)){
+                                                        DEdge temp = new DEdge(e2.getPointLeft(), currentEvent);
+                                                        temp.setLocked(e2.isLocked());
+                                                        temp.setProperty(e2.getProperty());
+                                                        addConstraintEdge(temp);
+                                                        if(e2.getStartPoint().equals(e2.getPointLeft())){
+                                                                e2.setStartPoint(currentEvent);
+                                                        } else {
+                                                                e2.setEndPoint(currentEvent);
+                                                        }
+                                                        
+                                                }
 						if(e2.getPointRight().equals(currentEvent)){
 							edgeBuffer.remove(edgeBuffer.size()-1);
 							addConstraintEdge(e2);
@@ -874,9 +906,22 @@ public class ConstrainedMesh implements Serializable {
                                 //If we have only one constraint edge in the buffer, and the
                                 //event is its right point, then we remove it from the buffer
                                 //and add it to the list of constraints.
-			} else if (edgeBuffer.size() == 1 && edgeBuffer.get(0).getPointRight().equals2D(currentEvent)) {
-				addConstraintEdge(edgeBuffer.get(0));
-				edgeBuffer.remove(0);
+			} else if (edgeBuffer.size() == 1){ 
+                                DEdge e0 = edgeBuffer.get(0);
+                                if(e0.contains(currentEvent) && !e0.isExtremity(currentEvent)){
+                                        DEdge temp = new DEdge(e0.getPointLeft(), currentEvent);
+                                        temp.setLocked(e0.isLocked());
+                                        temp.setProperty(e0.getProperty());
+                                        addConstraintEdge(temp);
+                                        if(e0.getStartPoint().equals(e0.getPointLeft())){
+                                                e0.setStartPoint(currentEvent);
+                                        } else {
+                                                e0.setEndPoint(currentEvent);
+                                        }
+                                } else if( e0.getPointRight().equals2D(currentEvent)) {
+                                        addConstraintEdge(edgeBuffer.get(0));
+                                        edgeBuffer.remove(0);
+                                }
 			}
 			i++;
 		}

@@ -1135,6 +1135,42 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 	}
 
+        public void testIntersectionPointEdge() throws DelaunayError {
+                DEdge e1 = new DEdge(0,0,0,4,0,0);
+                DEdge e2 = new DEdge(2,0,0,2,0,0);
+                ArrayList<DEdge> list = new ArrayList<DEdge>();
+                list.add(e1);
+                list.add(e2);
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.setConstraintEdges(list);
+                mesh.forceConstraintIntegrity();
+                assertTrue(mesh.getConstraintEdges().size()==2);
+        }
+        
+        public void testIntersectionManyPoints() throws DelaunayError {
+                DEdge e1 = new DEdge(0,0,0,4,4,0);
+                DEdge e2 = new DEdge(2,4,0,6,0,0);
+                DEdge e3 = new DEdge(5,0,0,7,2,0);
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addConstraintEdge(e2);
+                mesh.addConstraintEdge(e1);
+                mesh.addConstraintEdge(e3);
+                mesh.addPoint(new DPoint(2,2,0));
+                mesh.addPoint(new DPoint(5,1,0));
+                mesh.forceConstraintIntegrity();
+                assertTrue(mesh.getPoints().size()==10);
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(0,0,0,2,2,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(3,3,0,2,2,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(3,3,0,4,4,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(2,4,0,3,3,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(3,3,0,5,1,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(5,1,0,5.5,0.5,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(5,0,0,5.5,0.5,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(5.5,0.5,0,7,2,0)));
+                assertTrue(mesh.getConstraintEdges().contains(new DEdge(5.5,0.5,0,6,0,0)));
+                assertTrue(mesh.getConstraintEdges().size()==9);
+        }
+        
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number
