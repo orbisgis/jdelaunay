@@ -1,7 +1,5 @@
 package org.jhydrocell.hydronetwork;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.ArrayList;
 
 import org.jdelaunay.delaunay.DelaunayError;
