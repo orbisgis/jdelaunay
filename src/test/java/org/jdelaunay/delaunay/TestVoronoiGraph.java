@@ -426,6 +426,11 @@ public class TestVoronoiGraph extends BaseUtility{
 		vg.fillUntilNotFlatFound();
 		int depth = vg.getMaxDepth();
 		assertTrue(depth==3);
+                dt1.setSeenForFlatRemoval(false);
+                dt2.setSeenForFlatRemoval(false);
+                dt3.setSeenForFlatRemoval(false);
+                dt4.setSeenForFlatRemoval(false);
+                dt5.setSeenForFlatRemoval(false);
 		vg = new VoronoiGraph(dt4);
 		vg.fillUntilNotFlatFound();
 		depth = vg.getMaxDepth();

@@ -157,7 +157,9 @@ class VoronoiGraph {
 			//we only process the nodes that were not already in the list,
 			//and so either treated, either referenced to be treat in the
 			//stack.
-			processNeighbours(treat);
+                        if(!treat.getParent().isSeenForFlatRemoval()){
+                                processNeighbours(treat);
+                        }
 		}
 
 	}

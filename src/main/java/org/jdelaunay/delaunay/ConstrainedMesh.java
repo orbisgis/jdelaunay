@@ -871,6 +871,9 @@ public class ConstrainedMesh implements Serializable {
 						}
 					}
 				}
+                                //If we have only one constraint edge in the buffer, and the
+                                //event is its right point, then we remove it from the buffer
+                                //and add it to the list of constraints.
 			} else if (edgeBuffer.size() == 1 && edgeBuffer.get(0).getPointRight().equals2D(currentEvent)) {
 				addConstraintEdge(edgeBuffer.get(0));
 				edgeBuffer.remove(0);
@@ -879,6 +882,13 @@ public class ConstrainedMesh implements Serializable {
 		}
 	}
 
+        /**
+         * Ensure that we don't create duplicate points during the intersection processing.
+         * If an event is found to be at a distance inferior to EPSILON from an existing
+         * point, then the existing point is moved to become exactly the said event.
+         * @param e
+         * @param p 
+         */
 	private void ensurePointPosition(DEdge e, DPoint p) {
 		if(e.getStart().equals2D(p)){
 			e.getStart().setX(p.getX());
