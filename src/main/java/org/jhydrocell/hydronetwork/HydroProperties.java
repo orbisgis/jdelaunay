@@ -82,12 +82,12 @@ public final class HydroProperties {
          */
         public static String toString(int aType) {
                 StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < 64; i++) {
+                for (int i = 0; i < 32; i++) {
                         int property = 1 << i;
 
                         if ((aType & property) != 0) {
                                 // Property is valid
-                                if (!builder.toString().equals("")) {
+                                if (!builder.toString().contentEquals("")) {
                                         builder.append(",");
                                 }
                                 builder.append(propertyToString(property));
