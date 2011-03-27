@@ -165,7 +165,7 @@ public final class HydroProperties {
                 int i = 0;
                 int res = 0;
                 boolean found = false;
-                while ((i < 64) && (!found)) {
+                while ((i < 32) && (!found)) {
                         res = 1 << i;
                         if (propertyToString(res).equals(aType)) {
                                 found = true;
