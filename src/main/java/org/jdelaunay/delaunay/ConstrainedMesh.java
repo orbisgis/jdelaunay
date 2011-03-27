@@ -546,7 +546,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Z value when processing the intersection.
 	 * @return
 	 */
-	public Map<Integer, Integer> getWeights() {
+	public final Map<Integer, Integer> getWeights() {
 		return weights;
 	}
 
@@ -562,7 +562,7 @@ public class ConstrainedMesh implements Serializable {
 	 *
 	 * @param weights
 	 */
-	public void setWeights(HashMap<Integer, Integer> weights) {
+	public final void setWeights(HashMap<Integer, Integer> weights) {
 		if(weights == null){
 			weights = new HashMap<Integer, Integer>();
 		}
@@ -598,12 +598,6 @@ public class ConstrainedMesh implements Serializable {
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
 		List<DPoint> eventPoints = points;
-//		ArrayList<DPoint> eventPoints = new ArrayList<DPoint>();
-		//We fill the list.
-//		for (DEdge edge : constraintEdges) {
-//			addToSortedList(edge.getStart(), eventPoints);
-//			addToSortedList(edge.getEnd(), eventPoints);
-//		}
 		//we are about to perform the sweepline algorithm
 		DPoint currentEvent = null;
 		//edgeBuffer will contain the edges sorted vertically
@@ -1709,8 +1703,8 @@ public class ConstrainedMesh implements Serializable {
 			final int xSize = 1200;
 			final int ySize = 600;
 			final int decalageX = 10;
-			final int decalageY = ySize + 30;
-			final int legende = ySize + 60;
+			final int decalageY = 630;
+			final int legende = 660;
 			final int bordure = 10;
 
 			scaleX = xSize / (theBox.getMaxX() - theBox.getMinX());
@@ -1740,12 +1734,6 @@ public class ConstrainedMesh implements Serializable {
 					aTriangle.displayObject(g, decalageX, decalageY, minX, minY,
 						scaleX, scaleY);
 				}
-
-//				if (displayCircles) {
-//					for (DTriangle aTriangle : trianglesQuadTree.getAll()) {
-//						aTriangle.displayObjectCircles(g, decalageX, decalageY);
-//					}
-//				}
 			}
 
 			// Draw lines

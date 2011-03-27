@@ -666,7 +666,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public double getSlope() throws DelaunayError {
+	public final double getSlope() throws DelaunayError {
 		DPoint steep = getSteepestVector();
 		DEdge ed = new DEdge(new DPoint(0,0,0), steep);
 		return ed.getSlope();
@@ -677,7 +677,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @return
 	 * @throws DelaunayError
 	 */
-	public double getSlopeInDegree() throws DelaunayError {
+	public final double getSlopeInDegree() throws DelaunayError {
 		DPoint steep = getSteepestVector();
 		DEdge ed = new DEdge(new DPoint(0,0,0), steep);
 		return ed.getSlopeInDegree();
@@ -686,17 +686,18 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	/**
 	 * check if one of the triangle's angle is less than minimum
 	 *
-	 * @param tolarance
+	 * @param tolerance
 	 * @return minAngle
+         *      The first found angle that is lower than tolerance.
 	 */
-	protected final int badAngle(double tolarance) {
-		double minAngle = 400;
+	protected final int badAngle(double tolerance) {
+		double minAngle = Double.POSITIVE_INFINITY;
 		int returnedValue = -1;
 		for (int k = 0; k < PT_NB; k++) {
 			double angle = getAngle(k);
 			if (angle < minAngle) {
 				minAngle = angle;
-				if (minAngle < tolarance) {
+				if (minAngle < tolerance) {
 					returnedValue = k;
 				}
 			}

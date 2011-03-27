@@ -1,6 +1,7 @@
 package org.jhydrocell.hydronetwork;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jdelaunay.delaunay.DelaunayError;
 import org.jdelaunay.delaunay.DEdge;
@@ -43,7 +44,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          *
          * @return ListServerEdges
          */
-        public ArrayList<DEdge> getSewerEdges() {
+        public final List<DEdge> getSewerEdges() {
                 return this.listServerEdges;
         }
 
@@ -52,7 +53,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          *
          * @return listEntryPoints
          */
-        public ArrayList<DPoint> getSewerEntries() {
+        public final List<DPoint> getSewerEntries() {
                 return this.listEntryPoints;
         }
 
@@ -61,7 +62,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          *
          * @return listSewerPoints
          */
-        public ArrayList<DPoint> getSewerPoints() {
+        public final List<DPoint> getSewerPoints() {
                 return this.listSewerPoints;
         }
 
@@ -71,7 +72,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          *
          * @throws DelaunayError
          */
-        public void morphologicalQualification() throws DelaunayError {
+        public final void morphologicalQualification() throws DelaunayError {
                 if (!this.isMeshComputed()) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
                 } else {
@@ -259,7 +260,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @return thePoint : the DPoint
          * @throws DelaunayError
          */
-        public DPoint addSewerEntry(double x, double y, double z)
+        public final DPoint addSewerEntry(double x, double y, double z)
                 throws DelaunayError {
                 // Add point to the Mesh
                 DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.SEWER_INPUT);
@@ -279,7 +280,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @return thePoint : the DPoint
          * @throws DelaunayError
          */
-        public DPoint addSewerEntry(DPoint sewerPoint) throws DelaunayError {
+        public final DPoint addSewerEntry(DPoint sewerPoint) throws DelaunayError {
                 // Add point to the Mesh
                 sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.SEWER_INPUT);
 
@@ -300,7 +301,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @return thePoint : the DPoint
          * @throws DelaunayError
          */
-        public DPoint addSewerExit(double x, double y, double z)
+        public final DPoint addSewerExit(double x, double y, double z)
                 throws DelaunayError {
                 // Add point to the Mesh
                 DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.SEWER_OUTPUT);
@@ -319,7 +320,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @return thePoint : the DPoint
          * @throws DelaunayError
          */
-        public DPoint addSewerExit(DPoint sewerPoint) throws DelaunayError {
+        public final DPoint addSewerExit(DPoint sewerPoint) throws DelaunayError {
                 sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.SEWER_OUTPUT);
                 // And add it to the sewer points
                 this.listEntryPoints.add(sewerPoint);
@@ -339,7 +340,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @return thePoint : the DPoint
          * @throws DelaunayError
          */
-        public DPoint addSewerPoint(double x, double y, double z)
+        public final DPoint addSewerPoint(double x, double y, double z)
                 throws DelaunayError {
                 DPoint sewerPoint = null;
                 // Create a new point
@@ -364,7 +365,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @return thePoint : the DPoint
          * @throws DelaunayError
          */
-        public DPoint addSewerPoint(DPoint sewerPoint)
+        public final DPoint addSewerPoint(DPoint sewerPoint)
                 throws DelaunayError {
                 // Create a new point
                 if (sewerPoint == null) {
@@ -412,7 +413,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @param sewerPoint2
          * @throws DelaunayError
          */
-        public void setSewerConnection(DPoint sewerPoint1, DPoint sewerPoint2)
+        public final void setSewerConnection(DPoint sewerPoint1, DPoint sewerPoint2)
                 throws DelaunayError {
                 if (sewerPoint1 == null) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
@@ -471,7 +472,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @param hydroProperty
          * @throws DelaunayError
          */
-        public void createHydroEdge(DPoint point1, DPoint point2, int hydroProperty)
+        public final void createHydroEdge(DPoint point1, DPoint point2, int hydroProperty)
                 throws DelaunayError {
                 if (point1 == null) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
@@ -565,7 +566,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                 boolean found = false;
                                 DTriangle aTriangle = (DTriangle) currentElement;
                                 int i = 0;
-                                while ((i < 3) && (!found)) {
+                                while ((i < DTriangle.PT_NB) && (!found)) {
                                         DEdge possibleEdge = aTriangle.getEdge(i);
                                         if (possibleEdge != previousElement) {
                                                 // The edge is not the previous one
@@ -708,7 +709,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @return thePath : list of DEdge that defines the path the droplet follows
          * @throws DelaunayError
          */
-        public ArrayList<DPoint> dropletFollows(double x, double y) throws DelaunayError {
+        public final List<DPoint> dropletFollows(double x, double y) throws DelaunayError {
                 ArrayList<DPoint> theList = new ArrayList<DPoint>();
                 DTriangle aTriangle = null;     // dropLet on a triangle
                 DEdge anEdge = null;            // doplet on an edge
@@ -757,7 +758,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                                 DPoint theSlope = aTriangle.getSteepestVector();
                                                 DEdge intersectedEdge = null;
                                                 int i = 0;
-                                                while ((i < 3) && (intersection == null)) {
+                                                while ((i < DTriangle.PT_NB) && (intersection == null)) {
                                                         DEdge possibleEdge = aTriangle.getEdge(i);
                                                         intersection = getIntersection(aPoint, theSlope, possibleEdge);
                                                         if (intersection != null) {

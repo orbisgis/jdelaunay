@@ -153,7 +153,7 @@ public abstract class Element {
 	 * @param map
 	 * @return
 	 */
-	public int getMaxWeight(Map<Integer, Integer> map){
+	public final int getMaxWeight(Map<Integer, Integer> map){
 		int weight = -1;
 		for(Integer i : Element.WEIGHTED_PROPERTIES){
 			if(hasProperty(i) && map.containsKey(i)){
