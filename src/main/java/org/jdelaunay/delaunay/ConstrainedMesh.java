@@ -592,8 +592,13 @@ public class ConstrainedMesh implements Serializable {
 	 *  * duplicates are removed
 	 *  * intersection points are added to the mesh points
 	 *  * secant edges are split
+         * 
+         * This methos is supposed to be used just before a call to processDelaunay().
+         * If you use it after, you will break the unicity of edges GID.
 	 */
 	public final void forceConstraintIntegrity() throws DelaunayError {
+                //We will repopulate the list of constraint edges
+                edgeGID = 0;
 		//The event points are the extremities and intersections of the
 		//constraint edges. This list is created empty, and filled to stay
 		//sorted.
@@ -1116,6 +1121,8 @@ public class ConstrainedMesh implements Serializable {
 		} else if (points.size() < MIN_POINTS_NUMBER) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
 		} else {
+                        //We will repopulate the list of triangles. 
+                        triangleGID=0;
 			// general data structures
 			badEdgesQueueList = new LinkedList<DEdge>();
 			edges = new ArrayList<DEdge>();
