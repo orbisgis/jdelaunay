@@ -16,6 +16,7 @@ import org.jdelaunay.delaunay.Tools;
  */
 public class HydroTINBuilder extends ConstrainedMesh {
         // Sewer elements
+
         private ArrayList<DPoint> listEntryPoints;
         private ArrayList<DPoint> listSewerPoints;
         private ArrayList<DEdge> listServerEdges;
@@ -78,6 +79,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                         for (DEdge edge : this.getEdges()) {
                                 DTriangle aTriangleLeft = edge.getLeft();
                                 DTriangle aTriangleRight = edge.getRight();
+                                boolean edgeIsFlat = edge.isFlatSlope();
 
                                 boolean rightTtoEdge = false;
                                 boolean rightTColinear = false;
@@ -87,6 +89,11 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                 boolean leftTFlat = false;
                                 boolean rightBorder = false;
                                 boolean leftBorder = false;
+
+                                //On ajoutte l'information pour savoir si l'edge est plat.
+                                if (edgeIsFlat) {
+                                        edge.addProperty(HydroProperties.FLAT);
+                                }
 
                                 // Qualification des triangles
                                 if (aTriangleRight != null) {
@@ -133,8 +140,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                         } // Cas des talwegs
                                         else if (rightTtoEdge && leftTtoEdge) {
                                                 edge.addProperty(HydroProperties.TALWEG);
-                                                edge.getStart().addProperty(HydroProperties.TALWEG);
-                                                edge.getEnd().addProperty(HydroProperties.TALWEG);
+
 
                                         } // Le triangle de gauche pointe sur l'edge mais pas le
                                         // triangle de droite
@@ -164,26 +170,21 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                         // Talweg colineaire gauche
                                         else if ((!leftTtoEdge && rightTtoEdge) && leftTColinear) {
                                                 edge.addProperty(HydroProperties.LEFTCOLINEAR);
-                                                edge.getStart().addProperty(HydroProperties.TALWEG);
-                                                edge.getEnd().addProperty(HydroProperties.TALWEG);
 
                                         } // Talweg colineaire droit
                                         else if ((leftTtoEdge && !rightTtoEdge) && rightTColinear) {
                                                 edge.addProperty(HydroProperties.RIGHTCOLINEAR);
-                                                edge.getStart().addProperty(HydroProperties.TALWEG);
-                                                edge.getEnd().addProperty(HydroProperties.TALWEG);
 
                                         } // Les deux triangles sont colineaires
                                         else if ((!leftTtoEdge && !rightTtoEdge)
                                                 && (rightTColinear && leftTColinear)) {
                                                 edge.addProperty(HydroProperties.DOUBLECOLINEAR);
 
-                                                edge.getStart().addProperty(HydroProperties.TALWEG);
-                                                edge.getEnd().addProperty(HydroProperties.TALWEG);
-
                                         } // Le reste est plat
-                                        else {
+                                        else if (leftTFlat && righTFlat) {
                                                 edge.addProperty(HydroProperties.FLAT);
+                                        } else {
+                                                edge.addProperty(HydroProperties.NONE);
                                         }
                                 } // Traitement des bords plats
                                 else {
@@ -193,7 +194,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 }
         }
 
-         // ----------------------------------------------------------------
+        // ----------------------------------------------------------------
         /**
          * Create a new point on the Mesh surface. Set the hydroProperty to the point.
          *
@@ -261,7 +262,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
         public DPoint addSewerEntry(double x, double y, double z)
                 throws DelaunayError {
                 // Add point to the Mesh
-                DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.SEWER);
+                DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.SEWER_INPUT);
 
                 // And add it to the sewer points
                 this.listEntryPoints.add(sewerPoint);
@@ -280,7 +281,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          */
         public DPoint addSewerEntry(DPoint sewerPoint) throws DelaunayError {
                 // Add point to the Mesh
-                sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.SEWER);
+                sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.SEWER_INPUT);
 
                 // And add it to the sewer points
                 this.listEntryPoints.add(sewerPoint);
@@ -302,7 +303,12 @@ public class HydroTINBuilder extends ConstrainedMesh {
         public DPoint addSewerExit(double x, double y, double z)
                 throws DelaunayError {
                 // Add point to the Mesh
-                return addSewerEntry(x, y, z);
+                DPoint sewerPoint = createPointOnSurface(x, y, z, HydroProperties.SEWER_OUTPUT);
+                // And add it to the sewer points
+                this.listEntryPoints.add(sewerPoint);
+                this.listSewerPoints.add(sewerPoint);
+
+                return sewerPoint;
         }
 
         /**
@@ -314,8 +320,12 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * @throws DelaunayError
          */
         public DPoint addSewerExit(DPoint sewerPoint) throws DelaunayError {
-                // Add point to the Mesh
-                return addSewerEntry(sewerPoint);
+                sewerPoint = createPointOnSurface(sewerPoint, HydroProperties.SEWER_OUTPUT);
+                // And add it to the sewer points
+                this.listEntryPoints.add(sewerPoint);
+                this.listSewerPoints.add(sewerPoint);
+
+                return sewerPoint;
         }
 
         /**
@@ -750,8 +760,8 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                                 while ((i < 3) && (intersection == null)) {
                                                         DEdge possibleEdge = aTriangle.getEdge(i);
                                                         intersection = getIntersection(aPoint, theSlope, possibleEdge);
-                                                        if (intersection !=null) {
-                                                               intersectedEdge = possibleEdge;
+                                                        if (intersection != null) {
+                                                                intersectedEdge = possibleEdge;
                                                         } else {
                                                                 i++;
                                                         }
@@ -760,8 +770,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                                 // Set next element
                                                 if (intersection != null) {
                                                         theElement = intersectedEdge;
-                                                }
-                                                else {
+                                                } else {
                                                         // there is a problem
                                                         theElement = null;
                                                         ended = true;
