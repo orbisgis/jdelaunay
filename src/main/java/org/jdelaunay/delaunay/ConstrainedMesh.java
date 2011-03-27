@@ -1121,6 +1121,10 @@ public class ConstrainedMesh implements Serializable {
 		} else if (points.size() < MIN_POINTS_NUMBER) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_ENOUGH_POINTS_FOUND);
 		} else {
+                        pointGID=0;
+                        for(DPoint pt : points){
+                                pt.setGID(++pointGID);
+                        }
                         //We will repopulate the list of triangles. 
                         triangleGID=0;
 			// general data structures
