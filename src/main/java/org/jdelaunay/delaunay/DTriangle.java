@@ -1248,9 +1248,11 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 if (isInside(dPoint)){
                 for (DEdge dEdge : edges) {
                        if (isTopoOrientedToEdge(dEdge)) {
-                               DPoint pt = Tools.computeIntersection(dEdge.getStartPoint(), dEdge.getDirectionVector(), dPoint, getSteepestVector());
+                               DPoint pt = Tools.computeIntersection(dEdge.getStartPoint(), 
+							dEdge.getDirectionVector(),
+							dPoint, getSteepestVector());
                                if (dEdge.contains(pt)){
-                                return pt;
+					return pt;
                                }
                                        
                         }
@@ -1260,5 +1262,31 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
         }
 
+	/**
+	 * Compute the intersection point according to the vector opposite to the steepest
+	 * vector. If dp is outside the triangle, we return null.
+	 * @param dp
+	 * @return
+	 * @throws DelaunayError
+	 */
+	public final DPoint getCounterSteepestIntersection(DPoint dp) throws DelaunayError {
+		if(isInside(dp)){
+			for(DEdge ed : edges){
+				if(!isTopoOrientedToEdge(ed)){
+					DPoint counterSteep = getSteepestVector();
+					counterSteep.setX(-counterSteep.getX());
+					counterSteep.setY(-counterSteep.getY());
+					counterSteep.setZ(-counterSteep.getZ());
+                               DPoint pt = Tools.computeIntersection(ed.getStartPoint(),
+							ed.getDirectionVector(),
+							dp, counterSteep);
+				       if (ed.contains(pt)){
+						return pt;
+				       }
+				}
+			}
+		}
+		return null;
+	}
         
 }

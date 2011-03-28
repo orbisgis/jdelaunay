@@ -670,4 +670,16 @@ public class TestTriangle extends BaseUtility {
 
 	 }
 
+
+	 public void testCounterSlope() throws DelaunayError {
+		DEdge e1 = new DEdge(0, 0, 0, 4,0,0);
+		DEdge e2 = new DEdge(4,0,0, 2,4,10);
+		DEdge e3 = new DEdge(2,4,10, 0, 0, 0);
+		DTriangle tri = new DTriangle(e1, e2, e3);
+		assertEquals(tri.getCounterSteepestIntersection(new DPoint(1,0,0)), new DPoint(1,2,5));
+		assertEquals(tri.getCounterSteepestIntersection(new DPoint(3,0,0)), new DPoint(3,2,5));
+		assertEquals(tri.getCounterSteepestIntersection(new DPoint(2,0,0)), new DPoint(2,4,10));
+		assertNull(tri.getCounterSteepestIntersection(new DPoint(8,8,8)));
+
+	 }
 }
