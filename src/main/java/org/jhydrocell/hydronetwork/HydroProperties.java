@@ -150,6 +150,8 @@ public final class HydroProperties {
                                 return "flat";
                         case BORDER:
                                 return "border";
+                        case NONE:
+                                return "none";
                         default:
                                 return "";
                 }
