@@ -1270,7 +1270,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @throws DelaunayError
 	 */
 	public final DPoint getCounterSteepestIntersection(DPoint dp) throws DelaunayError {
-		if(isInside(dp)){
+		if(isInside(dp) || isOnAnEdge(dp)){
 			for(DEdge ed : edges){
 				if(!isTopoOrientedToEdge(ed)){
 					DPoint counterSteep = getSteepestVector();
