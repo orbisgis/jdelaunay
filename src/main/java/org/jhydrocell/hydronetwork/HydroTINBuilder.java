@@ -141,14 +141,15 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                         } // Cas des talwegs
                                         else if (rightTtoEdge && leftTtoEdge) {
                                                 edge.addProperty(HydroProperties.TALWEG);
-
-
+                                                if (edgeIsFlat){
+                                                        edge.addProperty(HydroProperties.FLAT);
+                                                }
                                         } // Le triangle de gauche pointe sur l'edge mais pas le
-                                        // triangle de droite
+                                        // triangle de droite qui descend
                                         else if ((leftTtoEdge && !rightTtoEdge) && !righTFlat) {
                                                 edge.addProperty(HydroProperties.RIGHTSLOPE);
                                         } // Le triangle de droite pointe sur l'edge mais pas le
-                                        // triangle de gauche
+                                        // triangle de gauche qui descend
                                         else if ((rightTtoEdge && !leftTtoEdge) && (!leftTFlat)) {
                                                 edge.addProperty(HydroProperties.LEFTTSLOPE);
                                         } // Traitement du rebord droit
