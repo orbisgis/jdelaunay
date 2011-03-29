@@ -680,6 +680,8 @@ public class TestTriangle extends BaseUtility {
 		assertEquals(tri.getCounterSteepestIntersection(new DPoint(3,0,0)), new DPoint(3,2,5));
 		assertEquals(tri.getCounterSteepestIntersection(new DPoint(2,0,0)), new DPoint(2,4,10));
 		assertNull(tri.getCounterSteepestIntersection(new DPoint(8,8,8)));
-
+		assertEquals(tri.getCounterSteepestIntersection(new DPoint(0,0,0)), new DPoint(0,0,0));
+		assertEquals(tri.getCounterSteepestIntersection(new DPoint(4,0,0)), new DPoint(4,0,0));
+		assertEquals(tri.getCounterSteepestIntersection(new DPoint(1,2,5)), new DPoint(1,2,5));
 	 }
 }
