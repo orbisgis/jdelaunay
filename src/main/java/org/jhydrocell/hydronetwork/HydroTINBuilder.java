@@ -78,6 +78,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 } else {
                         // Edges : topographic qualifications
                         for (DEdge edge : this.getEdges()) {
+                                edge.forceTopographicOrientation();
                                 DTriangle aTriangleLeft = edge.getLeft();
                                 DTriangle aTriangleRight = edge.getRight();
                                 boolean edgeIsFlat = edge.isFlatSlope();
