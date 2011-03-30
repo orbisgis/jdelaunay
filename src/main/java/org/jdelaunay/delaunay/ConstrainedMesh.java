@@ -1699,6 +1699,114 @@ public class ConstrainedMesh implements Serializable {
 		}
 	}
 
+        /**
+         * Ensure points are at least at epsilon from other points
+         * NB : points are supposed to be already sorted
+         * @param epsilon
+         */
+        public void dataQualification(double epsilon) throws DelaunayError {
+                if (isMeshComputed()) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
+                } else if ((points == null) || (edges == null) || (constraintEdges == null) || (polygons == null)) {
+                        throw new DelaunayError("Structures not defined");
+                } else if (epsilon <= 0) {
+                        throw new DelaunayError("Epsilon must be positive");
+                } else {
+                        HashMap<DPoint, DPoint> ReplacePoints = new HashMap<DPoint, DPoint>();
+                        double epsilon2 = epsilon * epsilon;
+
+                        int index = -1;
+                        for (DPoint aPoint : points) {
+                                index++;
+                                if (ReplacePoints.containsKey(aPoint)) {
+                                        // This point is already processed
+                                } else {
+                                        // get all points at less than epsilon and put them in ReplacePoints
+                                        double x1 = aPoint.getX();
+                                        double y1 = aPoint.getY();
+
+                                        ListIterator<DPoint> iter = points.listIterator(index);
+                                        boolean ended = false;
+                                        while ((iter.hasNext()) && (!ended)) {
+                                                DPoint nextPoint = iter.next();
+                                                if (nextPoint != aPoint) {
+                                                        // We check if it is the same object, not the same point
+                                                        double x2 = nextPoint.getX();
+                                                        double y2 = nextPoint.getY();
+
+                                                        if ((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1) <= epsilon2) {
+                                                                // too close to aPoint
+                                                                ReplacePoints.put(nextPoint, aPoint);
+                                                        }
+                                                        if (x2 > x1 + epsilon) {
+                                                                // not possible to have another point
+                                                                ended = true;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+
+                        // Points are processed, we remove all points in the list that are in the HashMap
+                        ListIterator<DPoint> iterPts = points.listIterator();
+                        while (iterPts.hasNext()) {
+                                DPoint aPoint = iterPts.next();
+                                if (ReplacePoints.containsKey(aPoint)) {
+                                        // point to be replaces
+                                        iterPts.remove();
+                                }
+                        }
+
+                        // Then replace points in other structures
+                        //      - edges
+                        //      - constraintEdges
+                        //      - polygons
+
+                        for (DEdge anEdge : edges) {
+                                DPoint aPoint = anEdge.getStartPoint();
+                                if (ReplacePoints.containsKey(aPoint)) {
+                                        DPoint replaced = ReplacePoints.get(aPoint);
+                                        anEdge.setStartPoint(replaced);
+                                }
+                                aPoint = anEdge.getEndPoint();
+                                if (ReplacePoints.containsKey(aPoint)) {
+                                        DPoint replaced = ReplacePoints.get(aPoint);
+                                        anEdge.setEndPoint(replaced);
+                                }
+                        }
+
+                        for (DEdge anEdge : constraintEdges) {
+                                DPoint aPoint = anEdge.getStartPoint();
+                                if (ReplacePoints.containsKey(aPoint)) {
+                                        DPoint replaced = ReplacePoints.get(aPoint);
+                                        anEdge.setStartPoint(replaced);
+                                }
+                                aPoint = anEdge.getEndPoint();
+                                if (ReplacePoints.containsKey(aPoint)) {
+                                        DPoint replaced = ReplacePoints.get(aPoint);
+                                        anEdge.setEndPoint(replaced);
+                                }
+                        }
+
+                        for (ConstraintPolygon aPolygon : polygons) {
+                                for (DEdge anEdge : aPolygon.getEdges()) {
+                                        DPoint aPoint = anEdge.getStartPoint();
+                                        if (ReplacePoints.containsKey(aPoint)) {
+                                                DPoint replaced = ReplacePoints.get(aPoint);
+                                                anEdge.setStartPoint(replaced);
+                                        }
+                                        aPoint = anEdge.getEndPoint();
+                                        if (ReplacePoints.containsKey(aPoint)) {
+                                                DPoint replaced = ReplacePoints.get(aPoint);
+                                                anEdge.setEndPoint(replaced);
+                                        }
+                                }
+                        }
+
+                        // points are still sorted because we did not change their position
+                }
+        }
+
 	/**
 	 * Draw Mesh in the JPanel : triangles and edges. If duration is positive,
 	 * also display it Must be used only when using package drawing
