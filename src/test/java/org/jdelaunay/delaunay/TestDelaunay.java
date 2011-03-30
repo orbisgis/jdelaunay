@@ -68,10 +68,279 @@ public class TestDelaunay extends BaseUtility {
 		assertTrue(mesh.getPoints().size() == (ptsSize ));
 	}
 
+	/**
+	 * Test points not at the same location in 2D / epsilon
+	 * The final set of points must be the same
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_GoodMesh1() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
 
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                pts.add(new DPoint(0,0,0));
+                pts.add(new DPoint(1,0,0));
+                pts.add(new DPoint(1,1,0));
+                pts.add(new DPoint(0,1,0));
+		int ptsSize = pts.size();
 
+		mesh.setPoints(pts);
+                mesh.dataQualification(1.0e-5);
+
+		assertTrue(mesh.getPoints().size() == ptsSize);
+	}
 
 	/**
+	 * Test points not at the same location in 2D / epsilon
+         * One point is close to another one but not enough
+	 * The final set of points must be the same
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_GoodMesh2() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                pts.add(new DPoint(0,0,0));
+                pts.add(new DPoint(1,0,0));
+                pts.add(new DPoint(1,1,0));
+                pts.add(new DPoint(0,1,0));
+                pts.add(new DPoint(0.0001,0,0));
+		int ptsSize = pts.size();
+
+		mesh.setPoints(pts);
+                mesh.dataQualification(1.0e-5);
+
+		assertTrue(mesh.getPoints().size() == ptsSize);
+	}
+
+	/**
+	 * Test points not at the same location in 2D / epsilon
+         * One point is close to another one, enough to be removed
+	 * The final set of points must be equal to the initial one -1
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_1PointDuplicated() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                pts.add(new DPoint(0,0,0));
+                pts.add(new DPoint(1,0,0));
+                pts.add(new DPoint(1,1,0));
+                pts.add(new DPoint(0,1,0));
+                pts.add(new DPoint(0.000001,0,0));
+		int ptsSize = pts.size();
+
+		mesh.setPoints(pts);
+                mesh.dataQualification(1.0e-5);
+
+		assertTrue(mesh.getPoints().size() == (ptsSize-1));
+	}
+
+	/**
+	 * Test points not at the same location in 2D / epsilon
+         * All points are close to the first one
+	 * The final set of points must be equal to 1
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_AllPointDuplicated() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                pts.add(new DPoint(0,0,0));
+                pts.add(new DPoint(0.000001,0,0));
+                pts.add(new DPoint(0.000001,0.000001,0));
+                pts.add(new DPoint(0,0.000001,0));
+ 		int ptsSize = pts.size();
+
+		mesh.setPoints(pts);
+                mesh.dataQualification(1.0e-5);
+
+		assertTrue(mesh.getPoints().size() == 1);
+	}
+
+	/**
+	 * Test points not at the same location in 2D / epsilon
+         * One point is close to another one, enough to be removed
+         * Data include constraintEdges that does not use the bad point
+	 * The final set of points must be equal to iniial - 1
+         * Constraind edges may not have changed
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_ContraintEdgesNoModification() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                DPoint pt1 = new DPoint(0,0,0);
+                DPoint pt2 = new DPoint(0,1,0);
+                DPoint pt3 = new DPoint(1,1,0);
+                DPoint pt4 = new DPoint(0,1,0);
+                DPoint pt5 = new DPoint(1,1.0000001,0);
+                pts.add(pt1);
+                pts.add(pt2);
+                pts.add(pt3);
+                pts.add(pt4);
+                pts.add(pt5);
+
+                ArrayList<DEdge> constr = new ArrayList<DEdge>();
+                constr.add(new DEdge(pt1, pt2));
+                constr.add(new DEdge(pt2, pt3));
+                constr.add(new DEdge(pt3, pt4));
+                int constrSize = constr.size();
+                
+		mesh.setPoints(pts);
+		mesh.setConstraintEdges(constr);
+                mesh.dataQualification(1.0e-5);
+
+                ArrayList<DEdge> resList = (ArrayList<DEdge>)mesh.getConstraintEdges();
+		assertTrue(resList.size() == constrSize);
+                for (int i=0; i<resList.size() ; i++) {
+                	DEdge e1 = resList.get(i);
+                        DEdge e2 = constr.get(i);
+                        assertTrue ((e1.getStartPoint().equals(e2.getStartPoint())) && (e1.getEndPoint().equals(e2.getEndPoint())));
+                }
+	}
+
+	/**
+	 * Test points not at the same location in 2D / epsilon
+         * One point is close to another one, enough to be removed
+         * onstraintEdges does not include the bad point
+	 * The final set of points must be equal to iniial - 1
+         * Constraind edges may not have changed except last one
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_ContraintEdgesModification1() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                DPoint pt1 = new DPoint(0,0,0);
+                DPoint pt2 = new DPoint(0,1,0);
+                DPoint pt3 = new DPoint(1,1,0);
+                DPoint pt4 = new DPoint(0,1,0);
+                DPoint pt5 = new DPoint(1,1.0000001,0);
+                pts.add(pt1);
+                pts.add(pt2);
+                pts.add(pt3);
+                pts.add(pt4);
+                pts.add(pt5);
+
+                ArrayList<DEdge> constr = new ArrayList<DEdge>();
+                constr.add(new DEdge(pt1, pt2));
+                constr.add(new DEdge(pt2, pt3));
+                constr.add(new DEdge(pt5, pt4));
+                int constrSize = constr.size();
+
+		mesh.setPoints(pts);
+		mesh.setConstraintEdges(constr);
+                mesh.dataQualification(1.0e-5);
+
+                ArrayList<DEdge> resList = (ArrayList<DEdge>)mesh.getConstraintEdges();
+		assertTrue(resList.size() == constrSize);
+                for (int i=0; i<constrSize-1 ; i++) {
+                	DEdge e1 = resList.get(i);
+                        DEdge e2 = constr.get(i);
+                        assertTrue ((e1.getStartPoint().equals(e2.getStartPoint())) && (e1.getEndPoint().equals(e2.getEndPoint())));
+                }
+               	DEdge e_err = resList.get(constrSize-1);
+                assertTrue ((e_err.getStartPoint().equals(pt3)) && (e_err.getEndPoint().equals(pt4)));
+ 	}
+
+	/**
+	 * Test points not at the same location in 2D / epsilon
+         * One point is close to another one, enough to be removed
+         * onstraintEdges includes the bad point
+	 * The final set of points must be equal to iniial - 1
+         * Constraind edges may not have changed except last one
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_ContraintEdgesModification2() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                DPoint pt1 = new DPoint(0,0,0);
+                DPoint pt2 = new DPoint(0,1,0);
+                DPoint pt3 = new DPoint(1,1,0);
+                DPoint pt4 = new DPoint(0,1,0);
+                DPoint pt5 = new DPoint(1,1.0000001,0);
+                pts.add(pt1);
+                pts.add(pt2);
+                pts.add(pt3);
+                pts.add(pt4);
+                pts.add(pt5);
+
+                ArrayList<DEdge> constr = new ArrayList<DEdge>();
+                constr.add(new DEdge(pt1, pt2));
+                constr.add(new DEdge(pt2, pt3));
+                constr.add(new DEdge(pt4, pt5));
+                int constrSize = constr.size();
+
+		mesh.setPoints(pts);
+		mesh.setConstraintEdges(constr);
+                mesh.dataQualification(1.0e-5);
+
+                ArrayList<DEdge> resList = (ArrayList<DEdge>)mesh.getConstraintEdges();
+		assertTrue(resList.size() == constrSize);
+                for (int i=0; i<constrSize-1 ; i++) {
+                	DEdge e1 = resList.get(i);
+                        DEdge e2 = constr.get(i);
+                        assertTrue ((e1.getStartPoint().equals(e2.getStartPoint())) && (e1.getEndPoint().equals(e2.getEndPoint())));
+                }
+               	DEdge e_err = resList.get(constrSize-1);
+                assertTrue ((e_err.getStartPoint().equals(pt4)) && (e_err.getEndPoint().equals(pt3)));
+ 	}
+
+ 	/**
+	 * Test points not at the same location in 2D / epsilon
+         * One point is close to another one, enough to be removed
+         * onstraintEdges includes the bad point linked to the closest one
+	 * The final set of points must be equal to iniial - 1
+         * One constraint disappears
+	 * @throws DelaunayError
+	 */
+	public void testDelaunayQualification_EmptyEdge() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                DPoint pt1 = new DPoint(0,0,0);
+                DPoint pt2 = new DPoint(0,1,0);
+                DPoint pt3 = new DPoint(1,1,0);
+                DPoint pt4 = new DPoint(0,1,0);
+                DPoint pt5 = new DPoint(1,1.0000001,0);
+                pts.add(pt1);
+                pts.add(pt2);
+                pts.add(pt3);
+                pts.add(pt4);
+                pts.add(pt5);
+
+                ArrayList<DEdge> constr = new ArrayList<DEdge>();
+                constr.add(new DEdge(pt1, pt2));
+                constr.add(new DEdge(pt2, pt3));
+                constr.add(new DEdge(pt3, pt5));
+                int constrSize = constr.size();
+
+		mesh.setPoints(pts);
+		mesh.setConstraintEdges(constr);
+                mesh.dataQualification(1.0e-5);
+
+                ArrayList<DEdge> resList = (ArrayList<DEdge>)mesh.getConstraintEdges();
+		assertTrue(resList.size() == constrSize-1);
+ 	}
+
+        /**
 	 * Check if 2 points are linked by two different edges 
 	 * @throws DelaunayError
 //	 */
