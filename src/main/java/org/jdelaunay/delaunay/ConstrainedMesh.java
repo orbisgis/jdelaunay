@@ -1700,6 +1700,38 @@ public class ConstrainedMesh implements Serializable {
 	}
 
         /**
+         * remove edges from a list of points using equivalences in ReplacePoints
+         * @param ReplacePoints
+         * @param theList
+         */
+        private void changeUnqualifiedEdges(HashMap<DPoint, DPoint> ReplacePoints, List<DEdge> theList) {
+                ArrayList<DEdge> EdgeToRemove = new ArrayList<DEdge>();
+                for (DEdge anEdge : theList) {
+                        DPoint aPoint1 = anEdge.getStartPoint();
+                        DPoint replaced1 = aPoint1;
+                        if (ReplacePoints.containsKey(aPoint1)) {
+                                replaced1 = ReplacePoints.get(aPoint1);
+                                anEdge.setStartPoint(replaced1);
+                        }
+                        DPoint aPoint2 = anEdge.getEndPoint();
+                        DPoint replaced2 = aPoint2;
+                        if (ReplacePoints.containsKey(aPoint2)) {
+                                replaced2 = ReplacePoints.get(aPoint2);
+                                anEdge.setEndPoint(replaced2);
+                        }
+                        // Ensure the two points are not equal
+                        if (replaced1.equals(replaced2)) {
+                                EdgeToRemove.add(anEdge);
+                        }
+                }
+                // Remove bad edges
+                for (DEdge anEdge : EdgeToRemove) {
+                        theList.remove(anEdge);
+                }
+
+        }
+
+        /**
          * Ensure points are at least at epsilon from other points
          * NB : points are supposed to be already sorted
          * @param epsilon
@@ -1734,7 +1766,7 @@ public class ConstrainedMesh implements Serializable {
                                                         double x2 = nextPoint.getX();
                                                         double y2 = nextPoint.getY();
 
-                                                        if ((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1) <= epsilon2) {
+                                                        if ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) <= epsilon2) {
                                                                 // too close to aPoint
                                                                 ReplacePoints.put(nextPoint, aPoint);
                                                         }
@@ -1762,45 +1794,19 @@ public class ConstrainedMesh implements Serializable {
                         //      - constraintEdges
                         //      - polygons
 
-                        for (DEdge anEdge : edges) {
-                                DPoint aPoint = anEdge.getStartPoint();
-                                if (ReplacePoints.containsKey(aPoint)) {
-                                        DPoint replaced = ReplacePoints.get(aPoint);
-                                        anEdge.setStartPoint(replaced);
-                                }
-                                aPoint = anEdge.getEndPoint();
-                                if (ReplacePoints.containsKey(aPoint)) {
-                                        DPoint replaced = ReplacePoints.get(aPoint);
-                                        anEdge.setEndPoint(replaced);
-                                }
-                        }
+                        changeUnqualifiedEdges(ReplacePoints, edges);
+                        changeUnqualifiedEdges(ReplacePoints, constraintEdges);
 
-                        for (DEdge anEdge : constraintEdges) {
-                                DPoint aPoint = anEdge.getStartPoint();
-                                if (ReplacePoints.containsKey(aPoint)) {
-                                        DPoint replaced = ReplacePoints.get(aPoint);
-                                        anEdge.setStartPoint(replaced);
-                                }
-                                aPoint = anEdge.getEndPoint();
-                                if (ReplacePoints.containsKey(aPoint)) {
-                                        DPoint replaced = ReplacePoints.get(aPoint);
-                                        anEdge.setEndPoint(replaced);
-                                }
-                        }
-
+                        ArrayList<ConstraintPolygon> PolygonToRemove = new ArrayList<ConstraintPolygon>();
                         for (ConstraintPolygon aPolygon : polygons) {
-                                for (DEdge anEdge : aPolygon.getEdges()) {
-                                        DPoint aPoint = anEdge.getStartPoint();
-                                        if (ReplacePoints.containsKey(aPoint)) {
-                                                DPoint replaced = ReplacePoints.get(aPoint);
-                                                anEdge.setStartPoint(replaced);
-                                        }
-                                        aPoint = anEdge.getEndPoint();
-                                        if (ReplacePoints.containsKey(aPoint)) {
-                                                DPoint replaced = ReplacePoints.get(aPoint);
-                                                anEdge.setEndPoint(replaced);
-                                        }
+                                changeUnqualifiedEdges(ReplacePoints, aPolygon.getEdges());
+                                if (aPolygon.getEdges().isEmpty()) {
+                                        PolygonToRemove.add(aPolygon);
                                 }
+                        }
+                        // Remove bad polygons
+                        for (ConstraintPolygon aPolygon : PolygonToRemove) {
+                                polygons.remove(aPolygon);
                         }
 
                         // points are still sorted because we did not change their position
