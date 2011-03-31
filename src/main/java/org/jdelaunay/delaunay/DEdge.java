@@ -159,6 +159,18 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
+	 * Overrides the default method. The properties will be added to the points
+	 * that define this edge.
+	 * @param prop
+	 */
+	@Override
+	public void addProperty(int prop){
+		super.addProperty(prop);
+		startPoint.addProperty(prop);
+		endPoint.addProperty(prop);
+	}
+
+	/**
 	 * @return DTriangle at the left of edge.
 	 */
 	public final DTriangle getLeft() {

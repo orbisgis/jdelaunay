@@ -117,7 +117,7 @@ public abstract class Element {
 	 *
 	 * @param property
 	 */
-	public final void addProperty(int property) {
+	public void addProperty(int property) {
 		this.property |= property;
 	}
 	

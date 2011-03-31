@@ -1624,4 +1624,26 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertTrue(mesh.getPoints().contains(new DPoint(8,3,0)));
 		assertTrue(mesh.getPoints().contains(new DPoint(0,3,0)));
 	}
+
+	public void testRiverAndDitches() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge (345796.89949322917, 6695019.257556161, 52.592440873703026,
+			345808.80317515164, 6695018.931396081, 52.37237604556536));
+		mesh.addConstraintEdge(new DEdge (345799.8904126589, 6694489.176938893, 45.12430134735259,
+			345821.92794979573, 6694496.094938288, 43.901845003633035));
+		mesh.addConstraintEdge(new DEdge (345808.8031721221, 6695018.9313959, 52.37237609411774,
+			345838.4291617969, 6695015.827422162, 51.84860106986137));
+		mesh.addConstraintEdge(new DEdge (345821.9279487509, 6694496.094938227, 43.9018450064769,
+			345834.85441884934, 6694494.844559039, 43.92765514350822));
+//		mesh.addConstraintEdge(new DEdge (345834.85441884934, 6694494.844559039, 43.92765514350822,
+//			345850.3040588013, 6694494.145992298, 43.95839132303459));
+//		mesh.addConstraintEdge(new DEdge (345850.3040588013, 6694494.145992298, 43.95839132303459,
+//			345870.69678723137, 6694495.925688318, 43.99907413296467));
+//		mesh.addConstraintEdge(new DEdge (345870.69678723137, 6694495.925688318, 43.99907413296467,
+//			345877.91723171604, 6694496.897077267, 44.01355341402248));
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().size()==6);
+		mesh.processDelaunay();
+//		show(mesh);
+	}
 }
