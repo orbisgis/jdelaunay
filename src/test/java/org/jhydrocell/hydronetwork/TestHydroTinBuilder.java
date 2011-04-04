@@ -16,7 +16,7 @@ import org.jdelaunay.delaunay.DelaunayError;
 public class TestHydroTinBuilder extends BaseUtility{
 
 
-	public void testMrophologicalQualification() throws DelaunayError {
+	public void testMorphologicalQualification() throws DelaunayError {
 		DEdge ed = new DEdge(0,0,10,3,5,5);
 		ed.setProperty(HydroProperties.WALL);
 		DEdge e1 = new DEdge(3,5,5,4,0,3);
