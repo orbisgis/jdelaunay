@@ -1170,6 +1170,60 @@ public class ConstrainedDelaunayTest extends BaseUtility {
                 assertTrue(mesh.getConstraintEdges().contains(new DEdge(5.5,0.5,0,6,0,0)));
                 assertTrue(mesh.getConstraintEdges().size()==9);
         }
+
+	public void testIntersectionSaveProperties() throws DelaunayError {
+		DEdge e1 = new DEdge(0,0,0,2,2,0);
+		e1.setProperty(HydroProperties.RIVER);
+		DEdge e2 = new DEdge (0,2,0,2,0,0);
+		e2.setProperty(HydroProperties.DITCH);
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(e2);
+		mesh.addConstraintEdge(e1);
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.RIVER));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.DITCH));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.DITCH));
+		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(HydroProperties.RIVER));
+
+	}
+
+	public void testIntersectionManyProperties() throws DelaunayError {
+		DEdge e1 = new DEdge(0,0,0,2,2,0);
+		e1.setProperty(HydroProperties.RIVER);
+		e1.addProperty(HydroProperties.WALL);
+		DEdge e2 = new DEdge (0,2,0,2,0,0);
+		e2.setProperty(HydroProperties.DITCH);
+		e2.addProperty(HydroProperties.URBAN_PARCEL);
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(e2);
+		mesh.addConstraintEdge(e1);
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.RIVER));
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.WALL));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.DITCH));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.URBAN_PARCEL));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.DITCH));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.URBAN_PARCEL));
+		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(HydroProperties.RIVER));
+		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(HydroProperties.WALL));
+
+	}
+
+	public void testIntersectionPropertiesOverlapping() throws DelaunayError {
+		DEdge e1 = new DEdge(0,0,0,2,2,0);
+		e1.setProperty(HydroProperties.WALL);
+		DEdge e2 = new DEdge(1,1,0,3,3,0);
+		e2.setProperty(HydroProperties.RIVER);
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(e2);
+		mesh.addConstraintEdge(e1);
+		mesh.forceConstraintIntegrity();
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.WALL));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.WALL));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.RIVER));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.RIVER));
+
+	}
         
 	/**
 	 * Method used to create random a list of random edge.

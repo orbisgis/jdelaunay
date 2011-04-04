@@ -818,10 +818,22 @@ public class ConstrainedMesh implements Serializable {
 							j--;
 							if (leftMost.compareTo2D(newEvent) == -1) {
 								inter1 = new DEdge(leftMost, newEvent);
+								if(e1.getPointLeft().equals(leftMost)){
+									inter1.addProperty(e1.getProperty());
+								}else if(e2.getPointLeft().equals(leftMost)){
+									inter2.addProperty(e2.getProperty());
+								}
 							}
 							inter2 = edgeEvent;
+							inter2.addProperty(e1.getProperty());
+							inter2.addProperty(e2.getProperty());
 							if (rightMost.compareTo2D(edgeEvent.getPointRight()) == 1) {
 								inter3 = new DEdge(edgeEvent.getPointRight(), rightMost);
+								if(e1.getPointRight().equals(rightMost)){
+									inter3.addProperty(e1.getProperty());
+								} else if(e2.getPointRight().equals(rightMost)){
+									inter3.addProperty(e2.getProperty());
+								}
 							}
 							if (inter1 != null) {
 								if (inter1.getPointRight().compareTo2D(currentEvent) == 1) {
