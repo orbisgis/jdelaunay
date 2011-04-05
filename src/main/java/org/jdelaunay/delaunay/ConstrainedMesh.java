@@ -1843,6 +1843,7 @@ public class ConstrainedMesh implements Serializable {
 			final int decalageY = 630;
 			final int legende = 660;
 			final int bordure = 10;
+			final int maxDisplayedPoints = 100;
 
 			scaleX = xSize / (theBox.getMaxX() - theBox.getMinX());
 			scaleY = ySize / (theBox.getMaxY() - theBox.getMinY());
@@ -1886,7 +1887,7 @@ public class ConstrainedMesh implements Serializable {
 				}
 			}
 
-			if ((points.size() > 0) && (points.size() < 100)) {
+			if ((points.size() > 0) && (points.size() < maxDisplayedPoints)) {
 				for (DPoint aPoint : points) {
 					aPoint.displayObject(g, decalageX, decalageY, minX, minY,
 						scaleX, scaleY);

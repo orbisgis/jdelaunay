@@ -503,18 +503,6 @@ public class TestTriangle extends BaseUtility {
 	}
 
 	/**
-	 * Tests that we correctly manage the indicator associated to a triangle
-	 */
-	public void testIndicator() throws DelaunayError{
-		DTriangle dt = new DTriangle(new DEdge(0,0,0,2,2,0), new DEdge(2,2,0,2,0,0), new DEdge(2,0,0,0,0,0));
-		assertTrue(dt.getIndicator() == 0);
-		dt.setIndicator(1);
-		assertTrue(dt.getIndicator() == 1);
-		dt.removeIndicator();
-		assertTrue(dt.getIndicator() == 0);
-	}
-
-	/**
 	 * getEdgeFromPoints is supposed to retrieve a reference to an edge of the
 	 * triangle, if the two points are coordinates that are used to define the triangle.
 	 * @throws DelaunayError

@@ -216,38 +216,7 @@ public abstract class Element {
 	 * @return bool
 	 * @throws DelaunayError 
 	 */
-	public abstract boolean contains(Coordinate c) throws DelaunayError;
-	
-	/**
-	 * @return Get all markers in indicator.
-	 */
-	public abstract int getIndicator();
-	
-	/**
-	 * Change all marker.
-	 * Use only to transfer all indicators of an element to a second element!
-	 * @param indicator A new indicator.
-	 * @return
-	 */
-	public abstract int setIndicator(int indicator);
-	
-	/**
-	 *  Remove all indicator.
-	 */
-	public abstract void removeIndicator();
-	
-	/**
-	 * check if it is use by a polygon
-	 * @return useByPolygon
-	 */
-	public abstract boolean isUseByPolygon();
-	
-	/**
-	 * set if it is use by a polygon.
-	 * @param useByPolygon
-	 */
-	public abstract void setUseByPolygon(boolean useByPolygon);
-	
+	public abstract boolean contains(Coordinate c) throws DelaunayError;	
 	
 	
 

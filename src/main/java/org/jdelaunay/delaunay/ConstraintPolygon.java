@@ -147,7 +147,6 @@ public final class ConstraintPolygon extends Element {
 				}
 				aPoint = new DPoint(polygon.getCoordinates()[i]);
 				aEdge=new DEdge(lastPoint, aPoint);
-				aEdge.setUseByPolygon(true);
 				edges.add(aEdge);
 				lastPoint = aPoint;
 			}
@@ -160,17 +159,6 @@ public final class ConstraintPolygon extends Element {
 	public boolean isUsePolygonZ() {
 		return usePolygonZ;
 	}
-	
-	/**
-	 * @param usePolygonZ True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
-	 */
-	public void setUsePolygonZ(boolean usePolygonZ) {
-		this.usePolygonZ = usePolygonZ;
-		for(DEdge aEdge:edges){
-			aEdge.setUseZ(usePolygonZ);
-                }
-	}
-
 	
 	/**
 	 * @return True, if we remove triangle who are inside the polygon.
@@ -249,8 +237,6 @@ public final class ConstraintPolygon extends Element {
 		for (int i = 0; i < polygon.getNumPoints()-1; i++)
 		{	
 			aPoint=new DPoint(polygon.getCoordinates()[i]);
-			aPoint.setUseByPolygon(true);
-			aPoint.setUseZ(usePolygonZ);
 			points.add(aPoint);
 		}
 		return points;
@@ -325,39 +311,6 @@ public final class ConstraintPolygon extends Element {
 		}
 			
 		return intersect;
-	}
-
-	/**
-	 * Returns true : the polygon is used by itself...
-	 * @return
-	 */
-	@Override
-	public boolean isUseByPolygon() {
-		return true;
-	}
-
-	/**
-	 * Do nothing.
-	 * @param useByPolygon
-	 */
-	@Override
-	public void setUseByPolygon(boolean useByPolygon) {
-	}
-
-	@Override
-	public void removeIndicator() {
-	}
-
-	@Override
-	public int getIndicator() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int setIndicator(int indicator) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 }

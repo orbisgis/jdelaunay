@@ -23,16 +23,6 @@ public class DPoint extends Element implements Comparable<DPoint> {
 
 	private static final int HASHBASE = 7;
 	private static final int HASHMULT = 67;
-	/**
-	 * byte number  | function :
-	 * 1			| isOutsideMesh / setOutsideMesh
-	 * 2			| isLocked / setLocked
-	 * 3			| isUseByLevelEdge / setUseByLevelEdge
-	 * 4			| isUseByPolygon / setUseByPolygon
-	 * 5			| isZUse / setUseZ
-	 * 6 to 32		| isMarked / setMarked
-	 */
-	private int indicator;
 
 	/**
 	 * Initialize point 
@@ -48,7 +38,6 @@ public class DPoint extends Element implements Comparable<DPoint> {
 		}
 		
 		this.coord = new Coordinate(x,y,z);
-		this.indicator = 0;
 
 	}
 
@@ -136,145 +125,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 */
 	public final void setZ(double z) {
 		this.coord.z = z;
-	}
-
-
-	@Override
-	public final int getIndicator() {
-		return indicator;
-	}
-	
-	@Override
-	public final int setIndicator(int indicator) {
-		this.indicator=indicator;
-		return 0;
-	}
-	
-	@Override
-	public final void removeIndicator() {
-		indicator = 0;
-	}
-	
-	/**
-	 * get the value of a specific bit
-	 * @param byteNumber
-	 * @return marked
-	 */
-	private boolean testBit(int byteNumber) {
-		return ((this.indicator & (1 << byteNumber)) != 0);
-	}
-
-	/**
-	 * set the value of a specific bit
-	 * @param byteNumber
-	 * @param value
-	 */
-	private void setBit(int byteNumber, boolean value) {
-		int test = (1 << byteNumber);
-		if (value) {
-			this.indicator = (this.indicator | test);
-		}
-		else {
-			this.indicator = (this.indicator | test) - test;
-		}
-	}
-	
-	/**
-	 * get the mark of the edge
-	 * @param byteNumber
-	 * @return marked
-	 */
-	public final boolean isMarked(int byteNumber) {
-		return testBit(Tools.BIT_MARKED + byteNumber);
-	}
-
-	/**
-	 * set the mark of the edge
-	 * @param byteNumber
-	 * @param marked
-	 */
-	public final void setMarked(int byteNumber, boolean marked) {
-		setBit(Tools.BIT_MARKED + byteNumber, marked);
-	}
-	
-	
-	/**
-	 * Should be only use by MyEdge.
-	 * Set the mark of the point.
-	 * @param byteNumber
-	 * @param marked
-	 */
-	public final void setMarkedByEdge(int byteNumber, boolean marked) {
-		setBit(byteNumber, marked);
-	}
-
-	/**
-	 * get the mark of the edge
-	 * @return marked
-	 */
-	public final boolean isLocked() {
-		return testBit(Tools.BIT_LOCKED);
-	}
-
-	/**
-	 * set the mark of the edge
-	 * @param marked
-	 */
-	public final void setLocked(boolean locked) {
-		setBit(Tools.BIT_LOCKED, locked);
-	}
-	
-	
-	/**
-	 * check if point is use by a level edge.
-	 * @return useByLevelEdge
-	 */
-	public final boolean isUseByLevelEdge(){
-		return testBit(3);
-	}
-	
-	/**
-	 * set if point is use by a level edge.
-	 * @param useByLevelEdge
-	 */
-	public final void setUseByLevelEdge(boolean useByLevelEdge){
-		setBit(3, useByLevelEdge);
-	}
-	
-		/**
-	 * check if edge is use by a polygon
-	 * @return useByPolygon
-	 */
-	@Override
-	public final boolean isUseByPolygon() {
-		return testBit(Tools.BIT_POLYGON);
-	}
-
-	/**
-	 * set if edge is use by a polygon.
-	 * @param useByPolygon
-	 */
-	@Override
-	public final void setUseByPolygon(boolean useByPolygon) {
-		setBit(Tools.BIT_POLYGON, useByPolygon);
-	}
-
-	/**
-	 * check if Z coordinate is use.
-	 * @return useZ
-	 */
-	public final boolean isZUse() {
-		return testBit(Tools.BIT_ZUSED);
-	}
-
-	/**
-	 * set if Z coordinate is use.
-	 * @param useByPolygon
-	 */
-	public final void setUseZ(boolean useZ) {
-		setBit(Tools.BIT_ZUSED, useZ);
-	}
-	
+	}	
 	
 	/**
 	 * return jts Coordinate

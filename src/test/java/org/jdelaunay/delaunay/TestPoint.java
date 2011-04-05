@@ -87,35 +87,6 @@ public class TestPoint extends BaseUtility {
 	}
 
 	/**
-	 * Performs operation on the point indicator.
-	 * @throws DelaunayError
-	 */
-	public void testIndicator() throws DelaunayError {
-		DPoint pt = new DPoint(0,0,0);
-		pt.setMarked(1, true);
-		assertTrue(pt.isMarked(1));
-		pt.setLocked(true);
-		assertTrue(pt.isLocked());
-		pt.setUseByLevelEdge(true);
-		assertTrue(pt.isUseByLevelEdge());
-		pt.setUseByPolygon(true);
-		assertTrue(pt.isUseByPolygon());
-		pt.setUseZ(true);
-		assertTrue(pt.isZUse());
-
-		pt.setMarked(1, false);
-		assertFalse(pt.isMarked(1));
-		pt.setLocked(false);
-		assertFalse(pt.isLocked());
-		pt.setUseByLevelEdge(false);
-		assertFalse(pt.isUseByLevelEdge());
-		pt.setUseByPolygon(false);
-		assertFalse(pt.isUseByPolygon());
-		pt.setUseZ(false);
-		assertFalse(pt.isZUse());
-	}
-
-	/**
 	 * Checks that a point is not equal to null.
 	 * @throws DelaunayError
 	 */

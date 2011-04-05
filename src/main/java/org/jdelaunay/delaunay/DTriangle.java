@@ -42,8 +42,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	//The coordinates of the center of the circle.
 	private double xCenter, yCenter, zCenter;
 	private double radius;
-	
-	private int indicator;
 
 	private boolean seenForFlatRemoval;
 
@@ -56,7 +54,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		this.yCenter = 0;
 		zCenter = 0;
 		this.radius = -1;
-		this.indicator = 0;
 		seenForFlatRemoval = false;
 	}
 
@@ -238,65 +235,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	final void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
 		this.seenForFlatRemoval = seenForFlatRemoval;
-	}
-	
-	@Override
-	public final int getIndicator() {
-		return indicator;
-	}
-	
-	@Override
-	public final int setIndicator(int indicator) {
-		this.indicator=indicator;
-		return 0;
-	}
-	
-	@Override
-	public final void removeIndicator() {
-		indicator = 0;
-	}
-	
-	
-	/**
-	 * get the value of a specific bit
-	 * @param byteNumber
-	 * @return marked
-	 */
-	private boolean testBit(int byteNumber) {
-		return ((this.indicator & (1 << byteNumber)) != 0);
-	}
-
-	/**
-	 * set the value of a specific bit
-	 * @param byteNumber
-	 * @param value
-	 */
-	private void setBit(int byteNumber, boolean value) {
-		int test = (1 << byteNumber);
-		if (value) {
-			this.indicator = (this.indicator | test);
-		}
-		else {
-			this.indicator = (this.indicator | test) - test;
-		}
-	}
-	
-	/**
-	 * get the mark of the edge
-	 * @param byteNumber
-	 * @return marked
-	 */
-	public final boolean isMarked(int byteNumber) {
-		return testBit(3+byteNumber);
-	}
-
-	/**
-	 * set the mark of the edge
-	 * @param byteNumber
-	 * @param marked
-	 */
-	public final void setMarked(int byteNumber, boolean marked) {
-		setBit(3+byteNumber, marked);
 	}
 
 	/**
@@ -1064,24 +1002,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 				1, 1);//FIXME not good position
 		g.drawOval((int) (xCenter - r) + decalageX, decalageY
 				- (int) (yCenter + r), (int) r * 2, (int) r * 2);//FIXME not good position
-	}
-
-	/**
-	 * check if this DTriangle is used by a polygon
-	 * @return useByPolygon
-	 */
-	@Override
-	public final boolean isUseByPolygon() {
-		return testBit(Tools.BIT_POLYGON);
-	}
-
-	/**
-	 * set if triangle is used by a polygon.
-	 * @param useByPolygon
-	 */
-	@Override
-	public final void setUseByPolygon(boolean useByPolygon) {
-		setBit(Tools.BIT_POLYGON, useByPolygon);
 	}
 
 	/**

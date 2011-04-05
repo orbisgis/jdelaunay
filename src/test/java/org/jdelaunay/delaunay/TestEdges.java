@@ -274,7 +274,6 @@ public class TestEdges extends BaseUtility {
 		assertNull(edge.getEnd());
 		assertNull(edge.getLeft());
 		assertNull(edge.getRight());
-		assertTrue(edge.getIndicator()==0);
 	}
 
 	/**

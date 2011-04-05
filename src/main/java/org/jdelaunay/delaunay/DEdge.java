@@ -52,10 +52,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * 2			| isLocked / setLocked
 	 * 3			| isLevelEdge / setLevelEdge
 	 * 4			| isUseByPolygon / setUseByPolygon
-	 * 5			| isZUse / setUseZ
 	 * 6 to 32		| isMarked / setMarked
 	 */
-	private int indicator;
+	private boolean indicator;
 	static final int UPSLOPE = -1;
 	static final int DOWNSLOPE = 1;
 	static final int FLATSLOPE = 0;
@@ -94,7 +93,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		endPoint = null;
 		left = null;
 		right = null;
-		indicator = 0;
+		indicator = false;
 	}
 
 	/**
@@ -287,9 +286,6 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param p Start point.
 	 */
 	public final void setStartPoint(DPoint p) {
-		if (isUseByPolygon()) {
-			p.setUseByPolygon(true);
-		}
 
 		this.startPoint = p;
 	}
@@ -300,9 +296,6 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param p End point.
 	 */
 	public final void setEndPoint(DPoint p) {
-		if (isUseByPolygon()) {
-			p.setUseByPolygon(true);
-		}
 
 		this.endPoint = p;
 	}
@@ -366,73 +359,12 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	public final double get3DLength() {
 		return Math.sqrt(getSquared3DLength());
 	}
-
-	@Override
-	public final int getIndicator() {
-		return indicator;
-	}
-
-	@Override
-	public final int setIndicator(int indicator) {
-		this.indicator = indicator;
-		return 0;
-	}
-
-	@Override
-	public final void removeIndicator() {
-		indicator = 0;
-	}
-
-	/**
-	 * get the value of a specific bit
-	 * @param byteNumber
-	 * @return marked
-	 */
-	private boolean testBit(int byteNumber) {
-		return ((this.indicator & (1 << byteNumber)) != 0);
-	}
-
-	/**
-	 * set the value of a specific bit
-	 * @param byteNumber
-	 * @param value
-	 */
-	private void setBit(int byteNumber, boolean value) {
-		int test = (1 << byteNumber);
-		if (value) {
-			this.indicator = (this.indicator | test);
-		} else {
-			this.indicator = (this.indicator | test) - test;
-		}
-
-		startPoint.setMarkedByEdge(byteNumber, value);
-		endPoint.setMarkedByEdge(byteNumber, value);
-	}
-
-	/**
-	 * get the mark of the edge
-	 * @param byteNumber
-	 * @return marked
-	 */
-	public final boolean isMarked(int byteNumber) {
-		return testBit(Tools.BIT_MARKED + byteNumber);
-	}
-
-	/**
-	 * set the mark of the edge
-	 * @param byteNumber
-	 * @param marked
-	 */
-	public final void setMarked(int byteNumber, boolean marked) {
-		setBit(Tools.BIT_MARKED + byteNumber, marked);
-	}
-
 	/**
 	 * get the mark of the edge
 	 * @return marked
 	 */
 	public final boolean isLocked() {
-		return testBit(Tools.BIT_LOCKED);
+		return indicator;
 	}
 
 	/**
@@ -440,73 +372,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param marked
 	 */
 	public final void setLocked(boolean locked) {
-		setBit(Tools.BIT_LOCKED, locked);
-	}
-
-	/**
-	 * check if edge is taken into account in the triangularization
-	 * @return outsideMesh
-	 */
-	public final boolean isOutsideMesh() {
-		return testBit(Tools.BIT_OUTSIDE);
-	}
-
-	/**
-	 * set the edge in the triangularization or not
-	 * @param outsideMesh
-	 */
-	public final void setOutsideMesh(boolean outsideMesh) {
-		setBit(Tools.BIT_OUTSIDE, outsideMesh);
-	}
-
-	/**
-	 * check if edge is a level edge. 
-	 * @return levelEdge
-	 */
-	public final boolean isLevelEdge() {
-		return testBit(Tools.BIT_LEVEL);
-	}
-
-	/**
-	 * set if edge is a level edge.
-	 * @param levelEdge
-	 */
-	public final void setLevelEdge(boolean levelEdge) {
-		setBit(Tools.BIT_LEVEL, levelEdge);
-	}
-
-	/**
-	 * Check if this edge is used by a polygon
-	 * @return useByPolygon
-	 */
-	@Override
-	public final boolean isUseByPolygon() {
-		return testBit(Tools.BIT_POLYGON);
-	}
-
-	/**
-	 * set if edge is use by a polygon.
-	 * @param useByPolygon
-	 */
-	@Override
-	public final void setUseByPolygon(boolean useByPolygon) {
-		setBit(Tools.BIT_POLYGON, useByPolygon);
-	}
-
-	/**
-	 * check if Z coordinate is use.
-	 * @return useZ
-	 */
-	public final boolean isZUse() {
-		return testBit(Tools.BIT_ZUSED);
-	}
-
-	/**
-	 * set if Z coordinate is use.
-	 * @param useByPolygon
-	 */
-	public final void setUseZ(boolean useZ) {
-		setBit(Tools.BIT_ZUSED, useZ);
+		indicator = locked;
 	}
 
 	/* *
@@ -1337,8 +1203,6 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			((Graphics2D) g).setStroke(new BasicStroke(2));
 		} else if (isLocked()) {
 			g.setColor(Color.CYAN);
-		} else if (isOutsideMesh()) {
-			g.setColor(Color.pink);
 		} else {
 			g.setColor(Color.black);
 		}
@@ -1487,6 +1351,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	public final double getSlopeAspect() {
 			Coordinate c1 = startPoint.getCoordinate();
 			Coordinate c2 = endPoint.getCoordinate();
+			final double circleDegrees = 360.0;
 			// l'ordre des coordonnees correspond a l'orientation de l'arc
 			// "sommet haut vers sommet bas"
 			double angleAxeXrad = c1.z >= c2.z ? Angle.angle(c1, c2) : Angle
@@ -1496,7 +1361,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
 			// on renvoie toujours une valeur d'angle >= 0		
 		
-		return angleAxeNorddeg < 0.0 ? 360.0 + angleAxeNorddeg
+		return angleAxeNorddeg < 0.0 ? circleDegrees + angleAxeNorddeg
 					: angleAxeNorddeg;
 	}
 
