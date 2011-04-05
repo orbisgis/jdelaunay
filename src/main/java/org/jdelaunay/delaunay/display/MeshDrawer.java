@@ -22,7 +22,9 @@ public class MeshDrawer extends JFrame {
         public MeshDrawer() {
                 super("Display Panel");
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                setSize(1200, 720);
+		final int height = 1200;
+		final int width = 720;
+                setSize(height, width);
                 setVisible(true);
 
                 this.myMesh = null;
