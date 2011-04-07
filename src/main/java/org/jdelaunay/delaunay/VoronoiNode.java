@@ -189,21 +189,13 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 			//If the circumcenter is right to one edge where the last point is
 			//on the left (or the contrary) we must make further process.
 			if(!edges[i].isRight(last)==edges[i].isRight(defloc)){
-				if((edges[i].isLocked() || !twoAssociatedTriangles)){
-					//If the center is on the other side of the constraint, we stop our progress.
 					location = parent.getBarycenter();
 					return;
-				} else {
-				//We must check we don't intersect a constraint.
-					defloc = checkLocationValidity(defloc, new DEdge(defloc, parent.getOppositePoint(edges[i])),edges[i], parent);
-					if(defloc==null){
-						location = parent.getBarycenter();
-						return;
-					}
-				}
 			}
 		}
 		location = defloc;
+		double z = parent.interpolateZ(location);
+		location.setZ(z);
 	}
 
 	/**

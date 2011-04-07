@@ -276,24 +276,25 @@ class VoronoiGraph {
 		//first non-flat triangle we found.
 		double flatZ = lastFlat.getParent().getPoint(0).getZ();
 		DTriangle dt = notFlat.getParent();
-		double zCenter=Double.NaN;
+		double zNf=Double.NaN;
 		for(int i=0; i<DTriangle.PT_NB;i++){
 			if(Math.abs(dt.getPoint(i).getZ()-flatZ)>Tools.EPSILON){
-				zCenter = dt.getPoint(i).getZ();
+				zNf = dt.getPoint(i).getZ();
 				break;
 			}
 		}
-		if(Double.isNaN(zCenter)){
+		if(Double.isNaN(zNf)){
 			throw new DelaunayError("Well... this triangle was supposed not to be flat. U mad ?");
 		}
 		double flatHeight = lastFlat.getParent().getPoint(0).getZ();
 		int length = getMaxLength(lastFlat)+1;
-		double delta = (zCenter - flatHeight)/(length+1);
+		double delta = (zNf - flatHeight)/(length+1);
+		notFlat.getLocation().setZ(zNf-delta);
 		//We can process each node iteratively
 		for(VoronoiNode vn : sortedNodes){
 			vn.setSeen(false);
 		}
-		assignValues(lastFlat, delta,zCenter,flatHeight);
+		assignValues(lastFlat, delta,zNf-delta,flatHeight);
 		return true;
 	}
 
@@ -306,6 +307,9 @@ class VoronoiGraph {
 	 * @throws DelaunayError
 	 */
 	private void assignValues(final VoronoiNode vn, final double delta, final double prevAlt, final double flatHeight) throws DelaunayError{
+		if(!vn.getParent().isFlatSlope()){
+			return;
+		}
 		double alt = prevAlt - delta;
 		if((prevAlt > flatHeight && alt < flatHeight)||(prevAlt < flatHeight && alt > flatHeight)){
 			final double deltaBis = delta/4;

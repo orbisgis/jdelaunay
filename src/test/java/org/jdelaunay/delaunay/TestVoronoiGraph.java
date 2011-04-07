@@ -528,4 +528,30 @@ public class TestVoronoiGraph extends BaseUtility{
 			assertTrue(vn.getLocation().getZ()<10 && vn.getLocation().getZ()>0);
 		}
 	}
+	public void testHeights() throws DelaunayError {
+		DPoint pt1 = new DPoint(-1,5,10);
+		DPoint pt2 = new DPoint(3,5,10);
+		DPoint pt3 = new DPoint(7,5,10);
+		DPoint pt4 = new DPoint(0,2,0);
+		DPoint pt5 = new DPoint(6,2,0);
+		DPoint pt6 = new DPoint(3,0,0);
+		DEdge e1 = new DEdge(pt1, pt4);
+		DEdge e2 = new DEdge(pt1, pt2);
+		DEdge e3 = new DEdge(pt3, pt2);
+		DEdge e4 = new DEdge(pt3, pt5);
+		DEdge e5 = new DEdge(pt5, pt2);
+		DEdge e6 = new DEdge(pt4, pt2);
+		DEdge e7 = new DEdge(pt4, pt5);
+		DEdge e8 = new DEdge(pt6, pt4);
+		DEdge e9 = new DEdge(pt6, pt5);
+		DTriangle t1 = new DTriangle(e1,e2,e6);
+		DTriangle t2 = new DTriangle(e7,e5,e6);
+		DTriangle t3 = new DTriangle(e4,e5,e3);
+		DTriangle t4 = new DTriangle(e9,e8,e7);
+		VoronoiGraph vg = new VoronoiGraph(t4);
+		vg.fillUntilNotFlatFound();
+		vg.assignZValues();
+		assertTrue(vg.getNotFlat().getLocation().getZ()>vg.getStartNode().getLocation().getZ());
+	}
+
 }

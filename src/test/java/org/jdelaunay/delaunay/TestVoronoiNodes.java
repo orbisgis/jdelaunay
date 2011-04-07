@@ -99,7 +99,7 @@ public class TestVoronoiNodes extends BaseUtility {
 		tri2 = new DTriangle(new DEdge(3,3,0,3,0,0), ed, new DEdge(0,3,0,3,3,0));
 		vn2 = new VoronoiNode(tri2);
 		assertTrue(vn.compareTo(vn2)==-1);
-		assertTrue(vn.getLocation().equals(vn2.getLocation()));
+		assertTrue(vn.getLocation().compareTo(vn2.getLocation())==-1);
 		ed =  new DEdge(6,0,0,0,3,0);
 		tri = new DTriangle(new DEdge(3,0,0,6,0,0), ed, new DEdge(0,3,0,3,0,0));
 		vn = new VoronoiNode(tri);
