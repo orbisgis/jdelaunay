@@ -55,9 +55,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * 6 to 32		| isMarked / setMarked
 	 */
 	private boolean indicator;
-	static final int UPSLOPE = -1;
-	static final int DOWNSLOPE = 1;
-	static final int FLATSLOPE = 0;
+	public static final int UPSLOPE = -1;
+	public static final int DOWNSLOPE = 1;
+	public static final int FLATSLOPE = 0;
 	//Intersection constants :
 	/**
 	 * Value returned by the intersects method when the two edges don't intersect
