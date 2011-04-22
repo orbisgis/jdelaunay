@@ -221,7 +221,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                 aPoint = new DPoint(x, y, z);
                                 this.addPoint(aPoint);
                         }
-                        aPoint.setProperty(hydroProperty);
+                        aPoint.addProperty(hydroProperty);
                 }
                 return aPoint;
         }
@@ -247,7 +247,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                 // Add point to Mesh the point list
                                 this.addPoint(aPoint);
                         }
-                        aPoint.setProperty(hydroProperty);
+                        aPoint.addProperty(hydroProperty);
                 }
                 return aPoint;
         }
@@ -375,7 +375,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 } else if (this.isMeshComputed()) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
                 } else {
-                        sewerPoint.setProperty(HydroProperties.SEWER);
+                        sewerPoint.addProperty(HydroProperties.SEWER);
                         this.listSewerPoints.add(sewerPoint);
                 }
                 return sewerPoint;
@@ -432,9 +432,9 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                 this.listServerEdges.add(anEdge);
 
                                 // Add sewer property
-                                sewerPoint1.setProperty(HydroProperties.SEWER);
-                                sewerPoint2.setProperty(HydroProperties.SEWER);
-                                anEdge.setProperty(HydroProperties.SEWER);
+                                sewerPoint1.addProperty(HydroProperties.SEWER);
+                                sewerPoint2.addProperty(HydroProperties.SEWER);
+                                anEdge.addProperty(HydroProperties.SEWER);
                         }
                 }
         }
@@ -495,9 +495,9 @@ public class HydroTINBuilder extends ConstrainedMesh {
                         }
 
                         // Add property
-                        point1.setProperty(hydroProperty);
-                        point2.setProperty(hydroProperty);
-                        anEdge.setProperty(hydroProperty);
+                        point1.addProperty(hydroProperty);
+                        point2.addProperty(hydroProperty);
+                        anEdge.addProperty(hydroProperty);
                 }
         }
         // ----------------------------------------------------------------
@@ -702,127 +702,5 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 }
                 return intersection;
         }
-
-        /**
-         * Droplet follower
-         *
-         * @param x
-         * @param y
-         * @return thePath : list of DEdge that defines the path the droplet follows
-         * @throws DelaunayError
-         */
-        public final List<DPoint> dropletFollows(double x, double y) throws DelaunayError {
-                ArrayList<DPoint> theList = new ArrayList<DPoint>();
-                DTriangle aTriangle = null;     // dropLet on a triangle
-                DEdge anEdge = null;            // doplet on an edge
-                DPoint aPoint = null;           // doplet on a point
-                DPoint lastPoint = null;        // last memorized point
-
-                if (!this.isMeshComputed()) {
-                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_NOT_GENERATED);
-                } else {
-                        // First we have to find the triangle that contains the point
-                        // Then we go to the edge given by the triangle's slope
-                        // When we reach an edge we always go down
-                        // When we are on a point we go to the edge with the geatest slope
-
-                        // points are memorised as follows:
-                        // - the first point (in the triangle is memorised
-                        // - the first intersection given by the triangle's slope
-                        // - all lowest point of the edges
-
-                        // Find the point on the surface
-                        aTriangle = this.findPointProjectionIn(aPoint);
-                        if (aTriangle != null) {
-                                // point is on the mesh, in a triangle
-
-                                // Project the point on the surface
-                                double z_value = aTriangle.interpolateZ(aPoint);
-                                aPoint = new DPoint(x, y, z_value);
-                                theList.add(aPoint);
-                                lastPoint = aPoint;
-
-                                Element theElement = aTriangle;
-
-                                boolean ended = false;
-                                while (!ended) {
-                                        // we've got a Point (aPoint)
-                                        // and a slope (slope)
-                                        // and the element we are in (theElement)
-
-                                        // We try to find the next point
-                                        if (theElement instanceof DTriangle) {
-                                                // current element is a triangle (the first one)
-                                                aTriangle = (DTriangle) theElement;
-                                                // We take triangle's slope
-                                                // We search the edge that intersects
-                                                DPoint intersection = null;
-                                                DPoint theSlope = aTriangle.getSteepestVector();
-                                                DEdge intersectedEdge = null;
-                                                int i = 0;
-                                                while ((i < DTriangle.PT_NB) && (intersection == null)) {
-                                                        DEdge possibleEdge = aTriangle.getEdge(i);
-                                                        intersection = getIntersection(aPoint, theSlope, possibleEdge);
-                                                        if (intersection != null) {
-                                                                intersectedEdge = possibleEdge;
-                                                        } else {
-                                                                i++;
-                                                        }
-                                                }
-
-                                                // Set next element
-                                                if (intersection != null) {
-                                                        theElement = intersectedEdge;
-                                                } else {
-                                                        // there is a problem
-                                                        theElement = null;
-                                                        ended = true;
-                                                }
-
-                                        } else if (theElement instanceof DEdge) {
-                                                // current element is an edge
-                                                // the next element is the point down according to the slope
-                                                anEdge = (DEdge) theElement;
-                                                if (anEdge.getStart().getZ() < anEdge.getEnd().getZ()) {
-                                                        aPoint = anEdge.getStart();
-                                                } else {
-                                                        aPoint = anEdge.getEnd();
-                                                }
-
-                                                // We memorise the lowest point (the one we reach)
-                                                if (!lastPoint.contains(aPoint)) {
-                                                        // The next point is not the previous one
-                                                        theList.add(aPoint);
-                                                        lastPoint = aPoint;
-                                                }
-                                                theElement = aPoint;
-                                        } else {
-                                                // current element is a point
-                                                // the next element is the edge that leads to a greatest slope value
-                                                // more exactly, the greatest we can find
-                                                aPoint = (DPoint) theElement;
-
-                                                // the point comes from an edge (anEdge). It CANNOT come from a triangle
-                                                // We turn around aPoint to select the edge that leads to lowest slope
-
-                                                // First, we get the element we come from. It might be an edge or a triangle
-                                                Element lastElement = anEdge;
-                                                DEdge selectedEdge = turnAroundthePoint(aPoint, lastElement);
-                                                if (selectedEdge != null) {
-                                                        // We go to a next edge
-                                                        theElement = selectedEdge;
-                                                } else {
-                                                        // End of process: no successor
-                                                        theElement = null;
-                                                        ended = true;
-                                                }
-                                        }
-
-                                }
-
-                        }
-                }
-
-                return theList;
-        }
+             
 }
