@@ -38,48 +38,30 @@ package org.jhydrocell.hydronetwork;
  * @version 1.1
  */
 public final class HydroProperties {
-        // Constraints types
 
-        /**
-         * The object is a wall
-         */
+        // ------------------------------------------------
+        // Constraints types
+        // The object is a wall
         public static final int WALL = 1;
-        /**
-         * The object is a sewer
-         */
+        // The object is a sewer
         public static final int SEWER = 1 << 1;
-        /**
-         * the object is a road
-         */
+        // the object is a road
         public static final int ROAD = 1 << 2;
-        /**
-         * The object is a ditch
-         */
+        // The object is a ditch
         public static final int DITCH = 1 << 3;
-        /**
-         * The object is a river
-         */
+        // The object is a river
         public static final int RIVER = 1 << 4;
-        /**
-         * The object is an urban parcel
-         */
+        // The object is an urban parcel
         public static final int URBAN_PARCEL = 1 << 5;
-        /**
-         * The object is a rural parcel
-         */
+        // The object is a rural parcel
         public static final int RURAL_PARCEL = 1 << 6;
-        /**
-         * The object is a level line
-         */
+        // The object is a level line
         public static final int LEVEL = 1 << 7;
-        /**
-         * The object is a sewer input
-         */
+        // The object is a sewer input
         public static final int SEWER_INPUT = 1 << 8;
-        /**
-         * The object is a sewer output
-         */
+        // The object is a sewer output
         public static final int SEWER_OUTPUT = 1 << 9;
+        // ------------------------------------------------
         // Topographic types
         public static final int RIDGE = 1 << 10;
         public static final int TALWEG = 1 << 11;
@@ -94,9 +76,18 @@ public final class HydroProperties {
         public static final int DOUBLECOLINEAR = 1 << 20;
         public static final int FLAT = 1 << 21;
         public static final int BORDER = 1 << 22;
+        // ------------------------------------------------
         // Generalities
         public static final int ANY = -1;
         public static final int NONE = 0;
+        // ------------------------------------------------
+        // Qualifications
+        public static final String QUALIFTOPOGRAPHIC = "topographic";
+        public static final String QUALIFMORPHOLOGIC = "morphologic";
+        public static final String QUALIFTOPOLOGIC = "topologic";
+        public static final String QUALIFANY = "any";
+        public static final String QUALIFNONE = "none";
+        // ------------------------------------------------
 
         /**
          * default constructor is kept private
@@ -229,5 +220,67 @@ public final class HydroProperties {
          */
         public static boolean check(int type, int aType) {
                 return ((type & aType) != 0);
+        }
+
+        /**
+         * Get property qualification
+         * 
+         * @param aProperty
+         * @return
+         */
+        public static String getPropertyQualification(int aProperty) {
+                switch (aProperty) {
+                        case ANY:
+                                return QUALIFANY;
+                        case BORDER:
+                                return QUALIFTOPOLOGIC;
+                        case DITCH:
+                                return QUALIFMORPHOLOGIC;
+                        case DOUBLECOLINEAR:
+                                return QUALIFTOPOGRAPHIC;
+                        case FLAT:
+                                return QUALIFTOPOGRAPHIC;
+                        case LEFTCOLINEAR:
+                                return QUALIFTOPOGRAPHIC;
+                        case LEFTSIDE:
+                                return QUALIFTOPOGRAPHIC;
+                        case LEFTTSLOPE:
+                                return QUALIFTOPOGRAPHIC;
+                        case LEFTWELL:
+                                return QUALIFTOPOGRAPHIC;
+                        case LEVEL:
+                                return QUALIFMORPHOLOGIC;
+                        case NONE:
+                                return QUALIFNONE;
+                        case RIDGE:
+                                return QUALIFTOPOGRAPHIC;
+                        case RIGHTCOLINEAR:
+                                return QUALIFTOPOGRAPHIC;
+                        case RIGHTSIDE:
+                                return QUALIFTOPOGRAPHIC;
+                        case RIGHTSLOPE:
+                                return QUALIFTOPOGRAPHIC;
+                        case RIGHTWELL:
+                                return QUALIFTOPOGRAPHIC;
+                        case RIVER:
+                                return QUALIFMORPHOLOGIC;
+                        case ROAD:
+                                return QUALIFMORPHOLOGIC;
+                        case RURAL_PARCEL:
+                                return QUALIFMORPHOLOGIC;
+                        case SEWER:
+                                return QUALIFMORPHOLOGIC;
+                        case SEWER_INPUT:
+                                return QUALIFMORPHOLOGIC;
+                        case SEWER_OUTPUT:
+                                return QUALIFMORPHOLOGIC;
+                        case TALWEG:
+                                return QUALIFTOPOGRAPHIC;
+                        case URBAN_PARCEL:
+                                return QUALIFMORPHOLOGIC;
+                        case WALL:
+                                return QUALIFMORPHOLOGIC;
+                }
+                return QUALIFNONE;
         }
 }
