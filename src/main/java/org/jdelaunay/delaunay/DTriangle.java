@@ -435,7 +435,10 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * the circle
 	 *
 	 * @param aPoint
-	 * @return position 0 = outside 1 = inside 2 = on the circle
+	 * @return position : <br/>
+         *  * 0 = outside <br/>
+         *  * 1 = inside <br/>
+         *  * 2 = on the circle
 	 */
 	public final int inCircle(DPoint aPoint) {
 		// default is outside the circle

@@ -1589,8 +1589,7 @@ public class ConstrainedMesh implements Serializable {
 					// We check if the two triangles around the edge are ok
 					DTriangle aTriangle1 = anEdge.getLeft();
 					DTriangle aTriangle2 = anEdge.getRight();
-					if ((aTriangle1 != null) && (aTriangle2 != null)
-						&& swapTriangle(aTriangle1, aTriangle2, anEdge)) {
+					if (swapTriangle(anEdge)) {
 						// Add the triangle"s edges to the bad edges list
 						DEdge addEdge;
 						for (int j = 0; j < DTriangle.PT_NB; j++) {
@@ -1620,86 +1619,101 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
-	 * Swap two neighbour triangles, whose common edge is anEdge
+	 * Swap two neighbour triangles, whose common edge is anEdge<br/>
+         * 
 	 * @param aTriangle1
 	 * @param aTriangle2
-	 * @param anEdge
+	 * @param ed
+         *      The edge where we're going to process the flip-flap. This edge will disapear,
+         *      or rather it will be replaced by a new one in the data structure that contains 
+         *      the edges.
 	 * @param forced
 	 * @return
+         *      True if the flip-flap has been performed. In particular, if this method 
+         *      returns true, we can be sure that ed.left and ed.right are not null.
 	 */
-	private boolean swapTriangle(DTriangle aTriangle1, DTriangle aTriangle2,
-		DEdge anEdge) throws DelaunayError {
+	final boolean swapTriangle(DEdge ed) throws DelaunayError {
+                DTriangle left = ed.getLeft();
+                DTriangle right = ed.getRight();
 
 		boolean exchange = false;
-		DEdge anEdge10, anEdge11, anEdge12;
-		DEdge anEdge20, anEdge21, anEdge22;
 		DPoint p1, p2, p3, p4;
 
-		if ((aTriangle1 != null) && (aTriangle2 != null)) {
-			p1 = anEdge.getStartPoint();
-			p2 = anEdge.getEndPoint();
-
-			p3 = null;
-			p4 = null;
+		if (left != null && right != null) {
+			p1 = ed.getStartPoint();
+			p2 = ed.getEndPoint();
 
 			// Test for each triangle if the remaining point of the
 			// other triangle is inside or not
 			// DTriangle 1 is p1, p2, p3 or p2, p1, p3
-			p3 = aTriangle1.getAlterPoint(p1, p2);
-			if (p3 != null && aTriangle2.inCircle(p3) == 1) {
+			p3 = left.getAlterPoint(p1, p2);
+			if (p3 != null && right.inCircle(p3) == 1) {
 				exchange = true;
 			}
 
 			// DTriangle 2 is p2, p1, p4 or p1, p2, p4
-			p4 = aTriangle2.getAlterPoint(p1, p2);
-			if (p4 != null && aTriangle1.inCircle(p4) == 1) {
+			p4 = right.getAlterPoint(p1, p2);
+			if (p4 != null && left.inCircle(p4) == 1) {
 				exchange = true;
 			}
 
 			if (p3 != p4 && exchange) {
-				anEdge10 = anEdge;
-				anEdge11 = checkTwoPointsEdge(p3, p1, aTriangle1.getEdges(), DTriangle.PT_NB);
-				anEdge12 = checkTwoPointsEdge(p1, p4, aTriangle2.getEdges(), DTriangle.PT_NB);
-				anEdge20 = anEdge;
-				anEdge21 = checkTwoPointsEdge(p2, p4, aTriangle2.getEdges(), DTriangle.PT_NB);
-				anEdge22 = checkTwoPointsEdge(p3, p2, aTriangle1.getEdges(), DTriangle.PT_NB);
-				if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
-					log.error("ERROR");
-				} else {
-					anEdge.setStartPoint(p3);
-					anEdge.setEndPoint(p4);
-					edgeGID++;
-					anEdge.setGID(edgeGID);
-					aTriangle1.setEdge(0, anEdge10);
-					aTriangle1.setEdge(1, anEdge11);
-					aTriangle1.setEdge(2, anEdge12);
-					aTriangle2.setEdge(0, anEdge20);
-					aTriangle2.setEdge(1, anEdge21);
-					aTriangle2.setEdge(2, anEdge22);
-					if (anEdge12.getLeft() == aTriangle2) {
-						anEdge12.setLeft(aTriangle1);
-					} else {
-						anEdge12.setRight(aTriangle1);
-					}
-					if (anEdge22.getLeft() == aTriangle1) {
-						anEdge22.setLeft(aTriangle2);
-					} else {
-						anEdge22.setRight(aTriangle2);
-					}
-					if (anEdge.isLeft(p1)) {
-						anEdge.setLeft(aTriangle1);
-						anEdge.setRight(aTriangle2);
-					} else {
-						anEdge.setLeft(aTriangle2);
-						anEdge.setRight(aTriangle1);
-					}
-					aTriangle1.recomputeCenter();
-					aTriangle2.recomputeCenter();
-				}
+				flipFlap(ed);
 			}
 		}
 		return exchange;
 	}
+        
+        /**
+         * Makes a flip-flap on an edge without any test.
+         * @param ed
+         * @throws DelaunayError 
+         */
+        final void flipFlap(DEdge ed) throws DelaunayError {
+                DTriangle left = ed.getLeft();
+                DTriangle right = ed.getRight();
+		DEdge anEdge11, anEdge12;
+		DEdge anEdge21, anEdge22;
+                DPoint p1 = ed.getStartPoint();
+                DPoint p2 = ed.getEndPoint();
+                DPoint p3 = left.getAlterPoint(p1, p2);
+                DPoint p4 = right.getAlterPoint(p1, p2);
+                anEdge11 = checkTwoPointsEdge(p3, p1, left.getEdges(), DTriangle.PT_NB);
+                anEdge12 = checkTwoPointsEdge(p1, p4, right.getEdges(), DTriangle.PT_NB);
+                anEdge21 = checkTwoPointsEdge(p2, p4, right.getEdges(), DTriangle.PT_NB);
+                anEdge22 = checkTwoPointsEdge(p3, p2, left.getEdges(), DTriangle.PT_NB);
+                if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_MISC, "Couldn't swap the triangles.");
+                } else {
+                        ed.setStartPoint(p3);
+                        ed.setEndPoint(p4);
+                        left.setEdge(0, ed);
+                        left.setEdge(1, anEdge11);
+                        left.setEdge(2, anEdge12);
+                        right.setEdge(0, ed);
+                        right.setEdge(1, anEdge21);
+                        right.setEdge(2, anEdge22);
+                        if (anEdge12.getLeft() == right) {
+                                anEdge12.setLeft(left);
+                        } else {
+                                anEdge12.setRight(left);
+                        }
+                        if (anEdge22.getLeft() == left) {
+                                anEdge22.setLeft(right);
+                        } else {
+                                anEdge22.setRight(right);
+                        }
+                        if (ed.isLeft(p1)) {
+                                ed.setLeft(left);
+                                ed.setRight(right);
+                        } else {
+                                ed.setLeft(right);
+                                ed.setRight(left);
+                        }
+                        left.recomputeCenter();
+                        right.recomputeCenter();
+                }
+        }
 
 	/**
 	 * Check if the edge already exists. Returns null if it doesn't

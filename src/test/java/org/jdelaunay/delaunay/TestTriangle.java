@@ -698,4 +698,26 @@ public class TestTriangle extends BaseUtility {
 		assertEquals(tri.getCounterSteepestIntersection(new DPoint(4,0,0)), new DPoint(4,0,0));
 		assertEquals(tri.getCounterSteepestIntersection(new DPoint(1,2,5)), new DPoint(1,2,5));
 	 }
+         
+         public void testCenter() throws DelaunayError {
+                 DTriangle dt = new DTriangle(new DEdge(3,1,0,8,3,0), 
+                         new DEdge(8,3,0,5,0,0), 
+                         new DEdge(5,0,0,3,1,0));
+                 double x = 15.5/3;
+                 double y = -x+8;
+                 assertEquals(dt.getCircumCenter().x, x, 0.00001);
+                 assertEquals(dt.getCircumCenter().y, y, 0.00001);
+                 dt = new DTriangle( 
+                         new DEdge(8,3,0,5,0,0), 
+                         new DEdge(5,0,0,3,1,0),
+                         new DEdge(3,1,0,8,3,0));
+                 assertEquals(dt.getCircumCenter().x, x, 0.00001);
+                 assertEquals(dt.getCircumCenter().y, y, 0.00001);
+                 dt = new DTriangle(  
+                         new DEdge(5,0,0,3,1,0),
+                         new DEdge(3,1,0,8,3,0),
+                         new DEdge(8,3,0,5,0,0));
+                 assertEquals(dt.getCircumCenter().x, x, 0.00001);
+                 assertEquals(dt.getCircumCenter().y, y, 0.00001);
+         }
 }
