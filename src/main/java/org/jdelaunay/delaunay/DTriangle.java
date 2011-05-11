@@ -698,14 +698,11 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	public final boolean checkTopology() {
 		boolean correct = true;
-		int i;
 
 		// check if each edge is connected to the triangle
-		i = 0;
-		while (i < PT_NB) {
-			if (edges[i].getLeft() == this ||  edges[i].getRight() == this) {
-				i++;
-			}else {
+		
+		for(int i=0; i < PT_NB; i++) {
+			if (!(edges[i].getLeft() == this ||  edges[i].getRight() == this)) {
 				return false;
 			}
 		}
