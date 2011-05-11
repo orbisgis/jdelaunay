@@ -1678,10 +1678,10 @@ public class ConstrainedMesh implements Serializable {
                 DPoint p2 = ed.getEndPoint();
                 DPoint p3 = left.getAlterPoint(p1, p2);
                 DPoint p4 = right.getAlterPoint(p1, p2);
-                anEdge11 = checkTwoPointsEdge(p3, p1, left.getEdges(), DTriangle.PT_NB);
-                anEdge12 = checkTwoPointsEdge(p1, p4, right.getEdges(), DTriangle.PT_NB);
-                anEdge21 = checkTwoPointsEdge(p2, p4, right.getEdges(), DTriangle.PT_NB);
-                anEdge22 = checkTwoPointsEdge(p3, p2, left.getEdges(), DTriangle.PT_NB);
+                anEdge11 = left.getOppositeEdge(p2);
+                anEdge12 = right.getOppositeEdge(p2);
+                anEdge21 = right.getOppositeEdge(p1);
+                anEdge22 = left.getOppositeEdge(p1);
                 if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_MISC, "Couldn't swap the triangles.");
                 } else {
@@ -1714,35 +1714,6 @@ public class ConstrainedMesh implements Serializable {
                         right.recomputeCenter();
                 }
         }
-
-	/**
-	 * Check if the edge already exists. Returns null if it doesn't
-	 *
-	 * @param p1
-	 * @param p2
-	 * @param edgeQueueList
-	 * @param size
-	 *
-	 * @return
-	 */
-	private DEdge checkTwoPointsEdge(DPoint p1, DPoint p2,
-		DEdge[] edgeQueueList, int size) {
-		// Check if the two points already lead to an existing edge.
-		// If the edge exists it must be in the non-processed edges
-		DEdge theEdge = null;
-		int i = 0;
-		int max = (edgeQueueList.length < size ? edgeQueueList.length : size);
-		while ((i < max) && (theEdge == null)) {
-			DEdge anEdge = edgeQueueList[i];
-			if (((anEdge.getStartPoint().equals(p1)) && (anEdge.getEndPoint().equals( p2)))
-				|| ((anEdge.getStartPoint().equals(p2)) && (anEdge.getEndPoint().equals(p1)))) {
-				theEdge = anEdge;
-			} else {
-				i++;
-			}
-		}
-		return theEdge;
-	}
 
 	/**
 	 * We must be sure that the start point of the constraint is its left point
