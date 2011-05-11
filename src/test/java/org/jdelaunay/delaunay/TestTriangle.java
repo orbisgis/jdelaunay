@@ -42,6 +42,16 @@ import java.util.List;
  */
 public class TestTriangle extends BaseUtility {
 
+        public void testConstructors() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,2,2,0), new DEdge(2,2,0,0,0,0));
+                DTriangle dt2 = new DTriangle(dt);
+                assertTrue(dt2.belongsTo(new DPoint(0,0,0)));
+                assertTrue(dt2.belongsTo(new DPoint(2,2,0)));
+                assertTrue(dt2.belongsTo(new DPoint(4,0,0)));
+                assertTrue(dt.checkTopology());
+                assertFalse(dt2.checkTopology());
+        }
+        
 	/**
 	 * Checks that computeArea works well. The test is basic, but important.
 	 */
@@ -857,5 +867,22 @@ public class TestTriangle extends BaseUtility {
                 double asp = dt.getSlopeAspect();
                 assertEquals(asp,180, 0.01);
         }
-         
+
+        public void testGetMaxAngle() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,0,0,0,4,0),
+                                new DEdge(0,4,0,4,0,0),
+                                new DEdge(4,0,0,0,0,0));
+                double ma = dt.getMaxAngle();
+                assertEquals(ma, 90, 0.01); 
+        }
+        
+        public void testSharedByTwoEdges() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,0,0,0,4,0),
+                                new DEdge(0,4,0,4,0,0),
+                                new DEdge(4,0,0,0,0,0));
+                assertTrue(dt.sharedByTwoEdge(new DPoint(0,0,0)));
+                assertTrue(dt.sharedByTwoEdge(new DPoint(4,0,0)));
+                assertTrue(dt.sharedByTwoEdge(new DPoint(0,4,0)));
+                
+        }
 }

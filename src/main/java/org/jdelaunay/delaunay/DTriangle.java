@@ -34,7 +34,6 @@ import com.vividsolutions.jts.algorithm.Angle;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
-import java.util.ListIterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
@@ -128,8 +127,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Create a DTriangle from another triangle NB : it doesn't update edges
-	 * connection
+	 * Create a DTriangle from another triangle<br/>
+         * NB : it doesn't update edges connection
 	 *
 	 * @param aTriangle
 	 */
@@ -699,70 +698,43 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	public final boolean checkTopology() {
 		boolean correct = true;
-		int i, j, k;
-
-		// check if we do not have an edge twice
-		i = 0;
-		while ((i < PT_NB) && (correct)) {
-			int foundEdge = 0;
-			for (j = 0; j < PT_NB; j++) {
-				if (edges[i] == edges[j]) {
-					foundEdge++;
-				}
-			}
-			if (foundEdge != 1) {
-				correct = false;
-			}
-			i++;
-		}
+		int i;
 
 		// check if each edge is connected to the triangle
 		i = 0;
-		while ((i < PT_NB) && (correct)) {
-			int foundEdge = 0;
-			if (edges[i].getLeft() == this) {
-				foundEdge++;
+		while (i < PT_NB) {
+			if (edges[i].getLeft() == this ||  edges[i].getRight() == this) {
+				i++;
+			}else {
+				return false;
 			}
-			if (edges[i].getRight() == this) {
-				foundEdge++;
-			}
-
-			if (foundEdge != 1) {
-				correct = false;
-			}
-			i++;
 		}
-
-		// Check if each point in the edges is referenced 2 times
-		DPoint aPoint;
-		i = 0;
-		while ((i < PT_NB) && (correct)) {
-			DEdge anEdge = edges[i];
-			for (j = 0; j < 2; j++) {
-				if (j == 0) {
-					aPoint = anEdge.getStartPoint();
-				}
-				else {
-					aPoint = anEdge.getEndPoint();
-				}
-				int foundPoint = 0;
-				for (k = 0; k < PT_NB; k++) {
-					if (edges[k].getStartPoint() == aPoint) {
-						foundPoint++;
-					}
-					if (edges[k].getEndPoint() == aPoint) {
-						foundPoint++;
-					}
-				}
-				if (foundPoint != 2) {
-					correct = false;
-				}
-			}
-			i++;
-		}
+                //We must be sure that we have exactly three points in the triangle
+                for (int l = 0; l < PT_NB; l++) {
+                        DPoint pt = getPoint(l);
+                        if(!sharedByTwoEdge(pt)){
+                                return false;
+                        }
+                }
+                
 
 		return correct;
 	}
+        
+        /**
+         * test if pt is an apex of this triangle. It must be an extremity of 
+         * two of the edges, and must not be an extremity of the last one.
+         * @param pt
+         * @return 
+         */
+        public final boolean sharedByTwoEdge(DPoint pt){
+                if(edges[0].isExtremity(pt)){
+                        return (edges[1].isExtremity(pt) && !edges[2].isExtremity(pt)) ||
+                                (!edges[1].isExtremity(pt) && edges[2].isExtremity(pt));
+                } else {
+                        return edges[1].isExtremity(pt) && edges[2].isExtremity(pt);
+                }
+        }
 
 	/**
 	 * Check if the triangle is flat or not.
