@@ -1242,4 +1242,46 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		return null;
 	}
         
+        /**
+         * Return the triangle of the mesh that contains the center of this DTriangle.
+         * @return
+         * @throws DelaunayError 
+         */
+        public final DTriangle getCircumCenterContainer() throws DelaunayError{
+                DPoint cc = new DPoint(getCircumCenter());
+                return searchPointContainer(cc);
+        }
+        
+        /**
+         * This method recursively search for pt in the mesh. If it's in this, this is
+         * returned. Else, we search in the adjacent triangles.
+         * @param pt
+         * @param tRef
+         * @return
+         * @throws DelaunayError 
+         */
+        public DTriangle searchPointContainer(DPoint pt) throws DelaunayError {
+                if(contains(pt)){
+                        return this;
+                } else {
+                        for(DEdge ed : edges){
+                                DPoint op = getOppositePoint(ed);
+                                if(ed.isRight(pt) && ed.isLeft(op)){
+                                        if(ed.getRight() != null){
+                                                return ed.getRight().searchPointContainer(pt );
+                                        } else {
+                                                return null;
+                                        }
+                                } else if(ed.isLeft(pt) && ed.isRight(op)){
+                                        if(ed.getLeft() != null){
+                                                return ed.getLeft().searchPointContainer(pt);
+                                        } else {
+                                                return null;
+                                        }
+                                }
+                        }
+                }             
+                return null;
+        }
+        
 }

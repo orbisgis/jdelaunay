@@ -720,4 +720,110 @@ public class TestTriangle extends BaseUtility {
                  assertEquals(dt.getCircumCenter().x, x, 0.00001);
                  assertEquals(dt.getCircumCenter().y, y, 0.00001);
          }
+        
+         /**
+          * test the algorithm that search a point in the mesh, knowing a starting
+          * triangle.
+          * The configuration here is the same as in testOneConstraintFourPointsExtended.
+          * (in ConstrainedMesh)
+          * @throws DelaunayError 
+          */
+        public void testFindCircumCenterContainer() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.addConstraintEdge(new DEdge(0,3,0,8,3,0));
+		mesh.addConstraintEdge(new DEdge(10,0,0,10,6,0));
+		mesh.addPoint(new DPoint(3,1,0));
+		mesh.addPoint(new DPoint(5,0,0));
+		mesh.addPoint(new DPoint(4,5,0));
+		mesh.addPoint(new DPoint(6,4,0));
+		mesh.processDelaunay();
+                int indice = mesh.getTriangleList().indexOf(new DTriangle(new DEdge(3,1,0,5,0,0),
+                        new DEdge(5,0,0,8,3,0), new DEdge(8,3,0,3,1,0)));
+                assertTrue(indice>=0);
+                DTriangle ref = mesh.getTriangleList().get(indice);
+                DTriangle container = ref.getCircumCenterContainer();
+                assertEquals(new DTriangle(
+                        new DEdge(0,3,0,3,1,0),
+                        new DEdge(3,1,0,8,3,0),
+                        new DEdge(8,3,0,0,3,0)), container);
+                indice = mesh.getTriangleList().indexOf(new DTriangle(new DEdge(8,3,0,10,6,0),
+                        new DEdge(10,6,0,10,0,0), new DEdge(10,0,0,8,3,0)));
+                assertTrue(indice>=0);
+                ref = mesh.getTriangleList().get(indice);
+                container = ref.getCircumCenterContainer();
+                assertNull(container);
+        }
+        
+        public void testFindingCCContainerManyConstrains() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge constr = new DEdge(0,3,0,8,3,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(9,0,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(5,4,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,12,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,3,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,7,0,12,12,0);
+		mesh.addConstraintEdge(constr);
+		mesh.addPoint(new DPoint(4,5,0));
+		mesh.addPoint(new DPoint(4,1,0));
+		mesh.addPoint(new DPoint(10,3,0));
+		mesh.addPoint(new DPoint(11,9,0));
+		mesh.processDelaunay();
+                int indice = mesh.getTriangleList().indexOf(new DTriangle(
+                        new DEdge(8,7,0,11,9,0),
+                        new DEdge(11,9,0,12,12,0), 
+                        new DEdge(12,12,0,8,7,0)));
+                assertTrue(indice>=0);
+                DTriangle ref = mesh.getTriangleList().get(indice);
+                DTriangle container = ref.getCircumCenterContainer();
+                assertNull(container);
+        }
+        
+        /**
+         * search the triangle that contains a point (that is a priori not a 
+         * circum center) in the mesh from testManyConstraints
+         * @throws DelaunayError 
+         */
+        public void testSearchPoint() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge constr = new DEdge(0,3,0,8,3,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(9,0,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(5,4,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,12,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,3,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,7,0,12,12,0);
+		mesh.addConstraintEdge(constr);
+		mesh.addPoint(new DPoint(4,5,0));
+		mesh.addPoint(new DPoint(4,1,0));
+		mesh.addPoint(new DPoint(10,3,0));
+		mesh.addPoint(new DPoint(11,9,0));
+		mesh.processDelaunay();
+                int indice = mesh.getTriangleList().indexOf(new DTriangle(
+                        new DEdge(8,7,0,11,9,0),
+                        new DEdge(11,9,0,12,12,0), 
+                        new DEdge(12,12,0,8,7,0)));
+                assertTrue(indice>=0);
+                DTriangle ref = mesh.getTriangleList().get(indice);
+                DTriangle container = ref.searchPointContainer(new DPoint(7,4,0));
+                assertEquals(new DTriangle(
+                        new DEdge(8,3,0,8,7,0),
+                        new DEdge(8,7,0,5,4,0),
+                        new DEdge(5,4,0,8,3,0)), container);
+                container = ref.searchPointContainer(new DPoint(100,100,100));
+                assertNull(container);
+        }
+         
 }
