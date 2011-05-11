@@ -825,5 +825,37 @@ public class TestTriangle extends BaseUtility {
                 container = ref.searchPointContainer(new DPoint(100,100,100));
                 assertNull(container);
         }
+        
+        public void testSteepestIntersection() throws DelaunayError {
+                DTriangle dt = new DTriangle (
+                        new DEdge(0,0,0,4,0,0),
+                        new DEdge(4,0,0,2,2,10),
+                        new DEdge(2,2,10,0,0,0));
+                DPoint pt = dt.getSteepestIntersectionPoint(new DPoint(2,2,10));
+                assertTrue(pt.equals(new DPoint(2,0,0)));
+        }
+        
+        public void testSlope() throws DelaunayError {
+                DTriangle dt = new DTriangle (
+                        new DEdge(0,0,0,4,0,0),
+                        new DEdge(4,0,0,2,2,10),
+                        new DEdge(2,2,10,0,0,0));
+                double slop = dt.getSlopeInPercent();
+                assertEquals(slop,500,0.01);
+                slop = dt.getSlope();
+                assertEquals(slop,-5,0.01);
+                slop = dt.getSlopeInDegree();
+                assertEquals(slop,-78.69,0.01);
+                
+        }
+        
+        public void testSlopeAspect() throws DelaunayError {
+                DTriangle dt = new DTriangle (
+                        new DEdge(0,0,0,4,0,0),
+                        new DEdge(4,0,0,2,2,10),
+                        new DEdge(2,2,10,0,0,0));
+                double asp = dt.getSlopeAspect();
+                assertEquals(asp,180, 0.01);
+        }
          
 }

@@ -633,7 +633,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 
 	/**
-	 * Get the slope of this DTrioangle. Be careful, as the returned value will be negative
+	 * Get the slope of this DTriangle. Be careful, as the returned value will be negative
 	 * @return
 	 * @throws DelaunayError
 	 */
@@ -759,30 +759,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 				}
 			}
 			i++;
-		}
-
-		return correct;
-	}
-
-	/**
-	 * Check if this triangle and the list of points given in argument respect
-	 * the Delaunay criterium : This method returns true if none of the points of pts
-	 * lie inside the circumcircle of this triangle.
-	 *
-	 * @param pts
-	 * @return
-	 */
-	public final boolean checkDelaunay(List<DPoint> pts) {
-		boolean correct = true;
-		ListIterator<DPoint> iterPoint = pts.listIterator();
-		while (iterPoint.hasNext() && correct) {
-			DPoint aPoint = iterPoint.next();
-			if (inCircle(aPoint) == 1 && !aPoint.equals(getPoint(0))
-                                        && !aPoint.equals(getPoint(1))
-                                        && !aPoint.equals(getPoint(2))) {
-                                // Check if it is one of the points of the triangle
-                                correct = false;
-			}
 		}
 
 		return correct;
@@ -1260,7 +1236,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * @return
          * @throws DelaunayError 
          */
-        public DTriangle searchPointContainer(DPoint pt) throws DelaunayError {
+        public final DTriangle searchPointContainer(final DPoint pt) throws DelaunayError {
                 if(contains(pt)){
                         return this;
                 } else {

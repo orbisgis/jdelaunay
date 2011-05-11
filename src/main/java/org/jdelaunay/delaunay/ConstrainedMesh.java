@@ -1274,7 +1274,7 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
-	 * Refine the mesh, using the Rupper's algorithm.
+	 * Refine the mesh, using the Ruppert's algorithm.
 	 * @param minLength
 	 *		The minimum length of an edge that could be inserted during the refinement.
 	 * @throws DelaunayError
