@@ -883,6 +883,7 @@ public class TestTriangle extends BaseUtility {
                 assertTrue(dt.sharedByTwoEdge(new DPoint(0,0,0)));
                 assertTrue(dt.sharedByTwoEdge(new DPoint(4,0,0)));
                 assertTrue(dt.sharedByTwoEdge(new DPoint(0,4,0)));
+                assertFalse(dt.sharedByTwoEdge(new DPoint(5,4,0)));
                 
         }
 }
