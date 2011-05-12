@@ -1792,4 +1792,97 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(con!=null);
 
         }
+        
+        public void testPointInEdgeInit() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,2,0));
+                mesh.addPoint(new DPoint(4,0,0));
+                mesh.addPoint(new DPoint(7,3,0));
+                mesh.addPoint(new DPoint(2,4,0));
+                mesh.processDelaunay();
+                List<DEdge> edges = mesh.getEdges();
+                int index = edges.indexOf(new DEdge(2,4,0,4,0,0));
+                DEdge e = edges.get(index);
+                DEdge con = mesh.initPointOnEdge(new DPoint(3,2,0), e, new LinkedList<DEdge>());
+                assertNotNull(con);
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==4);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(0,2,0,3,2,0),
+                        new DEdge(3,2,0,4,0,0),
+                        new DEdge(4,0,0,0,2,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(0,2,0,3,2,0),
+                        new DEdge(3,2,0,2,4,0),
+                        new DEdge(2,4,0,0,2,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(7,3,0,3,2,0),
+                        new DEdge(3,2,0,2,4,0),
+                        new DEdge(2,4,0,7,3,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(7,3,0,3,2,0),
+                        new DEdge(3,2,0,4,0,0),
+                        new DEdge(4,0,0,7,3,0))));
+                edges = mesh.getEdges();
+                assertTrue(edges.size()==8);
+                assertTrue(edges.contains(new DEdge(0,2,0,4,0,0)));
+                assertTrue(edges.contains(new DEdge(0,2,0,2,4,0)));
+                assertTrue(edges.contains(new DEdge(0,2,0,3,2,0)));
+                assertTrue(edges.contains(new DEdge(2,4,0,3,2,0)));
+                assertTrue(edges.contains(new DEdge(4,0,0,3,2,0)));
+                assertTrue(edges.contains(new DEdge(7,3,0,3,2,0)));
+                assertTrue(edges.contains(new DEdge(7,3,0,2,4,0)));
+                assertTrue(edges.contains(new DEdge(7,3,0,4,0,0)));
+        }
+        
+        /**
+         * For insertion on an edge, we must test branching too.
+         */
+        public void testPointInEdgeBranches() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,0,0));
+                mesh.addPoint(new DPoint(3,0,0));
+                mesh.addPoint(new DPoint(2,3,0));
+                mesh.processDelaunay();
+                List<DEdge> edges = mesh.getEdges();
+                int index = edges.indexOf(new DEdge(0,0,0,2,3,0));
+                DEdge e = edges.get(index);
+                DEdge con = mesh.initPointOnEdge(new DPoint(1,1.5,0), e, new LinkedList<DEdge>());
+                assertNotNull(con);
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==2);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(0,0,0,1,1.5,0),
+                        new DEdge(1,1.5,0,3,0,0),
+                        new DEdge(3,0,0,0,0,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(2,3,0,1,1.5,0),
+                        new DEdge(1,1.5,0,3,0,0),
+                        new DEdge(3,0,0,2,3,0))));
+                edges = mesh.getEdges();
+                assertTrue(edges.size()==5);
+                mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,0,0));
+                mesh.addPoint(new DPoint(3,0,0));
+                mesh.addPoint(new DPoint(2,3,0));
+                mesh.processDelaunay();
+                edges = mesh.getEdges();
+                index = edges.indexOf(new DEdge(0,0,0,2,3,0));
+                e = edges.get(index);
+                e.swap();
+                con = mesh.initPointOnEdge(new DPoint(1,1.5,0), e, new LinkedList<DEdge>());
+                tris = mesh.getTriangleList();
+                assertTrue(tris.size()==2);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(0,0,0,1,1.5,0),
+                        new DEdge(1,1.5,0,3,0,0),
+                        new DEdge(3,0,0,0,0,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(2,3,0,1,1.5,0),
+                        new DEdge(1,1.5,0,3,0,0),
+                        new DEdge(3,0,0,2,3,0))));
+                edges = mesh.getEdges();
+                assertTrue(edges.size()==5);
+                
+        }
 }

@@ -1807,10 +1807,14 @@ public class ConstrainedMesh implements Serializable {
                 LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
                 boolean onEdge = container.isOnAnEdge(pt);
                 if(onEdge){
+                        DEdge contEdge = container.getContainingEdge(pt);
+                        initPointOnEdge(pt, contEdge, badEdges);
                         throw new UnsupportedOperationException();
                         
                 } else {
                         initPointInTriangle(pt, container, badEdges);
+                        badEdgesQueueList = badEdges;
+                        processBadEdges();
                         
                 }
                 throw new UnsupportedOperationException();
@@ -1872,12 +1876,109 @@ public class ConstrainedMesh implements Serializable {
                 pointGID++;
                 pt.setGID(pointGID);
                 points.add(pt);
+                //e1, e2 and e3 can't be encroached, as they are not locked, and they
+                //can't be on the boundary of the mesh.
                 if(eMem0.isEncroached()){
                         return eMem0;
                 } else if(eMem1.isEncroached()){
                         return eMem1;
                 } else if(eMem2.isEncroached()){
                         return eMem2;
+                }
+                return null;
+        }
+        
+        DEdge initPointOnEdge(DPoint pt, DEdge contEdge, Deque<DEdge> badEdges) throws DelaunayError {
+                DTriangle left = contEdge.getLeft();
+                DTriangle right = contEdge.getRight();
+                DEdge r1 = null;
+                DEdge r2 = null;
+                DEdge l1 = null;
+                DEdge l2 = null;
+                DTriangle otr;
+                DTriangle otl;
+                //We must split the edge before building the triangles
+                //otherPart is built to have the same orientation as contEdge.
+                DEdge otherPart = new DEdge(pt, contEdge.getEndPoint());
+                if(left != null){
+                        //we retrieve the two other edges from the left triangle.
+                        l1 = left.getOppositeEdge(contEdge.getEndPoint());
+                        l2 = left.getOppositeEdge(contEdge.getStartPoint());
+                        //We retrieve the point opposite to contEdge in left
+                        DPoint opLeft = left.getOppositePoint(contEdge);
+                        //we build the missing edge
+                        DEdge lastLeft = new DEdge(pt, opLeft);
+                        otl = new DTriangle(l2, otherPart, lastLeft);
+                        //We change an edge in left.
+                        //left is not coherent anymore
+                        int index = left.getEdgeIndex(l2);
+                        left.setEdge(index, lastLeft);
+                        //We add the newly created triangle and edge to the corresponding lists.
+                        edgeGID++;
+                        lastLeft.setGID(edgeGID);
+                        edges.add(lastLeft);
+                        //and now the triangle
+                        triangleGID++;
+                        otl.setGID(triangleGID);
+                        triangleList.add(otl);
+                }
+                if(right != null){
+                        //we retrieve the two other edges from the right triangle.
+                        r1 = right.getOppositeEdge(contEdge.getEndPoint());
+                        r2 = right.getOppositeEdge(contEdge.getStartPoint());
+                        //We retrieve the point opposite to contEdge in right
+                        DPoint opRight = right.getOppositePoint(contEdge);
+                        //We build the missing edge.
+                        DEdge lastRight = new DEdge(pt, opRight);
+                        otr = new DTriangle(r2, otherPart, lastRight);
+                        //We change an ede in right.
+                        //right is not coherent anymore.
+                        int index = right.getEdgeIndex(r2);
+                        right.setEdge(index, lastRight);
+                        //We add the newly created triangle and edge to the corresponding lists.
+                        edgeGID++;
+                        lastRight.setGID(edgeGID);
+                        edges.add(lastRight);
+                        //and now the triangle
+                        triangleGID++;
+                        otr.setGID(triangleGID);
+                        triangleList.add(otr);
+                }
+                contEdge.setEndPoint(pt);
+                //left and right are coherent again.
+                //We must update the cirumcenters
+                if(right!=null){
+                        right.recomputeCenter();
+                }
+                if(left!=null){
+                        left.recomputeCenter();
+                }
+                //Don't forget to add the new point..
+                pointGID++;
+                pt.setGID(pointGID);
+                points.add(pt);
+                //...and the other part of the input edge
+                edgeGID++;
+                otherPart.setGID(edgeGID);
+                edges.add(otherPart);
+                //At this stage, left and right are not valid triangles anymore.
+                contEdge.setEndPoint(pt);
+                //We must still return the first encroached edge we find, if any.
+                //Analyze left first.
+                if(left != null){
+                        if(l1.isEncroached()){
+                                return l1;
+                        } else if(l2.isEncroached()){
+                                return l2;
+                        }
+                } 
+                //Then analyze right.
+                if(right != null){
+                        if(r1.isEncroached()){
+                                return r1;
+                        } else if(r2.isEncroached()){
+                                return r2;
+                        }
                 }
                 return null;
         }
