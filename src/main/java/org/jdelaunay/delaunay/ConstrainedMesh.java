@@ -38,6 +38,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -135,22 +136,6 @@ public class ConstrainedMesh implements Serializable {
 		triangleGID = 0;
 		weights = new HashMap<Integer, Integer>();
 		badEdgesQueueList = new LinkedList<DEdge>();
-	}
-
-	/**
-	 * Get the list of edges that are to be processed by the flip flap algorithm
-	 * @return
-	 */
-	public final List<DEdge> getBadEdgesQueueList() {
-		return badEdgesQueueList;
-	}
-
-	/**
-	 * Set the list of edges that are to be processed by the flip flap algorithm
-	 * @param badEdgesQueueList
-	 */
-	public final void setBadEdgesQueueList(LinkedList<DEdge> badEdgesQueueList) {
-		this.badEdgesQueueList = badEdgesQueueList;
 	}
 
 	/**
@@ -1349,6 +1334,7 @@ public class ConstrainedMesh implements Serializable {
 			//we must replace an edge of left
 			int indexExc = left.getEdgeIndex(startOp1);
 			left.setEdge(indexExc, ed1);
+                        left.recomputeCenter();
 			//We set the right and left triangles of each edge properly
 			ed1.setLeft(left);
 			ed1.setRight(other1);
@@ -1371,6 +1357,7 @@ public class ConstrainedMesh implements Serializable {
 			//we must replace an edge of right
 			int indexExc = right.getEdgeIndex(startOp2);
 			right.setEdge(indexExc, ed2);
+                        right.recomputeCenter();
 			//We set the right and left triangles of each edge properly
 			ed2.setRight(left);
 			ed2.setLeft(other2);
@@ -1575,54 +1562,41 @@ public class ConstrainedMesh implements Serializable {
 	 * Process the flip-flop algorithm on the list of triangles
 	 */
 	private void processBadEdges() throws DelaunayError {
-		if (!isMeshComputed()) {
-			LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
-			while (!badEdgesQueueList.isEmpty()) {
-				DEdge anEdge = badEdgesQueueList.get(0);
-				badEdgesQueueList.remove(0);
-
-				boolean doIt = true;
-
-				if (anEdge.isLocked()) {
-					doIt = false;
-				} else if (alreadySeen.contains(anEdge)) {
-					doIt = false;
-				}
-
-				if (doIt) {
-					alreadySeen.add(anEdge);
-					// We cannot process marked edges
-					// We check if the two triangles around the edge are ok
-					DTriangle aTriangle1 = anEdge.getLeft();
-					DTriangle aTriangle2 = anEdge.getRight();
-					if (swapTriangle(anEdge)) {
-						// Add the triangle"s edges to the bad edges list
-						DEdge addEdge;
-						for (int j = 0; j < DTriangle.PT_NB; j++) {
-							addEdge = aTriangle1.getEdge(j);
-							if ((addEdge.getLeft() != null)
-								&& (addEdge.getRight() != null)
-								&& !addEdge.equals(anEdge)
-								&& !badEdgesQueueList.contains(addEdge)) {
-								badEdgesQueueList.add(addEdge);
-							}
-							addEdge = aTriangle2.getEdge(j);
-							if ((addEdge.getLeft() != null)
-								&& (addEdge.getRight() != null)
-								&& !addEdge.equals(anEdge)
-								&& !badEdgesQueueList.contains(addEdge)) {
-								badEdgesQueueList.add(addEdge);
-							}
-						}
-					}
-				}
-			}
-		} else {
-			while (!badEdgesQueueList.isEmpty()) {
-				badEdgesQueueList.remove(0);
-			}
-		}
+                LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
+                while (!badEdgesQueueList.isEmpty()) {
+                        DEdge anEdge = badEdgesQueueList.remove(0);
+                        boolean doIt = !anEdge.isLocked() && !alreadySeen.contains(anEdge);
+                        if (doIt) {
+                                alreadySeen.add(anEdge);
+                                // We cannot process marked edges
+                                // We check if the two triangles around the edge are ok
+                                DTriangle aTriangle1 = anEdge.getLeft();
+                                DTriangle aTriangle2 = anEdge.getRight();
+                                if (swapTriangle(anEdge)) {
+                                        // Add the triangle's edges to the bad edges list
+                                        LinkedList<DEdge> others = new LinkedList<DEdge>();
+                                        others.add(aTriangle1.getOppositeEdge(anEdge.getStartPoint()));
+                                        others.add(aTriangle1.getOppositeEdge(anEdge.getEndPoint()));
+                                        others.add(aTriangle2.getOppositeEdge(anEdge.getStartPoint()));
+                                        others.add(aTriangle2.getOppositeEdge(anEdge.getEndPoint()));
+                                        for(DEdge ed : others){
+                                                if(ed.getLeft() != null && ed.getRight() != null
+                                                        && !badEdgesQueueList.contains(ed)){
+                                                        badEdgesQueueList.add(ed);
+                                                }
+                                        }
+                                }
+                        }
+                }
 	}
+        
+        private DEdge revertibleSwapper(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory){
+                LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
+                while(!badEdges.isEmpty()){
+                        
+                }
+                throw new UnsupportedOperationException();
+        }
 
 	/**
 	 * Swap two neighbour triangles, whose common edge is anEdge<br/>
@@ -1635,7 +1609,7 @@ public class ConstrainedMesh implements Serializable {
          *      the edges.
 	 * @param forced
 	 * @return
-         *      True if the flip-flap has been performed. In particular, if this method 
+         *      True if the flip-flap has been performed. Moreover, if this method 
          *      returns true, we can be sure that ed.left and ed.right are not null.
 	 */
 	final boolean swapTriangle(DEdge ed) throws DelaunayError {
@@ -1775,6 +1749,84 @@ public class ConstrainedMesh implements Serializable {
                         DEdge ed = it.next();
                         flipFlap(ed);
                 }
+        }
+        
+        /**
+         * Insert the point pt in the triangle container.
+         * @param pt
+         *      The point to be inserted.
+         * @param container
+         *      The triangle of the mesh that contains pt.
+         * @param swapMemory
+         *      The list that will store the swap operations, in order to be able 
+         *      to come back to the original state.
+         * @return 
+         *      DEdge if an encroached constrained edge has been created by the insertion,
+         *      null otherwise.<br/>
+         *      We make this choice to be able to split this encroached edge, as 
+         *      edge splitting has priority over barycenter point insertion in the 
+         *      Ruppert algorithm.
+         * @throws DelaunayError if pt is not inside container. If a search is needed,
+         *      it must be made before trying to insert the point.
+         */
+        public DEdge insertPointInTriangle(DPoint pt, DTriangle container, List<DEdge> swapMemory) 
+                        throws DelaunayError{
+                if(!container.isInside(pt)){
+                        throw new DelaunayError(0, "you must search for the containing triangle"
+                                + "before to proceed to the insertion.");
+                } 
+                LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
+                boolean onEdge = container.isOnAnEdge(pt);
+                if(onEdge){
+                        
+                } else {
+                        DEdge eMem0 = container.getEdge(0);
+                        DEdge eMem1 = container.getEdge(1);
+                        DEdge eMem2 = container.getEdge(2);
+                        badEdges.add(eMem0);
+                        badEdges.add(eMem1);
+                        badEdges.add(eMem2);
+                        initPointInTriangle(pt, container, badEdges);
+                        
+                        
+                }
+                throw new UnsupportedOperationException();
+        }
+        
+        void initPointInTriangle(DPoint pt, DTriangle container, Deque<DEdge> badEdges) throws DelaunayError {
+                DEdge e1 = new DEdge(pt, container.getEdge(1).getStartPoint());
+                DEdge e2 = new DEdge(pt, container.getEdge(1).getEndPoint());
+                edgeGID++;
+                e1.setGID(edgeGID);
+                edgeGID++;
+                e2.setGID(edgeGID);
+                //We instanciate the first triangle
+                DTriangle tri1 = new DTriangle(container.getEdge(1), e1, e2);
+                triangleGID++;
+                //we must prepare the third edge, that will be used in the two other triangles.
+                //e3 is shared between container and tri2
+                DEdge e3 = new DEdge(pt, container.getOppositePoint(container.getEdge(1)));
+                edgeGID++;
+                e3.setGID(edgeGID);
+                //We must instanciate the second triangle.
+                DTriangle tri2;
+                if(container.getEdge(2).isExtremity(container.getEdge(1).getStartPoint())){
+                        tri2 = new DTriangle(e1, e3, container.getEdge(2));
+                        container.setEdge(1, e2);
+                        container.setEdge(2, e3);
+                } else {
+                        tri2 = new DTriangle(e2, e3, container.getEdge(2));
+                        container.setEdge(1, e1);
+                        container.setEdge(2, e3);
+                        
+                }
+                triangleGID++;
+                tri2.setGID(triangleGID);
+                triangleList.add(tri1);
+                triangleList.add(tri2);
+                badEdges.add(e1);
+                badEdges.add(e2);
+                badEdges.add(e3);
         }
         
         /**

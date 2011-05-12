@@ -360,7 +360,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Recompute the center of the circle that joins the ptNb points : the CircumCenter
 	 * @throws DelaunayError
 	 */
-	protected final void recomputeCenter() throws DelaunayError {
+	public final void recomputeCenter() throws DelaunayError {
 		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();

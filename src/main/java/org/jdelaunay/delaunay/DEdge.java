@@ -1115,8 +1115,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
-	 * An edge is said to be encroached in a mesh if there is a point lying
-	 * in the circle it is the diameter of.
+	 * An edge is said to be encroached in a mesh if :<br/>
+         *   (The edge is a constraint OR an edge of the mesh' boundary)<br/>
+         *   AND there is a point lying in the circle it is the diameter of.
 	 * @return
 	 *		true if there is such a point.
 	 * @throws DelaunayError
