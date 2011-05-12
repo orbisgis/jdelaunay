@@ -896,4 +896,16 @@ public class TestTriangle extends BaseUtility {
                 assertFalse(dt.checkTopology());
                 
         }
+        
+        public void testGetContaingEdge() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,0,0,0,4,0),
+                                new DEdge(0,4,0,4,0,0),
+                                new DEdge(4,0,0,0,0,0));
+                assertEquals(new DEdge(0,0,0,0,4,0), dt.getContainingEdge(new DPoint(0,2,0)));
+                assertEquals(new DEdge(0,0,0,4,0,0), dt.getContainingEdge(new DPoint(2,0,0)));
+                assertEquals(new DEdge(4,0,0,0,4,0), dt.getContainingEdge(new DPoint(2,2,0)));
+                assertNull(dt.getContainingEdge(new DPoint(50,50,50)));
+                
+                
+        }
 }

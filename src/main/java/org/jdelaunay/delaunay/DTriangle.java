@@ -1229,4 +1229,21 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 return null;
         }
         
+        /**
+         * Get the edge that contains pt (if any, and the first found if pt is an apex)
+         * @param pt
+         * @return 
+         *      The containing edge, if any, null otherwise.
+         */
+        public final DEdge getContainingEdge(DPoint pt){
+                if(isOnAnEdge(pt)){
+                        for (DEdge edge : edges) {
+                                if (edge.contains(pt)) {
+                                        return edge;
+                                }
+                        }
+                }
+                return null;                
+        }
+        
 }
