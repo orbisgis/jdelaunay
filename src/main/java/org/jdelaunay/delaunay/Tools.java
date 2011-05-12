@@ -64,28 +64,6 @@ public final class Tools {
 	}
 
 	/**
-	 * Linear Z interpolation
-	 * 
-	 * @param p1
-	 * @param p2
-	 * @param aPoint
-	 * @return
-	 */
-	public static double interpolateZ(DPoint p1, DPoint p2, DPoint aPoint) {
-		double dist = p1.squareDistance(p2);
-		double z = p2.getZ() - p1.getZ();
-
-		double d = aPoint.squareDistance(p1);
-		if (Math.abs(dist) > Tools.EPSILON2) {
-			double factor = d / dist;
-			return p1.getZ() + (factor * z);
-		}
-		else {
-			return (p2.getZ() + p1.getZ()) / 2.0;
-		}
-	}
-
-	/**
 	 * Add an element to the list. This method takes care to ensure that we don't
 	 * insert duplicated items in the list.
 	 * @param <T extends Element & Comparable<? super T>>

@@ -103,15 +103,6 @@ public abstract class Element {
 	}
 
 	/**
-	 * Constructor
-	 */
-	public Element(int property, int gid) {
-		init();
-		this.gid = gid;
-		this.property = property;
-	}
-
-	/**
 	 * set GID value
 	 * @param gid
 	 */

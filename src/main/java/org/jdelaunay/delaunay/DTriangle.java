@@ -128,7 +128,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	/**
 	 * Create a DTriangle from another triangle<br/>
-         * NB : it doesn't update edges connection
+         * NB : it doesn't update edges connection - topology is not preserved.
 	 *
 	 * @param aTriangle
 	 */

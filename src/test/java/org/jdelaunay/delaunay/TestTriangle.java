@@ -843,6 +843,7 @@ public class TestTriangle extends BaseUtility {
                         new DEdge(2,2,10,0,0,0));
                 DPoint pt = dt.getSteepestIntersectionPoint(new DPoint(2,2,10));
                 assertTrue(pt.equals(new DPoint(2,0,0)));
+                assertNull(dt.getSteepestIntersectionPoint(new DPoint(50,50,50)));
         }
         
         public void testSlope() throws DelaunayError {
@@ -884,6 +885,15 @@ public class TestTriangle extends BaseUtility {
                 assertTrue(dt.sharedByTwoEdge(new DPoint(4,0,0)));
                 assertTrue(dt.sharedByTwoEdge(new DPoint(0,4,0)));
                 assertFalse(dt.sharedByTwoEdge(new DPoint(5,4,0)));
+                
+        }
+        
+        public void testCheckTopology() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,0,0,0,4,0),
+                                new DEdge(0,4,0,4,0,0),
+                                new DEdge(4,0,0,0,0,0));
+                dt.setEdge(0, new DEdge(50,50,5, 4,4,4));
+                assertFalse(dt.checkTopology());
                 
         }
 }
