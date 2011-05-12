@@ -1770,7 +1770,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 DEdge e1 = mesh.getEdges().get(0);
                 DEdge e2 = mesh.getEdges().get(1);
                 DEdge e3 = mesh.getEdges().get(2);
-                mesh.initPointInTriangle(new DPoint(3,2,0), tri, new LinkedList<DEdge>());
+                DEdge con = mesh.initPointInTriangle(new DPoint(3,2,0), tri, new LinkedList<DEdge>());
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==3);
                 assertTrue(tris.contains(new DTriangle(
@@ -1788,6 +1788,8 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(tri == tris.get(0) || tri == tris.get(1)||tri == tris.get(2));
                 List<DEdge> eds = mesh.getEdges();
                 assertTrue(eds.size()==6);
+                assertTrue(mesh.getPoints().size()==4);
+                assertTrue(con!=null);
 
         }
 }

@@ -1389,8 +1389,16 @@ public class ConstrainedMesh implements Serializable {
 		}
 	}
 
-        final void insertTriangleCircumCenter(DTriangle tri) throws DelaunayError {
+        /**
+         * Insert the circumcenter of the given triangle in the mesh. This method 
+         * is part of the Ruppert refinement algorithm. Consequently, it stops if it 
+         * sees it will create a new encroached edge. 
+         * @param tri
+         * @throws DelaunayError 
+         */
+        public final void insertTriangleCircumCenter(DTriangle tri) throws DelaunayError {
                 DTriangle container = tri.getCircumCenterContainer();
+                throw new UnsupportedOperationException();
                 
         }
         
@@ -1776,7 +1784,9 @@ public class ConstrainedMesh implements Serializable {
         }
         
         /**
-         * Insert the point pt in the triangle container.
+         * Insert the point pt in the triangle container.<br/>
+         * This method does not check if there are any new encroached edge
+         * in the mesh. It just goes straig ahead.
          * @param pt
          *      The point to be inserted.
          * @param container
@@ -1785,15 +1795,10 @@ public class ConstrainedMesh implements Serializable {
          *      The list that will store the swap operations, in order to be able 
          *      to come back to the original state.
          * @return 
-         *      DEdge if an encroached constrained edge has been created by the insertion,
-         *      null otherwise.<br/>
-         *      We make this choice to be able to split this encroached edge, as 
-         *      edge splitting has priority over barycenter point insertion in the 
-         *      Ruppert algorithm.
          * @throws DelaunayError if pt is not inside container. If a search is needed,
          *      it must be made before trying to insert the point.
          */
-        public DEdge insertPointInTriangle(DPoint pt, DTriangle container, List<DEdge> swapMemory) 
+        public void insertPointInTriangle(DPoint pt, DTriangle container, List<DEdge> swapMemory) 
                         throws DelaunayError{
                 if(!container.isInside(pt)){
                         throw new DelaunayError(0, "you must search for the containing triangle"
@@ -1802,15 +1807,11 @@ public class ConstrainedMesh implements Serializable {
                 LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
                 boolean onEdge = container.isOnAnEdge(pt);
                 if(onEdge){
+                        throw new UnsupportedOperationException();
                         
                 } else {
-                        DEdge eMem0 = container.getEdge(0);
-                        DEdge eMem1 = container.getEdge(1);
-                        DEdge eMem2 = container.getEdge(2);
-                        badEdges.add(eMem0);
-                        badEdges.add(eMem1);
-                        badEdges.add(eMem2);
                         initPointInTriangle(pt, container, badEdges);
+                        
                 }
                 throw new UnsupportedOperationException();
         }
@@ -1825,30 +1826,36 @@ public class ConstrainedMesh implements Serializable {
          * @param badEdges
          * @throws DelaunayError 
          */
-        void initPointInTriangle(DPoint pt, DTriangle container, Deque<DEdge> badEdges) throws DelaunayError {
+        DEdge initPointInTriangle(DPoint pt, DTriangle container, Deque<DEdge> badEdges) throws DelaunayError {
+                DEdge eMem0 = container.getEdge(0);
+                DEdge eMem1 = container.getEdge(1);
+                DEdge eMem2 = container.getEdge(2);
+                badEdges.add(eMem0);
+                badEdges.add(eMem1);
+                badEdges.add(eMem2);
                 badEdges.addAll(Arrays.asList(container.getEdges()));
-                DEdge e1 = new DEdge(pt, container.getEdge(1).getStartPoint());
-                DEdge e2 = new DEdge(pt, container.getEdge(1).getEndPoint());
+                DEdge e1 = new DEdge(pt, eMem1.getStartPoint());
+                DEdge e2 = new DEdge(pt, eMem1.getEndPoint());
                 edgeGID++;
                 e1.setGID(edgeGID);
                 edgeGID++;
                 e2.setGID(edgeGID);
                 //We instanciate the first triangle
-                DTriangle tri1 = new DTriangle(container.getEdge(1), e1, e2);
+                DTriangle tri1 = new DTriangle(eMem1, e1, e2);
                 triangleGID++;
                 //we must prepare the third edge, that will be used in the two other triangles.
                 //e3 is shared between container and tri2
-                DEdge e3 = new DEdge(pt, container.getOppositePoint(container.getEdge(1)));
+                DEdge e3 = new DEdge(pt, container.getOppositePoint(eMem1));
                 edgeGID++;
                 e3.setGID(edgeGID);
                 //We must instanciate the second triangle.
                 DTriangle tri2;
-                if(container.getEdge(2).isExtremity(container.getEdge(1).getStartPoint())){
-                        tri2 = new DTriangle(e1, e3, container.getEdge(2));
+                if(eMem2.isExtremity(eMem1.getStartPoint())){
+                        tri2 = new DTriangle(e1, e3, eMem2);
                         container.setEdge(1, e2);
                         container.setEdge(2, e3);
                 } else {
-                        tri2 = new DTriangle(e2, e3, container.getEdge(2));
+                        tri2 = new DTriangle(e2, e3, eMem2);
                         container.setEdge(1, e1);
                         container.setEdge(2, e3);
                 }
@@ -1862,6 +1869,17 @@ public class ConstrainedMesh implements Serializable {
                 edges.add(e1);
                 edges.add(e2);
                 edges.add(e3);
+                pointGID++;
+                pt.setGID(pointGID);
+                points.add(pt);
+                if(eMem0.isEncroached()){
+                        return eMem0;
+                } else if(eMem1.isEncroached()){
+                        return eMem1;
+                } else if(eMem2.isEncroached()){
+                        return eMem2;
+                }
+                return null;
         }
         
         /**
