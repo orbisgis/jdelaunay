@@ -31,6 +31,7 @@
 
 package org.jdelaunay.delaunay;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -1672,4 +1673,88 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.processDelaunay();
 //		show(mesh);
 	}
+        
+        public void testProceedSwaps() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge constr = new DEdge(0,3,0,8,3,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(9,0,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(5,4,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,12,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,3,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,7,0,12,12,0);
+		mesh.addConstraintEdge(constr);
+		mesh.addPoint(new DPoint(4,5,0));
+		mesh.addPoint(new DPoint(4,1,0));
+		mesh.addPoint(new DPoint(10,3,0));
+		mesh.addPoint(new DPoint(11,9,0));
+		mesh.processDelaunay();
+                List<DEdge> edges = mesh.getEdges();
+                int i1 = edges.indexOf(new DEdge(8,3,0,8,7,0));
+                int i2 = edges.indexOf(new DEdge(8,7,0,12,7,0));
+                assertTrue(i1>=0);
+                assertTrue(i2>=0);
+                LinkedList<DEdge> mem = new LinkedList<DEdge>();
+                mem.add(edges.get(i1));
+                mem.add(edges.get(i2));
+                mesh.proceedSwaps(mem.iterator());
+                assertTrue(mesh.getEdges().contains(new DEdge(12,6,0,11,9,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(5,4,0,9,6,0)));
+        }
+        
+        /**
+         * Test that when applying twice the same swaps in the same order, we don't
+         * come back in the original state.
+         * @throws DelaunayError 
+         */
+        public void testProceedSwapsAndRevert() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addConstraintEdge(new DEdge(0, 3, 0, 4, 1, 0));
+                mesh.addConstraintEdge(new DEdge(0, 6, 0, 3, 7, 0));
+                mesh.addConstraintEdge(new DEdge(3, 7, 0, 7, 5, 0));
+		mesh.processDelaunay();
+                List<DEdge> edges = mesh.getEdges();
+                int i1 = edges.indexOf(new DEdge(0,3,0,3,7,0));
+                int i2 = edges.indexOf(new DEdge(3,7,0,4,1,0));
+                assertTrue(i1>=0);
+                assertTrue(i2>=0);
+                LinkedList<DEdge> mem = new LinkedList<DEdge>();
+                mem.add(edges.get(i1));
+                mem.add(edges.get(i2));
+                mesh.proceedSwaps(mem.iterator());
+                mesh.proceedSwaps(mem.iterator());
+                assertFalse(mesh.getEdges().contains(new DEdge(0,3,0,3,7,0)) && 
+                        mesh.getEdges().contains(new DEdge(3,7,0,4,1,0)));
+        }
+        
+        /**
+         * Test that when applying twice the same swaps in the reverse order, we 
+         * come back in the original state.
+         * @throws DelaunayError 
+         */
+        public void testProceedSwapsAndRevertBis() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addConstraintEdge(new DEdge(0, 3, 0, 4, 1, 0));
+                mesh.addConstraintEdge(new DEdge(0, 6, 0, 3, 7, 0));
+                mesh.addConstraintEdge(new DEdge(3, 7, 0, 7, 5, 0));
+		mesh.processDelaunay();
+                List<DEdge> edges = mesh.getEdges();
+                int i1 = edges.indexOf(new DEdge(0,3,0,3,7,0));
+                int i2 = edges.indexOf(new DEdge(3,7,0,4,1,0));
+                assertTrue(i1>=0);
+                assertTrue(i2>=0);
+                LinkedList<DEdge> mem = new LinkedList<DEdge>();
+                mem.add(edges.get(i1));
+                mem.add(edges.get(i2));
+                mesh.proceedSwaps(mem.iterator());
+                mesh.proceedSwaps(mem.descendingIterator());
+                assertTrue(mesh.getEdges().contains(new DEdge(0,3,0,3,7,0)) && 
+                        mesh.getEdges().contains(new DEdge(3,7,0,4,1,0)));
+        }
 }

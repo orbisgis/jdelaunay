@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -1400,6 +1401,11 @@ public class ConstrainedMesh implements Serializable {
 		}
 	}
 
+        final void insertTriangleCircumCenter(DTriangle tri) throws DelaunayError {
+                DTriangle container = tri.getCircumCenterContainer();
+                
+        }
+        
 	/**
 	 * Build the boundary needed to begin the building of the mesh.
 	 * @param p1
@@ -1758,6 +1764,19 @@ public class ConstrainedMesh implements Serializable {
 
         }
 
+        /**
+         * Do a flip-flap on all the edges that can be accessed from the it iterator,
+         * moving straight ahead.
+         * @param it
+         * @throws DelaunayError 
+         */
+        void proceedSwaps(Iterator<DEdge> it) throws DelaunayError {
+                while(it.hasNext()){
+                        DEdge ed = it.next();
+                        flipFlap(ed);
+                }
+        }
+        
         /**
          * Ensure points are at least at epsilon from other points
          * NB : points are supposed to be already sorted
