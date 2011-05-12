@@ -1463,7 +1463,9 @@ public class TestConstrainedMesh extends BaseUtility {
 	}
 
 	/**
-	 * Process a single encroached DEdge in a mesh.
+	 * Process a single encroached DEdge in a mesh. We don't call refineMesh here,
+         * we just call splitEncroachedEdge on a specific edge, so this edge will 
+         * be the only one to be split, even if the edges of the boundary should be too.
 	 * @throws DelaunayError
 	 */
 	public void testSplitEncroachedEdges() throws DelaunayError {
@@ -1756,5 +1758,36 @@ public class TestConstrainedMesh extends BaseUtility {
                 mesh.proceedSwaps(mem.descendingIterator());
                 assertTrue(mesh.getEdges().contains(new DEdge(0,3,0,3,7,0)) && 
                         mesh.getEdges().contains(new DEdge(3,7,0,4,1,0)));
+        }
+        
+        public void testPointInTriangleInit() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,0,0));
+                mesh.addPoint(new DPoint(6,0,0));
+                mesh.addPoint(new DPoint(3,5,0));
+                mesh.processDelaunay();
+                DTriangle tri = mesh.getTriangleList().get(0);
+                DEdge e1 = mesh.getEdges().get(0);
+                DEdge e2 = mesh.getEdges().get(1);
+                DEdge e3 = mesh.getEdges().get(2);
+                mesh.initPointInTriangle(new DPoint(3,2,0), tri, new LinkedList<DEdge>());
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==3);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2,0,0,0,0), 
+                        new DEdge(0,0,0,3,5,0), 
+                        new DEdge(3,5,0,3,2,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2,0,6,0,0), 
+                        new DEdge(6,0,0,3,5,0), 
+                        new DEdge(3,5,0,3,2,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2,0,0,0,0), 
+                        new DEdge(0,0,0,6,0,0), 
+                        new DEdge(6,0,0,3,2,0))));
+                assertTrue(tri == tris.get(0) || tri == tris.get(1)||tri == tris.get(2));
+                List<DEdge> eds = mesh.getEdges();
+                assertTrue(eds.size()==6);
+
         }
 }

@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -1559,7 +1560,7 @@ public class ConstrainedMesh implements Serializable {
 	}
 	
 	/**
-	 * Process the flip-flop algorithm on the list of triangles
+	 * Process the flip-flap algorithm on the list of triangles
 	 */
 	private void processBadEdges() throws DelaunayError {
                 LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
@@ -1590,12 +1591,34 @@ public class ConstrainedMesh implements Serializable {
                 }
 	}
         
-        private DEdge revertibleSwapper(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory){
+        private DEdge revertibleSwapping(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory) throws DelaunayError {
                 LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
                 while(!badEdges.isEmpty()){
-                        
+                        DEdge ed = badEdges.removeFirst();
+                        boolean cont = !ed.isLocked() && !alreadySeen.contains(ed);
+                        if(cont){
+                                alreadySeen.add(ed);
+                                DTriangle left = ed.getLeft();
+                                DTriangle right = ed.getRight();
+                                if(swapTriangle(ed)){
+                                        swapMemory.addLast(ed);
+                                        LinkedList<DEdge> others = new LinkedList<DEdge>();
+                                        others.add(left.getOppositeEdge(ed.getStartPoint()));
+                                        others.add(right.getOppositeEdge(ed.getEndPoint()));
+                                        others.add(right.getOppositeEdge(ed.getStartPoint()));
+                                        others.add(right.getOppositeEdge(ed.getEndPoint()));
+                                        for(DEdge edge : others){
+                                                if(edge.isEncroached()){
+                                                      return edge;  
+                                                }else if(edge.getLeft() != null && edge.getRight() != null
+                                                        && !badEdgesQueueList.contains(edge)){
+                                                        badEdgesQueueList.add(edge);
+                                                }
+                                        }
+                                }
+                        }
                 }
-                throw new UnsupportedOperationException();
+                return null;
         }
 
 	/**
@@ -1740,7 +1763,8 @@ public class ConstrainedMesh implements Serializable {
 
         /**
          * Do a flip-flap on all the edges that can be accessed from the it iterator,
-         * moving straight ahead.
+         * moving straight ahead.<br/>
+         * There are not any check on the delaunay criterium, here.
          * @param it
          * @throws DelaunayError 
          */
@@ -1787,13 +1811,22 @@ public class ConstrainedMesh implements Serializable {
                         badEdges.add(eMem1);
                         badEdges.add(eMem2);
                         initPointInTriangle(pt, container, badEdges);
-                        
-                        
                 }
                 throw new UnsupportedOperationException();
         }
         
+        /**
+         * When inserting a point in the already processed mesh, we must generate the
+         * needed edges and triangles, and then process the flip-flap operations. 
+         * This method makes the generation, while revertibleSwapping processes
+         * the flip-flaps.
+         * @param pt
+         * @param container
+         * @param badEdges
+         * @throws DelaunayError 
+         */
         void initPointInTriangle(DPoint pt, DTriangle container, Deque<DEdge> badEdges) throws DelaunayError {
+                badEdges.addAll(Arrays.asList(container.getEdges()));
                 DEdge e1 = new DEdge(pt, container.getEdge(1).getStartPoint());
                 DEdge e2 = new DEdge(pt, container.getEdge(1).getEndPoint());
                 edgeGID++;
@@ -1818,7 +1851,6 @@ public class ConstrainedMesh implements Serializable {
                         tri2 = new DTriangle(e2, e3, container.getEdge(2));
                         container.setEdge(1, e1);
                         container.setEdge(2, e3);
-                        
                 }
                 triangleGID++;
                 tri2.setGID(triangleGID);
@@ -1827,6 +1859,9 @@ public class ConstrainedMesh implements Serializable {
                 badEdges.add(e1);
                 badEdges.add(e2);
                 badEdges.add(e3);
+                edges.add(e1);
+                edges.add(e2);
+                edges.add(e3);
         }
         
         /**
