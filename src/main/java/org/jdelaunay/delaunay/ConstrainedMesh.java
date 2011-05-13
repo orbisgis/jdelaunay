@@ -1842,7 +1842,6 @@ public class ConstrainedMesh implements Serializable {
                 badEdges.add(eMem0);
                 badEdges.add(eMem1);
                 badEdges.add(eMem2);
-                badEdges.addAll(Arrays.asList(container.getEdges()));
                 DEdge e1 = new DEdge(pt, eMem1.getStartPoint());
                 DEdge e2 = new DEdge(pt, eMem1.getEndPoint());
                 edgeGID++;
@@ -1869,9 +1868,6 @@ public class ConstrainedMesh implements Serializable {
                         container.setEdge(2, e3);
                 }
                 addTriangle(tri2);
-                badEdges.add(e1);
-                badEdges.add(e2);
-                badEdges.add(e3);
                 edges.add(e1);
                 edges.add(e2);
                 edges.add(e3);
@@ -1880,6 +1876,7 @@ public class ConstrainedMesh implements Serializable {
                 points.add(pt);
                 //e1, e2 and e3 can't be encroached, as they are not locked, and they
                 //can't be on the boundary of the mesh.
+                //they can't be bad (yet) either.
                 if(eMem0.isEncroached()){
                         return eMem0;
                 } else if(eMem1.isEncroached()){
@@ -1919,6 +1916,8 @@ public class ConstrainedMesh implements Serializable {
                         //we retrieve the two other edges from the left triangle.
                         l1 = left.getOppositeEdge(contEdge.getEndPoint());
                         l2 = left.getOppositeEdge(contEdge.getStartPoint());
+                        badEdges.add(l1);
+                        badEdges.add(l2);
                         //We retrieve the point opposite to contEdge in left
                         DPoint opLeft = left.getOppositePoint(contEdge);
                         //we build the missing edge
@@ -1938,6 +1937,8 @@ public class ConstrainedMesh implements Serializable {
                         //we retrieve the two other edges from the right triangle.
                         r1 = right.getOppositeEdge(contEdge.getEndPoint());
                         r2 = right.getOppositeEdge(contEdge.getStartPoint());
+                        badEdges.add(r1);
+                        badEdges.add(r2);
                         //We retrieve the point opposite to contEdge in right
                         DPoint opRight = right.getOppositePoint(contEdge);
                         //We build the missing edge.

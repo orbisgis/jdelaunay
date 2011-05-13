@@ -1886,6 +1886,111 @@ public class TestConstrainedMesh extends BaseUtility {
                         new DEdge(3,0,0,2,3,0))));
                 edges = mesh.getEdges();
                 assertTrue(edges.size()==5);
+        }
+        
+        public void testPointInsertion() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,0,0));
+                mesh.addPoint(new DPoint(9,0,0));
+                mesh.addPoint(new DPoint(1,2,0));
+                mesh.addPoint(new DPoint(6,2,0));
+                mesh.addPoint(new DPoint(3,5,0));
+                mesh.addPoint(new DPoint(9,5,0));
+                mesh.processDelaunay();
+                DTriangle tri = new DTriangle(
+                        new DEdge(1,2,0,6,2,0), 
+                        new DEdge(6,2,0,3,5,0), 
+                        new DEdge(3,5,0,1,2,0));
+                int index = mesh.getTriangleList().indexOf(tri);
+                DPoint cc = new DPoint(tri.getCircumCenter());
+                DPoint ccmem = new DPoint(tri.getCircumCenter());
+                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index), new LinkedList<DEdge>());
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==7);
+                assertTrue(tris.contains(
+                        new DTriangle(
+                                new DEdge(0,0,0,1,2,0),
+                                new DEdge(new DPoint(1,2,0),ccmem),
+                                new DEdge(ccmem, new DPoint(0,0,0)))));
+                assertTrue(tris.contains(
+                        new DTriangle(
+                                new DEdge(0,0,0,6,2,0),
+                                new DEdge(new DPoint(6,2,0),ccmem),
+                                new DEdge(ccmem, new DPoint(0,0,0)))));
+                assertTrue(tris.contains(
+                        new DTriangle(
+                                new DEdge(3,5,0,6,2,0),
+                                new DEdge(new DPoint(6,2,0),ccmem),
+                                new DEdge(ccmem, new DPoint(3,5,0)))));
+                assertTrue(tris.contains(
+                        new DTriangle(
+                                new DEdge(3,5,0,1,2,0),
+                                new DEdge(new DPoint(1,2,0),ccmem),
+                                new DEdge(ccmem, new DPoint(3,5,0)))));
+                assertTrue(tris.contains(
+                        new DTriangle(
+                                new DEdge(6,2,0,3,5,0),
+                                new DEdge(3,5,0,9,5,0),
+                                new DEdge(9,5,0,6,2,0))));
+                assertTrue(tris.contains(
+                        new DTriangle(
+                                new DEdge(9,0,0,6,2,0),
+                                new DEdge(6,2,0,9,5,0),
+                                new DEdge(9,5,0,9,0,0))));
+                assertTrue(tris.contains(
+                        new DTriangle(
+                                new DEdge(9,0,0,6,2,0),
+                                new DEdge(6,2,0,0,0,0),
+                                new DEdge(0,0,0,9,0,0))));
+                assertCoherence(mesh);
+                assertTrue(mesh.getEdges().size()==13);
+        }
+        
+        public void testPointInsertionOnEdge() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,3,0));
+                mesh.addPoint(new DPoint(4,0,0));
+                mesh.addPoint(new DPoint(1,1,0));
+                mesh.addPoint(new DPoint(2,5,0));
+                mesh.addPoint(new DPoint(5,6,0));
+                mesh.addPoint(new DPoint(8,2,0));
+                mesh.processDelaunay();
+                DTriangle tri = new DTriangle(
+                        new DEdge(1,1,0,2,5,0), 
+                        new DEdge(2,5,0,4,0,0), 
+                        new DEdge(4,0,0,1,1,0));
+                int index = mesh.getTriangleList().indexOf(tri);
+                DPoint cc = new DPoint(3,2.5,0);
+                DPoint ccmem = new DPoint(3,2.5,0);
+                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index), new LinkedList<DEdge>());
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==6);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2.5,0,1,1,0), 
+                        new DEdge(1,1,0,0,3,0),
+                        new DEdge(0,3,0,3,2.5,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2.5,0,2,5,0), 
+                        new DEdge(2,5,0,0,3,0),
+                        new DEdge(0,3,0,3,2.5,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2.5,0,2,5,0), 
+                        new DEdge(2,5,0,5,6,0),
+                        new DEdge(5,6,0,3,2.5,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2.5,0,8,2,0), 
+                        new DEdge(8,2,0,5,6,0),
+                        new DEdge(5,6,0,3,2.5,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2.5,0,8,2,0), 
+                        new DEdge(8,2,0,4,0,0),
+                        new DEdge(4,0,0,3,2.5,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(3,2.5,0,1,1,0), 
+                        new DEdge(1,1,0,4,0,0),
+                        new DEdge(4,0,0,3,2.5,0))));
+                assertCoherence(mesh);
+                assertTrue(mesh.getEdges().size()==12);
                 
         }
 }
