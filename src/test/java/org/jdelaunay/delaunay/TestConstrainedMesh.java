@@ -1790,6 +1790,8 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(eds.size()==6);
                 assertTrue(mesh.getPoints().size()==4);
                 assertTrue(con!=null);
+                assertCoherence(mesh);
+                assertGIDUnicity(mesh);
 
         }
         

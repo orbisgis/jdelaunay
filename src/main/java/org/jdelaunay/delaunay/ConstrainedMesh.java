@@ -1851,7 +1851,7 @@ public class ConstrainedMesh implements Serializable {
                 e2.setGID(edgeGID);
                 //We instanciate the first triangle
                 DTriangle tri1 = new DTriangle(eMem1, e1, e2);
-                triangleGID++;
+                addTriangle(tri1);
                 //we must prepare the third edge, that will be used in the two other triangles.
                 //e3 is shared between container and tri2
                 DEdge e3 = new DEdge(pt, container.getOppositePoint(eMem1));
@@ -1868,10 +1868,7 @@ public class ConstrainedMesh implements Serializable {
                         container.setEdge(1, e1);
                         container.setEdge(2, e3);
                 }
-                triangleGID++;
-                tri2.setGID(triangleGID);
-                triangleList.add(tri1);
-                triangleList.add(tri2);
+                addTriangle(tri2);
                 badEdges.add(e1);
                 badEdges.add(e2);
                 badEdges.add(e3);
@@ -1935,9 +1932,7 @@ public class ConstrainedMesh implements Serializable {
                         lastLeft.setGID(edgeGID);
                         edges.add(lastLeft);
                         //and now the triangle
-                        triangleGID++;
-                        otl.setGID(triangleGID);
-                        triangleList.add(otl);
+                        addTriangle(otl);
                 }
                 if(right != null){
                         //we retrieve the two other edges from the right triangle.
@@ -1956,9 +1951,7 @@ public class ConstrainedMesh implements Serializable {
                         lastRight.setGID(edgeGID);
                         edges.add(lastRight);
                         //and now the triangle
-                        triangleGID++;
-                        otr.setGID(triangleGID);
-                        triangleList.add(otr);
+                        addTriangle(otr);
                 }
                 contEdge.setEndPoint(pt);
                 //Don't forget to add the new point..
