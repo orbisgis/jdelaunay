@@ -411,20 +411,10 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			// Start point should be start
 			DPoint aPoint = this.getOppositePoint(edges[i]);
 			if (edges[i].isLeft(aPoint)) {
-				if (edges[i].getLeft() == null) {
-					edges[i].setLeft(this);
-				}
-				else {
-					edges[i].setRight( this );
-				}
+                                edges[i].setLeft(this);
 			}
 			else {
-				if (edges[i].getRight() == null) {
-					edges[i].setRight(this);
-				}
-				else {
-					edges[i].setLeft( this );
-				}
+                                edges[i].setRight(this);
 			}
 		}
 	}

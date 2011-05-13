@@ -362,7 +362,7 @@ public class TestEdges extends BaseUtility {
 	 * is opposite to the one we already know.
 	 * @throws DelaunayError
 	 */
-	public void testGetOhterTriangle() throws DelaunayError{
+	public void testGetOtherTriangle() throws DelaunayError{
 		DEdge edgeb = new DEdge (4,4,0,2,2,0);
 		DEdge et11b = new DEdge(4,4,0,0,2,0);
 		DEdge et12b = new DEdge(2,2,0,0,2,0);
@@ -378,8 +378,16 @@ public class TestEdges extends BaseUtility {
 		DTriangle t2 = new DTriangle(edge, et21, et22);
 		edge.setLeft(t2);
 		edge.setRight(t1);
-		assertTrue(edge.getLeft().equals(new DTriangle(edge, et21, et22)));
-		assertTrue(edge.getRight().equals(new DTriangle(edge, et11, et12)));
+		assertTrue(edge.getLeft().equals(
+                        new DTriangle(
+                                new DEdge(0,0,0,2,2,0),
+                                new DEdge(0,0,0,2,0,0),
+                                new DEdge(2,2,0,2,0,0))));
+		assertTrue(edge.getRight().equals(
+                        new DTriangle(
+                                new DEdge(0,0,0,2,2,0), 
+                                new DEdge(0,0,0,0,2,0), 
+                                new DEdge(2,2,0,0,2,0))));
 		assertTrue(edge.getOtherTriangle(t2).equals(t1));
 		assertTrue(edge.getOtherTriangle(t1).equals(t2));
 		assertNull(edge.getOtherTriangle(t1b));

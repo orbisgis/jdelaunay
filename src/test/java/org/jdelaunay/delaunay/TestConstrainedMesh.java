@@ -1871,6 +1871,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 e = edges.get(index);
                 e.swap();
                 con = mesh.initPointOnEdge(new DPoint(1,1.5,0), e, new LinkedList<DEdge>());
+                assertNotNull(con);
                 tris = mesh.getTriangleList();
                 assertTrue(tris.size()==2);
                 assertTrue(tris.contains(new DTriangle(

@@ -469,8 +469,8 @@ public class TestVoronoiGraph extends BaseUtility{
 	 */
 	public void testGraphDepthLoop() throws DelaunayError {
 		DPoint p1 = new DPoint(0,0,10);
-		DPoint p2 = new DPoint(4,0,0);
-		DPoint p3 = new DPoint(0,3,0);
+		DPoint p3 = new DPoint(4,0,0);
+		DPoint p2 = new DPoint(0,3,0);
 		DPoint p4 = new DPoint(4,4,0);
 		DPoint p5 = new DPoint(5,7,0);
 		DPoint p6 = new DPoint(7,2,0);
@@ -514,8 +514,8 @@ public class TestVoronoiGraph extends BaseUtility{
 	 */
 	public void testGraphDepthLoopSetZ() throws DelaunayError {
 		DPoint p1 = new DPoint(0,0,10);
-		DPoint p2 = new DPoint(4,0,0);
-		DPoint p3 = new DPoint(0,3,0);
+		DPoint p3 = new DPoint(4,0,0);
+		DPoint p2 = new DPoint(0,3,0);
 		DPoint p4 = new DPoint(4,4,0);
 		DPoint p5 = new DPoint(5,7,0);
 		DPoint p6 = new DPoint(7,2,0);
