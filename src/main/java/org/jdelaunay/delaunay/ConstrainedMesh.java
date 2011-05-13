@@ -1798,7 +1798,7 @@ public class ConstrainedMesh implements Serializable {
          * @throws DelaunayError if pt is not inside container. If a search is needed,
          *      it must be made before trying to insert the point.
          */
-        public void insertPointInTriangle(DPoint pt, DTriangle container, List<DEdge> swapMemory) 
+        public final void insertPointInTriangle(final DPoint pt, DTriangle container, List<DEdge> swapMemory) 
                         throws DelaunayError{
                 if(!container.isInside(pt)){
                         throw new DelaunayError(0, "you must search for the containing triangle"
@@ -1809,28 +1809,33 @@ public class ConstrainedMesh implements Serializable {
                 if(onEdge){
                         DEdge contEdge = container.getContainingEdge(pt);
                         initPointOnEdge(pt, contEdge, badEdges);
-                        throw new UnsupportedOperationException();
+                        badEdgesQueueList = badEdges;
+                        processBadEdges();
                         
                 } else {
                         initPointInTriangle(pt, container, badEdges);
                         badEdgesQueueList = badEdges;
                         processBadEdges();
-                        
                 }
-                throw new UnsupportedOperationException();
         }
         
         /**
          * When inserting a point in the already processed mesh, we must generate the
          * needed edges and triangles, and then process the flip-flap operations. 
-         * This method makes the generation, while revertibleSwapping processes
-         * the flip-flaps.
+         * This method generates the needed element and update the local existing ones.
+         * DEdge instances that could have become "bad edges" are stored in the
+         * <code>Deque</code> badEdges. This Deque can be used for the flip flap 
+         * algorithms. <br/>
+         * The method returns a DEdge. It is the first encroached DEdge created by
+         * the insertion of this point, at the local scale (ie before the flip-flap
+         * processing). It can be used to know if the point insertion must be reverted.
          * @param pt
          * @param container
          * @param badEdges
+         * @return The first DEdge that is encroached after the insertion, if any, null otherwise.
          * @throws DelaunayError 
          */
-        DEdge initPointInTriangle(DPoint pt, DTriangle container, Deque<DEdge> badEdges) throws DelaunayError {
+        final DEdge initPointInTriangle(final DPoint pt, DTriangle container, Deque<DEdge> badEdges) throws DelaunayError {
                 DEdge eMem0 = container.getEdge(0);
                 DEdge eMem1 = container.getEdge(1);
                 DEdge eMem2 = container.getEdge(2);
@@ -1888,15 +1893,28 @@ public class ConstrainedMesh implements Serializable {
                 return null;
         }
         
-        DEdge initPointOnEdge(DPoint pt, DEdge contEdge, Deque<DEdge> badEdges) throws DelaunayError {
+        /**
+         * When inserting a point in the already processed mesh, we must determine 
+         * if we are in a triangle or on an edge. Here, we are on an edge.<br/>
+         * <code>contEdge</code> will be split in two edges using <code>pt</code>. The new point,
+         * new edges and new triangles will be added to the mesh. The edges that could be 
+         * eligible for a flip-flap are stored in <code>badEdges</code>
+         * The method return a DEdge, which is the first edge of the triangles
+         * linked (left or right) to the original edge that becomes encroached because
+         * of the insertion, if any.
+         * @param pt
+         * @param contEdge
+         * @param badEdges
+         * @return
+         * @throws DelaunayError 
+         */
+        final DEdge initPointOnEdge(final DPoint pt, DEdge contEdge, Deque<DEdge> badEdges) throws DelaunayError {
                 DTriangle left = contEdge.getLeft();
                 DTriangle right = contEdge.getRight();
                 DEdge r1 = null;
                 DEdge r2 = null;
                 DEdge l1 = null;
                 DEdge l2 = null;
-                DTriangle otr;
-                DTriangle otl;
                 //We must split the edge before building the triangles
                 //otherPart is built to have the same orientation as contEdge.
                 DEdge otherPart = new DEdge(pt, contEdge.getEndPoint());
@@ -1908,11 +1926,10 @@ public class ConstrainedMesh implements Serializable {
                         DPoint opLeft = left.getOppositePoint(contEdge);
                         //we build the missing edge
                         DEdge lastLeft = new DEdge(pt, opLeft);
-                        otl = new DTriangle(l2, otherPart, lastLeft);
+                        DTriangle otl = new DTriangle(l2, otherPart, lastLeft);
                         //We change an edge in left.
                         //left is not coherent anymore
-                        int index = left.getEdgeIndex(l2);
-                        left.setEdge(index, lastLeft);
+                        left.setEdge(left.getEdgeIndex(l2), lastLeft);
                         //We add the newly created triangle and edge to the corresponding lists.
                         edgeGID++;
                         lastLeft.setGID(edgeGID);
@@ -1930,11 +1947,10 @@ public class ConstrainedMesh implements Serializable {
                         DPoint opRight = right.getOppositePoint(contEdge);
                         //We build the missing edge.
                         DEdge lastRight = new DEdge(pt, opRight);
-                        otr = new DTriangle(r2, otherPart, lastRight);
+                        DTriangle otr = new DTriangle(r2, otherPart, lastRight);
                         //We change an ede in right.
                         //right is not coherent anymore.
-                        int index = right.getEdgeIndex(r2);
-                        right.setEdge(index, lastRight);
+                        right.setEdge(right.getEdgeIndex(r2), lastRight);
                         //We add the newly created triangle and edge to the corresponding lists.
                         edgeGID++;
                         lastRight.setGID(edgeGID);
@@ -1945,14 +1961,6 @@ public class ConstrainedMesh implements Serializable {
                         triangleList.add(otr);
                 }
                 contEdge.setEndPoint(pt);
-                //left and right are coherent again.
-                //We must update the cirumcenters
-                if(right!=null){
-                        right.recomputeCenter();
-                }
-                if(left!=null){
-                        left.recomputeCenter();
-                }
                 //Don't forget to add the new point..
                 pointGID++;
                 pt.setGID(pointGID);
@@ -1966,6 +1974,7 @@ public class ConstrainedMesh implements Serializable {
                 //We must still return the first encroached edge we find, if any.
                 //Analyze left first.
                 if(left != null){
+                        left.recomputeCenter();
                         if(l1.isEncroached()){
                                 return l1;
                         } else if(l2.isEncroached()){
@@ -1974,6 +1983,7 @@ public class ConstrainedMesh implements Serializable {
                 } 
                 //Then analyze right.
                 if(right != null){
+                        right.recomputeCenter();
                         if(r1.isEncroached()){
                                 return r1;
                         } else if(r2.isEncroached()){
