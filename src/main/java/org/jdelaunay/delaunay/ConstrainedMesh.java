@@ -1841,6 +1841,10 @@ public class ConstrainedMesh implements Serializable {
                         if(ret != null){
                                 Iterator<DEdge> it = swapMem.descendingIterator();
                                 proceedSwaps(it);
+                                if(triangleList.size()>1 && ! container.belongsTo(pt)){
+                                        //We have updated the container using eMem0
+                                        eMem0.deepSwap();
+                                }
                                 revertPointInTriangleInsertion(container, pt, mem);
                         }
                 }
