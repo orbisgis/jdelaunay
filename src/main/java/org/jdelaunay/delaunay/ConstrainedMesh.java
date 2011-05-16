@@ -1782,6 +1782,73 @@ public class ConstrainedMesh implements Serializable {
                 }
         }
         
+        public final DEdge insertIfNotEncroached(final DPoint pt, DTriangle container) 
+                        throws DelaunayError{
+                if(!container.isInside(pt)){
+                        throw new DelaunayError(0, "you must search for the containing triangle"
+                                + "before to proceed to the insertion.");
+                } 
+                LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
+                boolean onEdge = container.isOnAnEdge(pt);
+                DEdge ret;
+                if(onEdge){
+                        DEdge contEdge = container.getContainingEdge(pt);
+                        ret = initPointOnEdge(pt, contEdge, badEdges);
+                        badEdgesQueueList = badEdges;
+                        processBadEdges();
+                        
+                } else {
+                        ret = initPointInTriangle(pt, container, badEdges);
+                        badEdgesQueueList = badEdges;
+                        processBadEdges();
+                }
+                return ret;
+                
+        }
+        
+        /**
+         * Method that revert a point isnertion in a triangle (but not on one of its edges).
+         * We need the reference to the triangle, the inserted point, and the former
+         * third point of the triangle.<br/>
+         * Note that we need to decrease the edge, triangle and point GIDs, and 
+         * to remove the elements we don't need from each data structure.
+         * @param dt
+         * @param forget
+         * @param apex 
+         */
+        void revertPointInTriangleInsertion(DTriangle dt, DPoint forget, DPoint apex)
+                        throws DelaunayError {
+                DEdge perm = dt.getOppositeEdge(forget);
+                DEdge mod = dt.getOppositeEdge(perm.getStartPoint());
+                if(forget.equals(mod.getStartPoint())){
+                        mod.setStartPoint(apex);
+                } else {
+                        mod.setEndPoint(apex);
+                }
+                mod = dt.getOppositeEdge(perm.getEndPoint());
+                if(forget.equals(mod.getStartPoint())){
+                        mod.setStartPoint(apex);
+                } else {
+                        mod.setEndPoint(apex);
+                }
+                dt.recomputeCenter();
+                //remove the point :
+                points.remove(points.size()-1);
+                pointGID--;
+                //remove the edges
+                edges.remove(edges.size()-1);
+                edges.remove(edges.size()-1);
+                edges.remove(edges.size()-1);
+                edgeGID--;
+                edgeGID--;
+                edgeGID--;
+                //remove the triangles.
+                triangleList.remove(triangleList.size()-1);
+                triangleList.remove(triangleList.size()-1);
+                triangleGID--;
+                triangleGID--;
+        }
+        
         /**
          * Insert the point pt in the triangle container.<br/>
          * This method does not check if there are any new encroached edge
@@ -1790,14 +1857,11 @@ public class ConstrainedMesh implements Serializable {
          *      The point to be inserted.
          * @param container
          *      The triangle of the mesh that contains pt.
-         * @param swapMemory
-         *      The list that will store the swap operations, in order to be able 
-         *      to come back to the original state.
          * @return 
          * @throws DelaunayError if pt is not inside container. If a search is needed,
          *      it must be made before trying to insert the point.
          */
-        public final void insertPointInTriangle(final DPoint pt, DTriangle container, List<DEdge> swapMemory) 
+        public final void insertPointInTriangle(final DPoint pt, DTriangle container) 
                         throws DelaunayError{
                 if(!container.isInside(pt)){
                         throw new DelaunayError(0, "you must search for the containing triangle"

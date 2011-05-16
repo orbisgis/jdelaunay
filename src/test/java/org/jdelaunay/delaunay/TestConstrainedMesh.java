@@ -1904,7 +1904,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 int index = mesh.getTriangleList().indexOf(tri);
                 DPoint cc = new DPoint(tri.getCircumCenter());
                 DPoint ccmem = new DPoint(tri.getCircumCenter());
-                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index), new LinkedList<DEdge>());
+                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index));
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==7);
                 assertTrue(tris.contains(
@@ -1962,7 +1962,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 int index = mesh.getTriangleList().indexOf(tri);
                 DPoint cc = new DPoint(3,2.5,0);
                 DPoint ccmem = new DPoint(3,2.5,0);
-                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index), new LinkedList<DEdge>());
+                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index));
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==6);
                 assertTrue(tris.contains(new DTriangle(
@@ -1991,6 +1991,50 @@ public class TestConstrainedMesh extends BaseUtility {
                         new DEdge(4,0,0,3,2.5,0))));
                 assertCoherence(mesh);
                 assertTrue(mesh.getEdges().size()==12);
+        }
+        
+        public void testRevertInsertionInTriangle() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                DPoint pt1 = new DPoint(0,0,0);
+                mesh.addPoint(pt1);
+                DPoint pt2 = new DPoint(6,0,0);
+                mesh.addPoint(pt2);
+                DPoint pt3 = new DPoint(3,5,0);
+                mesh.addPoint(pt3);
+                mesh.processDelaunay();
+                DTriangle tri = mesh.getTriangleList().get(0);
+                DEdge e1 = mesh.getEdges().get(0);
+                DEdge e2 = mesh.getEdges().get(1);
+                DEdge e3 = mesh.getEdges().get(2);
+                mesh.initPointInTriangle(new DPoint(3,2,0), tri, new LinkedList<DEdge>());
+                DPoint pt;
+                //as we can't know which point is not in tri anymore, we search after it.
+                if(!tri.belongsTo(pt1)){
+                        pt=pt1;
+                } else if(!tri.belongsTo(pt2)){
+                        pt = pt2;
+                } else {
+                        pt = pt3;
+                }
+                //We revert our insertion here.
+                mesh.revertPointInTriangleInsertion(tri, new DPoint(3,2,0), pt);
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==1);
+                assertEquals(new DTriangle(
+                        new DEdge(0,0,0,6,0,0),
+                        new DEdge(6,0,0,3,5,0),
+                        new DEdge(3,5,0,0,0,0)), tris.get(0));
+                assertTrue(mesh.getPoints().size()==3);
+                assertTrue(mesh.getPoints().contains(new DPoint(0,0,0)));
+                assertTrue(mesh.getPoints().contains(new DPoint(6,0,0)));
+                assertTrue(mesh.getPoints().contains(new DPoint(3,5,0)));
+                assertTrue(mesh.getEdges().size()==3);
+                assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,6,0,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(3,5,0,6,0,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,3,5,0)));
+                assertTrue(mesh.getPoints().get(0)==pt1);
+                assertTrue(mesh.getPoints().get(1)==pt3);
+                assertTrue(mesh.getPoints().get(2)==pt2);
                 
         }
 }
