@@ -1393,11 +1393,18 @@ public class ConstrainedMesh implements Serializable {
          * is part of the Ruppert refinement algorithm. Consequently, it stops if it 
          * sees it will create a new encroached edge. 
          * @param tri
+         * @param revertible
+         *      If set to true, the insertion won't be performed if it creates a new encroached 
+         *      edge in the mesh.
          * @throws DelaunayError 
          */
-        public final void insertTriangleCircumCenter(DTriangle tri) throws DelaunayError {
+        public final void insertTriangleCircumCenter(DTriangle tri, boolean revertible) throws DelaunayError {
                 DTriangle container = tri.getCircumCenterContainer();
-                throw new UnsupportedOperationException();
+                if(revertible){
+                        insertIfNotEncroached(new DPoint(tri.getCircumCenter()), container);
+                } else {
+                        insertPointInTriangle(new DPoint(tri.getCircumCenter()), container);
+                }
                 
         }
         
@@ -1809,6 +1816,7 @@ public class ConstrainedMesh implements Serializable {
                         DTriangle left = contEdge.getLeft();
                         DEdge memleft = null;
                         DPoint memExt = contEdge.getEnd();
+                        //We must remember what our original data was.
                         if(left != null){
                                 memleft = left.getOppositeEdge(contEdge.getStartPoint());
                         }
@@ -1831,20 +1839,29 @@ public class ConstrainedMesh implements Serializable {
                                 revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
                         }
                 } else {
-                        ret = initPointInTriangle(pt, container, badEdges);
+                        //We must remember what our original data was.
                         DEdge eMem0 = container.getEdge(0);
+                        DEdge eMem1 = container.getEdge(1);
+                        DEdge eMem2 = container.getEdge(2);
                         DPoint mem = container.getOppositePoint(eMem0);
+                        ret = initPointInTriangle(pt, container, badEdges);
                         if(ret != null){
                                 revertPointInTriangleInsertion(container, pt, mem);
                         }
+                        //
                         ret = revertibleSwapping(badEdges, swapMem);
                         if(ret != null){
                                 Iterator<DEdge> it = swapMem.descendingIterator();
                                 proceedSwaps(it);
-                                if(triangleList.size()>1 && ! container.belongsTo(pt)){
+                                if(!container.belongsTo(pt)){
                                         //We have updated the container using eMem0
                                         eMem0.deepSwap();
                                 }
+                                checkMemEdges(eMem1, pt, triangleList.get(triangleList.size() -1), 
+                                        triangleList.get(triangleList.size() -2));
+                                checkMemEdges(eMem2, pt, triangleList.get(triangleList.size() -1), 
+                                        triangleList.get(triangleList.size() -2));
+                                
                                 revertPointInTriangleInsertion(container, pt, mem);
                         }
                 }
@@ -1942,6 +1959,14 @@ public class ConstrainedMesh implements Serializable {
                 pointGID--;
         }
         
+        /**
+         * Check that forget is not a point of l1, if mem is an edge of l1, and idem for l2 
+         * if it is not the case for l1. If it is, we process deep swaps on mem.
+         * @param mem
+         * @param forget
+         * @param l1
+         * @param l2 
+         */
         private void checkMemEdges(DEdge mem, DPoint forget, DTriangle l1, DTriangle l2){
                 if(l1!=null && l1.isEdgeOf(mem) && !l1.belongsTo(forget)){
                         mem.deepSwap();

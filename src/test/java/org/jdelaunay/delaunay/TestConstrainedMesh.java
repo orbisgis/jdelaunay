@@ -2243,5 +2243,53 @@ public class TestConstrainedMesh extends BaseUtility {
                 DTriangle tri = tris.get(index);
                 DEdge enc = mesh.insertIfNotEncroached(new DPoint(3,4,0), tri);
                 assertNotNull(enc);
+                tris = mesh.getTriangleList();
+                assertTrue(tris.size()==3);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(4,0,0,0,4,0), 
+                        new DEdge(0,4,0,5,3,0),  
+                        new DEdge(5,3,0,4,0,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(0,4,0,2,7,0), 
+                        new DEdge(2,7,0,5,3,0),  
+                        new DEdge(5,3,0,0,4,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(6,11,0,2,7,0), 
+                        new DEdge(2,7,0,5,3,0),  
+                        new DEdge(5,3,0,6,11,0))));
+        }
+        
+        public void testCircumCenterInsertion() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,4,0));
+                mesh.addPoint(new DPoint(4,0,0));
+                mesh.addPoint(new DPoint(2,7,0));
+                mesh.addPoint(new DPoint(5,3,0));
+                mesh.addPoint(new DPoint(6,11,0));
+                mesh.processDelaunay();
+                List<DTriangle> tris = mesh.getTriangleList();
+                int index = tris.indexOf(new DTriangle(
+                        new DEdge(0,4,0,2,7,0),
+                        new DEdge(2,7,0,5,3,0),
+                        new DEdge(5,3,0,0,4,0)));
+                DTriangle tri = tris.get(index);
+                mesh.insertTriangleCircumCenter(tri, true);
+                assertTrue(mesh.getTriangleList().size()==3);
+                mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,4,0));
+                mesh.addPoint(new DPoint(4,0,0));
+                mesh.addPoint(new DPoint(2,7,0));
+                mesh.addPoint(new DPoint(5,3,0));
+                mesh.addPoint(new DPoint(6,11,0));
+                mesh.processDelaunay();
+                tris = mesh.getTriangleList();
+                index = tris.indexOf(new DTriangle(
+                        new DEdge(0,4,0,2,7,0),
+                        new DEdge(2,7,0,5,3,0),
+                        new DEdge(5,3,0,0,4,0)));
+                tri = tris.get(index);
+                mesh.insertTriangleCircumCenter(tri, false);
+                assertTrue(mesh.getTriangleList().size()==5);
+                
         }
 }
