@@ -1451,7 +1451,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
          * This method is useful only when both the right and left triangles associated
          * to this edge are not null.
          */
-        public void deepSwap() {
+        public final void deepSwap() {
                 if(left != null && right != null){
                         DEdge el0 = left.getEdge(0);
                         DEdge el1 = left.getEdge(1);
