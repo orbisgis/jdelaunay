@@ -558,7 +558,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
         }
 
         // Undocummented method
-        public DTriangle publicFindPointProjectionIn(DPoint aPoint) {
+        public final DTriangle publicFindPointProjectionIn(DPoint aPoint) {
                 return findPointProjectionIn(aPoint);
         }
 

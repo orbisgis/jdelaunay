@@ -908,4 +908,14 @@ public class TestTriangle extends BaseUtility {
                 
                 
         }
+        
+        public void testIsEdgeOf() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,0,0,0,4,0),
+                                new DEdge(0,4,0,4,0,0),
+                                new DEdge(4,0,0,0,0,0));
+                assertTrue(dt.isEdgeOf(new DEdge(0,0,0,0,4,0)));
+                assertTrue(dt.isEdgeOf(new DEdge(4,0,0,0,4,0)));
+                assertTrue(dt.isEdgeOf(new DEdge(0,0,0,4,0,0)));
+                assertFalse(dt.isEdgeOf(new DEdge(0,6,0,4,0,0)));
+        }
 }

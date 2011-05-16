@@ -1236,4 +1236,12 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 return null;                
         }
         
+        public final boolean isEdgeOf(DEdge ed){
+                for(DEdge e : edges){
+                        if(e.equals(ed)){
+                                return true;
+                        }
+                }
+                return false;
+        }
 }
