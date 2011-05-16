@@ -1807,7 +1807,7 @@ public class ConstrainedMesh implements Serializable {
         }
         
         /**
-         * Method that revert a point isnertion in a triangle (but not on one of its edges).
+         * Method that revert a point insertion in a triangle (but not on one of its edges).
          * We need the reference to the triangle, the inserted point, and the former
          * third point of the triangle.<br/>
          * Note that we need to decrease the edge, triangle and point GIDs, and 
@@ -1847,6 +1847,55 @@ public class ConstrainedMesh implements Serializable {
                 triangleList.remove(triangleList.size()-1);
                 triangleGID--;
                 triangleGID--;
+        }
+        
+        /**
+         * This method reverts the first step of a point insertion in the mesh, when
+         * this insertion occurs on an edge of a triangle. <br/>
+         * Note that we need to decrease the edge, triangle and point GIDs, and 
+         * to remove the elements we don't need from each data structure.
+         * @param ed
+         * @param forget
+         * @param extremity
+         * @param leftLast
+         * @param rightLast
+         * @throws DelaunayError 
+         */
+        void revertPointOnEdgeInsertion(DEdge ed, DPoint forget, DPoint extremity, DEdge leftLast, 
+                        DEdge rightLast) throws DelaunayError {
+                DTriangle left = ed.getLeft();
+                DTriangle right = ed.getRight();
+                DPoint st;
+                //We push back the original extremity of ed.
+                ed.setEndPoint(extremity);
+                st = ed.getStartPoint();
+                //If left is not null, we reset it and remove the elements added from it.
+                if(left != null){
+                        rebuildTriangleOEI(left, st, leftLast);
+                        edges.remove(edges.size()-1);
+                        edgeGID--;
+                        triangleList.remove(triangleList.size()-1);
+                        triangleGID--;
+                }
+                edges.remove(edges.size()-1);
+                edgeGID--;
+                //If right is not null, we reset it and remove the elements added from it.
+                if(right != null ){
+                        edges.remove(edges.size()-1);
+                        edgeGID--;
+                        triangleList.remove(triangleList.size()-1);
+                        triangleGID--;
+                        
+                }
+                points.remove(points.size()-1);
+                pointGID--;
+        }
+        
+        private void rebuildTriangleOEI(DTriangle tri, DPoint op, DEdge ed) throws DelaunayError {
+                DEdge rep = tri.getOppositeEdge(op);
+                int i = tri.getEdgeIndex(rep);
+                tri.setEdge(i, ed);
+                tri.recomputeCenter();
         }
         
         /**

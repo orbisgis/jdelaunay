@@ -2035,6 +2035,147 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(mesh.getPoints().get(0)==pt1);
                 assertTrue(mesh.getPoints().get(1)==pt3);
                 assertTrue(mesh.getPoints().get(2)==pt2);
+                assertCoherence(mesh);
+                
+        } 
+        
+        public void testRevertPointInEdgeInit() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                DPoint p1 =new DPoint(0,2,0);
+                mesh.addPoint(p1);
+                DPoint p2 =new DPoint(4,0,0);
+                mesh.addPoint(p2);
+                DPoint p3 =new DPoint(7,3,0);
+                mesh.addPoint(p3);
+                DPoint p4 =new DPoint(2,4,0);
+                mesh.addPoint(p4);
+                mesh.processDelaunay();
+                DTriangle tri1 = mesh.getTriangleList().get(0);
+                DTriangle tri2 = mesh.getTriangleList().get(1);
+                List<DEdge> edges = mesh.getEdges();
+                int index = edges.indexOf(new DEdge(2,4,0,4,0,0));
+                DEdge e = edges.get(index);
+                DPoint ex;
+                if(e.getStart().equals(new DPoint(2,4,0))){
+                        ex = p2;
+                } else {
+                        ex = p4;
+                }
+                index = edges.indexOf(new DEdge(0,2,0,4,0,0));
+                DEdge e1 = edges.get(index);
+                index = edges.indexOf(new DEdge(2,4,0,0,2,0));
+                DEdge e2 = edges.get(index);
+                DEdge ll;
+                if(e1.isExtremity(ex)){
+                        ll = e1;
+                } else {
+                        ll = e2;
+                }
+                index = edges.indexOf(new DEdge(7,3,0,4,0,0));
+                DEdge e4 = edges.get(index);
+                index = edges.indexOf(new DEdge(2,4,0,7,3,0));
+                DEdge e5 = edges.get(index);
+                DEdge lr;
+                if(e4.isExtremity(ex)){
+                        lr = e4;
+                } else {
+                        lr = e5;
+                }
+                DEdge lef, rig;
+                if(e.getLeft().belongsTo(new DPoint(0,2,0))){
+                        lef = ll;
+                        rig = lr;
+                } else {
+                        lef = lr;
+                        rig = ll;
+                }
+                mesh.initPointOnEdge(new DPoint(3,2,0), e, new LinkedList<DEdge>());
+                mesh.revertPointOnEdgeInsertion(e, new DPoint(3,2,0), ex, lef, rig);
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==2);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(0,2,0,4,0,0),
+                        new DEdge(4,0,0,2,4,0), 
+                        new DEdge(2,4,0,0,2,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(7,3,0,4,0,0),
+                        new DEdge(4,0,0,2,4,0), 
+                        new DEdge(2,4,0,7,3,0))));
+                edges = mesh.getEdges();
+                assertTrue(edges.size()==5);
+                assertTrue(edges.contains(new DEdge(0,2,0,4,0,0)));
+                assertTrue(edges.contains(new DEdge(0,2,0,2,4,0)));
+                assertTrue(edges.contains(new DEdge(2,4,0,4,0,0)));
+                assertTrue(edges.contains(new DEdge(7,3,0,4,0,0)));
+                assertTrue(edges.contains(new DEdge(2,4,0,7,3,0)));
+                List<DPoint> points = mesh.getPoints();
+                assertTrue(points.size()==4);
+                assertTrue(points.contains(new DPoint(0,2,0)));
+                assertTrue(points.contains(new DPoint(2,4,0)));
+                assertTrue(points.contains(new DPoint(4,0,0)));
+                assertTrue(points.contains(new DPoint(7,3,0)));
+                assertCoherence(mesh);
+        }
+        
+        public void testRevertPointOnEdgebranches() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                DPoint p1 = new DPoint(0,0,0);
+                mesh.addPoint(p1);
+                DPoint p2 = new DPoint(3,0,0);
+                mesh.addPoint(p2);
+                DPoint p3 = new DPoint(2,3,0);
+                mesh.addPoint(p3);
+                mesh.processDelaunay();
+                List<DEdge> edges = mesh.getEdges();
+                int index = edges.indexOf(new DEdge(0,0,0,2,3,0));
+                DEdge e = edges.get(index);
+                //we force the direction
+                if(e.getRight() == null){
+                        e.swap();
+                }
+                index = edges.indexOf(new DEdge(3,0,0,2,3,0));
+                DEdge last = edges.get(index);
+                mesh.initPointOnEdge(new DPoint(1,1.5,0), e, new LinkedList<DEdge>());
+                mesh.revertPointOnEdgeInsertion(e, new DPoint(1,1.5,0), p3, null, last);
+                assertTrue(mesh.getTriangleList().size()==1);
+                assertTrue(mesh.getEdges().size()==3);
+                assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,3,0,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(2,3,0,3,0,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,2,3,0)));
+                assertTrue(mesh.getPoints().size()==3);
+                assertTrue(mesh.getPoints().contains(new DPoint(0,0,0)));
+                assertTrue(mesh.getPoints().contains(new DPoint(2,3,0)));
+                assertTrue(mesh.getPoints().contains(new DPoint(3,0,0)));
+                assertCoherence(mesh);
+                mesh = new ConstrainedMesh();
+                p1 = new DPoint(0,0,0);
+                mesh.addPoint(p1);
+                p2 = new DPoint(3,0,0);
+                mesh.addPoint(p2);
+                p3 = new DPoint(2,3,0);
+                mesh.addPoint(p3);
+                mesh.processDelaunay();
+                edges = mesh.getEdges();
+                index = edges.indexOf(new DEdge(0,0,0,2,3,0));
+                e = edges.get(index);
+                //we force the direction
+                if(e.getLeft() == null){
+                        e.swap();
+                }
+                index = edges.indexOf(new DEdge(3,0,0,0,0,0));
+                last = edges.get(index);
+                mesh.initPointOnEdge(new DPoint(1,1.5,0), e, new LinkedList<DEdge>());
+                mesh.revertPointOnEdgeInsertion(e, new DPoint(1,1.5,0), p1, last, null);
+                assertTrue(mesh.getTriangleList().size()==1);
+                assertTrue(mesh.getEdges().size()==3);
+                assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,3,0,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(2,3,0,3,0,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,2,3,0)));
+                assertTrue(mesh.getPoints().size()==3);
+                assertTrue(mesh.getPoints().contains(new DPoint(0,0,0)));
+                assertTrue(mesh.getPoints().contains(new DPoint(2,3,0)));
+                assertTrue(mesh.getPoints().contains(new DPoint(3,0,0)));
+                assertCoherence(mesh);
                 
         }
 }
