@@ -1881,6 +1881,7 @@ public class ConstrainedMesh implements Serializable {
                 edgeGID--;
                 //If right is not null, we reset it and remove the elements added from it.
                 if(right != null ){
+                        rebuildTriangleOEI(right, st, rightLast);
                         edges.remove(edges.size()-1);
                         edgeGID--;
                         triangleList.remove(triangleList.size()-1);

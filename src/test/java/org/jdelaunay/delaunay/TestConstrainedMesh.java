@@ -2138,6 +2138,11 @@ public class TestConstrainedMesh extends BaseUtility {
                 mesh.initPointOnEdge(new DPoint(1,1.5,0), e, new LinkedList<DEdge>());
                 mesh.revertPointOnEdgeInsertion(e, new DPoint(1,1.5,0), p3, null, last);
                 assertTrue(mesh.getTriangleList().size()==1);
+                assertTrue(mesh.getTriangleList().contains(
+                        new DTriangle(
+                                new DEdge(0,0,0,3,0,0),
+                                new DEdge(3,0,0,2,3,0),
+                                new DEdge(2,3,0,0,0,0))));
                 assertTrue(mesh.getEdges().size()==3);
                 assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,3,0,0)));
                 assertTrue(mesh.getEdges().contains(new DEdge(2,3,0,3,0,0)));
@@ -2167,6 +2172,11 @@ public class TestConstrainedMesh extends BaseUtility {
                 mesh.initPointOnEdge(new DPoint(1,1.5,0), e, new LinkedList<DEdge>());
                 mesh.revertPointOnEdgeInsertion(e, new DPoint(1,1.5,0), p1, last, null);
                 assertTrue(mesh.getTriangleList().size()==1);
+                assertTrue(mesh.getTriangleList().contains(
+                        new DTriangle(
+                                new DEdge(0,0,0,3,0,0),
+                                new DEdge(3,0,0,2,3,0),
+                                new DEdge(2,3,0,0,0,0))));
                 assertTrue(mesh.getEdges().size()==3);
                 assertTrue(mesh.getEdges().contains(new DEdge(0,0,0,3,0,0)));
                 assertTrue(mesh.getEdges().contains(new DEdge(2,3,0,3,0,0)));
