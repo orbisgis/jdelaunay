@@ -622,4 +622,23 @@ public class TestEdges extends BaseUtility {
 		assertEquals(e1.getMaxWeight(map), 80);
 
 	}
+        
+        public void testDeepSwap() throws DelaunayError {
+                DEdge ed = new DEdge(0,0,0,5,5,0);
+                DTriangle t1 = new DTriangle(ed,
+                        new DEdge(0,0,0,1,5,0),
+                        new DEdge(5,5,0,1,5,0));
+                DTriangle t2 = new DTriangle(ed,
+                        new DEdge(0,0,0,3,-1,0),
+                        new DEdge(5,5,0,3,-1,0));
+                assertTrue(ed.getStartPoint().equals(new DPoint(0,0,0)));
+                assertTrue(ed.getLeft()==t1);
+                assertTrue(ed.getRight()==t2);
+                ed.deepSwap();
+                assertTrue(ed.getStartPoint().equals(new DPoint(0,0,0)));
+                assertTrue(ed.getLeft()==t2);
+                assertTrue(ed.getRight()==t1);
+                assertTrue(ed.getLeft().belongsTo(new DPoint(1,5,0)));
+                assertTrue(ed.getRight().belongsTo(new DPoint(3,-1,0)));
+        }
 }

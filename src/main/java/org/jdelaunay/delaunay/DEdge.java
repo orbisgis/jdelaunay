@@ -37,6 +37,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.LinkedList;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
@@ -193,7 +194,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param prop
 	 */
 	@Override
-	public void addProperty(int prop){
+	public final void addProperty(int prop){
 		super.addProperty(prop);
 		startPoint.addProperty(prop);
 		endPoint.addProperty(prop);
@@ -1441,4 +1442,61 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	public final String toString() {
 		return "Edge " + getGID() + " [Start : " + startPoint + ", End : " + endPoint + "]";
 	}
+        
+        /**
+         * Perform a "deep swap" on this edge. The content of the left and right
+         * triangles are inverted, then the references to the triangles are inverted too.<br/>
+         * It can be useful when needing to invert two elements in a list without
+         * knowing the indices of the elements, or in a non random access list.<br/>
+         * This method is useful only when both the right and left triangles associated
+         * to this edge are not null.
+         */
+        public void deepSwap() {
+                if(left != null && right != null){
+                        DEdge el0 = left.getEdge(0);
+                        DEdge el1 = left.getEdge(1);
+                        DEdge el2 = left.getEdge(2);
+                        LinkedList<DEdge> ll = new LinkedList<DEdge>();
+                        ll.add(el0);
+                        ll.add(el1);
+                        ll.add(el2);
+                        int gid = left.getGID();
+                        int prop = left.getProperty();
+                        left.setEdge(0, right.getEdge(0));
+                        left.setEdge(1, right.getEdge(1));
+                        left.setEdge(2, right.getEdge(2));
+                        left.setGID(right.getGID());
+                        left.setProperty(right.getProperty());
+                        LinkedList<DEdge> rl = new LinkedList<DEdge>();
+                        rl.add(right.getEdge(0));
+                        rl.add(right.getEdge(1));
+                        rl.add(right.getEdge(2));
+                        right.setEdge(0, el0);
+                        right.setEdge(1, el1);
+                        right.setEdge(2, el2);
+                        right.setGID(gid);
+                        right.setProperty(prop);
+                        for(DEdge ed : ll){
+                                if(ed != this){
+                                        if(ed.getLeft()==left ){
+                                                ed.setLeft(right);
+                                        } else {
+                                                ed.setRight(right);
+                                        }
+                                }
+                        }
+                        for(DEdge ed : rl){
+                                if(ed != this){
+                                        if(ed.getLeft()==right && ed != this){
+                                                ed.setLeft(left);
+                                        } else {
+                                                ed.setRight(left);
+                                        }
+                                }
+                        }
+                        DTriangle mem = left;
+                        left = right;
+                        right = mem;
+                }
+        }
 }
