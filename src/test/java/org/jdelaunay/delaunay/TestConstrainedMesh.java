@@ -2273,7 +2273,7 @@ public class TestConstrainedMesh extends BaseUtility {
                         new DEdge(2,7,0,5,3,0),
                         new DEdge(5,3,0,0,4,0)));
                 DTriangle tri = tris.get(index);
-                mesh.insertTriangleCircumCenter(tri, true);
+                mesh.insertTriangleCircumCenter(tri, true,0.01);
                 assertTrue(mesh.getTriangleList().size()==3);
                 mesh = new ConstrainedMesh();
                 mesh.addPoint(new DPoint(0,4,0));
@@ -2288,7 +2288,7 @@ public class TestConstrainedMesh extends BaseUtility {
                         new DEdge(2,7,0,5,3,0),
                         new DEdge(5,3,0,0,4,0)));
                 tri = tris.get(index);
-                mesh.insertTriangleCircumCenter(tri, false);
+                mesh.insertTriangleCircumCenter(tri, false, 0.01);
                 assertTrue(mesh.getTriangleList().size()==5);
                 
         }

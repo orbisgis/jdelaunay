@@ -1274,6 +1274,7 @@ public class ConstrainedMesh implements Serializable {
 				splitEncroachedEdge(ed, minLength);
 			}
 		}
+                
 	}
 
 	/**
@@ -1391,19 +1392,27 @@ public class ConstrainedMesh implements Serializable {
         /**
          * Insert the circumcenter of the given triangle in the mesh. This method 
          * is part of the Ruppert refinement algorithm. Consequently, it stops if it 
-         * sees it will create a new encroached edge. 
+         * sees it will create a new encroached edge. <br/>
+         * The circumcenter won't be inserted if it is too close from another point of the mesh
          * @param tri
          * @param revertible
          *      If set to true, the insertion won't be performed if it creates a new encroached 
          *      edge in the mesh.
+         * @param minLength
          * @throws DelaunayError 
          */
-        public final void insertTriangleCircumCenter(DTriangle tri, boolean revertible) throws DelaunayError {
+        public final DEdge insertTriangleCircumCenter(DTriangle tri, boolean revertible, double minLength) throws DelaunayError {
                 DTriangle container = tri.getCircumCenterContainer();
+                DPoint cc = new DPoint(tri.getCircumCenter());
+                double min = container.getMinSquareDistance(cc);
+                if(min<minLength*minLength){
+                        return null;
+                }
                 if(revertible){
-                        insertIfNotEncroached(new DPoint(tri.getCircumCenter()), container);
+                        return insertIfNotEncroached(new DPoint(cc), container);
                 } else {
-                        insertPointInTriangle(new DPoint(tri.getCircumCenter()), container);
+                        insertPointInTriangle(new DPoint(cc), container);
+                        return null;
                 }
                 
         }

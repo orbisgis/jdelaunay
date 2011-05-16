@@ -1236,6 +1236,11 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 return null;                
         }
         
+        /**
+         * Returns true if ed is equals to one of the edges that form this triangle.
+         * @param ed
+         * @return 
+         */
         public final boolean isEdgeOf(DEdge ed){
                 for(DEdge e : edges){
                         if(e.equals(ed)){
@@ -1243,5 +1248,20 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                         }
                 }
                 return false;
+        }
+        
+        /**
+         * Return the square of the minimal distance between pt and the apex
+         * of this triangle.
+         * @param pt
+         * @return 
+         */
+        public final double getMinSquareDistance(DPoint pt) {
+                double min = Double.POSITIVE_INFINITY;
+                for(int i = 0; i<PT_NB; i++){
+                        double dist = pt.squareDistance(getPoint(i));
+                        min = dist < min ? dist : min;
+                }
+                return min;
         }
 }

@@ -918,4 +918,14 @@ public class TestTriangle extends BaseUtility {
                 assertTrue(dt.isEdgeOf(new DEdge(0,0,0,4,0,0)));
                 assertFalse(dt.isEdgeOf(new DEdge(0,6,0,4,0,0)));
         }
+        
+        public void testMinDistance() throws DelaunayError {
+                DTriangle dt = new DTriangle(
+                        new DEdge(0,2,0,4,0,0), 
+                        new DEdge(4,0,0,2,7,0), 
+                        new DEdge(2,7,0,0,2,0));
+                assertEquals(dt.getMinSquareDistance(new DPoint(1,2,0)),1.0);
+                assertEquals(dt.getMinSquareDistance(new DPoint(2,6,0)),1.0);
+                assertEquals(dt.getMinSquareDistance(new DPoint(3,1,0)),2.0);
+        }
 }
