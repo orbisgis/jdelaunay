@@ -1775,13 +1775,25 @@ public class ConstrainedMesh implements Serializable {
          * @param it
          * @throws DelaunayError 
          */
-        void proceedSwaps(Iterator<DEdge> it) throws DelaunayError {
+        final void proceedSwaps(Iterator<DEdge> it) throws DelaunayError {
                 while(it.hasNext()){
                         DEdge ed = it.next();
+                        ed.swap();
                         flipFlap(ed);
                 }
         }
         
+        /**
+         * Insert pt in container only if it does not create a new encroached edge 
+         * in the mesh.<br/>
+         * if the insertion of the new point would cause such a creation, the point
+         * is not inserted, and all the operations associated to its insertion
+         * are reverted.
+         * @param pt
+         * @param container
+         * @return
+         * @throws DelaunayError 
+         */
         public final DEdge insertIfNotEncroached(final DPoint pt, DTriangle container) 
                         throws DelaunayError{
                 if(!container.isInside(pt)){
@@ -1789,18 +1801,48 @@ public class ConstrainedMesh implements Serializable {
                                 + "before to proceed to the insertion.");
                 } 
                 LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
+                Deque<DEdge> swapMem = new LinkedList<DEdge> ();
                 boolean onEdge = container.isOnAnEdge(pt);
                 DEdge ret;
                 if(onEdge){
                         DEdge contEdge = container.getContainingEdge(pt);
+                        DTriangle left = contEdge.getLeft();
+                        DEdge memleft = null;
+                        DPoint memExt = contEdge.getEnd();
+                        if(left != null){
+                                memleft = left.getOppositeEdge(contEdge.getStartPoint());
+                        }
+                        DTriangle right = contEdge.getRight();
+                        DEdge memright = null;
+                        if(right != null){
+                                memright = right.getOppositeEdge(contEdge.getStartPoint());
+                        }
                         ret = initPointOnEdge(pt, contEdge, badEdges);
-                        badEdgesQueueList = badEdges;
-                        processBadEdges();
-                        
+                        if(ret != null){
+                                revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
+                        }
+                        ret = revertibleSwapping(badEdges, swapMem);
+                        if(ret != null){
+                                Iterator<DEdge> it = swapMem.descendingIterator();
+                                proceedSwaps(it);
+                                if(contEdge.getStartPoint().equals(pt)){
+                                        contEdge.swap();
+                                }
+                                revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
+                        }
                 } else {
                         ret = initPointInTriangle(pt, container, badEdges);
-                        badEdgesQueueList = badEdges;
-                        processBadEdges();
+                        DEdge eMem0 = container.getEdge(0);
+                        DPoint mem = container.getOppositePoint(eMem0);
+                        if(ret != null){
+                                revertPointInTriangleInsertion(container, pt, mem);
+                        }
+                        ret = revertibleSwapping(badEdges, swapMem);
+                        if(ret != null){
+                                Iterator<DEdge> it = swapMem.descendingIterator();
+                                proceedSwaps(it);
+                                revertPointInTriangleInsertion(container, pt, mem);
+                        }
                 }
                 return ret;
                 
@@ -1816,7 +1858,7 @@ public class ConstrainedMesh implements Serializable {
          * @param forget
          * @param apex 
          */
-        void revertPointInTriangleInsertion(DTriangle dt, DPoint forget, DPoint apex)
+        final void revertPointInTriangleInsertion(DTriangle dt, DPoint forget, DPoint apex)
                         throws DelaunayError {
                 DEdge perm = dt.getOppositeEdge(forget);
                 DEdge mod = dt.getOppositeEdge(perm.getStartPoint());
@@ -1861,10 +1903,14 @@ public class ConstrainedMesh implements Serializable {
          * @param rightLast
          * @throws DelaunayError 
          */
-        void revertPointOnEdgeInsertion(DEdge ed, DPoint forget, DPoint extremity, DEdge leftLast, 
+        final void revertPointOnEdgeInsertion(DEdge ed, DPoint forget, DPoint extremity, DEdge leftLast, 
                         DEdge rightLast) throws DelaunayError {
                 DTriangle left = ed.getLeft();
                 DTriangle right = ed.getRight();
+                if(triangleList.size()>1){
+                        checkMemEdges(leftLast, forget, triangleList.get(triangleList.size() -1), triangleList.get(triangleList.size() -2));
+                        checkMemEdges(rightLast, forget, triangleList.get(triangleList.size() -1), triangleList.get(triangleList.size() -2));
+                }
                 DPoint st;
                 //We push back the original extremity of ed.
                 ed.setEndPoint(extremity);
@@ -1892,6 +1938,22 @@ public class ConstrainedMesh implements Serializable {
                 pointGID--;
         }
         
+        private void checkMemEdges(DEdge mem, DPoint forget, DTriangle l1, DTriangle l2){
+                if(l1!=null && l1.isEdgeOf(mem) && !l1.belongsTo(forget)){
+                        mem.deepSwap();
+                } else if(l2!=null && l2.isEdgeOf(mem) && ! l2.belongsTo(forget)){
+                        mem.deepSwap();
+                }
+        }
+        
+        /**
+         * This method rebuild the original triangles, before the canceled insertion of a point
+         * on an edge.
+         * @param tri
+         * @param op
+         * @param ed
+         * @throws DelaunayError 
+         */
         private void rebuildTriangleOEI(DTriangle tri, DPoint op, DEdge ed) throws DelaunayError {
                 DEdge rep = tri.getOppositeEdge(op);
                 int i = tri.getEdgeIndex(rep);
@@ -2105,7 +2167,7 @@ public class ConstrainedMesh implements Serializable {
          * NB : points are supposed to be already sorted
          * @param epsilon
          */
-        public void dataQualification(double epsilon) throws DelaunayError {
+        public final void dataQualification(double epsilon) throws DelaunayError {
                 if (isMeshComputed()) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
                 } else if ((points == null) || (edges == null) || (constraintEdges == null) || (polygons == null)) {

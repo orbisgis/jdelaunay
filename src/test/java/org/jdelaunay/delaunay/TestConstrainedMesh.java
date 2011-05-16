@@ -2117,7 +2117,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertCoherence(mesh);
         }
         
-        public void testRevertPointOnEdgebranches() throws DelaunayError {
+        public void testRevertPointOnEdgeBranches() throws DelaunayError {
                 ConstrainedMesh mesh = new ConstrainedMesh();
                 DPoint p1 = new DPoint(0,0,0);
                 mesh.addPoint(p1);
@@ -2186,6 +2186,44 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(mesh.getPoints().contains(new DPoint(2,3,0)));
                 assertTrue(mesh.getPoints().contains(new DPoint(3,0,0)));
                 assertCoherence(mesh);
+        }
+        
+        public void testRevertibleInsertion() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,3,0));
+                mesh.addPoint(new DPoint(4,0,0));
+                mesh.addPoint(new DPoint(1,1,0));
+                mesh.addPoint(new DPoint(2,5,0));
+                mesh.addPoint(new DPoint(5,6,0));
+                mesh.addPoint(new DPoint(6,0,0));
+                mesh.processDelaunay();
+                DTriangle tri = new DTriangle(
+                        new DEdge(1,1,0,2,5,0), 
+                        new DEdge(2,5,0,4,0,0), 
+                        new DEdge(4,0,0,1,1,0));
+                int index = mesh.getTriangleList().indexOf(tri);
+                DPoint cc = new DPoint(3,2.5,0);
+                DPoint ccmem = new DPoint(3,2.5,0);
+                DEdge ret = mesh.insertIfNotEncroached(cc, mesh.getTriangleList().get(index));
+                assertNotNull(ret);
+                List<DTriangle> tris = mesh.getTriangleList();
+                assertTrue(tris.size()==4);
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(0,3,0,1,1,0),
+                        new DEdge(1,1,0,2,5,0),
+                        new DEdge(2,5,0,0,3,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(4,0,0,1,1,0),
+                        new DEdge(1,1,0,2,5,0),
+                        new DEdge(2,5,0,4,0,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(4,0,0,5,6,0),
+                        new DEdge(5,6,0,2,5,0),
+                        new DEdge(2,5,0,4,0,0))));
+                assertTrue(tris.contains(new DTriangle(
+                        new DEdge(4,0,0,5,6,0),
+                        new DEdge(5,6,0,6,0,0),
+                        new DEdge(6,0,0,4,0,0))));
                 
         }
 }
