@@ -2285,15 +2285,13 @@ public class ConstrainedMesh implements Serializable {
                 } else if (epsilon <= 0) {
                         throw new DelaunayError("Epsilon must be positive");
                 } else {
-                        HashMap<DPoint, DPoint> ReplacePoints = new HashMap<DPoint, DPoint>();
+                        HashMap<DPoint, DPoint> replacePoints = new HashMap<DPoint, DPoint>();
                         double epsilon2 = epsilon * epsilon;
 
                         int index = -1;
                         for (DPoint aPoint : points) {
                                 index++;
-                                if (ReplacePoints.containsKey(aPoint)) {
-                                        // This point is already processed
-                                } else {
+                                if (!replacePoints.containsKey(aPoint)){
                                         // get all points at less than epsilon and put them in ReplacePoints
                                         double x1 = aPoint.getX();
                                         double y1 = aPoint.getY();
@@ -2309,7 +2307,7 @@ public class ConstrainedMesh implements Serializable {
 
                                                         if ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) <= epsilon2) {
                                                                 // too close to aPoint
-                                                                ReplacePoints.put(nextPoint, aPoint);
+                                                                replacePoints.put(nextPoint, aPoint);
                                                         }
                                                         if (x2 > x1 + epsilon) {
                                                                 // not possible to have another point
@@ -2324,7 +2322,7 @@ public class ConstrainedMesh implements Serializable {
                         ListIterator<DPoint> iterPts = points.listIterator();
                         while (iterPts.hasNext()) {
                                 DPoint aPoint = iterPts.next();
-                                if (ReplacePoints.containsKey(aPoint)) {
+                                if (replacePoints.containsKey(aPoint)) {
                                         // point to be replaces
                                         iterPts.remove();
                                 }
@@ -2335,12 +2333,12 @@ public class ConstrainedMesh implements Serializable {
                         //      - constraintEdges
                         //      - polygons
 
-                        changeUnqualifiedEdges(ReplacePoints, edges);
-                        changeUnqualifiedEdges(ReplacePoints, constraintEdges);
+                        changeUnqualifiedEdges(replacePoints, edges);
+                        changeUnqualifiedEdges(replacePoints, constraintEdges);
 
                         ArrayList<ConstraintPolygon> PolygonToRemove = new ArrayList<ConstraintPolygon>();
                         for (ConstraintPolygon aPolygon : polygons) {
-                                changeUnqualifiedEdges(ReplacePoints, aPolygon.getEdges());
+                                changeUnqualifiedEdges(replacePoints, aPolygon.getEdges());
                                 if (aPolygon.getEdges().isEmpty()) {
                                         PolygonToRemove.add(aPolygon);
                                 }
