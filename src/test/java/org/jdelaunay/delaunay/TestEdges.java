@@ -354,6 +354,13 @@ public class TestEdges extends BaseUtility {
 		assertTrue(edge.isColinear(pt));
 		pt = new DPoint (3,8,0);
 		assertFalse(edge.isColinear(pt));
+                pt = new DPoint (3,3,50);
+		assertTrue(edge.isColinear2D(pt));
+		pt = new DPoint (3,3.000000000000001,50);
+		assertTrue(edge.isColinear2D(pt));
+		pt = new DPoint (3,8,50);
+		assertFalse(edge.isColinear2D(pt));
+                
 
 	}
 
@@ -656,5 +663,47 @@ public class TestEdges extends BaseUtility {
                 t1.setEdge(2, new DEdge(5,5,0,1,5,0));
                 ed.forceTriangleSide();
                 assertTrue(ed.getLeft() == t1 && ed.getRight()==null);
+        }
+        
+        public void testIsOnEdge() throws DelaunayError {
+                DEdge ed = new DEdge(0,0,0,5,5,0);
+                assertTrue(ed.isOnEdge(new DPoint(3,3,0)));
+                assertTrue(ed.isOnEdge(new DPoint(3,3,40)));
+                assertFalse(ed.isOnEdge(new DPoint(3,5,0)));
+                
+        }
+        
+        public void testTrianglesGoToEdge() throws DelaunayError {
+                DEdge e1 = new DEdge(0,0,2,5,5,2);
+                DEdge e2 = new DEdge(5,5,2,1,4,5);
+                DEdge e3 = new DEdge(1,4,5,0,0,2);
+                DEdge e4 = new DEdge(5,5,2,4,1,4);
+                DEdge e5 = new DEdge(4,1,4,0,0,2);
+                DTriangle t1 = new DTriangle(e1, e2, e3);
+                DTriangle t2 = new DTriangle(e1, e4, e5);
+                assertTrue(e1.isLeftTriangleGoToEdge());
+                assertTrue(e1.isRightTriangleGoToEdge());
+                DPoint pt = new DPoint(1,4,0);
+                e2.setEndPoint(pt);
+                e3.setStartPoint(pt);
+                DPoint p = new DPoint(4,1,0);
+                e4.setEndPoint(p);
+                e5.setStartPoint(p);
+                assertFalse(e1.isLeftTriangleGoToEdge());
+                assertFalse(e1.isRightTriangleGoToEdge());
+        }
+        
+        public void testSlope() throws DelaunayError {
+                DEdge e1 = new DEdge(0,0,2,5,5,2);
+                assertTrue(e1.getGradient() == DEdge.FLATSLOPE);
+                e1.setEndPoint(new DPoint(5,5,0));
+                assertTrue(e1.getGradient() == DEdge.DOWNSLOPE);
+                e1.setEndPoint(new DPoint(5,5,4));
+                assertTrue(e1.getGradient() == DEdge.UPSLOPE);
+        }
+        
+        public void testAspectSlope() throws DelaunayError {
+                DEdge e1 = new DEdge(0,0,0,4,0,0);
+                assertEquals(e1.getSlopeAspect(), 90.0, 0.0001);
         }
 }

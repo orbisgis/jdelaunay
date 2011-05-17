@@ -1018,7 +1018,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
-	 * Check if the point p is on edge.
+	 * Check if the point p is on edge. Computation is made in two dimensions.
 	 * @param p
 	 * @return True if the point is on edge.
 	 */
