@@ -1499,4 +1499,26 @@ public class DEdge extends Element implements Comparable<DEdge> {
                         right = mem;
                 }
         }
+        
+        /**
+         * This method takes care to ensure that the left and right triangles are
+         * actually on the left and on the right, and not on the right and on the left.
+         */
+        public final void forceTriangleSide(){
+                if(left != null){
+                        DPoint pt = left.getOppositePoint(this);
+                        if(isRight(pt)){
+                                DTriangle dt = left;
+                                left = right;
+                                right = dt;
+                        }
+                } else if(right != null){
+                        DPoint pt = right.getOppositePoint(this);
+                        if (isLeft(pt)){
+                                DTriangle dt = left;
+                                left = right;
+                                right = dt;
+                        }
+                }
+        }
 }

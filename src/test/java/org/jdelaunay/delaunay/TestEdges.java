@@ -641,4 +641,20 @@ public class TestEdges extends BaseUtility {
                 assertTrue(ed.getLeft().belongsTo(new DPoint(1,5,0)));
                 assertTrue(ed.getRight().belongsTo(new DPoint(3,-1,0)));
         }
+        
+        public void testForceTriangleSide() throws DelaunayError {
+                DEdge ed = new DEdge(0,0,0,5,5,0);
+                DTriangle t1 = new DTriangle(ed,
+                        new DEdge(0,0,0,1,5,0),
+                        new DEdge(5,5,0,1,5,0));
+                assertTrue(ed.getLeft() == t1 && ed.getRight()==null);
+                t1.setEdge(1, new DEdge(0,0,0,5,1,0));
+                t1.setEdge(2, new DEdge(5,5,0,5,1,0));
+                ed.forceTriangleSide();
+                assertTrue(ed.getLeft() == null && ed.getRight()==t1);
+                t1.setEdge(1, new DEdge(0,0,0,1,5,0));
+                t1.setEdge(2, new DEdge(5,5,0,1,5,0));
+                ed.forceTriangleSide();
+                assertTrue(ed.getLeft() == t1 && ed.getRight()==null);
+        }
 }
