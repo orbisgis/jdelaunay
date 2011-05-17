@@ -1904,7 +1904,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 int index = mesh.getTriangleList().indexOf(tri);
                 DPoint cc = new DPoint(tri.getCircumCenter());
                 DPoint ccmem = new DPoint(tri.getCircumCenter());
-                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index));
+                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index), 0.00001);
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==7);
                 assertTrue(tris.contains(
@@ -1962,7 +1962,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 int index = mesh.getTriangleList().indexOf(tri);
                 DPoint cc = new DPoint(3,2.5,0);
                 DPoint ccmem = new DPoint(3,2.5,0);
-                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index));
+                mesh.insertPointInTriangle(cc, mesh.getTriangleList().get(index), 0.00001);
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==6);
                 assertTrue(tris.contains(new DTriangle(
@@ -2036,6 +2036,13 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(mesh.getPoints().get(1)==pt3);
                 assertTrue(mesh.getPoints().get(2)==pt2);
                 assertCoherence(mesh);
+                DTriangle dt = mesh.getTriangleList().get(0);
+                DEdge ed = dt.getEdge(0);
+                assertTrue(ed.getLeft() == dt || ed.getRight()==dt);
+                ed = dt.getEdge(2);
+                assertTrue(ed.getLeft() == dt || ed.getRight()==dt);
+                ed = dt.getEdge(1);
+                assertTrue(ed.getLeft() == dt || ed.getRight()==dt);
                 
         } 
         
@@ -2115,6 +2122,14 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(points.contains(new DPoint(4,0,0)));
                 assertTrue(points.contains(new DPoint(7,3,0)));
                 assertCoherence(mesh);
+                for(DEdge edg : mesh.getTriangleList().get(0).getEdges()){
+                assertTrue(edg.getLeft() == mesh.getTriangleList().get(0) || 
+                        edg.getRight()==mesh.getTriangleList().get(0));    
+                }
+                for(DEdge edg : mesh.getTriangleList().get(1).getEdges()){
+                assertTrue(edg.getLeft() == mesh.getTriangleList().get(1) || 
+                        edg.getRight()==mesh.getTriangleList().get(1));    
+                }
         }
         
         public void testRevertPointOnEdgeBranches() throws DelaunayError {
@@ -2204,7 +2219,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 int index = mesh.getTriangleList().indexOf(tri);
                 DPoint cc = new DPoint(3,2.5,0);
                 DPoint ccmem = new DPoint(3,2.5,0);
-                DEdge ret = mesh.insertIfNotEncroached(cc, mesh.getTriangleList().get(index));
+                DEdge ret = mesh.insertIfNotEncroached(cc, mesh.getTriangleList().get(index), 0.00001);
                 assertNotNull(ret);
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==4);
@@ -2241,7 +2256,7 @@ public class TestConstrainedMesh extends BaseUtility {
                         new DEdge(2,7,0,5,3,0),
                         new DEdge(5,3,0,0,4,0)));
                 DTriangle tri = tris.get(index);
-                DEdge enc = mesh.insertIfNotEncroached(new DPoint(3,4,0), tri);
+                DEdge enc = mesh.insertIfNotEncroached(new DPoint(3,4,0), tri, 0.00001);
                 assertNotNull(enc);
                 tris = mesh.getTriangleList();
                 assertTrue(tris.size()==3);
@@ -2259,6 +2274,11 @@ public class TestConstrainedMesh extends BaseUtility {
                         new DEdge(5,3,0,6,11,0))));
         }
         
+        /**
+         * Tries to insert a circumcenter with or without test about the creation
+         * of encroached edges.
+         * @throws DelaunayError 
+         */
         public void testCircumCenterInsertion() throws DelaunayError {
                 ConstrainedMesh mesh = new ConstrainedMesh();
                 mesh.addPoint(new DPoint(0,4,0));
@@ -2290,6 +2310,32 @@ public class TestConstrainedMesh extends BaseUtility {
                 tri = tris.get(index);
                 mesh.insertTriangleCircumCenter(tri, false, 0.01);
                 assertTrue(mesh.getTriangleList().size()==5);
+                DTriangle dt =new DTriangle(new DEdge(0,4,0,2,7,0),new DEdge(2,7,0,5,3,0),
+                                new DEdge(5,3,0,0,4,0));
+                DPoint pt = new DPoint(dt.getCircumCenter());
+                assertTrue(mesh.getPoints().contains(pt));
+                
+        }
+
+        public void testLengthThreshold() throws DelaunayError{
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,2,0));
+                mesh.addPoint(new DPoint(4,0,0));
+                mesh.addPoint(new DPoint(2,7,0));
+                mesh.processDelaunay();
+                DTriangle tri = mesh.getTriangleList().get(0);
+                DEdge ret = mesh.insertIfNotEncroached(new DPoint(1,2,0), tri, 0.5);
+                assertTrue(mesh.getPoints().size()==3 && ret!=null);
+                ret = mesh.insertIfNotEncroached(new DPoint(1,2,0), tri, 2);
+                assertTrue(mesh.getPoints().size()==3 && ret==null);
+                mesh.insertPointInTriangle(new DPoint(1,2,0), tri, 0.5);
+                assertTrue(mesh.getPoints().size()==4);
+                mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,2,0));
+                mesh.addPoint(new DPoint(4,0,0));
+                mesh.addPoint(new DPoint(2,7,0));
+                mesh.insertPointInTriangle(new DPoint(1,2,0), tri, 2);
+                assertTrue(mesh.getPoints().size()==3 );
                 
         }
 }

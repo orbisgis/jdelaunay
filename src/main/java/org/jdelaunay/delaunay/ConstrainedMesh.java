@@ -1399,19 +1399,17 @@ public class ConstrainedMesh implements Serializable {
          *      If set to true, the insertion won't be performed if it creates a new encroached 
          *      edge in the mesh.
          * @param minLength
+         *      If the distance between the circumcenter and the closest point of the 
+         * containing triangle is inferior to minLength, the circumcenter is not inserted.
          * @throws DelaunayError 
          */
         public final DEdge insertTriangleCircumCenter(DTriangle tri, boolean revertible, double minLength) throws DelaunayError {
                 DTriangle container = tri.getCircumCenterContainer();
                 DPoint cc = new DPoint(tri.getCircumCenter());
-                double min = container.getMinSquareDistance(cc);
-                if(min<minLength*minLength){
-                        return null;
-                }
                 if(revertible){
-                        return insertIfNotEncroached(new DPoint(cc), container);
+                        return insertIfNotEncroached(new DPoint(cc), container, minLength);
                 } else {
-                        insertPointInTriangle(new DPoint(cc), container);
+                        insertPointInTriangle(new DPoint(cc), container, minLength);
                         return null;
                 }
                 
@@ -1614,6 +1612,16 @@ public class ConstrainedMesh implements Serializable {
                 }
 	}
         
+        /**
+         * This implementation of the flip flap algorithm has two main differences 
+         * with processBadEdges() : <br/>
+         *  * It sotres all the swap operations it does in the deque swapMemory<br/>
+         *  * It stops when an encroached edge is found.
+         * @param badEdges
+         * @param swapMemory
+         * @return
+         * @throws DelaunayError 
+         */
         private DEdge revertibleSwapping(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory) throws DelaunayError {
                 LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
                 while(!badEdges.isEmpty()){
@@ -1807,75 +1815,120 @@ public class ConstrainedMesh implements Serializable {
          * are reverted.
          * @param pt
          * @param container
+         * @param minLength
+         *      The minimum length between the new point and the point of the triangle
+         *      that is the closest to it. If this distance is less than minLength,
+         *      the point is not inserted.
          * @return
          * @throws DelaunayError 
          */
-        public final DEdge insertIfNotEncroached(final DPoint pt, DTriangle container) 
+        public final DEdge insertIfNotEncroached(final DPoint pt, DTriangle container, double minLength) 
                         throws DelaunayError{
                 if(!container.isInside(pt)){
                         throw new DelaunayError(0, "you must search for the containing triangle"
-                                + "before to proceed to the insertion.");
+                                + " before to proceed to the insertion.");
                 } 
-                LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
-                Deque<DEdge> swapMem = new LinkedList<DEdge> ();
+                if(container.isCloser(pt, minLength)){
+                        return null;
+                }
                 boolean onEdge = container.isOnAnEdge(pt);
                 DEdge ret;
                 if(onEdge){
-                        DEdge contEdge = container.getContainingEdge(pt);
-                        DTriangle left = contEdge.getLeft();
-                        DEdge memleft = null;
-                        DPoint memExt = contEdge.getEnd();
-                        //We must remember what our original data was.
-                        if(left != null){
-                                memleft = left.getOppositeEdge(contEdge.getStartPoint());
-                        }
-                        DTriangle right = contEdge.getRight();
-                        DEdge memright = null;
-                        if(right != null){
-                                memright = right.getOppositeEdge(contEdge.getStartPoint());
-                        }
-                        ret = initPointOnEdge(pt, contEdge, badEdges);
-                        if(ret != null){
-                                revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
-                        }
-                        ret = revertibleSwapping(badEdges, swapMem);
-                        if(ret != null){
-                                Iterator<DEdge> it = swapMem.descendingIterator();
-                                proceedSwaps(it);
-                                if(contEdge.getStartPoint().equals(pt)){
-                                        contEdge.swap();
-                                }
-                                revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
-                        }
+                        ret = insertOnEdgeRevertible(container, pt);
                 } else {
-                        //We must remember what our original data was.
-                        DEdge eMem0 = container.getEdge(0);
-                        DEdge eMem1 = container.getEdge(1);
-                        DEdge eMem2 = container.getEdge(2);
-                        DPoint mem = container.getOppositePoint(eMem0);
-                        ret = initPointInTriangle(pt, container, badEdges);
-                        if(ret != null){
-                                revertPointInTriangleInsertion(container, pt, mem);
-                        }
-                        //
-                        ret = revertibleSwapping(badEdges, swapMem);
-                        if(ret != null){
-                                Iterator<DEdge> it = swapMem.descendingIterator();
-                                proceedSwaps(it);
-                                if(!container.belongsTo(pt)){
-                                        //We have updated the container using eMem0
-                                        eMem0.deepSwap();
-                                }
-                                checkMemEdges(eMem1, pt, triangleList.get(triangleList.size() -1), 
-                                        triangleList.get(triangleList.size() -2));
-                                checkMemEdges(eMem2, pt, triangleList.get(triangleList.size() -1), 
-                                        triangleList.get(triangleList.size() -2));
-                                
-                                revertPointInTriangleInsertion(container, pt, mem);
-                        }
+                        ret = insertInTriangleRevertible(container, pt);
                 }
                 return ret;
                 
+        }
+        
+        /**
+         * This method performs the revertible insertion of a point on an edge of the mesh.
+         * It first remember all the elemnts that could be needed to revert all
+         * the operations.<br/>
+         * Our goal here is to fail fast : as soon as we find an encroached edge,
+         * we stop our process and we revert our operations.
+         * @param container
+         * @param pt
+         * @return
+         * @throws DelaunayError 
+         */
+        private DEdge insertOnEdgeRevertible(DTriangle container, DPoint pt) throws DelaunayError {
+                LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
+                Deque<DEdge> swapMem = new LinkedList<DEdge> ();
+                DEdge ret;
+                DEdge contEdge = container.getContainingEdge(pt);
+                DTriangle left = contEdge.getLeft();
+                DEdge memleft = null;
+                DPoint memExt = contEdge.getEnd();
+                //We must remember what our original data was.
+                if(left != null){
+                        memleft = left.getOppositeEdge(contEdge.getStartPoint());
+                }
+                DTriangle right = contEdge.getRight();
+                DEdge memright = null;
+                if(right != null){
+                        memright = right.getOppositeEdge(contEdge.getStartPoint());
+                }
+                ret = initPointOnEdge(pt, contEdge, badEdges);
+                if(ret != null){
+                        revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
+                }
+                ret = revertibleSwapping(badEdges, swapMem);
+                if(ret != null){
+                        Iterator<DEdge> it = swapMem.descendingIterator();
+                        proceedSwaps(it);
+                        if(contEdge.getStartPoint().equals(pt)){
+                                contEdge.swap();
+                        }
+                        revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
+                }
+                return ret;
+        }
+        
+        /**
+         * This method performs the revertible insertion of a point in a triangle of the mesh.
+         * It first remember all the elements that will be needed to finalize the 
+         * reversion of the insertion, and then try it.<br/>
+         * Our goal here is to fail fast : as soon as we find an encroached edge,
+         * we stop our process and we revert our operations.
+         * @param container
+         * @param pt
+         * @return
+         * @throws DelaunayError 
+         */
+        private DEdge insertInTriangleRevertible(DTriangle container, DPoint pt) throws DelaunayError{
+                LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
+                Deque<DEdge> swapMem = new LinkedList<DEdge> ();
+                DEdge ret;
+                //We must remember what our original data was.
+                DEdge eMem0 = container.getEdge(0);
+                DEdge eMem1 = container.getEdge(1);
+                DEdge eMem2 = container.getEdge(2);
+                DPoint mem = container.getOppositePoint(eMem0);
+                ret = initPointInTriangle(pt, container, badEdges);
+                if(ret != null){
+                        revertPointInTriangleInsertion(container, pt, mem);
+                        //we must stop here, that's why we've already revert our process.
+                        return ret;
+                }
+                //
+                ret = revertibleSwapping(badEdges, swapMem);
+                if(ret != null){
+                        Iterator<DEdge> it = swapMem.descendingIterator();
+                        proceedSwaps(it);
+                        if(!container.belongsTo(pt)){
+                                //We have updated the container using eMem0
+                                        eMem0.deepSwap();
+                        }
+                        checkMemEdges(eMem1, pt, triangleList.get(triangleList.size() -1), 
+                                triangleList.get(triangleList.size() -2));
+                        checkMemEdges(eMem2, pt, triangleList.get(triangleList.size() -1), 
+                                triangleList.get(triangleList.size() -2));
+
+                        revertPointInTriangleInsertion(container, pt, mem);
+                }
+                return ret;
         }
         
         /**
@@ -1919,6 +1972,9 @@ public class ConstrainedMesh implements Serializable {
                 triangleList.remove(triangleList.size()-1);
                 triangleGID--;
                 triangleGID--;
+                //Reset a unique value for the triangles equal to dt and linked to its
+                //edges.
+                forceCoherence(dt);
         }
         
         /**
@@ -1938,8 +1994,10 @@ public class ConstrainedMesh implements Serializable {
                 DTriangle left = ed.getLeft();
                 DTriangle right = ed.getRight();
                 if(triangleList.size()>1){
-                        checkMemEdges(leftLast, forget, triangleList.get(triangleList.size() -1), triangleList.get(triangleList.size() -2));
-                        checkMemEdges(rightLast, forget, triangleList.get(triangleList.size() -1), triangleList.get(triangleList.size() -2));
+                        checkMemEdges(leftLast, forget, triangleList.get(triangleList.size() -1), 
+                                triangleList.get(triangleList.size() -2));
+                        checkMemEdges(rightLast, forget, triangleList.get(triangleList.size() -1), 
+                                triangleList.get(triangleList.size() -2));
                 }
                 DPoint st;
                 //We push back the original extremity of ed.
@@ -1952,6 +2010,7 @@ public class ConstrainedMesh implements Serializable {
                         edgeGID--;
                         triangleList.remove(triangleList.size()-1);
                         triangleGID--;
+                        forceCoherence(left);
                 }
                 edges.remove(edges.size()-1);
                 edgeGID--;
@@ -1962,10 +2021,17 @@ public class ConstrainedMesh implements Serializable {
                         edgeGID--;
                         triangleList.remove(triangleList.size()-1);
                         triangleGID--;
-                        
+                        forceCoherence(right);
                 }
                 points.remove(points.size()-1);
                 pointGID--;
+        }
+        
+        private void forceCoherence(DTriangle dt ){
+                dt.forceCoherenceWithEdges();
+                for(DEdge ed : dt.getEdges()){
+                        ed.forceTriangleSide();
+                }
         }
         
         /**
@@ -2007,16 +2073,23 @@ public class ConstrainedMesh implements Serializable {
          *      The point to be inserted.
          * @param container
          *      The triangle of the mesh that contains pt.
+         * @param minLength
+         *      The minimum length between the new point and the point of the triangle
+         *      that is the closest to it. If this distance is less than minLength,
+         *      the point is not inserted.
          * @return 
          * @throws DelaunayError if pt is not inside container. If a search is needed,
          *      it must be made before trying to insert the point.
          */
-        public final void insertPointInTriangle(final DPoint pt, DTriangle container) 
+        public final void insertPointInTriangle(final DPoint pt, DTriangle container, double minLength) 
                         throws DelaunayError{
                 if(!container.isInside(pt)){
                         throw new DelaunayError(0, "you must search for the containing triangle"
                                 + "before to proceed to the insertion.");
                 } 
+                if(container.isCloser(pt, minLength)){
+                        return ;
+                }
                 LinkedList<DEdge> badEdges = new LinkedList<DEdge>();
                 boolean onEdge = container.isOnAnEdge(pt);
                 if(onEdge){
@@ -2024,7 +2097,6 @@ public class ConstrainedMesh implements Serializable {
                         initPointOnEdge(pt, contEdge, badEdges);
                         badEdgesQueueList = badEdges;
                         processBadEdges();
-                        
                 } else {
                         initPointInTriangle(pt, container, badEdges);
                         badEdgesQueueList = badEdges;
