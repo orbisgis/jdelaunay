@@ -471,7 +471,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			}
 			k++;
 		}
-
 		return isInside;
 	}
 
@@ -1275,5 +1274,20 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         public final boolean isCloser(DPoint pt, double threshold) {
                 double min = getMinSquareDistance(pt);
                 return min < threshold * threshold;
+        }
+        
+        /**
+         * This method force the link between this and its edges, and ensure that
+         * edges are not pointing to duplicates of this triangle.
+         */
+        public final void forceCoherenceWithEdges(){
+                for(DEdge edg : edges){
+                        DTriangle tri = edg.getLeft();
+                        if(tri != null && tri.equals(this)){
+                                edg.setLeft(this);
+                        } else {
+                                edg.setRight(this);
+                        }
+                }
         }
 }

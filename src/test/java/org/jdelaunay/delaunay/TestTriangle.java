@@ -940,6 +940,20 @@ public class TestTriangle extends BaseUtility {
                 assertFalse(dt.isCloser(new DPoint(1,2,0),0.5));
                 assertFalse(dt.isCloser(new DPoint(2,6,0),0.5));
                 assertFalse(dt.isCloser(new DPoint(3,1,0),0.5));
+        }
+        
+        public void testForceCoherence() throws DelaunayError {
+                DEdge ed = new DEdge(0,2,0,4,0,0);
+                DTriangle dt = new DTriangle(
+                        ed, 
+                        new DEdge(4,0,0,2,7,0), 
+                        new DEdge(2,7,0,0,2,0));
+                ed.setLeft(new DTriangle(ed, 
+                        new DEdge(4,0,0,2,7,0), 
+                        new DEdge(2,7,0,0,2,0)));
+                assertFalse(ed.getLeft()==dt);
+                dt.forceCoherenceWithEdges();
+                assertTrue(ed.getLeft()==dt);
                 
         }
 }
