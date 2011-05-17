@@ -928,4 +928,18 @@ public class TestTriangle extends BaseUtility {
                 assertEquals(dt.getMinSquareDistance(new DPoint(2,6,0)),1.0);
                 assertEquals(dt.getMinSquareDistance(new DPoint(3,1,0)),2.0);
         }
+        
+        public void testIsCloser() throws DelaunayError {
+                DTriangle dt = new DTriangle(
+                        new DEdge(0,2,0,4,0,0), 
+                        new DEdge(4,0,0,2,7,0), 
+                        new DEdge(2,7,0,0,2,0));
+                assertTrue(dt.isCloser(new DPoint(1,2,0),2));
+                assertTrue(dt.isCloser(new DPoint(2,6,0),2));
+                assertTrue(dt.isCloser(new DPoint(3,1,0),2));
+                assertFalse(dt.isCloser(new DPoint(1,2,0),0.5));
+                assertFalse(dt.isCloser(new DPoint(2,6,0),0.5));
+                assertFalse(dt.isCloser(new DPoint(3,1,0),0.5));
+                
+        }
 }

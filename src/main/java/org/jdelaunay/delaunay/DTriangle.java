@@ -1264,4 +1264,16 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 }
                 return min;
         }
+        
+        /**
+         * Returns true if the minimal distance between pt and one of the apex
+         * is smaller than threshold.
+         * @param pt
+         * @param threshold
+         * @return 
+         */
+        public final boolean isCloser(DPoint pt, double threshold) {
+                double min = getMinSquareDistance(pt);
+                return min < threshold * threshold;
+        }
 }
