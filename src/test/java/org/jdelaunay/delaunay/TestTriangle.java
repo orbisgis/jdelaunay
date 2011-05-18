@@ -954,6 +954,13 @@ public class TestTriangle extends BaseUtility {
                 assertFalse(ed.getLeft()==dt);
                 dt.forceCoherenceWithEdges();
                 assertTrue(ed.getLeft()==dt);
-                
+        }
+        
+        public void testIsSkinny() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,1,0,3,4,0),
+                        new DEdge(3,4,0,4,0,0), new DEdge(0,1,0,4,0,0));
+                assertFalse(dt.isSkinny(10));
+                dt = new DTriangle(new DEdge(0,0,0,0,1,0), new DEdge(0,1,0,10,0,0), new DEdge(10,0,0,0,0,0));
+                assertTrue(dt.isSkinny(10));
         }
 }

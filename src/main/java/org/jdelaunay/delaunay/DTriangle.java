@@ -663,6 +663,17 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		}
 		return returnedValue;
 	}
+        
+        /**
+         * Returns true if this triangle must be considered as "skinny", ie if one of
+         * its angles is smaller than tol. 
+         * @param tol
+         *      An angle measure, in degrees.
+         * @return 
+         */
+        public boolean isSkinny(double tol){
+                return badAngle(tol) != -1;
+        }
 
 	/**
 	 * check if one of the triangle's angle is less than minimum
