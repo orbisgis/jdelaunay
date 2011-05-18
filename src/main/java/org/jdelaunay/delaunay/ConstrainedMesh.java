@@ -1265,7 +1265,7 @@ public class ConstrainedMesh implements Serializable {
 	 *		The minimum length of an edge that could be inserted during the refinement.
 	 * @throws DelaunayError
 	 */
-	public final void refineMesh(double minLength) throws DelaunayError {
+	public final void refineMesh(double minLength, double minAngle) throws DelaunayError {
 		int sizeEdges = edges.size();
 		DEdge ed;
 		for(int i = 0; i< sizeEdges; i++){
@@ -1274,7 +1274,23 @@ public class ConstrainedMesh implements Serializable {
 				splitEncroachedEdge(ed, minLength);
 			}
 		}
-                
+                DTriangle dt;
+                DEdge ret;
+                LinkedList<DTriangle> mem = new LinkedList<DTriangle>();
+                while(!triangleList.isEmpty()) {
+                        dt = triangleList.get(0);
+                        if(dt.isSkinny(minAngle)){
+                                ret = insertTriangleCircumCenter(dt, true, minLength);
+                                if(ret != null){
+                                        splitEncroachedEdge(ret, minLength);
+                                } else {
+                                        mem.add(triangleList.remove(0));
+                                }
+                        }else {
+                                mem.add(triangleList.remove(0));
+                        }
+                }
+                triangleList = mem;
 	}
 
 	/**
@@ -1360,7 +1376,7 @@ public class ConstrainedMesh implements Serializable {
 			right.setEdge(indexExc, ed2);
                         right.recomputeCenter();
 			//We set the right and left triangles of each edge properly
-			ed2.setRight(left);
+			ed2.setRight(right);
 			ed2.setLeft(other2);
 			if(startOp2.isRight(middle)){
 				startOp2.setRight(other2);
@@ -1379,7 +1395,9 @@ public class ConstrainedMesh implements Serializable {
 		//We perform the filap flap operations.
 		processBadEdges();
 		//The algorithm is recursive, let's continue !
-		constraintEdges.add(secondHalf);
+                if(ed.isLocked()){
+                        constraintEdges.add(secondHalf);
+                }
 		edges.add(secondHalf);
 		if(ed.isEncroached()){
 			splitEncroachedEdge(ed, minLength);
@@ -1387,6 +1405,22 @@ public class ConstrainedMesh implements Serializable {
 		if(secondHalf.isEncroached()){
 			splitEncroachedEdge(secondHalf, minLength);
 		}
+                if(right != null){
+                        if (last2.isEncroached()){
+                                splitEncroachedEdge(last2, minLength);
+                        }
+                        if(startOp2.isEncroached()){
+                                splitEncroachedEdge(startOp2, minLength);
+                        }
+                }
+                if(left != null){
+                        if (last1.isEncroached()){
+                                splitEncroachedEdge(last1, minLength);
+                        }
+                        if(startOp1.isEncroached()){
+                                splitEncroachedEdge(startOp1, minLength);
+                        }
+                }
 	}
 
         /**
@@ -1401,6 +1435,8 @@ public class ConstrainedMesh implements Serializable {
          * @param minLength
          *      If the distance between the circumcenter and the closest point of the 
          * containing triangle is inferior to minLength, the circumcenter is not inserted.
+         * @return
+         *      The encroached edge created by this insertion, if any.
          * @throws DelaunayError 
          */
         public final DEdge insertTriangleCircumCenter(DTriangle tri, boolean revertible, double minLength) throws DelaunayError {
@@ -1959,19 +1995,13 @@ public class ConstrainedMesh implements Serializable {
                 dt.recomputeCenter();
                 //remove the point :
                 points.remove(points.size()-1);
-                pointGID--;
                 //remove the edges
                 edges.remove(edges.size()-1);
                 edges.remove(edges.size()-1);
                 edges.remove(edges.size()-1);
-                edgeGID--;
-                edgeGID--;
-                edgeGID--;
                 //remove the triangles.
                 triangleList.remove(triangleList.size()-1);
                 triangleList.remove(triangleList.size()-1);
-                triangleGID--;
-                triangleGID--;
                 //Reset a unique value for the triangles equal to dt and linked to its
                 //edges.
                 forceCoherence(dt);
@@ -2007,24 +2037,18 @@ public class ConstrainedMesh implements Serializable {
                 if(left != null){
                         rebuildTriangleOEI(left, st, leftLast);
                         edges.remove(edges.size()-1);
-                        edgeGID--;
                         triangleList.remove(triangleList.size()-1);
-                        triangleGID--;
                         forceCoherence(left);
                 }
                 edges.remove(edges.size()-1);
-                edgeGID--;
                 //If right is not null, we reset it and remove the elements added from it.
                 if(right != null ){
                         rebuildTriangleOEI(right, st, rightLast);
                         edges.remove(edges.size()-1);
-                        edgeGID--;
                         triangleList.remove(triangleList.size()-1);
-                        triangleGID--;
                         forceCoherence(right);
                 }
                 points.remove(points.size()-1);
-                pointGID--;
         }
         
         private void forceCoherence(DTriangle dt ){

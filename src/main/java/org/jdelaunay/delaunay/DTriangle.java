@@ -1294,10 +1294,20 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         public final void forceCoherenceWithEdges(){
                 for(DEdge edg : edges){
                         DTriangle tri = edg.getLeft();
-                        if(tri != null && tri.equals(this)){
+                        DTriangle tri2 = edg.getRight();
+                        if(equals(tri)){
                                 edg.setLeft(this);
-                        } else {
+                        } else if(equals(tri2)){
                                 edg.setRight(this);
+                        } else {
+                                DPoint op = getOppositePoint(edg);
+                                if(op!=null){
+                                        if(edg.isLeft(op)){
+                                                edg.setLeft(this);
+                                        } else {
+                                                edg.setRight(this);
+                                        }
+                                }
                         }
                 }
         }
