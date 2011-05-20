@@ -1190,9 +1190,10 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         /**
          * Return the triangle of the mesh that contains the center of this DTriangle.
          * @return
+         * 
          * @throws DelaunayError 
          */
-        public final DTriangle getCircumCenterContainer() throws DelaunayError{
+        public final Element getCircumCenterContainer() throws DelaunayError{
                 DPoint cc = new DPoint(getCircumCenter());
                 return searchPointContainer(cc);
         }
@@ -1203,9 +1204,12 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * @param pt
          * @param tRef
          * @return
+         *      The triangle that contains the triangle, or the last edge visited
+         *      if the point is outside the mesh.
          * @throws DelaunayError 
          */
-        public final DTriangle searchPointContainer(final DPoint pt) throws DelaunayError {
+        public final Element searchPointContainer(final DPoint pt) throws DelaunayError {
+                Element ret = null;
                 if(contains(pt)){
                         return this;
                 } else {
@@ -1215,18 +1219,19 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                                         if(ed.getRight() != null){
                                                 return ed.getRight().searchPointContainer(pt );
                                         } else {
-                                                return null;
+                                                ret = ed;
                                         }
-                                } else if(ed.isLeft(pt) && ed.isRight(op)){
+                                } 
+                                if(ed.isLeft(pt) && ed.isRight(op)){
                                         if(ed.getLeft() != null){
                                                 return ed.getLeft().searchPointContainer(pt);
                                         } else {
-                                                return null;
+                                                ret = ed;
                                         }
                                 }
                         }
                 }             
-                return null;
+                return ret;
         }
         
         /**

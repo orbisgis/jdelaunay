@@ -751,7 +751,7 @@ public class TestTriangle extends BaseUtility {
                         new DEdge(5,0,0,8,3,0), new DEdge(8,3,0,3,1,0)));
                 assertTrue(indice>=0);
                 DTriangle ref = mesh.getTriangleList().get(indice);
-                DTriangle container = ref.getCircumCenterContainer();
+                DTriangle container = (DTriangle) ref.getCircumCenterContainer();
                 assertEquals(new DTriangle(
                         new DEdge(0,3,0,3,1,0),
                         new DEdge(3,1,0,8,3,0),
@@ -760,8 +760,8 @@ public class TestTriangle extends BaseUtility {
                         new DEdge(10,6,0,10,0,0), new DEdge(10,0,0,8,3,0)));
                 assertTrue(indice>=0);
                 ref = mesh.getTriangleList().get(indice);
-                container = ref.getCircumCenterContainer();
-                assertNull(container);
+                DEdge ed = (DEdge) ref.getCircumCenterContainer();
+                assertTrue(ed.equals(new DEdge(10,0,0,10,6,0)));
         }
         
         public void testFindingCCContainerManyConstrains() throws DelaunayError {
@@ -791,8 +791,8 @@ public class TestTriangle extends BaseUtility {
                         new DEdge(12,12,0,8,7,0)));
                 assertTrue(indice>=0);
                 DTriangle ref = mesh.getTriangleList().get(indice);
-                DTriangle container = ref.getCircumCenterContainer();
-                assertNull(container);
+                DEdge container = (DEdge) ref.getCircumCenterContainer();
+                assertTrue(container.equals(new DEdge(0,3,0,12,12,0)));
         }
         
         /**
@@ -827,13 +827,13 @@ public class TestTriangle extends BaseUtility {
                         new DEdge(12,12,0,8,7,0)));
                 assertTrue(indice>=0);
                 DTriangle ref = mesh.getTriangleList().get(indice);
-                DTriangle container = ref.searchPointContainer(new DPoint(7,4,0));
+                DTriangle container = (DTriangle) ref.searchPointContainer(new DPoint(7,4,0));
                 assertEquals(new DTriangle(
                         new DEdge(8,3,0,8,7,0),
                         new DEdge(8,7,0,5,4,0),
                         new DEdge(5,4,0,8,3,0)), container);
-                container = ref.searchPointContainer(new DPoint(100,100,100));
-                assertNull(container);
+                DEdge ed =  (DEdge) ref.searchPointContainer(new DPoint(4,12,0));
+                assertTrue(ed.equals(new DEdge(0,3,0,12,12,0)));
         }
         
         public void testSteepestIntersection() throws DelaunayError {

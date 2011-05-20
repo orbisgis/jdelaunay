@@ -1441,12 +1441,15 @@ public class ConstrainedMesh implements Serializable {
          * @throws DelaunayError 
          */
         public final DEdge insertTriangleCircumCenter(DTriangle tri, boolean revertible, double minLength) throws DelaunayError {
-                DTriangle container = tri.getCircumCenterContainer();
+                Element container = tri.getCircumCenterContainer();
                 DPoint cc = new DPoint(tri.getCircumCenter());
+                if(container instanceof DEdge ){
+                        return (DEdge) container;
+                }
                 if(revertible){
-                        return insertIfNotEncroached(new DPoint(cc), container, minLength);
+                        return insertIfNotEncroached(new DPoint(cc),(DTriangle) container, minLength);
                 } else {
-                        insertPointInTriangle(new DPoint(cc), container, minLength);
+                        insertPointInTriangle(new DPoint(cc), (DTriangle) container, minLength);
                         return null;
                 }
                 
