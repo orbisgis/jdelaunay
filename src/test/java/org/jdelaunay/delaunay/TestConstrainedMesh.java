@@ -2487,4 +2487,32 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertCoherence(mesh);
                 assertGIDUnicity(mesh);
         }
+        
+        public void testRefineManyConstraints() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge constr = new DEdge(0,3,0,8,3,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(9,0,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(5,4,0,8,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(12,6,0,12,7,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,3,0,9,6,0);
+		mesh.addConstraintEdge(constr);
+		constr = new DEdge(8,7,0,12,12,0);
+		mesh.addConstraintEdge(constr);
+		mesh.addPoint(new DPoint(4,5,0));
+		mesh.addPoint(new DPoint(4,1,0));
+		mesh.addPoint(new DPoint(10,3,0));
+		mesh.addPoint(new DPoint(11,9,0));
+		mesh.processDelaunay();
+                mesh.refineMesh(1, 14);
+//                show(mesh);
+                assertTrue(true);
+                
+                
+        }
 }
