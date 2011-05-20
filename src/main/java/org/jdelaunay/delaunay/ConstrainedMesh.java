@@ -1305,6 +1305,7 @@ public class ConstrainedMesh implements Serializable {
 	final void splitEncroachedEdge(DEdge ed, double minLength) throws DelaunayError {
 		//We must try to avoid creation of new objects. Rather use getters and setters
 		//instead, as we will not be forced to use sorted sets this way.
+                badEdgesQueueList = new LinkedList<DEdge>();
 		DTriangle left = ed.getLeft();
 		DTriangle right = ed.getRight();
 		DPoint middle = ed.getMiddle();
@@ -1628,11 +1629,11 @@ public class ConstrainedMesh implements Serializable {
                                 alreadySeen.add(anEdge);
                                 // We cannot process marked edges
                                 // We check if the two triangles around the edge are ok
-                                DTriangle aTriangle1 = anEdge.getLeft();
-                                DTriangle aTriangle2 = anEdge.getRight();
                                 if (swapTriangle(anEdge)) {
                                         // Add the triangle's edges to the bad edges list
                                         LinkedList<DEdge> others = new LinkedList<DEdge>();
+                                        DTriangle aTriangle1 = anEdge.getLeft();
+                                        DTriangle aTriangle2 = anEdge.getRight();
                                         others.add(aTriangle1.getOppositeEdge(anEdge.getStartPoint()));
                                         others.add(aTriangle1.getOppositeEdge(anEdge.getEndPoint()));
                                         others.add(aTriangle2.getOppositeEdge(anEdge.getStartPoint()));
@@ -1894,6 +1895,11 @@ public class ConstrainedMesh implements Serializable {
                 Deque<DEdge> swapMem = new LinkedList<DEdge> ();
                 DEdge ret;
                 DEdge contEdge = container.getContainingEdge(pt);
+                //if contEdge is a border or a constraint, we return it as it would be 
+                //necessary encroached by the insertion. This way, we avoid useless complicated tests.
+                if(contEdge.isLocked() || contEdge.getLeft()==null || contEdge.getRight() == null){
+                        return contEdge;
+                }
                 DTriangle left = contEdge.getLeft();
                 DEdge memleft = null;
                 DPoint memExt = contEdge.getEnd();
@@ -1906,11 +1912,17 @@ public class ConstrainedMesh implements Serializable {
                 if(right != null){
                         memright = right.getOppositeEdge(contEdge.getStartPoint());
                 }
+                //We make the first step : insertion of the point on the edge.
                 ret = initPointOnEdge(pt, contEdge, badEdges);
+                //If the returned value is not null, we come back.
                 if(ret != null){
                         revertPointOnEdgeInsertion(contEdge, pt, memExt, memleft, memright);
+                        //We can return here, as we've already found en encroached edge.
+                        return ret;
                 }
+                //Second step : we proceed to our revertible swap.
                 ret = revertibleSwapping(badEdges, swapMem);
+                //If the returned value is not null, we come back.
                 if(ret != null){
                         Iterator<DEdge> it = swapMem.descendingIterator();
                         proceedSwaps(it);
@@ -1944,7 +1956,7 @@ public class ConstrainedMesh implements Serializable {
                 DPoint mem = container.getOppositePoint(eMem0);
                 ret = initPointInTriangle(pt, container, badEdges);
                 if(ret != null){
-                        revertPointInTriangleInsertion(container, pt, mem);
+                        revertPointInTriangleInsertion(container, pt, mem, eMem1, eMem2);
                         //we must stop here, that's why we've already revert our process.
                         return ret;
                 }
@@ -1962,7 +1974,7 @@ public class ConstrainedMesh implements Serializable {
                         checkMemEdges(eMem2, pt, triangleList.get(triangleList.size() -1), 
                                 triangleList.get(triangleList.size() -2));
 
-                        revertPointInTriangleInsertion(container, pt, mem);
+                        revertPointInTriangleInsertion(container, pt, mem, eMem1, eMem2);
                 }
                 return ret;
         }
@@ -1977,20 +1989,18 @@ public class ConstrainedMesh implements Serializable {
          * @param forget
          * @param apex 
          */
-        final void revertPointInTriangleInsertion(DTriangle dt, DPoint forget, DPoint apex)
+        final void revertPointInTriangleInsertion(DTriangle dt, DPoint forget, DPoint apex, DEdge o1, DEdge o2)
                         throws DelaunayError {
                 DEdge perm = dt.getOppositeEdge(forget);
                 DEdge mod = dt.getOppositeEdge(perm.getStartPoint());
-                if(forget.equals(mod.getStartPoint())){
-                        mod.setStartPoint(apex);
+                int index = dt.getEdgeIndex(mod);
+                int index2 = dt.getEdgeIndex(dt.getOppositeEdge(perm.getEndPoint()));
+                if(o1.contains(perm.getStartPoint())){
+                        dt.setEdge(index, o2);
+                        dt.setEdge(index2, o1);
                 } else {
-                        mod.setEndPoint(apex);
-                }
-                mod = dt.getOppositeEdge(perm.getEndPoint());
-                if(forget.equals(mod.getStartPoint())){
-                        mod.setStartPoint(apex);
-                } else {
-                        mod.setEndPoint(apex);
+                        dt.setEdge(index, o1);
+                        dt.setEdge(index2, o2);
                 }
                 dt.recomputeCenter();
                 //remove the point :

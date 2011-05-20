@@ -33,7 +33,6 @@ package org.jdelaunay.delaunay;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class checks that the constrained triangulation is well performed.
@@ -2032,7 +2031,7 @@ public class TestConstrainedMesh extends BaseUtility {
                         pt = pt3;
                 }
                 //We revert our insertion here.
-                mesh.revertPointInTriangleInsertion(tri, new DPoint(3,2,0), pt);
+                mesh.revertPointInTriangleInsertion(tri, new DPoint(3,2,0), pt, e1, e3);
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==1);
                 assertEquals(new DTriangle(
@@ -2054,10 +2053,13 @@ public class TestConstrainedMesh extends BaseUtility {
                 DTriangle dt = mesh.getTriangleList().get(0);
                 DEdge ed = dt.getEdge(0);
                 assertTrue(ed.getLeft() == dt || ed.getRight()==dt);
+                assertTrue(ed == e1 || ed == e2 || ed == e3);
                 ed = dt.getEdge(2);
                 assertTrue(ed.getLeft() == dt || ed.getRight()==dt);
+                assertTrue(ed == e1 || ed == e2 || ed == e3);
                 ed = dt.getEdge(1);
                 assertTrue(ed.getLeft() == dt || ed.getRight()==dt);
+                assertTrue(ed == e1 || ed == e2 || ed == e3);
                 
         } 
         
@@ -2411,7 +2413,7 @@ public class TestConstrainedMesh extends BaseUtility {
         }
         
         
-        public void testRefinementManyConstraints() throws DelaunayError {
+        public void testRefinementThreeConstraints() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		DEdge constr = new DEdge(4,0,0,4,6,0);
 		mesh.addConstraintEdge(constr);
@@ -2421,17 +2423,25 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(constr);
 		mesh.processDelaunay();
                 List<DEdge> edges = mesh.getEdges();
-//		int sizeEdges = edges.size();
-//		DEdge ed;
-//		for(int i = 0; i< sizeEdges; i++){
-//			ed = edges.get(i);
-//			if(ed.isEncroached()){
-//				mesh.splitEncroachedEdge(ed, 0.1);
-//			}
-//		}
-                
                 mesh.refineMesh(0.01, 15);
-                assertTrue(true);
+//                show(mesh);
+                List<DEdge> cons = mesh.getConstraintEdges();
+                edges = mesh.getEdges();
+                for(DEdge ed : cons){
+                        int ind = edges.indexOf(ed);
+                        //To avoid any surprise about references, we make an affressive
+                        //check here
+                        assertTrue(ind>=0);
+                        assertTrue(ed == edges.get(ind));
+                }
+                assertTrue(cons.size()==7);
+                assertTrue(cons.contains(new DEdge(0,2,0,1.5,4.5,0)));
+                assertTrue(cons.contains(new DEdge(1.5,4.5,0,3,7,0)));
+                assertTrue(cons.contains(new DEdge(3,7,0,4,6.75,0)));
+                assertTrue(cons.contains(new DEdge(4,6.75,0,5,6.5,0)));
+                assertTrue(cons.contains(new DEdge(5,6.5,0,7,6,0)));
+                assertTrue(cons.contains(new DEdge(4,0,0,4,3,0)));
+                assertTrue(cons.contains(new DEdge(4,3,0,4,6,0)));
                 List<DTriangle> tris = mesh.getTriangleList();
                 assertTrue(tris.size()==10);
                 assertTrue(tris.contains(new DTriangle(
