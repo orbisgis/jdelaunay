@@ -671,7 +671,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          *      An angle measure, in degrees.
          * @return 
          */
-        public boolean isSkinny(double tol){
+        public final boolean isSkinny(double tol){
                 return badAngle(tol) != -1;
         }
 

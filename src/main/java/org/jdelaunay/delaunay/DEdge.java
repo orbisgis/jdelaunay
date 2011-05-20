@@ -1134,16 +1134,34 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			other = left.getOppositePoint(this);
 			if(other.squareDistance2D(middle)<length){
 				return true;
-			}
-		}
+                        }
+                }
 		if(right!=null){
 			other = right.getOppositePoint(this);
 			if(other.squareDistance2D(middle)<length){
 				return true;
-			}
-		}
-		return false;
+                        }
+                }
+                return false;        
 	}
+        
+        /**
+         * Test if this edge is encroached by the given point.
+         * @param pt
+         * @return
+         * @throws DelaunayError 
+         */
+        public final boolean isEncroachedBy(DPoint pt) throws DelaunayError {
+		if(!isLocked() && left != null && right != null){
+			return false;
+		}
+		DPoint middle = getMiddle();
+		double length = getSquared2DLength()/4.0;
+                if(pt.squareDistance2D(middle)<length){
+                        return true;
+                }
+                return false;
+        }
 
 	/**
 	 * Swap the 2 points of the edge

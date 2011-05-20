@@ -531,6 +531,12 @@ public class TestEdges extends BaseUtility {
 		DTriangle t2 = new DTriangle(e3, e4, e5);
 		assertTrue(e3.isEncroached());
 	}
+        
+        public void testIsEncroachedBy() throws DelaunayError {
+                DEdge ed = new DEdge(0,3,0,8,3,0);
+                assertFalse(ed.isEncroachedBy(new DPoint(0,2,0)));
+                assertTrue(ed.isEncroachedBy(new DPoint(4,4,0)));
+        }
 
 	public void testNotSeenOverlap() throws DelaunayError {
 		DEdge e2 = new DEdge (311785.4, 2251488.2, 25.7, 311792.0, 2251487.1, 25.9);
