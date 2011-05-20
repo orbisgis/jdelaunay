@@ -1281,7 +1281,7 @@ public class ConstrainedMesh implements Serializable {
                         dt = triangleList.get(0);
                         if(dt.isSkinny(minAngle)){
                                 ret = insertTriangleCircumCenter(dt, true, minLength);
-                                if(ret != null){
+                                if(ret != null && ret.get2DLength()<2*minLength){
                                         splitEncroachedEdge(ret, minLength);
                                 } else {
                                         mem.add(triangleList.remove(0));
