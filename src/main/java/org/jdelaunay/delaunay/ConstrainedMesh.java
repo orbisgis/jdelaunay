@@ -832,6 +832,7 @@ public class ConstrainedMesh implements Serializable {
 								throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_REMOVING_EDGE);
 							}
 							j--;
+							inter2 = edgeEvent;
 							if (leftMost.compareTo2D(newEvent) == -1) {
 								inter1 = new DEdge(leftMost, newEvent);
 								if(e1.getPointLeft().equals(leftMost)){
@@ -840,7 +841,6 @@ public class ConstrainedMesh implements Serializable {
 									inter2.addProperty(e2.getProperty());
 								}
 							}
-							inter2 = edgeEvent;
 							inter2.addProperty(e1.getProperty());
 							inter2.addProperty(e2.getProperty());
 							if (rightMost.compareTo2D(edgeEvent.getPointRight()) == 1) {
@@ -1281,7 +1281,7 @@ public class ConstrainedMesh implements Serializable {
                         dt = triangleList.get(0);
                         if(dt.isSkinny(minAngle)){
                                 ret = insertTriangleCircumCenter(dt, true, minLength);
-                                if(ret != null && ret.get2DLength()<2*minLength){
+                                if(ret != null && ret.get2DLength()>2*minLength){
                                         splitEncroachedEdge(ret, minLength);
                                 } else {
                                         mem.add(triangleList.remove(0));
