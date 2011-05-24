@@ -44,7 +44,7 @@ public class TestEdges extends BaseUtility {
 	 * test that  getPointfromItsX retrieves the points of absciss X from the
 	 * line associated to the edge
 	 */
-	public void testGetPointsFromX() {
+	public void testGetPointsFromX()  throws DelaunayError{
 		DEdge e = new DEdge(0,0,0,1,1,1);
 		DEdge e2 = new DEdge(0,0,0,0,10,0);
 		try{
@@ -280,7 +280,7 @@ public class TestEdges extends BaseUtility {
 	/**
 	 * Checks whether edges are vertical or not.
 	 */
-	public void testVertical(){
+	public void testVertical() throws DelaunayError{
 		DEdge e1 = new DEdge(14.815045543900215,70.25119472533194,33.92748531499323,14.815093546085139,70.25101901938166,33.92739651606882);
 		assertFalse(e1.isVertical());
 
@@ -451,7 +451,7 @@ public class TestEdges extends BaseUtility {
 		assertTrue(pt.equals(ed.getBarycenter()));
 	}
 
-	public void testShared(){
+	public void testShared() throws DelaunayError{
 		DEdge ed = new DEdge(0,0,0,2,2,0);
 		assertFalse(ed.isShared());
 		ed.setShared(true);

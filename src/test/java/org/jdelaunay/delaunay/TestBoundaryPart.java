@@ -44,7 +44,7 @@ public class TestBoundaryPart extends BaseUtility {
 	/**
 	 * test if a boundary part can bee right next another one in the boundary.
 	 */
-	public void testCanBeNext(){
+	public void testCanBeNext() throws DelaunayError{
 		BoundaryPart bp1 = new BoundaryPart(new DEdge(0,0,0,2,2,0));
 		List<DEdge> be = new ArrayList<DEdge>();
 		be.add(new DEdge(0,0,0,1,4,0));
@@ -499,7 +499,7 @@ public class TestBoundaryPart extends BaseUtility {
 	/**
 	 * Simple test that checks we can't have a null boundaryEdges list.
 	 */
-	public void testSetNullBoundaries(){
+	public void testSetNullBoundaries() throws DelaunayError{
 		BoundaryPart part = new BoundaryPart(new DEdge(0,0,0,1,1,0));
 		part.setBoundaryEdges(null);
 		LinkedList<DEdge>  edg = (LinkedList) part.getBoundaryEdges();

@@ -1086,7 +1086,7 @@ public class TestBoundary extends BaseUtility {
 	 * Get a boundary ready to be tested.
 	 * @return
 	 */
-	private Boundary getExampleBoundary(){
+	private Boundary getExampleBoundary() throws DelaunayError{
 		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
 		BoundaryPart bp;
 		DEdge cstr;
@@ -1157,7 +1157,7 @@ public class TestBoundary extends BaseUtility {
 	 * Get a boundary ready to be tested.
 	 * @return
 	 */
-	private Boundary getExampleboundaryBis(){
+	private Boundary getExampleboundaryBis() throws DelaunayError{
 		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
 		BoundaryPart bp;
 		DEdge cstr;
@@ -1215,7 +1215,7 @@ public class TestBoundary extends BaseUtility {
 	 * Get a boundary ready to be tested.
 	 * @return
 	 */
-	private Boundary getExampleDegenEdges(){
+	private Boundary getExampleDegenEdges() throws DelaunayError{
 		List<BoundaryPart> bpl = new ArrayList<BoundaryPart>();
 		BoundaryPart bp;
 		DEdge cstr;

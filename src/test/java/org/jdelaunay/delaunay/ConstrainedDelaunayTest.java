@@ -868,7 +868,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	/**
 	 * Test that the methods who checks that a list is vertically sorted works well
 	 */
-	public void testIsVerticallySorted(){
+	public void testIsVerticallySorted() throws DelaunayError{
 		List<DEdge> list = new ArrayList<DEdge>();
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		list.add(new DEdge(0,0,0,2,2,2));
@@ -1260,7 +1260,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	 * @param number
 	 * @return
 	 */
-	private List<DEdge> getRandomEdges(int number){
+	private List<DEdge> getRandomEdges(int number) throws DelaunayError{
 		ArrayList<DEdge> retList = new ArrayList<DEdge>();
 		int num = (number < 0 ? -number : number);
 		for(int i=0; i<num; i++){
