@@ -43,7 +43,7 @@ public class SkinnyEvaluator implements InsertionEvaluator {
          * algorithm won't end for angles superior to this value, such values are 
          * forbidden.
          */
-        public final double MAX_VALUE = 32;
+        public final static double MAX_VALUE = 32;
         private double minAngle;
 
         /**
@@ -68,7 +68,7 @@ public class SkinnyEvaluator implements InsertionEvaluator {
          * @return 
          *      The angle limit, in degrees.
          */
-        public double getMinAngle() {
+        public final double getMinAngle() {
                 return minAngle;
         }
 
@@ -80,7 +80,7 @@ public class SkinnyEvaluator implements InsertionEvaluator {
          * @throws IllegalArgumentException
          *      if minAngle is greater than 32° or inferior to 0°
          */
-        public void setMinAngle(double minAngle) {
+        public final void setMinAngle(double minAngle) {
                 if(minAngle > MAX_VALUE){
                         throw new IllegalArgumentException("you can't use threshold values greater than 32°");
                 }
@@ -91,7 +91,7 @@ public class SkinnyEvaluator implements InsertionEvaluator {
         }
         
         @Override
-        public boolean evaluate(DTriangle dt) {
+        public final boolean evaluate(DTriangle dt) {
                 throw new UnsupportedOperationException("Not supported yet.");
         }
         
