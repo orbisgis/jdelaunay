@@ -712,4 +712,13 @@ public class TestEdges extends BaseUtility {
                 DEdge e1 = new DEdge(0,0,0,4,0,0);
                 assertEquals(e1.getSlopeAspect(), 90.0, 0.0001);
         }
+        
+        public void testColinearityCoherence() throws DelaunayError {
+                DEdge ed = new DEdge(0,0,0,4,0,0);
+                double add = 0.0000000001;
+                for(int i =0; i<11; i++){
+                        DPoint pt = new DPoint(5,add * i,0);
+                        assertTrue(ed.isColinear(pt) == !ed.isLeft(pt));
+                }
+        }
 }

@@ -1092,7 +1092,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(mesh.getConstraintEdges().size()==3);
 		mesh.processDelaunay();
 //		show(mesh);
-		assertTrue(mesh.getTriangleList().size()==3);
+		assertTrue(mesh.getTriangleList().size()==2);
 		
 	}
 

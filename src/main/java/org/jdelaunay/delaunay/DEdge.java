@@ -929,7 +929,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		double a2 = p2.getY() - p1.getY();
 		double c2 = p.getY() - p1.getY();
 		double t = a1 * c2 - a2 * c1;
-		if (Math.abs(t) < Tools.EPSILON2) {
+		if (Math.abs(t) < Tools.EPSILON) {
 			isColinear2D = true;
 		}
 
@@ -957,7 +957,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		double t1 = a1 * c2 - a2 * c1;
 		double t2 = a1 * c3 - a3 * c1;
 		double t3 = a3 * c2 - a2 * c3;
-		if ((Math.abs(t1) < Tools.EPSILON2) && (Math.abs(t2) < Tools.EPSILON2) && (Math.abs(t3) < Tools.EPSILON2)) {
+		if ((Math.abs(t1) < Tools.EPSILON) && (Math.abs(t2) < Tools.EPSILON) && (Math.abs(t3) < Tools.EPSILON)) {
 			isColinear = true;
 		}
 
@@ -999,7 +999,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		double vx = p.getX() - this.startPoint.getX();
 		double vy = p.getY() - this.startPoint.getY();
 
-		return ux * vy - uy * vx > 0;
+		return ux * vy - uy * vx > Tools.EPSILON;
 	}
 
 	/**
@@ -1014,7 +1014,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		double vx = p.getX() - this.startPoint.getX();
 		double vy = p.getY() - this.startPoint.getY();
 
-		return ux * vy - uy * vx < 0;
+		return ux * vy - uy * vx < -Tools.EPSILON;
 	}
 
 	/**

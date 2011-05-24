@@ -31,6 +31,7 @@
 
 package org.jdelaunay.delaunay;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -1171,7 +1172,7 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.forceConstraintIntegrity();
 		mesh.processDelaunay();
 //		show(mesh);
-		assertTrue(mesh.getTriangleList().size()==4);
+		assertTrue(mesh.getTriangleList().size()==3);
 		assertTrue(mesh.getConstraintEdges().size()==4);
 		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311784.2, 2251488.4, 25.7,311785.4, 2251488.2, 25.7)));
 		assertTrue(mesh.getConstraintEdges().contains(new DEdge(311785.4, 2251488.2, 25.7,311792.0, 2251487.1, 25.9)));
@@ -2514,5 +2515,30 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(true);
                 
                 
+        }
+        
+        public void testConstraintsSound() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(306585,2251427,0));
+                DEdge ed = new DEdge (306587.10275431135, 2251422.3385208487, 0.0, 306592.04039404186, 2251422.017777558, 0.0);
+                List<Double> ds= new ArrayList<Double>();
+                ds.add((ed.getEndPoint().getY()-ed.getStartPoint().getY())/(ed.getEndPoint().getX()-ed.getStartPoint().getX()));
+                mesh.addConstraintEdge(ed);
+                ed = new DEdge (306587.26591558, 2251423.94937276, 0.0, 306587.65842925466, 2251428.8153878693, 0.0);
+                ds.add((ed.getEndPoint().getY()-ed.getStartPoint().getY())/(ed.getEndPoint().getX()-ed.getStartPoint().getX()));
+                mesh.addConstraintEdge(ed);
+                ed=new DEdge (306587.65842925466, 2251428.8153878693, 0.0, 306588.0509429294, 2251433.681402979, 0.0);
+                ds.add((ed.getEndPoint().getY()-ed.getStartPoint().getY())/(ed.getEndPoint().getX()-ed.getStartPoint().getX()));
+                mesh.addConstraintEdge(ed);
+                ed = new DEdge (306588.4434566041, 2251438.547418088, 0.0, 306588.83597027883, 2251443.4134331974, 0.0);
+                ds.add((ed.getEndPoint().getY()-ed.getStartPoint().getY())/(ed.getEndPoint().getX()-ed.getStartPoint().getX()));
+                mesh.addConstraintEdge(ed);
+//                try{
+                mesh.processDelaunay();
+//                }catch (Exception e){
+//                        
+//                }
+//                show(mesh);
+                assertTrue(true);
         }
 }
