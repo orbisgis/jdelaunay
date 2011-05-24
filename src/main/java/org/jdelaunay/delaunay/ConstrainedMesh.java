@@ -1260,8 +1260,12 @@ public class ConstrainedMesh implements Serializable {
 	 * @param minLength
 	 *		The minimum length of an edge that could be inserted during the refinement.
 	 * @throws DelaunayError
+         * @throws IllegalArgumentException if <code>minLength</code> is inferior or equal to 0
 	 */
 	public final void refineMesh(double minLength, double minAngle) throws DelaunayError {
+                if(minLength <=0){
+                        throw new IllegalArgumentException("The minimum length must be strictly positive !");
+                }
 		int sizeEdges = edges.size();
 		DEdge ed;
 		for(int i = 0; i< sizeEdges; i++){

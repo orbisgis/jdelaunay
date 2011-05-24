@@ -2533,12 +2533,22 @@ public class TestConstrainedMesh extends BaseUtility {
                 ed = new DEdge (306588.4434566041, 2251438.547418088, 0.0, 306588.83597027883, 2251443.4134331974, 0.0);
                 ds.add((ed.getEndPoint().getY()-ed.getStartPoint().getY())/(ed.getEndPoint().getX()-ed.getStartPoint().getX()));
                 mesh.addConstraintEdge(ed);
-//                try{
                 mesh.processDelaunay();
-//                }catch (Exception e){
-//                        
-//                }
-//                show(mesh);
                 assertTrue(true);
+        }
+        
+        public void testRefinementException() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,0,0));
+                mesh.addPoint(new DPoint(3,0,0));
+                mesh.addPoint(new DPoint(0,3,0));
+                mesh.processDelaunay();
+                try {
+                        mesh.refineMesh(-20, 15);
+                        assertTrue(false);
+                } catch (IllegalArgumentException e) {
+                        assertTrue(true);
+                }
+                
         }
 }
