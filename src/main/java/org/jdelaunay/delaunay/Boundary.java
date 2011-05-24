@@ -120,7 +120,8 @@ final class Boundary {
 	 */
         List<DTriangle> insertPoint(final DPoint pt, final List<DEdge> constraints) throws DelaunayError {
 		if(constraints != null && !constraints.isEmpty() && !pt.equals(constraints.get(0).getPointLeft())){
-			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT, "the point and the constraint do not match.");
+			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_CAN_NOT_CONNECT_POINT, 
+                                "the point and the constraint do not match.");
 		}
 		List<Integer> indices = getEligibleParts(pt);
 		if(indices.isEmpty()){
@@ -282,7 +283,7 @@ final class Boundary {
         }
 
 	/**
-	 *
+	 * Insert a point in the mesh, without any constraint linked to it.
 	 * @param point
 	 * @param constraint
 	 * @return
@@ -293,7 +294,8 @@ final class Boundary {
 	}
 
 	/**
-	 * 
+	 * Retrieve the parts of the boundary that can be used for the insertion of 
+         * the <code>DPoint</code> point.
 	 * @param point
 	 * @return
 	 */
@@ -306,7 +308,7 @@ final class Boundary {
 				//we are going to add a new Boundary Part to the boundary.
 				ret.add(-1);
 			}else {
-				//We can work avec the boundary part that already exists.
+				//We can work with the boundary part that already exists.
 				ret.add(0);
 			}
 			return ret;

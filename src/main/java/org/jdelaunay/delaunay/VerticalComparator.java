@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 public class VerticalComparator implements Comparator<DEdge>, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static Logger log = Logger.getLogger(VerticalComparator.class);
+	private static Logger LOG = Logger.getLogger(VerticalComparator.class);
 
 	//The absciss where we are going to make the comparison.
 	private double abs;
@@ -102,7 +102,7 @@ public class VerticalComparator implements Comparator<DEdge>, Serializable {
 			pEdge1 = edge1.getPointFromItsX(abs);
 			pEdge2 = edge2.getPointFromItsX(abs);
 		} catch (DelaunayError e){
-			log.error("Problem while processing the points from their absciss !");
+			LOG.error("Problem while processing the points from their absciss !");
 		}
 		if (pEdge1 == null || pEdge2 == null) {
 			c=-2;

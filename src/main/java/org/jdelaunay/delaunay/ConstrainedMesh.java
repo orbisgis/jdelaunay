@@ -70,7 +70,7 @@ import org.apache.log4j.Logger;
 public class ConstrainedMesh implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static Logger log = Logger.getLogger(ConstrainedMesh.class);
+	private static Logger LOG = Logger.getLogger(ConstrainedMesh.class);
 	//The list of triangles during the triangulation process.
 	//This list is sorted by using the implementation of Comparable in
 	//DTriangle.
@@ -1042,7 +1042,7 @@ public class ConstrainedMesh implements Serializable {
 					return false;
 				}
 			} catch (DelaunayError e) {
-				log.error(e.getCause());
+				LOG.error(e.getCause());
 			}
 		}
 		return true;
@@ -1162,7 +1162,7 @@ public class ConstrainedMesh implements Serializable {
 
 			// sort points
 			if (verbose) {
-				log.trace("Getting points");
+				LOG.trace("Getting points");
 			}
 			ListIterator<DPoint> iterPoint = points.listIterator();
 
@@ -1202,11 +1202,11 @@ public class ConstrainedMesh implements Serializable {
 
 			// It's fine, we computed the mesh
 			if (verbose) {
-				log.trace("End processing");
-				log.trace("Triangularization end phase : ");
-				log.trace("  Points : " + points.size());
-				log.trace("  Edges : " + edges.size());
-				log.trace("  Triangles : " + triangleList.size());
+				LOG.trace("End processing");
+				LOG.trace("Triangularization end phase : ");
+				LOG.trace("  Points : " + points.size());
+				LOG.trace("  Edges : " + edges.size());
+				LOG.trace("  Triangles : " + triangleList.size());
 			}
 		}
 	}
@@ -1802,22 +1802,22 @@ public class ConstrainedMesh implements Serializable {
 
         /**
          * remove edges from a list of points using equivalences in ReplacePoints
-         * @param ReplacePoints
+         * @param replacePoints
          * @param theList
          */
-        private void changeUnqualifiedEdges(HashMap<DPoint, DPoint> ReplacePoints, List<DEdge> theList) {
+        private void changeUnqualifiedEdges(HashMap<DPoint, DPoint> replacePoints, List<DEdge> theList) {
                 ArrayList<DEdge> EdgeToRemove = new ArrayList<DEdge>();
                 for (DEdge anEdge : theList) {
                         DPoint aPoint1 = anEdge.getStartPoint();
                         DPoint replaced1 = aPoint1;
-                        if (ReplacePoints.containsKey(aPoint1)) {
-                                replaced1 = ReplacePoints.get(aPoint1);
+                        if (replacePoints.containsKey(aPoint1)) {
+                                replaced1 = replacePoints.get(aPoint1);
                                 anEdge.setStartPoint(replaced1);
                         }
                         DPoint aPoint2 = anEdge.getEndPoint();
                         DPoint replaced2 = aPoint2;
-                        if (ReplacePoints.containsKey(aPoint2)) {
-                                replaced2 = ReplacePoints.get(aPoint2);
+                        if (replacePoints.containsKey(aPoint2)) {
+                                replaced2 = replacePoints.get(aPoint2);
                                 anEdge.setEndPoint(replaced2);
                         }
                         // Ensure the two points are not equal
@@ -2317,7 +2317,7 @@ public class ConstrainedMesh implements Serializable {
         public final void dataQualification(double epsilon) throws DelaunayError {
                 if (isMeshComputed()) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
-                } else if ((points == null) || (edges == null) || (constraintEdges == null) || (polygons == null)) {
+                } else if (points == null || edges == null || constraintEdges == null || polygons == null) {
                         throw new DelaunayError("Structures not defined");
                 } else if (epsilon <= 0) {
                         throw new DelaunayError("Epsilon must be positive");
@@ -2458,7 +2458,7 @@ public class ConstrainedMesh implements Serializable {
 				}
 			}
 		} catch (RuntimeException e) {
-			log.warn("Problem during rendering\n", e);
+			LOG.warn("Problem during rendering\n", e);
 		}
 	}
 	

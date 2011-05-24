@@ -62,7 +62,7 @@ import org.apache.log4j.Logger;
 public class DEdge extends Element implements Comparable<DEdge> {
 
 	//The logger supposed to report errors to the user.
-	private static Logger log = Logger.getLogger(DEdge.class);
+	private static Logger LOG = Logger.getLogger(DEdge.class);
 	/**
 	 * 
 	 */
@@ -184,7 +184,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			this.startPoint = p1;
 			this.endPoint = p2;
 		} catch (DelaunayError d) {
-			log.error("A problem occured while building the points " + d.getMessage());
+			LOG.error("A problem occured while building the points " + d.getMessage());
 		}
 	}
 

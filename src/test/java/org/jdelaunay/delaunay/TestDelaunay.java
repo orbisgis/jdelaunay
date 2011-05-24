@@ -107,19 +107,42 @@ public class TestDelaunay extends BaseUtility {
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.setPrecision(1.0e-3);
 		mesh.setVerbose(true);
-
 		ArrayList<DPoint> pts = new ArrayList<DPoint>();
                 pts.add(new DPoint(0,0,0));
+                pts.add(new DPoint(0.000001,0,0));
                 pts.add(new DPoint(1,0,0));
                 pts.add(new DPoint(1,1,0));
                 pts.add(new DPoint(0,1,0));
-		int ptsSize = pts.size();
-
 		mesh.setPoints(pts);
-                mesh.dataQualification(1.0e-5);
-
-		assertTrue(mesh.getPoints().size() == ptsSize);
+                mesh.dataQualification(1.0e-3);
+		assertTrue(mesh.getPoints().size() == 4);
 	}
+        
+        public void testDataQualificationExc() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		mesh.setPrecision(1.0e-3);
+		mesh.setVerbose(true);
+		ArrayList<DPoint> pts = new ArrayList<DPoint>();
+                pts.add(new DPoint(0,0,0));
+                pts.add(new DPoint(0.000001,0,0));
+                pts.add(new DPoint(1,0,0));
+                pts.add(new DPoint(1,1,0));
+                pts.add(new DPoint(0,1,0));
+		mesh.setPoints(pts);
+                try{
+                        mesh.dataQualification(-1.0e-3);
+                        assertTrue(false);
+                } catch(DelaunayError d){
+                        assertTrue(true);
+                }
+                mesh.processDelaunay();
+                try{
+                        mesh.dataQualification(1.0e-3);
+                        assertFalse(true);
+                } catch(DelaunayError d){
+                        assertTrue(true);
+                }
+        }
 
 	/**
 	 * Test points not at the same location in 2D / epsilon
