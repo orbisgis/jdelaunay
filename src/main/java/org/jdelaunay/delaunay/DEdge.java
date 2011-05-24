@@ -793,18 +793,16 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @return Z coordinate of point p on the edge.
 	 */
 	public final double getZOnEdge(DPoint p) {
+                if(!isOnEdge(p)){
+                        return Double.NaN;
+                }
 		DPoint p1 = this.startPoint;
 		DPoint p2 = this.endPoint;
-
-		if (p2.getX() == p1.getX()) {
-			return ((p2.getX() - p.getX()) * (p2.getZ() - p1.getZ())) / (p2.getX() - p1.getX());
+		if (Math.abs(p2.getX()-p1.getX())<Tools.EPSILON) {
+			return (p2.getY() - p.getY()) * (p2.getZ() - p1.getZ()) / (p2.getY() - p1.getY());
+		} else {
+			return (p2.getX() - p.getX()) * (p2.getZ() - p1.getZ()) / (p2.getX() - p1.getX());
 		}
-
-		if (p2.getY() == p1.getY()) {
-			return ((p2.getY() - p.getY()) * (p2.getZ() - p1.getZ())) / (p2.getY() - p1.getY());
-		}
-
-		return p1.getZ();
 	}
 
 	/**

@@ -40,6 +40,34 @@ import java.util.HashMap;
  */
 public class TestEdges extends BaseUtility {
 
+        public void testAlternativeConstructor() throws DelaunayError {
+              DEdge e1 = new DEdge(0,0,0,5,3,0);
+              e1.setProperty(665);
+              e1.setLocked(true);
+              DEdge e2 = new DEdge(e1);
+              assertTrue(e2.equals(new DEdge(0,0,0,5,3,0)));
+              assertTrue(e2.isLocked());
+              assertTrue(e2.getProperty()==665);
+        }
+        
+        /**
+         * Some tests related to the getZOnEdge method
+         * @throws DelaunayError 
+         */
+        public void testZInterpolation() throws DelaunayError {
+                DEdge e1 = new DEdge(0,0,0,6,0,6);
+                double ret = e1.getZOnEdge(new DPoint(3,0,0));
+                assertEquals(3.0, ret);
+                e1 = new DEdge(0,0,0,6,6,6);
+                ret = e1.getZOnEdge(new DPoint(3,3,0));
+                assertEquals(3.0, ret);
+                e1 = new DEdge(0,0,0,0,6,6);
+                ret = e1.getZOnEdge(new DPoint(0,3,0));
+                assertEquals(3.0, ret);
+                ret = e1.getZOnEdge(new DPoint(3,3,0));
+                assertTrue(Double.isNaN(ret));
+        }
+        
 	/**
 	 * test that  getPointfromItsX retrieves the points of absciss X from the
 	 * line associated to the edge
