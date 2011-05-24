@@ -1255,6 +1255,44 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 	}
         
+        /**
+         * The mesh instance is supposed to throws exceptions in some cases, when 
+         * there are not enough points to process the triangulation, and when 
+         * the triangulation has already been done.
+         * @throws DelaunayError 
+         */
+        public void testFailDelaunayProcessing() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                try {
+                        mesh.processDelaunay();
+                        assertTrue(false);
+                } catch (DelaunayError e) {
+                        assertTrue(true);
+                }
+                mesh.addPoint(new DPoint(0,0,0));
+                try {
+                        mesh.processDelaunay();
+                        assertTrue(false);
+                } catch (DelaunayError e) {
+                        assertTrue(true);
+                }
+                mesh.addPoint(new DPoint(10,0,0));
+                try {
+                        mesh.processDelaunay();
+                        assertTrue(false);
+                } catch (DelaunayError e) {
+                        assertTrue(true);
+                }
+                mesh.addPoint(new DPoint(0,10,0));
+                mesh.processDelaunay();
+                try {
+                        mesh.processDelaunay();
+                        assertTrue(false);
+                } catch (DelaunayError e) {
+                        assertTrue(true);
+                }
+        }
+        
 	/**
 	 * Method used to create random a list of random edge.
 	 * @param number

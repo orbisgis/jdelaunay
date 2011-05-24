@@ -191,16 +191,6 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	public final boolean contains(Coordinate c) {
 		return squareDistance(c.x, c.y, c.z) < Tools.EPSILON2;
 	}
-	
-	/**
-	 * linear square distance to another point
-	 * 
-	 * @param aPoint
-	 * @return distance
-	 */
-	protected final double squareDistance1D(DPoint aPoint) {
-		return (coord.x - aPoint.coord.x) * (coord.x - aPoint.coord.x);
-	}
 
 	/**
 	 * plane square distance to another point
@@ -265,7 +255,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return closedTo
 	 */
 	protected final boolean closedTo(DPoint aPoint, double tolerence) {
-		return (squareDistance(aPoint) < tolerence*tolerence);
+		return squareDistance(aPoint) < tolerence*tolerence;
 	}
 
 	/**

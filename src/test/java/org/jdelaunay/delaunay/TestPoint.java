@@ -51,8 +51,23 @@ public class TestPoint extends BaseUtility {
                 p2 = new DPoint(22.0000001,8.0000001,0.0000001);
                 assertFalse(p1.equals(p2));
                 assertTrue(p1.compareTo2D(p2)==-1);
+                assertFalse(p1.equals(new Integer(0)));
         }
 
+        public void testClosedTo() throws DelaunayError {
+                DPoint p1 = new DPoint(22,8,0);
+                assertTrue(p1.closedTo(new DPoint(22.0000001,8,0), 0.0001));
+                assertFalse(p1.closedTo(new DPoint(22.001,8,0), 0.0001));
+        }
+        
+        public void testContains() throws DelaunayError {
+                DPoint p1 = new DPoint(0,0,0);
+                assertTrue(p1.contains(new DPoint(0,0,0.00000001)));
+                assertTrue(p1.contains(new Coordinate(0,0,0.00000001)));
+                assertFalse(p1.contains(new DPoint(0,0,0.001)));
+                assertFalse(p1.contains(new Coordinate(0,0,0.001)));
+        }
+        
         /**
          * Tests the comparison methods between two points in two dimensions.
          */
