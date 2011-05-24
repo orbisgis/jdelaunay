@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 public class VerticalComparator implements Comparator<DEdge>, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static Logger LOG = Logger.getLogger(VerticalComparator.class);
+	private static final Logger LOG = Logger.getLogger(VerticalComparator.class);
 
 	//The absciss where we are going to make the comparison.
 	private double abs;
