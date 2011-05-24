@@ -892,9 +892,24 @@ public class TestTriangle extends BaseUtility {
                 DTriangle dt = new DTriangle(new DEdge(0,0,0,0,4,0),
                                 new DEdge(0,4,0,4,0,0),
                                 new DEdge(4,0,0,0,0,0));
-                dt.setEdge(0, new DEdge(50,50,5, 4,4,4));
+                DEdge ed = new DEdge(50,50,5, 4,4,4);
+                dt.setEdge(0, ed);
                 assertFalse(dt.checkTopology());
-                
+                ed.setLeft(dt);
+                assertFalse(dt.checkTopology());
+        }
+        
+        public void testTopoOrientedExc() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DEdge(0,0,0,0,4,0),
+                                new DEdge(0,4,0,4,0,0),
+                                new DEdge(4,0,0,0,0,0));
+                DEdge ed = new DEdge(50,50,50,51,51,51);
+                try{
+                        dt.isTopoOrientedToEdge(ed);
+                        assertFalse(false);
+                } catch(DelaunayError d){
+                        assertTrue(true);
+                }
         }
         
         public void testGetContaingEdge() throws DelaunayError {
