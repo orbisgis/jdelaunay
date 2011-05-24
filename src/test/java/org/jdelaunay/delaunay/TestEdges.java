@@ -81,6 +81,7 @@ public class TestEdges extends BaseUtility {
 			assertTrue(e.getPointFromItsX(0.2).equals(new DPoint(0.2, 0.2,0.2)));
 			assertTrue(e.getPointFromItsX(0.7).equals(new DPoint(0.7, 0.7,0.7)));
 			assertNull(e2.getPointFromItsX(8));
+                        assertEquals(new DPoint(0,0,0), e2.getPointFromItsX(0));
 		} catch (DelaunayError d){
 			System.out.println(d.getMessage());
 		}
@@ -458,6 +459,12 @@ public class TestEdges extends BaseUtility {
 		assertTrue(ed.isInside(p));
 		p = new DPoint(8,3,0);
 		assertFalse(ed.isInside(p));
+                ed = new DEdge(2,0,0,2,8,0);
+                assertTrue(ed.isInside(new DPoint(2,4,0)));
+                assertFalse(ed.isInside(new DPoint(2,15,0)));
+                assertFalse(ed.isInside(new DPoint(3,4,0)));
+                ed = new DEdge(2,0,0,4,0,0);
+                assertTrue(ed.isInside(new DPoint(3,0,0)));
 		
 	}
 
@@ -558,6 +565,8 @@ public class TestEdges extends BaseUtility {
 		DEdge e5 = new DEdge(p3, p4);
 		DTriangle t2 = new DTriangle(e3, e4, e5);
 		assertTrue(e3.isEncroached());
+                DEdge ed = new DEdge(8,8,8,6,8,9);
+                assertFalse(ed.isEncroached());
 	}
         
         public void testIsEncroachedBy() throws DelaunayError {
@@ -725,6 +734,9 @@ public class TestEdges extends BaseUtility {
                 e5.setStartPoint(p);
                 assertFalse(e1.isLeftTriangleGoToEdge());
                 assertFalse(e1.isRightTriangleGoToEdge());
+                DEdge ed = new DEdge(0,0,8,6,3,4);
+                assertFalse(ed.isRightTriangleGoToEdge());
+                assertFalse(ed.isLeftTriangleGoToEdge());
         }
         
         public void testSlope() throws DelaunayError {

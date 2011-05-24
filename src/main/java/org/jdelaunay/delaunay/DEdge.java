@@ -789,8 +789,10 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	/**
+         * Make a linear interpolation for the points that lie on the edge.
 	 * @param p
-	 * @return Z coordinate of point p on the edge.
+	 * @return Z coordinate of the point p, if it is on the edge. It it is outside
+         *  the edge, <code>Double.NaN</code> is returned instead.
 	 */
 	public final double getZOnEdge(DPoint p) {
                 if(!isOnEdge(p)){
