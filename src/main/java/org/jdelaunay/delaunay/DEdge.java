@@ -39,7 +39,6 @@ import java.awt.Graphics2D;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.LinkedList;
 import java.util.Map;
-import org.apache.log4j.Logger;
 
 /**
  * An edge in the tringulation. A DEdge is formed with two DPoint instances.
@@ -60,9 +59,6 @@ import org.apache.log4j.Logger;
  * @version 1.2
  */
 public class DEdge extends Element implements Comparable<DEdge> {
-
-	//The logger supposed to report errors to the user.
-	private static Logger LOG = Logger.getLogger(DEdge.class);
 	/**
 	 * 
 	 */
@@ -175,17 +171,13 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param v
 	 * @param w
 	 */
-	public DEdge(double x, double y, double z, double u, double v, double w) {
+	public DEdge(double x, double y, double z, double u, double v, double w) throws DelaunayError {
 		super();
 		init();
-		try {
-			DPoint p1 = new DPoint(x, y, z);
-			DPoint p2 = new DPoint(u, v, w);
-			this.startPoint = p1;
-			this.endPoint = p2;
-		} catch (DelaunayError d) {
-			LOG.error("A problem occured while building the points " + d.getMessage());
-		}
+                DPoint p1 = new DPoint(x, y, z);
+                DPoint p2 = new DPoint(u, v, w);
+                this.startPoint = p1;
+                this.endPoint = p2;
 	}
 
 	/**

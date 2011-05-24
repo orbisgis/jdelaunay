@@ -70,7 +70,7 @@ import org.apache.log4j.Logger;
 public class ConstrainedMesh implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static Logger LOG = Logger.getLogger(ConstrainedMesh.class);
+	private static final Logger LOG = Logger.getLogger(ConstrainedMesh.class);
 	//The list of triangles during the triangulation process.
 	//This list is sorted by using the implementation of Comparable in
 	//DTriangle.
@@ -1031,19 +1031,15 @@ public class ConstrainedMesh implements Serializable {
 	 * @param edgeList
 	 * @return
 	 */
-	public final boolean isVerticallySorted(List<DEdge> edgeList, double abs) {
+	public final boolean isVerticallySorted(List<DEdge> edgeList, double abs) throws DelaunayError {
 		DEdge e1, e2;
 		e2 = edgeList.get(0);
 		for (int i = 1; i < edgeList.size(); i++) {
 			e1 = e2;
 			e2 = edgeList.get(i);
-			try {
-				if (e1.verticalSort(e2, abs) == 1) {
-					return false;
-				}
-			} catch (DelaunayError e) {
-				LOG.error(e.getCause());
-			}
+                        if (e1.verticalSort(e2, abs) == 1) {
+                                return false;
+                        }
 		}
 		return true;
 	}
