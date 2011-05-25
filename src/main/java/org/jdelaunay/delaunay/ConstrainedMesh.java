@@ -613,6 +613,10 @@ public class ConstrainedMesh implements Serializable {
          * If you use it after, you will break the unicity of edges GID.
 	 */
 	public final void forceConstraintIntegrity() throws DelaunayError {
+                //We don't need to do anything if we don't have any constraint edge
+                if(constraintEdges.size()<1){
+                        return;
+                }
                 //We will repopulate the list of constraint edges
                 edgeGID = 0;
 		//The event points are the extremities and intersections of the

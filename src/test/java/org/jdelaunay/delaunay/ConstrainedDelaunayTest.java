@@ -71,6 +71,17 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 			System.out.println(d.getMessage());
 		}
 	}
+        
+        public void testForceIntegrityNoConstraints() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.forceConstraintIntegrity();
+                assertTrue(true);
+                mesh.addPoint(new DPoint(0,0,0));
+                mesh.addPoint(new DPoint(6,8,0));
+                mesh.addPoint(new DPoint(5,6,0));
+                mesh.forceConstraintIntegrity();
+                assertTrue(true);
+        }
 
 	/**
 	 * This test checks that, when points are added to the mesh, they are kept
