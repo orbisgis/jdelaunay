@@ -1035,7 +1035,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			? /* p2y > p1y ?*/ (p1.getY() < p.getY() && p.getY() < p2.getY()) /* p2y > py > p1y ?*/
 			: (p2.getY() < p.getY() && p.getY() < p1.getY())));
 
-		return res <= Tools.EPSILON2 && res >= -Tools.EPSILON2/* p is on p1, p2 line */
+		return Math.abs(res) <= Tools.EPSILON/* p is on p1, p2 line */
 
 			&& b1	/* p2x < px < p1x ?*/
 
