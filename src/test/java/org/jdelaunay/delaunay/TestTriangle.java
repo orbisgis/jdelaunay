@@ -53,7 +53,7 @@ public class TestTriangle extends BaseUtility {
         }
         
 	/**
-	 * Checks that computeArea works well. The test is basic, but important.
+	 * Checks that getArea works well. The test is basic, but important.
 	 */
 	public void testComputeArea() throws DelaunayError{
 		DPoint p1 = new DPoint(0,0,0);
@@ -63,7 +63,7 @@ public class TestTriangle extends BaseUtility {
 		DEdge e2 = new DEdge(p2,p3);
 		DEdge e3 = new DEdge(p3,p1);
 		DTriangle t = new DTriangle(e1,e2,e3);
-		double d = t.computeArea();
+		double d = t.getArea();
 		assertTrue(d==4);
 	}
 

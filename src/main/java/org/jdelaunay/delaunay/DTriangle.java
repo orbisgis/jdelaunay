@@ -549,7 +549,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 *
 	 * @return area
 	 */
-	public final double computeArea() {
+	public final double getArea() {
 		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
