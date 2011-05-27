@@ -978,4 +978,13 @@ public class TestTriangle extends BaseUtility {
                 dt = new DTriangle(new DEdge(0,0,0,0,1,0), new DEdge(0,1,0,10,0,0), new DEdge(10,0,0,0,0,0));
                 assertTrue(dt.isSkinny(10));
         }
+        
+        /**
+         * We test that we are able to retrieve the minimal angle of a triangle
+         */
+        public void testGetMinAngle() throws DelaunayError {
+                DTriangle tri = new DTriangle(new DEdge(0,0,0,0,2,0), new DEdge(0,2,0,5,0,0), new DEdge(5,0,0,0,0,0));
+                double min = tri.getMinAngle();
+                assertEquals(21.805, min, 0.01);
+        }
 }

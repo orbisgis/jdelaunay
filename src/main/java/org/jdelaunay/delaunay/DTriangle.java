@@ -675,12 +675,25 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 return badAngle(tol) != -1;
         }
 
+        /**
+         * Return the maximal angle og this triangle.
+         * @return 
+         */
+        public final double getMinAngle() {
+                double min = Double.POSITIVE_INFINITY;
+                for(int i=0; i<PT_NB;i++){
+                        double cur = getAngle(i);
+                        min = cur < min ? cur : min;
+                }
+                return min;
+        }
+        
 	/**
-	 * check if one of the triangle's angle is less than minimum
+	 * Return the maximal angle og this triangle.
 	 *
 	 * @return maxAngle
 	 */
-	protected final double getMaxAngle() {
+	public final double getMaxAngle() {
 		double maxAngle = 0;
 		for (int k = 0; k < PT_NB; k++) {
 			double angle = getAngle(k);
