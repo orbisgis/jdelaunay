@@ -34,6 +34,7 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
 
 /**
  * This class checks that the constrained triangulation is well performed.
@@ -2424,7 +2425,8 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addConstraintEdge(constr);
 		mesh.processDelaunay();
                 List<DEdge> edges = mesh.getEdges();
-                mesh.refineMesh(0.01, 15);
+                SkinnyEvaluator se = new SkinnyEvaluator(15);
+                mesh.refineMesh(0.01, se);
 //                show(mesh);
                 List<DEdge> cons = mesh.getConstraintEdges();
                 edges = mesh.getEdges();
@@ -2510,7 +2512,8 @@ public class TestConstrainedMesh extends BaseUtility {
 		mesh.addPoint(new DPoint(10,3,0));
 		mesh.addPoint(new DPoint(11,9,0));
 		mesh.processDelaunay();
-                mesh.refineMesh(1, 14);
+                SkinnyEvaluator se = new SkinnyEvaluator(14);
+                mesh.refineMesh(1, se);
 //                show(mesh);
                 assertTrue(true);
                 
@@ -2543,8 +2546,9 @@ public class TestConstrainedMesh extends BaseUtility {
                 mesh.addPoint(new DPoint(3,0,0));
                 mesh.addPoint(new DPoint(0,3,0));
                 mesh.processDelaunay();
+                SkinnyEvaluator se = new SkinnyEvaluator(15);
                 try {
-                        mesh.refineMesh(-20, 15);
+                        mesh.refineMesh(-20, se);
                         assertTrue(false);
                 } catch (IllegalArgumentException e) {
                         assertTrue(true);

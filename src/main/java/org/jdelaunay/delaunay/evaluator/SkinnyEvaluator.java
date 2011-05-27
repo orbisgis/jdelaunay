@@ -92,7 +92,7 @@ public class SkinnyEvaluator implements InsertionEvaluator {
         
         @Override
         public final boolean evaluate(DTriangle dt) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                return minAngle > dt.getMinAngle();
         }
         
 }

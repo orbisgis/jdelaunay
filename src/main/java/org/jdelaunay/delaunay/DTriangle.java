@@ -640,40 +640,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		DPoint steep = getSteepestVector();
 		DEdge ed = new DEdge(new DPoint(0,0,0), steep);
 		return ed.getSlopeInDegree();
-	}	
-
-	/**
-	 * check if one of the triangle's angle is less than minimum
-	 *
-	 * @param tolerance
-	 * @return minAngle
-         *      The first found angle that is lower than tolerance.
-	 */
-	protected final int badAngle(double tolerance) {
-		double minAngle = Double.POSITIVE_INFINITY;
-		int returnedValue = -1;
-		for (int k = 0; k < PT_NB; k++) {
-			double angle = getAngle(k);
-			if (angle < minAngle) {
-				minAngle = angle;
-				if (minAngle < tolerance) {
-					returnedValue = k;
-				}
-			}
-		}
-		return returnedValue;
 	}
-        
-        /**
-         * Returns true if this triangle must be considered as "skinny", ie if one of
-         * its angles is smaller than tol. 
-         * @param tol
-         *      An angle measure, in degrees.
-         * @return 
-         */
-        public final boolean isSkinny(double tol){
-                return badAngle(tol) != -1;
-        }
 
         /**
          * Return the maximal angle og this triangle.

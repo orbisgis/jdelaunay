@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
 
 /**
  * This class is used to compute the constrained delaunay triangulation on a set of
@@ -1266,7 +1267,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @throws DelaunayError
          * @throws IllegalArgumentException if <code>minLength</code> is inferior or equal to 0
 	 */
-	public final void refineMesh(double minLength, double minAngle) throws DelaunayError {
+	public final void refineMesh(double minLength, InsertionEvaluator ev) throws DelaunayError {
                 if(minLength <=0){
                         throw new IllegalArgumentException("The minimum length must be strictly positive !");
                 }
@@ -1283,7 +1284,7 @@ public class ConstrainedMesh implements Serializable {
                 LinkedList<DTriangle> mem = new LinkedList<DTriangle>();
                 while(!triangleList.isEmpty()) {
                         dt = triangleList.get(0);
-                        if(dt.isSkinny(minAngle)){
+                        if(ev.evaluate(dt)){
                                 ret = insertTriangleCircumCenter(dt, true, minLength);
                                 if(ret != null && ret.get2DLength()>2*minLength){
                                         splitEncroachedEdge(ret, minLength);

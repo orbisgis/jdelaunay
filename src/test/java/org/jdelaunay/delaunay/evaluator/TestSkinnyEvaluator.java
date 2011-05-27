@@ -31,6 +31,9 @@
 package org.jdelaunay.delaunay.evaluator;
 
 import junit.framework.TestCase;
+import org.jdelaunay.delaunay.DEdge;
+import org.jdelaunay.delaunay.DTriangle;
+import org.jdelaunay.delaunay.DelaunayError;
 
 /**
  * Class used to test the skinny evaluator.
@@ -38,6 +41,9 @@ import junit.framework.TestCase;
  */
 public class TestSkinnyEvaluator extends TestCase{
         
+        /**
+         * Basic tests upon instanciation.
+         */
         public void testInstanciationGetSet(){
                 SkinnyEvaluator se = new SkinnyEvaluator(20);
                 assertTrue(se.getMinAngle() == 20);
@@ -45,6 +51,10 @@ public class TestSkinnyEvaluator extends TestCase{
                 assertTrue(se.getMinAngle() == 15);
         }     
         
+        /**
+         * Users are not supposed to be allowed to put a threshold value greater 
+         * than 32. If they try, an exception must be thrown.
+         */
         public void testThresholdValueException(){
                 try{
                         SkinnyEvaluator se = new SkinnyEvaluator(33);
@@ -71,5 +81,14 @@ public class TestSkinnyEvaluator extends TestCase{
                 } catch (IllegalArgumentException e) {
                         assertTrue(true);
                 }
+        }
+        
+        public void testIsSkinny() throws DelaunayError {
+                SkinnyEvaluator se = new SkinnyEvaluator(10);
+                DTriangle dt = new DTriangle(new DEdge(0,1,0,3,4,0),
+                        new DEdge(3,4,0,4,0,0), new DEdge(0,1,0,4,0,0));
+                assertFalse(se.evaluate(dt));
+                dt = new DTriangle(new DEdge(0,0,0,0,1,0), new DEdge(0,1,0,10,0,0), new DEdge(10,0,0,0,0,0));
+                assertTrue(se.evaluate(dt));
         }
 }
