@@ -125,6 +125,29 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 				integrityE1E2 +" "+ integrityE1EptNb+" "+integrityEptNbE2);
 		}
 	}
+        
+        /**
+         * Create a new triangle with three input points.
+         * 
+         * @param p1
+         * @param p2
+         * @param p3
+         * @throws DelaunayError 
+         */
+        public DTriangle(DPoint p1, DPoint p2, DPoint p3) throws DelaunayError{
+		super();
+		init();
+                DEdge e1 = new DEdge(p1, p2);
+                DEdge e2 = new DEdge(p2, p3);
+                DEdge e3 = new DEdge(p3, p1);
+                edges[0] = e1;
+                edges[1] = e2;
+                edges[2] = e3;
+                connectEdges();
+                recomputeCenter();
+                radius = e1.getStartPoint().squareDistance2D(xCenter, yCenter);
+                
+        }
 
 	/**
 	 * Create a DTriangle from another triangle<br/>

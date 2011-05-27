@@ -50,6 +50,13 @@ public class TestTriangle extends BaseUtility {
                 assertTrue(dt2.belongsTo(new DPoint(4,0,0)));
                 assertTrue(dt.checkTopology());
                 assertFalse(dt2.checkTopology());
+                DTriangle dt3 = new DTriangle (new DPoint(0,0,0), new DPoint(0,2,0), new DPoint(2,0,0));
+                for(DEdge ed : dt3.getEdges()){
+                        assertTrue(ed.getLeft() == dt3 || ed.getRight() == dt3);
+                }
+                assertTrue(dt3.belongsTo(new DPoint(0,0,0)));
+                assertTrue(dt3.belongsTo(new DPoint(2,0,0)));
+                assertTrue(dt3.belongsTo(new DPoint(0,2,0)));
         }
         
 	/**
