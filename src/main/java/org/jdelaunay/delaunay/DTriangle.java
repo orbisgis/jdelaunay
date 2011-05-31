@@ -87,18 +87,17 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Not intended to be used. Private.
-	 */
-	private DTriangle() {
-	}
-
-	/**
-	 * Create a new triangle with edges Add the points from the edges
+	 * Create a new triangle with the three given edges as a basis. </p><p>
+         * An integrity check is processed while building the triangle. This constructor
+         * is the best way to ensure that already existing edges will be linked to 
+         * the good triangles, and that ther won't be any edge duplication in the 
+         * data structures.
 	 *
 	 * @param e1
 	 * @param e2
 	 * @param e3
 	 * @throws DelaunayError
+         *      If there is at least two edges that don't share exactly a point.
 	 */
 	public DTriangle(DEdge e1, DEdge e2, DEdge e3) throws DelaunayError {
 		super();
@@ -166,7 +165,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Get a list of points containing the DPoint that define this triangle.
+	 * Get a list of points containing the <code>DPoint</code> that define this triangle.</p><p>
+         * This method is consistent with getPoint, ie getPoints().get(i)==getPoint(i).
 	 * @return
 	 */
 	public final List<DPoint> getPoints(){
@@ -178,19 +178,20 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Get the ith point
-	 * i must be equal to 0, 1 or 2.
-	 *
+	 * Get the ith point. i must be equal to 0, 1 or 2. </p><p>
+         * This method is consistent with getPoints, ie getPoints().get(i)==getPoint(i).
+	 * 
 	 * @param i
 	 * @return aPoint
+         *      On of the apex if i = 0, 1 or 2, null otherwise.
 	 */
 	public final DPoint getPoint(int i) {
-		DPoint p;
+		DPoint p = null;
 		if (i==0) {
 			p = edges[0].getStartPoint();
 		} else if (i==1) {
 			p = edges[0].getEndPoint();
-		} else {
+		} else if(i==2){
 			p = edges[1].getStartPoint();
 			if ((p.equals(edges[0].getStartPoint())) || (p.equals(edges[0].getEndPoint()))) {
 				p = edges[1].getEndPoint();
@@ -209,14 +210,14 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	public final DEdge getEdge(int i) {
 		if ((0<=i) && (i<=2)) {
 			return edges[i];
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
 
 	/**
-	 * Return the edges that form this triangle in an array.
+	 * Return the edges that form this triangle in an array.</p><p>
+         * This method is consistent with getEdge(i), ie getEdge(i)==getEdges()[i]
 	 * @return
 	 */
 	public final DEdge[] getEdges(){
@@ -242,15 +243,20 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Set the ith edge
+	 * Set the ith edge. If i&lt;0 or i&gt;2, this method returns quietly without
+         * doing anything.
 	 *
 	 * @param i
 	 * @param anEdge
+         * @return
+         *      <code>true</code> if anEdge as been successfully inserted, false otherwise.
 	 */
-	public final void setEdge(int i, DEdge anEdge) {
-		if ((0<=i) && (i<=2)) {
+	public final boolean setEdge(int i, DEdge anEdge) {
+		if (0<=i && i<=2) {
 			edges[i] = anEdge;
+                        return true;
 		}
+                return false;
 	}
 
 	/**
@@ -318,7 +324,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	public final DPoint getLeftMost(){
 		DPoint p1 = edges[0].getPointLeft();
 		DPoint p2 = edges[1].getPointLeft();
-		return (p1.compareTo(p2) < 1 ? p1 : p2);
+		return p1.compareTo(p2) < 1 ? p1 : p2;
 	}
 
 	/**
@@ -426,7 +432,12 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Connect triangle edges to build topology
+	 * Connect the edges of this triangle to it, ie put this in the left or right
+         * attribute of each edge, according to the edge orientation and the triangle location.<p></p>
+         * Note that if this triangle is on the right (resp. left) of one edge that 
+         * already owns a right(resp. right) triangle, the other triangle will be replaced
+         * by this one. Use with care, so !
+         * 
 	 */
 	private void connectEdges() {
 		// we connect edges to the triangle
@@ -435,16 +446,14 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			DPoint aPoint = this.getOppositePoint(edges[i]);
 			if (edges[i].isLeft(aPoint)) {
                                 edges[i].setLeft(this);
-			}
-			else {
+			} else {
                                 edges[i].setRight(this);
 			}
 		}
 	}
 
 	/**
-	 * Check if the point is in or on the Circle 0 = outside 1 = inside 2 = on
-	 * the circle
+	 * Check if the aPoint is in or on the circumcircle of this triangle.
 	 *
 	 * @param aPoint
 	 * @return position : <br/>
@@ -679,7 +688,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         }
         
 	/**
-	 * Return the maximal angle og this triangle.
+	 * Return the maximal angle of this triangle.
 	 *
 	 * @return maxAngle
 	 */
@@ -738,7 +747,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	/**
 	 * Check if the triangle is flat or not.
-	 * Check if the 3 points have the same Z.
+	 * In other words, this method checks if the 3 points have the same Z.
 	 *
 	 * @return isFlat
 	 */
@@ -757,7 +766,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Get the point of the triangle that is not belong to the edge
+	 * Get the point of the triangle that does not belong to the edge
 	 *
 	 * @param ed
 	 * @return alterPoint
@@ -834,7 +843,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		DEdge alterEdge = null;
 		DPoint test1, test2;
 		int i = 0;
-		while ((i < PT_NB) && (alterEdge == null)) {
+		while (i < PT_NB && alterEdge == null) {
 			DEdge testEdge = edges[i];
 			test1 = testEdge.getStartPoint();
 			test2 = testEdge.getEndPoint();
@@ -853,7 +862,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * Check if the point belongs to the triangle
+	 * Check if the point is an apex of the triangle
 	 *
 	 * @param aPoint
 	 * @return belongs
@@ -863,16 +872,13 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		DEdge anEdge = this.getEdge(0);
 		if (anEdge.getStartPoint().equals(aPoint)) {
 			belongs = true;
-		}
-		else if (anEdge.getEndPoint().equals(aPoint)) {
+		} else if (anEdge.getEndPoint().equals(aPoint)) {
 			belongs = true;
-		}
-		else {
+		} else {
 			anEdge = this.getEdge(1);
 			if (anEdge.getStartPoint().equals(aPoint)) {
 				belongs = true;
-			}
-			else if (anEdge.getEndPoint().equals(aPoint)) {
+			} else if (anEdge.getEndPoint().equals(aPoint)) {
 				belongs = true;
 			}
 		}
@@ -881,7 +887,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 	
 	/**
-	 * Get the barycenter of the triangle
+	 * Get the barycenter of the triangle as a DPoint
 	 *
 	 * @return isFlat
 	 * @throws DelaunayError 
@@ -1012,7 +1018,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * implements the Comparable interface. The triangles will be sorted according
+	 * Implements the Comparable interface. The triangles will be sorted according
 	 * the middle of their bounding box.
 	 * As we work on a triangulation where triangles' intersection can only be an edge, a point
 	 * or void, the Bounding boxes are unique.
@@ -1039,7 +1045,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
 	/**
-	 * retrieve the angle, in degrees, at vertex number k.
+	 * Retrieve the angle, in degrees, at vertex number k.
 	 * @param k
 	 * @return
 	 */
@@ -1067,7 +1073,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
      
 
         /**
-	 * Compute the slop of the triangle in percent
+	 * Compute the slope of the triangle in percent
 	 *
 	 * @return
          * @throws
@@ -1078,7 +1084,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 
         /**
-	 * Compute the azimut of the triangle in degrees between nord and steeepest vector.
+	 * Compute the azimut of the triangle in degrees between north and steeepest vector.
          * Aspect is measured clockwise in degrees from 0, due north, to 360, again due north, coming full circle.
 	 * @return
          * @throws

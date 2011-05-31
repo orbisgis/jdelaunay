@@ -149,6 +149,24 @@ public class TestTriangle extends BaseUtility {
 		assertNull(t);
 
 	}
+       
+        /**
+         * Test that getPoint and getPoints are consistent.
+         * @throws DelaunayError 
+         */
+        public void testGetPoint() throws DelaunayError{
+                DTriangle dt = new DTriangle(new DPoint(0,0,0), new DPoint(2,2,0),new DPoint(5,3,0));
+                for(int i=0;i<DTriangle.PT_NB;i++){
+                        assertTrue(dt.getPoints().get(i)==dt.getPoint(i));
+                }
+        }
+        
+        public void testSetEdge() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DPoint(0,0,0), new DPoint(2,2,0),new DPoint(5,3,0));
+                assertTrue(dt.setEdge(0, new DEdge(5,3,0,8,9,0)));
+                assertFalse(dt.setEdge(8, new DEdge(6,6,6,0,9,6)));
+                assertFalse(dt.setEdge(-1, new DEdge(6,6,6,0,9,6)));
+        }
 
 	/**
 	 * Checks that the center of the triangle (or rather, the center of its circumcircle)
