@@ -39,10 +39,7 @@ import java.util.List;
 /**
  * An horizontal rectangle.
  * 
- * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
- * @date 2009-01-12
- * @revision 2010-11-08
- * @version 1.1
+ * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU, Alexis Guéganno.
  */
 
 public class BoundaryBox implements Serializable {
@@ -190,7 +187,7 @@ public class BoundaryBox implements Serializable {
 	
 	
 	/**
-	 * @return Middle coordinate of box.
+	 * @return Coordinate of the middle of the box.
 	 */
 	public final Coordinate getMiddle()
 	{
@@ -206,6 +203,7 @@ public class BoundaryBox implements Serializable {
 	/**
 	 * Get the lis of points that define this boundary box.
 	 * @return
+         *      The apex of the box, in a List of DPoint instances.
 	 * @throws DelaunayError
 	 */
 	public final List<DPoint> getPoints() throws DelaunayError {

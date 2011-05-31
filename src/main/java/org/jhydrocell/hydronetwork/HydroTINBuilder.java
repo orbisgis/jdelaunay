@@ -46,6 +46,7 @@ import org.jdelaunay.delaunay.Tools;
  * @author alexis, kwyhr
  */
 public class HydroTINBuilder extends ConstrainedMesh {
+        private static final long serialVersionUID = 84657321L;
         // Sewer elements
 
         private ArrayList<DPoint> listEntryPoints;
@@ -391,9 +392,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
          * surface. It is not added to the Mesh Points. It will not be used in
          * the Delaunay triangularization
          *
-         * @param x
-         * @param y
-         * @param z
+         * @param sewerPoint
          * @return thePoint : the DPoint
          * @throws DelaunayError
          */

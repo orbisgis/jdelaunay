@@ -67,6 +67,7 @@ public class VerticalComparator implements Comparator<DEdge>, Serializable {
 	/**
 	 * get the absciss where we are currently working.
 	 * @return
+         *      The value currently used for comparison
 	 */
 	public final double getAbs(){
 		return abs;
@@ -78,15 +79,18 @@ public class VerticalComparator implements Comparator<DEdge>, Serializable {
 	 * with the line l of equation x=abs.
 	 * if p1 (p2) is the intersection between l and the line defined by edge1 (edge2),
 	 * this method returns :
-	 *  * -1 if p1 < p2 or ( p1 == p2 and this is "under" edge)
+	 *  * -1 if p1 &lt; p2 or ( p1 == p2 and this is "under" edge)
 	 *  * 0 if p1 == p2 and (this and edge are colinear)
-	 *  * 1 if p1 > p2 or (p1 == p2 and edge is under this)
+	 *  * 1 if p1 &gt; p2 or (p1 == p2 and edge is under this)
 	 *
 	 * In our case, we will return -2 if one of the edge is vertical, and has absciss
 	 * other than abs.
 	 * @param edge1
 	 * @param edge2
 	 * @return
+         * -1 if edge1 &lt; edge2<br />
+         * 0 if edge1 == edge2<br />
+         * 1 otherwise.
 	 */
 	@Override
 	public final int compare(DEdge edge1, DEdge edge2) {

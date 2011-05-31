@@ -43,6 +43,7 @@ public interface InsertionEvaluator {
          * Returns true if the circumcenter of dt must be inserted.
          * @param dt
          * @return 
+         *      true if the insertion is needed.
          */
         boolean evaluate(DTriangle dt);
         

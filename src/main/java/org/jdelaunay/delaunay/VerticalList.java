@@ -94,6 +94,7 @@ public class VerticalList {
 	/**
 	 * get the absciss where the comparison is currently performed.
 	 * @return
+         *      the current evaluation abs.
 	 */
 	public final double getAbs(){
 		return comp.getAbs();
@@ -114,7 +115,7 @@ public class VerticalList {
 	/**
 	 * Change the absciss where we want our edges to be sorted. For this task,
 	 * we use the absciss of the point given in parameter.
-	 * @param abs
+	 * @param pt
 	 */
 	public final void setAbs(DPoint pt) throws DelaunayError{
 		setAbs(pt.getX());
@@ -124,6 +125,7 @@ public class VerticalList {
 	 * retrieve the element at position i in the list.
 	 * @param i
 	 * @return
+         *      get the ith element in the list.
 	 */
 	public final DEdge get(int i){
 		return constraintsList.get(i);
@@ -145,6 +147,7 @@ public class VerticalList {
 	 * Add an edge to the list of constraints that are considered to be linked
 	 * to the boundary of the current mesh.
 	 * @param constraint
+         * @return the index of constraint in the list.
 	 */
 	public final int addEdge(DEdge constraint){
 		resetVolatileAttributes();
@@ -169,7 +172,7 @@ public class VerticalList {
 	/**
 	 * Remove the edge at index index in this vertical list.
 	 * @param index
-	 * @return
+	 * @return the removed DEdge
 	 */
 	public final DEdge remove(int index){
 		resetVolatileAttributes();
@@ -179,7 +182,6 @@ public class VerticalList {
 	/**
 	 * Search an edge in the constraints linked to the boundary.
 	 * @param edge
-	 * @param abs
 	 */
 	protected final int searchEdge(DEdge edge){
 		return Tools.sortedListContains(constraintsList, edge, comp);
@@ -187,7 +189,7 @@ public class VerticalList {
 
 	/**
 	 * Get the list of constraints linked to the boundary of the current mesh.
-	 * @return
+	 * @return the list of constraints linked to the boundary of the current mesh.
 	 */
 	public final List<DEdge> getVerticallySortedEdges(){
 		return constraintsList;
@@ -195,15 +197,15 @@ public class VerticalList {
 
 	/**
 	 * get the last evaluated lower edge
-	 * @return
+	 * @return the last evaluated lower edge
 	 */
 	public final DEdge getLastLowerEd() {
 		return lastLowerEd;
 	}
 
 	/**
-	 * get the last point evaluate to perform et getLowerPoint operation
-	 * @return
+	 * get the last point evaluated to perform the getLowerPoint operation
+	 * @return the last point evaluated to perform the getLowerPoint operation
 	 */
 	public final DPoint getLastLowerPt() {
 		return lastLowerPt;
@@ -211,7 +213,7 @@ public class VerticalList {
 
 	/**
 	 * Get the last evaluated upper edge
-	 * @return
+	 * @return the last evaluated upper edge
 	 */
 	public final DEdge getLastUpperEd() {
 		return lastUpperEd;
@@ -220,6 +222,7 @@ public class VerticalList {
 	/**
 	 * Get the last evaluated upper point
 	 * @return
+         * the last evaluated upper point
 	 */
 	public final DPoint getLastUpperPt() {
 		return lastUpperPt;
@@ -285,6 +288,7 @@ public class VerticalList {
 	/**
 	 * Gets the current size of this vertical list.
 	 * @return
+         * the size of the list.
 	 */
 	public final int size(){
 		return this.constraintsList.size();
@@ -396,7 +400,7 @@ public class VerticalList {
          * this method is able to change the sorting absciss of the list.
          *
          * Note that we don't use the vertical sort here : an DEdge edge is said to be
-         * "lower" than point if and only if edge.getPointFromItsX(point.getX())<point.getY()
+         * "lower" than point if and only if edge.getPointFromItsX(point.getX())&lt;point.getY()
          *
          * This method is used to determine which points of the mesh boundary are
          * visible from the point to be added.
@@ -508,6 +512,7 @@ public class VerticalList {
 	 * @param pRef
 	 * @param ed
 	 * @return
+         * true if ed intersects with the directly lower or directly upper point.
 	 * @throws DelaunayError
 	 */
 	public final boolean intersectsUpperOrLower(DPoint pRef, DEdge ed) throws DelaunayError{

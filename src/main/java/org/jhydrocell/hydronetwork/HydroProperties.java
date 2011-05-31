@@ -34,8 +34,6 @@ package org.jhydrocell.hydronetwork;
  * Hydronetwork Package.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
- * @date 2009-01-12
- * @version 1.1
  */
 public final class HydroProperties {
 
@@ -100,6 +98,7 @@ public final class HydroProperties {
          *
          * @param aType
          * @return
+         * Trnasforms aType to a String.
          */
         public static String toString(int aType) {
                 StringBuilder builder = new StringBuilder();
@@ -122,6 +121,7 @@ public final class HydroProperties {
          *
          * @param aProperty
          * @return aString
+         * the string representation of aProperty
          */
         private static String propertyToString(int aProperty) {
                 switch (aProperty) {
@@ -183,6 +183,7 @@ public final class HydroProperties {
          *
          * @param aType
          * @return
+         * The type associated to the string representation.
          */
         public static int fromString(String aType) {
                 int i = 0;
@@ -227,6 +228,7 @@ public final class HydroProperties {
          * 
          * @param aProperty
          * @return
+         * A string that determines if aProperty is topologic, topographic, or something else.
          */
         public static String getPropertyQualification(int aProperty) {
                 switch (aProperty) {

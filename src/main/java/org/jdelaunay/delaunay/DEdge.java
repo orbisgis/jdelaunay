@@ -54,9 +54,6 @@ import java.util.Map;
  * To swap the start and the end, you can use the swap() method.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
- * @date 2009-01-12
- * @revision 2010-11-08
- * @version 1.2
  */
 public class DEdge extends Element implements Comparable<DEdge> {
 	/**
@@ -136,8 +133,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Generate an edge from two points.
 	 *
-	 * @param startPoint
-	 * @param endPoint
+	 * @param start
+	 * @param end
 	 */
 	public DEdge(DPoint start, DPoint end) {
 		super();
@@ -211,6 +208,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * if tri is the left one, and null otherwise.
 	 * @param tri
 	 * @return
+         *      The left (resp. right) triangle of this edge if tri is its right (resp. left)
+         *      triangle, null otherwise.
 	 */
 	public final DTriangle getOtherTriangle(DTriangle tri){
 		if(tri == null){
@@ -272,8 +271,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 	/**
 	 * Checks if this edge is "degenerated" or not. An edge is marked as degenerated
-	 * when connecting to the mesh, but not implied in the buildingof any triangle.
+	 * when connecting to the mesh, but not implied in the building of any triangle.
 	 * @return
+         *      <code>true</code> if this is marked as degenerated.
 	 */
 	public final boolean isDegenerated(){
 		return degenerated;
@@ -290,6 +290,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * An edge is shared when in use by two boundary parts.
 	 * @return
+         *      <code>true</code> if this is shared between two boundary parts.
 	 */
 	final boolean isShared(){
 		return shared;
@@ -319,7 +320,6 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param p End point.
 	 */
 	public final void setEndPoint(DPoint p) {
-
 		this.endPoint = p;
 	}
 
@@ -329,6 +329,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * edge, this method return the minimum point, (so the one with the lowest
 	 * y).
 	 * @return
+         * the leftmost point of this edge.
 	 */
 	public final DPoint getPointLeft() {
 		int c = endPoint.compareTo2D(startPoint);
@@ -344,6 +345,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * Get the point of this edge that is on the left from the other.
 	 * We use the order relation defined in DPoint.
 	 * @return
+         * Rhe rightmost point of this edge.
 	 */
 	public final DPoint getPointRight() {
 		int c = endPoint.compareTo2D(startPoint);
@@ -357,6 +359,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 	/**
 	 * get squared 2D length
+         * @return the square of the 2D-length of this edge.
 	 */
 	protected final double getSquared2DLength() {
 		return startPoint.squareDistance2D(endPoint);
@@ -364,6 +367,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 	/**
 	 * get 2D length
+         * @return The length of this edge in two dimensions.
+         * 
 	 */
 	public final double get2DLength() {
 		return Math.sqrt(getSquared2DLength());
@@ -371,6 +376,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 	/**
 	 * get squared 3D length
+         * @return the square of the 3D-length of this edge.
 	 */
 	protected final double getSquared3DLength() {
 		return startPoint.squareDistance(endPoint);
@@ -378,13 +384,15 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 	/**
 	 * get 3D length
+         * @return The length of this edge in three dimensions.
 	 */
 	public final double get3DLength() {
 		return Math.sqrt(getSquared3DLength());
 	}
 	/**
 	 * get the mark of the edge
-	 * @return marked
+	 * @return true if this edge is locked.
+         *      
 	 */
 	public final boolean isLocked() {
 		return indicator;
@@ -392,15 +400,12 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 	/**
 	 * set the mark of the edge
-	 * @param marked
+	 * @param locked
 	 */
 	public final void setLocked(boolean locked) {
 		indicator = locked;
 	}
 
-	/* *
-	 * Get the minimum boundary box of this element.
-	 */
 	@Override
 	public final BoundaryBox getBoundingBox() {
 
@@ -411,11 +416,6 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		return box;
 	}
 
-	/**
-	 * Check if aPoint lies on this edge.
-	 * @param aPoint
-	 * @return
-	 */
 	@Override
 	public final boolean contains(DPoint aPoint) {
 		return contains(aPoint.getCoordinate());
@@ -442,6 +442,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * Get the euclidean distance between p and the line defined by this edge.
 	 * @param p
 	 * @return
+         *      the minimal distance between this edge and p.
 	 */
 	public final double getDistance2D(DPoint p){
 		if(this.isVertical()){
@@ -532,7 +533,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 *
 	 * @param p1
 	 * @param p2
-	 * @return intersection
+	 * @return the intersection, as an element instance. it can be an DEdge, a DPoint
+         * or null.
 	 * @throws DelaunayError 
 	 */
 	public final Element getIntersection(DPoint p1, DPoint p2) throws DelaunayError {
@@ -543,11 +545,12 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * intersects two edges returns null if there is no intersection
 	 * if the two edgse are colinear, returns the minimum intersection point,
 	 * if such a point exists.
-	 * @param p1
-	 * @param p2
+	 * @param point1
+	 * @param point2
 	 * @param useCoordZOfp1p2 If true, the coordinate of intersection get in Z the average of p1 and p2 Z. Don't care of p3 and, p4 Z.
 	 * Else if false, the coordinate of intersection get in Z the average of p1, p2, p3 and p4 Z.
-	 * @return intersection
+	 * @return the intersection, as an element instance. it can be an DEdge, a DPoint
+         * or null.
 	 * @throws DelaunayError 
 	 */
 	public final Element getIntersection(DPoint point1, DPoint point2, boolean useCoordZOfp1p2) throws DelaunayError {
@@ -773,6 +776,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param ed
 	 * @param weights
 	 * @return
+         *      The intersection, as an element instance. It can be a DPoint, a DEdge, or null.
 	 * @throws DelaunayError
 	 */
 	public final Element getIntersection(DEdge ed, Map<Integer,Integer> weights) throws DelaunayError {
@@ -810,6 +814,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Get the slope of the edge
 	 * @return
+         *      The slope of the edge, in radians.
 	 */
 	public final double getSlope() {
 		double dz = endPoint.getZ() - startPoint.getZ();
@@ -824,6 +829,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Get the slope of the edge in degree.
 	 * @return
+         *      The slope of the edge, in degrees.
 	 */
 	public final double getSlopeInDegree() {
 		return Math.toDegrees(Math.atan(getSlope()));
@@ -832,6 +838,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Get the direction vector of the associated line.
 	 * @return
+         *      a DPoint that represents the direction vector of the associated line.
 	 * @throws DelaunayError
 	 */
 	public final DPoint getDirectionVector() throws DelaunayError {
@@ -984,6 +991,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 *
 	 * @param p
 	 * @return
+         *      true if p is on the left (strictly) of this point.
 	 */
 	public final boolean isLeft(DPoint p) {
 		double ux = this.endPoint.getX() - this.startPoint.getX();
@@ -999,6 +1007,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 *
 	 * @param p
 	 * @return
+         *      true if p is on the right (strictly) of this point.
 	 */
 	public final boolean isRight(DPoint p) {
 		double ux = this.endPoint.getX() - this.startPoint.getX();
@@ -1045,6 +1054,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Returns true if the two points of this edge have the same x coordinate.
 	 * @return
+         *      True if this is vertical
 	 */
 	public final boolean isVertical() {
 		double dx = (startPoint.getX() - endPoint.getX());
@@ -1060,7 +1070,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 *	null otherwise
 	 * @param abs
 	 * @return
+         *      The intersection of this with the line of absciss abs.
 	 * @throws DelaunayError
+         *      If this is vertical and this.x != abs.
 	 */
 	public final DPoint getPointFromItsX(double abs) throws DelaunayError {
 		//We don't want to approximate accidentally our extremities !
@@ -1090,6 +1102,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * return the point of the edge that have the greatest Z coordinate.
 	 * @return
+         *      The uppest extremiety of this edge.
 	 */
 	public final DPoint getUpperPoint() {
 		return startPoint.getZ() > endPoint.getZ() ? startPoint : endPoint;
@@ -1098,6 +1111,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Get the middle of the segment, in 3 dimensions.
 	 * @return
+         *      The middle of the edge, as a DPoint.
 	 * @throws DelaunayError
 	 */
 	public final DPoint getMiddle() throws DelaunayError {
@@ -1141,6 +1155,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
          * Test if this edge is encroached by the given point.
          * @param pt
          * @return
+         *      true if pt encroaches this.
          * @throws DelaunayError 
          */
         public final boolean isEncroachedBy(DPoint pt) throws DelaunayError {
@@ -1198,6 +1213,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * same.
 	 * @param other
 	 * @return
+         *      true if this and other are equal.
 	 */
 	@Override
 	public final boolean equals(Object other){
@@ -1213,8 +1229,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Get edge hashCode as min hashCode of its points
 	 *
-	 * @param p
 	 * @return
+         *  a hashcode.
 	 */
 	@Override
 	public final int hashCode() {
@@ -1283,6 +1299,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * this > edge otherwise.
 	 * @param edge
 	 * @return
+         *  -1 if this is inferior to edge, 0 if they are equal, 1 otherwise.
 	 */
 	public final int sortLeftRight(DEdge edge) {
 		DPoint p1 = getPointLeft();
@@ -1313,6 +1330,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * not a vertical sort or something else...
 	 * @param edge
 	 * @return
+         *  -1 if this is inferior to edge, 0 if they are equal, 1 otherwise.
 	 */
 	@Override
 	public final int compareTo(DEdge edge){
@@ -1324,11 +1342,15 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * with the line l of equation x=abs.
 	 * if p1 (p2) is the intersection between l and the line defined by this (edge),
 	 * this method returns :
-	 *  * -1 if p1 < p2 or ( p1 == p2 and this is "under" edge)
-	 *  * 0 if p1 == p2 and (this and edge are colinear)
-	 *  * 1 if p1 > p2 or (p1 == p2 and edge is under this)
+	 *  * -1 if p1 &lt; p2 or ( p1 == p2 and this is "under" edge)<br/>
+	 *  * 0 if p1 == p2 and (this and edge are colinear)<br/>
+	 *  * 1 if p1 &gt; p2 or (p1 == p2 and edge is under this)<br/>
 	 * @param edge
 	 * @return
+         * 
+	 *  * -1 if p1 &lt; p2 or ( p1 == p2 and this is "under" edge)<br/>
+	 *  * 0 if p1 == p2 and (this and edge are colinear)<br/>
+	 *  * 1 if p1 &gt; p2 or (p1 == p2 and edge is under this)<br/>
 	 */
 	public final int verticalSort(DEdge edge, double abs) throws DelaunayError {
 		DPoint pThis = this.getPointFromItsX(abs);
@@ -1389,6 +1411,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * Compute the aspect of an edge.
          * Aspect is measured clockwise in degrees from 0, due north, to 360, again due north, coming full circle.
 	 * @return 
+         *      The aspect of this edge.
 	 */
 	public final double getSlopeAspect() {
 			Coordinate c1 = startPoint.getCoordinate();
@@ -1410,8 +1433,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Returns true if the triangle connected to the left of the edge is pouring
 	 * into it.
-	 * @param edge
 	 * @return
+         *      True if the left triangle is pouring to this.
          * @throws DelaunayError
 	 */
 	public final boolean isLeftTriangleGoToEdge() throws DelaunayError {
@@ -1429,8 +1452,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * Returns true if the triangle connected to the right of the edge is pouring
 	 * into it.
-	 * @param edge
 	 * @return
+         *      True if the right triangle is pouring to this.
          * @throws DelaunayError
 	 */
 	public final boolean isRightTriangleGoToEdge() throws DelaunayError {

@@ -39,9 +39,6 @@ import com.vividsolutions.jts.geom.Polygon;
  * Delaunay Package.
  *
  * @author Erwan BOCHER, Adelin PIAU, Alexis GUÉGANNO
- * @date 2010-05-20
- * @revision 2010-11-08
- * @version 2.2
  */
 public final class ConstraintPolygon extends Element {
 
@@ -116,7 +113,8 @@ public final class ConstraintPolygon extends Element {
 	 * 
 	 * @param polygon
 	 * @param property
-	 * @param True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
+	 * @param usePolygonZ - 
+         *      True, if we set Z coordinate of polygon to new point else set an average of polygon and mesh Z coordinate.
 	 * @throws DelaunayError 
 	 */
 	public ConstraintPolygon(Polygon polygon, int property, boolean usePolygonZ) throws DelaunayError {
@@ -275,6 +273,7 @@ public final class ConstraintPolygon extends Element {
 	/**
 	 * Get the minimum boundary of this element.
 	 * @return
+         *      The bounding box of the polygon.
 	 */
 	@Override
 	public BoundaryBox getBoundingBox() {
@@ -293,6 +292,7 @@ public final class ConstraintPolygon extends Element {
 	 * Check if this polygon contain the point given in argument.
 	 * @param aPoint
 	 * @return
+         *      true if aPoint is in this.
 	 */
 	@Override
 	public boolean contains(DPoint aPoint) {
@@ -319,6 +319,7 @@ public final class ConstraintPolygon extends Element {
 	 * check if this polygon contain the point given in argument.
 	 * @param coordinate
 	 * @return
+         *      true if coordinate is in this
 	 * @throws DelaunayError
 	 */
 	@Override
@@ -330,7 +331,8 @@ public final class ConstraintPolygon extends Element {
 	/**
 	 *
 	 * @param anEdge
-	 * @return
+	 * @return      
+         *      true if anEdge intersects this.
 	 * @throws DelaunayError
 	 */
 	public boolean isIntersect(DEdge anEdge) throws DelaunayError{

@@ -39,8 +39,6 @@ import org.jdelaunay.delaunay.ConstrainedMesh;
  * Delaunay Package.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER
- * @date 2009-01-12
- * @version 1.0
  */
 public class MeshDrawer extends JFrame {
         private static final long serialVersionUID = 1L;

@@ -41,9 +41,6 @@ import org.jhydrocell.hydronetwork.HydroProperties;
  * Abstract container for all the geometric elements that are used during the triangulation
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
- * @date 2009-01-12
- * @revision 2010-11-08
- * @version 2.0
  */
 
 public abstract class Element {
@@ -112,7 +109,6 @@ public abstract class Element {
 
 	/**
 	 * get GID value
-	 * @param gid
 	 */
 	public final int getGID() {
 		return this.gid;
@@ -144,7 +140,7 @@ public abstract class Element {
 	
 	/**
 	 * check for a specific type value
-	 * @param type
+	 * @param property
 	 */
 	public final boolean hasProperty(int property) {
 		return ((this.property & property) != 0);
@@ -160,7 +156,6 @@ public abstract class Element {
 
 	/**
 	 * Remove all properties of the element
-	 * @param type
 	 */
 	public final void removeProperties() {
 		this.property = 0;
@@ -173,6 +168,7 @@ public abstract class Element {
 	 * to use when computing a new intersection.
 	 * @param map
 	 * @return
+         * The maximal weight
 	 */
 	public final int getMaxWeight(Map<Integer, Integer> map){
 		int weight = -1;
@@ -195,21 +191,23 @@ public abstract class Element {
 	/**
 	 * get the external GID associated to the object (-1 if it has not been set)
 	 * @return
+         *      The external gid for this element.
 	 */
 	public final int getExternalGID() {
 		return externalGID;
 	}
 
 	/**
-	 * Get the height of the edge.
+	 * Get the height of the element.
 	 * @return
+         * The height in double
 	 */
 	public final double getHeight() {
 		return height;
 	}
 
 	/**
-	 * Set the height of the edge
+	 * Set the height of the element
 	 * @param height
 	 */
 	public final void setHeight(double height) {
@@ -219,6 +217,7 @@ public abstract class Element {
 	 * Computed bounding box
 	 * 
 	 * @return
+         *      The boundary box of this element.
 	 */
 	public abstract BoundaryBox getBoundingBox();
 	

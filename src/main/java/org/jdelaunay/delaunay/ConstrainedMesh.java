@@ -50,17 +50,17 @@ import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
 
 /**
  * This class is used to compute the constrained delaunay triangulation on a set of
- * points and constraint edges. The constraints can be validated before the triangulation.
+ * points and constraint edges. The constraints can be validated before the triangulation.<p></p>
  *
  * After the processing of the mesh with processDelaunay, the ConstrainedMesh can
  * be identified with three set of data, plus its input constraint edges. The three
- * sets are :
+ * sets are :<p></p>
  *
- *   * The points of the mesh.
+ *   * The points of the mesh.<br />
  *
- *   * The edges of the mesh.
+ *   * The edges of the mesh.<br/>
  *
- *   * The triangles of the mesh.
+ *   * The triangles of the mesh.<p></p>
  *
  * When processing elevation data, you can use the removeFlatTriangles method to
  * be sure that none of the triangles are horizontal. This can be useful when the
@@ -119,7 +119,7 @@ public class ConstrainedMesh implements Serializable {
 	private Double extMinY = null;
 
 	/**
-	 * Build a new, empty, ConstrainedMesh. It does not conatin any information
+	 * Build a new, empty, ConstrainedMesh. It does not contain any information
 	 * that could be used to build a triangulation. You must fill it with
 	 * the points and edges you need before launching a processDelaunay() operation.
 	 */
@@ -140,8 +140,9 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
-	 * Get the list of edges that are used as constraints during triangulation
+	 * Get the list of edges that are used as constraints during the triangulation
 	 * @return
+         *      The constraint edges, in a List.
 	 */
 	public final List<DEdge> getConstraintEdges() {
 		return constraintEdges;
@@ -149,7 +150,7 @@ public class ConstrainedMesh implements Serializable {
 
 	/**
 	 * Set the list of edges that are used as constraints during triangulation
-	 * @param constraintEdges
+	 * @param constraint
 	 */
 	public final void setConstraintEdges(ArrayList<DEdge> constraint) throws DelaunayError {
 		this.constraintEdges = new ArrayList<DEdge>();
@@ -200,6 +201,7 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Get the list of edges
 	 * @return
+         *      The edges of the mesh in a List.
 	 */
 	public final List<DEdge> getEdges() {
 		return edges;
@@ -207,11 +209,11 @@ public class ConstrainedMesh implements Serializable {
 
 	/**
 	 * Set the list of edges
-	 * @param constraintEdges
+	 * @param inEdges
 	 */
-	public final void setEdges(List<DEdge> constraint) throws DelaunayError {
+	public final void setEdges(List<DEdge> inEdges) throws DelaunayError {
 		this.edges = new ArrayList<DEdge>();
-		for (DEdge e : constraint) {
+		for (DEdge e : inEdges) {
 			addPoint(e.getStart());
 			addPoint(e.getEnd());
 			addEdge(e);
@@ -255,6 +257,7 @@ public class ConstrainedMesh implements Serializable {
 	 * This method will sort the edges using the coordinates of the left point
 	 * of the edges.
 	 * @return
+         *      A let sorted list.
 	 */
 	public final List<DEdge> sortEdgesLeft(List<DEdge> inputList) {
 		ArrayList<DEdge> outputList = new ArrayList<DEdge>();
@@ -282,6 +285,9 @@ public class ConstrainedMesh implements Serializable {
 	 * Search an edge in the list of edges.
 	 * @param edge
 	 * @return
+         *      The index of the edge in the list of edges, or (-1-index) if edge is 
+         *      not in the list, and where index would be the index of the edge if 
+         *      it was in the list
 	 */
 	public final int searchEdge(DEdge edge) {
 		return Collections.binarySearch(edges, edge);
@@ -290,6 +296,7 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Get the precision
 	 * @return
+         *      precision
 	 */
 	public final double getPrecision() {
 		return precision;
@@ -305,7 +312,7 @@ public class ConstrainedMesh implements Serializable {
 
 	/**
 	 * Get the value used to compute the minimum distance between two points
-	 * @return
+	 * @return tolerance.
 	 */
 	public final double getTolerance() {
 		return tolerance;
@@ -322,6 +329,7 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Get the list of triangles already computed and added in this mesh
 	 * @return
+         *      The triancle packaged in a List.
 	 */
 	public final List<DTriangle> getTriangleList() {
 		return triangleList;
@@ -338,13 +346,19 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
-	 * Return the index i of the triangle given in argument in the list of triangles
-	 * or -i-1 if it is not in the list.
+	 * Return true if tri is one of the triangles of this mesh.</p><p>
+         * <strong>BE EXTREMELY CAREFUL !</strong> : this method will be completely
+         * inefficient, as the triangle's data structure is not kept sorted. To obtain
+         * a data structure that can be queried efficiently, sort the triangle's data
+         * structure (as triangle are sortable, cf DTriangle), or put them in an
+         * external spatial index (RTree/R+Tree)</p><p>
+         * 
 	 * @param tri
 	 * @return
+         *  true if the mesh contains the triangle tri.
 	 */
-	public final int containsTriangle(DTriangle tri) {
-		return sortedListContains(triangleList, tri);
+	public final boolean containsTriangle(DTriangle tri) {
+		return triangleList.contains(tri);
 	}
 
 	/**
@@ -359,17 +373,19 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Get the points contained in this mesh
 	 * @return
+         *      The points of the mesh packaged in a List.
 	 */
 	public final List<DPoint> getPoints() {
 		return points;
 	}
 
 	/**
-	 * 
+	 * Try to retrieve the point (x,y,z) in the points' structure.
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @return
+         *      The corresponding DPoint instance, if it exists in the mesh, null otherwise.
 	 */
 	public final DPoint getPoint(double x, double y, double z) throws DelaunayError{
 		DPoint pt = new DPoint(x,y,z);
@@ -384,6 +400,7 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Can be used to know if the mesh has been computed or not
 	 * @return
+         *      true if the mesh has already been computed.
 	 */
 	public final boolean isMeshComputed() {
 		return meshComputed;
@@ -393,13 +410,14 @@ public class ConstrainedMesh implements Serializable {
 	 * Change the status of this mesh computation
 	 * @param comp
 	 */
-	public final void setMeshComputed(boolean comp) {
+	private void setMeshComputed(boolean comp) {
 		meshComputed = comp;
 	}
 
 	/**
 	 * Get the bounding box of this mesh.
 	 * @return
+         *      The bounding box, as a JTS Envelope instance.
 	 */
 	public final Envelope getBoundingBox() {
 		Envelope env = new Envelope();
@@ -412,6 +430,7 @@ public class ConstrainedMesh implements Serializable {
 	/**
 	 * Says if the verbose mode is activated or not
 	 * @return
+         *      true if the verbosity has been activated.
 	 */
 	public final boolean isVerbose() {
 		return verbose;
@@ -427,16 +446,15 @@ public class ConstrainedMesh implements Serializable {
 
 	/**
 	 * Set the list of points to be used during the triangulation
-	 * If using this method, it's up to you to be sure that you don't have
-	 * any duplication in your set of points...
-	 * @param points
+	 * If using this method. All the exisiting points are removed, and replaced by
+         * the pts list. The input list is sorted, and the duplicates are removed silently.
+	 * @param pts
 	 */
 	public final void setPoints(List<DPoint> pts) throws DelaunayError {
 		if(pts == null){
 			points = new ArrayList<DPoint>();
 		} else {
 			Collections.sort(pts);
-			points = new ArrayList<DPoint>();
 			extMaxY = null;
 			extMinY = null;
 			extMinX = null;
@@ -489,7 +507,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @throws DelaunayError
 	 */
 	public final List<DPoint> getExtensionPoints() throws DelaunayError{
-		ArrayList<DPoint> ret = new ArrayList();
+		ArrayList<DPoint> ret = new ArrayList<DPoint>();
 		ret.add(new DPoint(extMinX, extMaxY, 0));
 		ret.add(new DPoint(extMinX, extMinY, 0));
 		return ret;
@@ -562,6 +580,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the table that currently contains the weights used to attribute the
 	 * Z value when processing the intersection.
 	 * @return
+         *      The weights currently used in the mesh.
 	 */
 	public final Map<Integer, Integer> getWeights() {
 		return weights;
@@ -593,6 +612,8 @@ public class ConstrainedMesh implements Serializable {
 	 * @param sortedList
 	 * @param elt
 	 * @return
+         *      The index of the element in the list, or -(insertPosition -1) if it 
+         * isn't in it.
 	 */
 	private <T extends Element & Comparable<T>> int sortedListContains(List<T> sortedList, T elt) {
 		//We make a binary search, as divides and conquers rules...
@@ -993,7 +1014,7 @@ public class ConstrainedMesh implements Serializable {
 	 * their intersection point with the line of equation x=abs, where a is given
 	 * in parameter.
 	 * @param edgeList
-	 * @param x
+	 * @param abs
 	 */
 	public final void sortEdgesVertically(List<DEdge> edgeList, double abs) throws DelaunayError {
 		int s = edgeList.size();
@@ -1035,6 +1056,8 @@ public class ConstrainedMesh implements Serializable {
 	 * Check if the list given in argument is vertically sorted or not.
 	 * @param edgeList
 	 * @return
+         *      true if edgeList is vertically sorted.
+         * @see org.jdelaunay.delaunay.VerticalComparator
 	 */
 	public final boolean isVerticallySorted(List<DEdge> edgeList, double abs) throws DelaunayError {
 		DEdge e1, e2;
@@ -1053,6 +1076,7 @@ public class ConstrainedMesh implements Serializable {
 	 * Checks that edge does not intersect the existing edges of the mesh.
 	 * @param edge
 	 * @return
+         *      <code>true</code> if edge intersects an edge of the mesh.
 	 * @throws DelaunayError
 	 */
 	public final boolean intersectsExistingEdges(DEdge edge) throws DelaunayError {
@@ -1099,10 +1123,11 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the list of constraint edges whose left point is left.
 	 * @param left
 	 * @return
+         *      Get the constraint of the mesh for which the leftmost point is left.
 	 */
 	public final List<DEdge> getConstraintsFromLeftPoint(DPoint left) {
 		//The edge left-left is the minimum edge whose leftpoint is left.
-		List<DEdge> retList = new ArrayList();
+		List<DEdge> retList = new ArrayList<DEdge>();
 		if (constraintEdges == null || constraintEdges.isEmpty()) {
 			return retList;
 		}
@@ -1121,6 +1146,8 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the list of constraint edges whose left point is left, vertically sorted.
 	 * @param left
 	 * @return
+         *      All the DEdge for which left is the leftmost point. The DEdge are 
+         *      vertically sorted.
 	 */
 	public final List<DEdge> getConstraintFromLPVertical(DPoint left){
 		List<DEdge> retList = getConstraintsFromLeftPoint(left);
@@ -1865,6 +1892,7 @@ public class ConstrainedMesh implements Serializable {
          *      that is the closest to it. If this distance is less than minLength,
          *      the point is not inserted.
          * @return
+         *      The encroached edge that has caused the stop of the insertion, if any.
          * @throws DelaunayError 
          */
         public final DEdge insertIfNotEncroached(final DPoint pt, DTriangle container, double minLength) 
@@ -2119,7 +2147,6 @@ public class ConstrainedMesh implements Serializable {
          *      The minimum length between the new point and the point of the triangle
          *      that is the closest to it. If this distance is less than minLength,
          *      the point is not inserted.
-         * @return 
          * @throws DelaunayError if pt is not inside container. If a search is needed,
          *      it must be made before trying to insert the point.
          */

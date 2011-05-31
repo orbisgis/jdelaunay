@@ -39,9 +39,6 @@ import com.vividsolutions.jts.geom.Coordinate;
  * The smallest geometric element of a mesh.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU
- * @date 2009-01-12
- * @revision 2010-11-08
- * @version 2.1
  */
 public class DPoint extends Element implements Comparable<DPoint> {
 	/**
@@ -137,14 +134,14 @@ public class DPoint extends Element implements Comparable<DPoint> {
 
 	/**
 	 * Set X coordinate
-	 * @param z
+	 * @param x
 	 */
 	public final void setX(double x) {
 		this.coord.x = x;
 	}
 	/**
 	 * Set Y coordinate
-	 * @param z
+	 * @param y
 	 */
 	public final void setY(double y) {
 		this.coord.y = y;
@@ -160,15 +157,12 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	/**
 	 * return jts Coordinate
 	 * @return
+         * A representation of this DPoint as a JTS Coordinate.
 	 */
 	public final Coordinate getCoordinate() {
 		return coord;
 	}
-
-	/**
-	 * Get the minimum boundary box of this element.
-	 * @return
-	 */
+        
 	@Override
 	public final BoundaryBox getBoundingBox() {
 		BoundaryBox aBox = new BoundaryBox();
@@ -181,6 +175,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * Check if aPoint can be considered as equal to this.
 	 * @param aPoint
 	 * @return
+         * true if this and aPoint are equal.
 	 */
 	@Override
 	public final boolean contains(DPoint aPoint) {
@@ -248,10 +243,11 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	}
 
 	/**
-	 * Check if the point is closed to the current point
+	 * Check if the point is closed to the current point, ie if the distance 
+         * between this and aPoint is inferior to tolerence.
 	 * 
 	 * @param aPoint
-	 * @param tolarence
+	 * @param tolerence
 	 * @return closedTo
 	 */
 	protected final boolean closedTo(DPoint aPoint, double tolerence) {
@@ -270,8 +266,9 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	/**
 	 * We override the equals method, as two points can be said equal when their
 	 * coordinate are exactly the same
-	 * @param y
+	 * @param p
 	 * @return
+         * true if this and p are equal, in three dimensions.
 	 */
 	@Override
 	public final boolean equals(Object p){
@@ -288,6 +285,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	/**
 	 * Generate an hashcode based on the coordinates of the point.
 	 * @return
+         * a hash
 	 */
 	@Override
 	public final int hashCode() {
@@ -300,6 +298,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * Check if this==y, considering only the first two coordinates.
 	 * @param y
 	 * @return
+         * true if this and y are equal in 2D.
 	 */
 	public final boolean equals2D(DPoint y){
 		if(y==null){
@@ -311,10 +310,10 @@ public class DPoint extends Element implements Comparable<DPoint> {
 
 	/**
 	 * Compare this and p in two dimensions.
-	 * @param y
+	 * @param p
 	 * @return
-	 *	-1 : if this.x < p.x || (this.x == p.x && this.y < p.y)
-	 *	0 : if this.x == p.x && this.y == p.y
+	 *	-1 : if this.x &lt; p.x || (this.x == p.x && this.y &lt; p.y)<br />
+	 *	0 : if this.x == p.x && this.y == p.y<br />
 	 *	1 otherwise.
 	 */
 	public final int compareTo2D(DPoint p){
@@ -337,10 +336,10 @@ public class DPoint extends Element implements Comparable<DPoint> {
 
 	/**
 	 * Compare this and p in two dimensions.
-	 * @param y
+	 * @param p
 	 * @return
-	 *	-1 : if this.x < p.x || (this.x == p.x && this.y < p.y)
-	 *	0 : if this.x == p.x && this.y == p.y
+	 *	-1 : if this.x &lt; p.x || (this.x == p.x && this.y &lt; p.y)<br />
+	 *	0 : if this.x == p.x && this.y == p.y<br />
 	 *	1 otherwise.
 	 */
 	@Override

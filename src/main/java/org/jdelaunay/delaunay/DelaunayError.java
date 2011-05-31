@@ -35,8 +35,6 @@ package org.jdelaunay.delaunay;
  * building or using a ConstrainedMesh or its elements in this library.
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Alexis GUÉGANNO
- * @date 2009-01-12
- * @version 1.0
  */
 public class DelaunayError extends Exception {
 

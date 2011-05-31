@@ -38,9 +38,6 @@ import java.util.List;
  * A set of utility methods
  *
  * @author Jean-Yves MARTIN, Alexis GUEGANNO
- * @date 2009-01-12
- * @revision 2011-11-01
- * @version 2.1
  */
 
 public final class Tools {
@@ -64,12 +61,16 @@ public final class Tools {
 	}
 
 	/**
+         * 
 	 * Add an element to the list. This method takes care to ensure that we don't
 	 * insert duplicated items in the list.
-	 * @param <T extends Element & Comparable<? super T>>
-	 * @param elt
-	 * @param sortedList
-	 */
+         * @param <T>
+         * @param elt
+         * @param sortedList
+         * @param comp
+         * @return 
+         *      the position of the element in the list.
+         */
 	public static <T extends Element> int addToSortedList(T elt, List<T> sortedList, Comparator<T> comp){
 		//We make a binary search, as divides and conquers rules...
 		int index = Collections.binarySearch(sortedList, elt, comp);
@@ -90,6 +91,8 @@ public final class Tools {
 	 * @param sortedList
 	 * @param elt
 	 * @return
+         *  the index of the element, or (-1-index) where index would be the index of the 
+         *  element after insertion
 	 */
 	public static <T extends Element> int sortedListContains(List<T> sortedList, T elt, Comparator<T> comp) {
 		//We make a binary search, as divides and conquers rules...
@@ -105,6 +108,7 @@ public final class Tools {
          * @param v1
          * @param v2
          * @return
+         *      The vector product as a DPoint.
          * @throws DelaunayError
          */
 	public static DPoint vectorProduct(DPoint v1, DPoint v2) throws DelaunayError {
@@ -120,6 +124,7 @@ public final class Tools {
 	 * @param v1
 	 * @param v2
 	 * @return
+         *      true if v1 and v2 are colinear.
 	 */
 	public static boolean isColinear(DPoint v1, DPoint v2) {
 		double res = 0;
@@ -134,7 +139,7 @@ public final class Tools {
 	 * @param v1
 	 * @param v2
 	 * @return v1 - v2
-         * @throws 
+         * @throws DelaunayError
 	 */
 	public static DPoint vectorialDiff(DPoint v1, DPoint v2) throws DelaunayError {
 		DPoint v3 = new DPoint(0, 0, 0);

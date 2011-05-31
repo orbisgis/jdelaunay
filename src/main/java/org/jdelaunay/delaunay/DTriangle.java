@@ -48,9 +48,6 @@ import java.util.logging.Logger;
  * instances.
  *
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU, Alexis GUEGANNO
- * @date 2009-01-12
- * @revision 2011-03-08
- * @version 2.2
  */
 public class DTriangle extends Element implements Comparable<DTriangle>{
 
@@ -168,6 +165,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Get a list of points containing the <code>DPoint</code> that define this triangle.</p><p>
          * This method is consistent with getPoint, ie getPoints().get(i)==getPoint(i).
 	 * @return
+         * the apex of the triangle, in a list.
 	 */
 	public final List<DPoint> getPoints(){
 		List<DPoint> ret = new ArrayList<DPoint>();
@@ -219,6 +217,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Return the edges that form this triangle in an array.</p><p>
          * This method is consistent with getEdge(i), ie getEdge(i)==getEdges()[i]
 	 * @return
+         * The edges in an array.
 	 */
 	public final DEdge[] getEdges(){
 		DEdge[] ret = new DEdge[PT_NB];
@@ -272,6 +271,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Get the center of the CircumCircle
 	 *
 	 * @return
+         *      The circumcenter of the triangle, as a JTS Coordinate.
 	 */
 	public final Coordinate getCircumCenter() {
 		return new Coordinate(this.xCenter, this.yCenter, zCenter);
@@ -281,6 +281,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * check if this triangle has already been encountered (and marked if flat)
 	 * during the flat removal operation.
 	 * @return
+         * true if this triangle has already been encountered.
 	 */
 	public final boolean isSeenForFlatRemoval() {
 		return seenForFlatRemoval;
@@ -294,11 +295,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	final void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
 		this.seenForFlatRemoval = seenForFlatRemoval;
 	}
-
-	/**
-	 * Get the minimal bounding box that encloses this triangle.
-	 * @return
-	 */
+        
 	@Override
 	public final BoundaryBox getBoundingBox() {
 		BoundaryBox aBox = new BoundaryBox();
@@ -320,6 +317,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	/**
 	 * Get the leftmost point of this triangle.
 	 * @return
+         * the leftmost point of this triangle.
 	 */
 	public final DPoint getLeftMost(){
 		DPoint p1 = edges[0].getPointLeft();
@@ -333,6 +331,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param e1
 	 * @param e2
 	 * @return
+         *  the edge of the triangle that is not e1 or e2. Null if e1 or e2 is not an edge
+         *  of the triangle.
 	 */
 	public final DEdge getLastEdge(DEdge e1, DEdge e2){
 		if(e1.equals(edges[0])){
@@ -598,6 +598,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	/**
 	 * Get the normal vector to this triangle, of length 1.
 	 * @return
+         * Get the vector normal to the triangle.
 	 * @throws DelaunayError
 	 */
 	public final DPoint getNormalVector() throws DelaunayError {
@@ -619,6 +620,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	/**
 	 * Get the vector with the highest down slope in the plan associated to this triangle.
 	 * @return
+         * return the steepest vector.
 	 * @throws DelaunayError
 	 */
 	public final DPoint getSteepestVector() throws DelaunayError {
@@ -655,6 +657,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	/**
 	 * Get the slope of this DTriangle. Be careful, as the returned value will be negative
 	 * @return
+         *      the slope of this triangle, in rads
 	 * @throws DelaunayError
 	 */
 	public final double getSlope() throws DelaunayError {
@@ -666,6 +669,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	/**
 	 * get the slope of this DTriangle, in degrees. Be careful, as the returned value will be negative.
 	 * @return
+         *      the slope, in degrees.
 	 * @throws DelaunayError
 	 */
 	public final double getSlopeInDegree() throws DelaunayError {
@@ -677,6 +681,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         /**
          * Return the maximal angle og this triangle.
          * @return 
+         *      the minimal angle of this triangle.
          */
         public final double getMinAngle() {
                 double min = Double.POSITIVE_INFINITY;
@@ -735,6 +740,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * two of the edges, and must not be an extremity of the last one.
          * @param pt
          * @return 
+         *      true if pt is an apex of the triangle.
          */
         public final boolean sharedByTwoEdge(DPoint pt){
                 if(edges[0].isExtremity(pt)){
@@ -997,6 +1003,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * and their points are the same (whatever their order in the triangle).
 	 * @param other
 	 * @return
+         * true if this and other are equal
 	 */
 	@Override
 	public final boolean equals(Object other){
@@ -1028,6 +1035,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * are different !!!
 	 * @param t
 	 * @return
+         * -1, 0 or 1, using the point comparison on the center of the bounding boxes
 	 */
 	@Override
 	public final int compareTo(DTriangle t) {
@@ -1048,6 +1056,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Retrieve the angle, in degrees, at vertex number k.
 	 * @param k
 	 * @return
+         * The angle at the ith point.
 	 */
 	public final double getAngle(int k){
 		int k1 = (k + 1) % PT_NB;
@@ -1075,8 +1084,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         /**
 	 * Compute the slope of the triangle in percent
 	 *
-	 * @return
-         * @throws
+	 * @return the slope of the triangle, in percent.
+         * @throws DelaunayError
 	 */
 	public final double getSlopeInPercent() throws DelaunayError {
 		return Math.abs(getSlope()) * 100;
@@ -1086,8 +1095,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         /**
 	 * Compute the azimut of the triangle in degrees between north and steeepest vector.
          * Aspect is measured clockwise in degrees from 0, due north, to 360, again due north, coming full circle.
-	 * @return
-         * @throws
+         * @return the aspect of the slope of this triangle.
+         * @throws DelaunayError
 	 */
 	public final double getSlopeAspect() throws DelaunayError {
 		double orientationPente;
@@ -1109,10 +1118,10 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	}
 
         /**
-	 * Returns true if the triangle is turned toward the edge my edge.
+	 * Returns true if the triangle is turned toward the edge ed.
 	 * @param ed
-	 * @param triangle
 	 * @return
+         *      true if this is pouring into ed.
 	 */
 	public final boolean isTopoOrientedToEdge(DEdge ed) throws DelaunayError {
 		boolean res = false;
@@ -1174,6 +1183,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * vector. If dp is outside the triangle, we return null.
 	 * @param dp
 	 * @return
+         * The point pt of the triangle's boundary for which (dp pt) is colinear to 
+         * the steepest vector.
 	 * @throws DelaunayError
 	 */
 	public final DPoint getCounterSteepestIntersection(DPoint dp) throws DelaunayError {
@@ -1199,7 +1210,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         /**
          * Return the triangle of the mesh that contains the center of this DTriangle.
          * @return
-         * 
+         *      The DTriangle or DEdge that contains the circumcenter of this. Null if we can't find it;
          * @throws DelaunayError 
          */
         public final Element getCircumCenterContainer() throws DelaunayError{
@@ -1211,7 +1222,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * This method recursively search for pt in the mesh. If it's in this, this is
          * returned. Else, we search in the adjacent triangles.
          * @param pt
-         * @param tRef
          * @return
          *      The triangle that contains the triangle, or the last edge visited
          *      if the point is outside the mesh.
@@ -1264,6 +1274,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * Returns true if ed is equals to one of the edges that form this triangle.
          * @param ed
          * @return 
+         *  true if ed is an edge of this.
          */
         public final boolean isEdgeOf(DEdge ed){
                 for(DEdge e : edges){
@@ -1279,6 +1290,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * of this triangle.
          * @param pt
          * @return 
+         * the square of the minimal distance between pt and the apex
+         * of this triangle.
          */
         public final double getMinSquareDistance(DPoint pt) {
                 double min = Double.POSITIVE_INFINITY;
@@ -1294,7 +1307,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * is smaller than threshold.
          * @param pt
          * @param threshold
-         * @return 
+         * @return the minimal distance between pt and one of the apex
+         * is smaller than threshold.
          */
         public final boolean isCloser(DPoint pt, double threshold) {
                 double min = getMinSquareDistance(pt);
