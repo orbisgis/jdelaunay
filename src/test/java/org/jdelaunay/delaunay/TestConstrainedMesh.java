@@ -2599,4 +2599,23 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(mesh.getPoints().contains(new DPoint(5,4,0)));
                 
         }
+        
+        /**
+         * The same goal as in testRefinementHeight, but in this case the point is on
+         * an edge of the mesh.
+         * @throws DelaunayError 
+         */
+        
+        public void testRefinementHeightBis() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh() ;
+                mesh.addPoint(new DPoint(0,2,0));
+                mesh.addPoint(new DPoint(5,2,0));
+                mesh.addPoint(new DPoint(2,4,10));
+                mesh.addPoint(new DPoint(2,0,0));
+                mesh.processDelaunay();
+                int index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(2,4,10),new DPoint(2,0,0),new DPoint(0,2,0)));
+                DTriangle tri = mesh.getTriangleList().get(index);
+                mesh.insertTriangleCircumCenter(tri, false, 0.2);
+                assertTrue(mesh.getPoints().contains(new DPoint(2,2,5)));
+        }
 }
