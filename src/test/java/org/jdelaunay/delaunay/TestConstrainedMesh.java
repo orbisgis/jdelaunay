@@ -1555,6 +1555,23 @@ public class TestConstrainedMesh extends BaseUtility {
 		assertGIDUnicity(mesh);
                 assertCoherence(mesh);
 	}
+        
+        /**
+         * We must be sure that we have the good z coordinate when we split an encroached edge.
+         * @throws DelaunayError 
+         */
+        public void testZManagementUponSplit() throws DelaunayError {
+		ConstrainedMesh mesh = new ConstrainedMesh();
+		DEdge e1 = new DEdge(0,3,0,8,3,4);
+		mesh.addConstraintEdge(e1);
+		mesh.addPoint(new DPoint(3, 0, 0));
+		mesh.addPoint(new DPoint(2, 4.5, 0));
+		mesh.processDelaunay();
+		mesh.splitEncroachedEdge(e1,2);
+                assertTrue(mesh.getPoints().contains(new DPoint(2,3,1)));
+                assertTrue(mesh.getPoints().contains(new DPoint(4,3,2)));
+                
+        }
 
 	/**
 	 * Test the removal of an encroached DEdge, with a watershed that will
