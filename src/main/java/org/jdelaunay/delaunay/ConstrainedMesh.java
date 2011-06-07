@@ -1460,7 +1460,9 @@ public class ConstrainedMesh implements Serializable {
          * Insert the circumcenter of the given triangle in the mesh. This method 
          * is part of the Ruppert refinement algorithm. Consequently, it stops if it 
          * sees it will create a new encroached edge. <br/>
-         * The circumcenter won't be inserted if it is too close from another point of the mesh
+         * The circumcenter won't be inserted if it is too close from another point of the mesh. Moreover,
+         * the z-coordinate of the circumcenter is re-computed to ensure the topologic
+         * coherence of the mesh.
          * @param tri
          * @param revertible
          *      If set to true, the insertion won't be performed if it creates a new encroached 
@@ -2141,7 +2143,8 @@ public class ConstrainedMesh implements Serializable {
         /**
          * Insert the point pt in the triangle container.<br/>
          * This method does not check if there are any new encroached edge
-         * in the mesh. It just goes straig ahead.
+         * in the mesh. It just goes straight ahead. Moreover, it does not reaffect
+         * the z-coordinate of the inserted point.
          * @param pt
          *      The point to be inserted.
          * @param container
