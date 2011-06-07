@@ -1210,7 +1210,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         /**
          * Return the triangle of the mesh that contains the center of this DTriangle.
          * @return
-         *      The DTriangle or DEdge that contains the circumcenter of this. Null if we can't find it;
+         *      The DTriangle that contains the circumcenter of this. The last DEdge seen,
+         *      if the circumcenter is not in the mesh.
          * @throws DelaunayError 
          */
         public final Element getCircumCenterContainer() throws DelaunayError{
