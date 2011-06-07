@@ -1478,6 +1478,9 @@ public class ConstrainedMesh implements Serializable {
                 if(container instanceof DEdge ){
                         return (DEdge) container;
                 }
+                //We must interpolate the z value of the circumcenter.
+                double z = ((DTriangle) container).interpolateZ(cc);
+                cc.setZ(z);
                 if(revertible){
                         return insertIfNotEncroached(new DPoint(cc),(DTriangle) container, minLength);
                 } else {

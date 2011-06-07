@@ -2555,4 +2555,31 @@ public class TestConstrainedMesh extends BaseUtility {
                 }
                 
         }
+        
+        /**
+         * When adding a point during the refinement operation, we must be sure to
+         * obtain, as the z-coordinate of our new point, the interpolation of a value made
+         * in the triangle that contains the point. If this triangle is different 
+         * fomr the triangle that has this point as its circumcenter, we definitely
+         * must not keep the z-coordinate of the circumcenter.
+         * In this test, the circumcenter of the triangle we want to refine is 
+         * (5,4). Its z-coordinate must be 0, and not -15 (which is the original
+         * z coordinate of this point as the circumcenter of the triangle
+         * (0 4 10, 2 0 0, 2 8 0)
+         * @throws DelaunayError 
+         */
+        public void testRefinemenHeight() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,4,10));
+                mesh.addPoint(new DPoint(2,8,0));
+                mesh.addPoint(new DPoint(2,0,0));
+                mesh.addPoint(new DPoint(11,4,0));
+                mesh.processDelaunay();
+                int index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,4,10),new DPoint(2,0,0),new DPoint(2,8,0)));
+                DTriangle tri = mesh.getTriangleList().get(index);
+                mesh.insertTriangleCircumCenter(tri, false, 0.2);
+                assertFalse(mesh.getPoints().contains(new DPoint(5,4,-15)));
+                assertTrue(mesh.getPoints().contains(new DPoint(5,4,0)));
+                
+        }
 }
