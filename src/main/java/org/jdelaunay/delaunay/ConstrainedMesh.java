@@ -1706,9 +1706,9 @@ public class ConstrainedMesh implements Serializable {
                         boolean cont = !ed.isLocked() && !alreadySeen.contains(ed);
                         if(cont){
                                 alreadySeen.add(ed);
-                                DTriangle left = ed.getLeft();
-                                DTriangle right = ed.getRight();
                                 if(swapTriangle(ed)){
+                                        DTriangle left = ed.getLeft();
+                                        DTriangle right = ed.getRight();
                                         swapMemory.addLast(ed);
                                         LinkedList<DEdge> others = new LinkedList<DEdge>();
                                         others.add(left.getOppositeEdge(ed.getStartPoint()));
