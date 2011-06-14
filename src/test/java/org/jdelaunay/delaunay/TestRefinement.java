@@ -39,6 +39,12 @@ import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
  */
 public class TestRefinement extends BaseUtility {
         
+        /**
+         * A configuration from the contour line of the Chezine river. A NullPointerException
+         * was thrown, due to a mismanagement of the edge-triangles association
+         * during the triangle refinement.
+         * @throws DelaunayError 
+         */
         public void testRefinementChezine() throws DelaunayError {
                 ConstrainedMesh mesh = new ConstrainedMesh();
                 //Upper part.
@@ -58,5 +64,24 @@ public class TestRefinement extends BaseUtility {
                 assertCoherence(mesh);
                 assertTrue(true);
 //                2.929521276595745,13.69813829787234,0.0
+        }
+        
+        /**
+         * A configuration from the contour line of the Chezine river.
+         * @throws DelaunayError 
+         */
+        public void testRefinementChezine2() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addConstraintEdge(new DEdge (0,  0,   0, 7,  9,  0));
+                mesh.addConstraintEdge(new DEdge (7,  9,   0, 22, 20, 0));
+                mesh.addConstraintEdge(new DEdge (7,  59,  0, 12, 60, 0));
+                mesh.addConstraintEdge(new DEdge (12,60,  0, 14, 55, 0));
+                mesh.processDelaunay();
+//                mesh.edgeSplitting(1);
+//                show(mesh);
+                mesh.refineMesh(1, new SkinnyEvaluator(20));
+                assertCoherence(mesh);
+                assertTrue(true);
+                
         }
 }
