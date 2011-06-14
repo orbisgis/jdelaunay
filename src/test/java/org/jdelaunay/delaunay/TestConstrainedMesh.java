@@ -34,7 +34,6 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
 
 /**
  * This class checks that the constrained triangulation is well performed.
