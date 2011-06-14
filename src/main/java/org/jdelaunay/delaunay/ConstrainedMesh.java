@@ -1692,11 +1692,13 @@ public class ConstrainedMesh implements Serializable {
         /**
          * This implementation of the flip flap algorithm has two main differences 
          * with processBadEdges() : <br/>
-         *  * It sotres all the swap operations it does in the deque swapMemory<br/>
+         *  * It stores all the swap operations it does in the deque swapMemory<br/>
          *  * It stops when an encroached edge is found.
          * @param badEdges
          * @param swapMemory
          * @return
+         *      The found encroached DEdge, if any. If there is one, the operation 
+         *      stops, and will be reverted later (in the ruppert algorithm).
          * @throws DelaunayError 
          */
         private DEdge revertibleSwapping(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory) throws DelaunayError {
@@ -1719,8 +1721,8 @@ public class ConstrainedMesh implements Serializable {
                                                 if(edge.isEncroached()){
                                                       return edge;  
                                                 }else if(edge.getLeft() != null && edge.getRight() != null
-                                                        && !badEdgesQueueList.contains(edge)){
-                                                        badEdgesQueueList.add(edge);
+                                                        && !badEdges.contains(edge)){
+                                                        badEdges.add(edge);
                                                 }
                                         }
                                 }
