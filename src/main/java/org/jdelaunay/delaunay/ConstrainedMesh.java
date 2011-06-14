@@ -2317,6 +2317,7 @@ public class ConstrainedMesh implements Serializable {
                         //We change an edge in left.
                         //left is not coherent anymore
                         left.setEdge(left.getEdgeIndex(l2), lastLeft);
+                        lastLeft.setLeft(left);
                         //We add the newly created triangle and edge to the corresponding lists.
                         edgeGID++;
                         lastLeft.setGID(edgeGID);
@@ -2338,6 +2339,7 @@ public class ConstrainedMesh implements Serializable {
                         //We change an ede in right.
                         //right is not coherent anymore.
                         right.setEdge(right.getEdgeIndex(r2), lastRight);
+                        lastRight.setRight(right);
                         //We add the newly created triangle and edge to the corresponding lists.
                         edgeGID++;
                         lastRight.setGID(edgeGID);

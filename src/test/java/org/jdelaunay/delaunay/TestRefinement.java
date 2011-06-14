@@ -35,7 +35,7 @@ import java.util.List;
 import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
 
 /**
- *
+ * This class gathers some tests related to the mesh refinement.
  * @author alexis
  */
 public class TestRefinement extends BaseUtility {
@@ -203,16 +203,18 @@ public class TestRefinement extends BaseUtility {
          */
         
         public void testRefinementHeightBis() throws DelaunayError {
-                ConstrainedMesh mesh = new ConstrainedMesh() ;
+                ConstrainedMesh mesh = new ConstrainedMesh();
                 mesh.addPoint(new DPoint(0,2,0));
                 mesh.addPoint(new DPoint(5,2,0));
                 mesh.addPoint(new DPoint(2,4,10));
                 mesh.addPoint(new DPoint(2,0,0));
                 mesh.processDelaunay();
+                assertTrianglesTopology(mesh);
                 int index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(2,4,10),new DPoint(2,0,0),new DPoint(0,2,0)));
                 DTriangle tri = mesh.getTriangleList().get(index);
                 mesh.insertTriangleCircumCenter(tri, false, 0.2);
                 assertTrue(mesh.getPoints().contains(new DPoint(2,2,5)));
+//                show(mesh);
                 assertTrianglesTopology(mesh);
         }
         
