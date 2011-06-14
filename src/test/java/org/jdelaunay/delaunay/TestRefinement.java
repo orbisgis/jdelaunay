@@ -51,8 +51,9 @@ public class TestRefinement extends BaseUtility {
                 mesh.addConstraintEdge(new DEdge (      6, 3, 0,  
                                                         12, 4, 0));
                 mesh.processDelaunay();
-                show(mesh);
                 mesh.refineMesh(1, new SkinnyEvaluator(15));
+//                show(mesh);
+                assertCoherence(mesh);
                 assertTrue(true);
         }
 }

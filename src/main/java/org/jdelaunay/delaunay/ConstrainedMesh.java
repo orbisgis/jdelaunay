@@ -1718,12 +1718,13 @@ public class ConstrainedMesh implements Serializable {
          *  * It stops when an encroached edge is found.
          * @param badEdges
          * @param swapMemory
+         * @param pt the point we're trying to insert.
          * @return
          *      The found encroached DEdge, if any. If there is one, the operation 
          *      stops, and will be reverted later (in the ruppert algorithm).
          * @throws DelaunayError 
          */
-        private DEdge revertibleSwapping(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory) throws DelaunayError {
+        private DEdge revertibleSwapping(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory, DPoint pt) throws DelaunayError {
                 LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
                 while(!badEdges.isEmpty()){
                         DEdge ed = badEdges.removeFirst();
@@ -1740,7 +1741,7 @@ public class ConstrainedMesh implements Serializable {
                                         others.add(right.getOppositeEdge(ed.getStartPoint()));
                                         others.add(right.getOppositeEdge(ed.getEndPoint()));
                                         for(DEdge edge : others){
-                                                if(edge.isEncroached()){
+                                                if(edge.isEncroachedBy(pt)){
                                                       return edge;  
                                                 }else if(edge.getLeft() != null && edge.getRight() != null
                                                         && !badEdges.contains(edge)){
@@ -1986,7 +1987,7 @@ public class ConstrainedMesh implements Serializable {
                         return ret;
                 }
                 //Second step : we proceed to our revertible swap.
-                ret = revertibleSwapping(badEdges, swapMem);
+                ret = revertibleSwapping(badEdges, swapMem, pt);
                 //If the returned value is not null, we come back.
                 if(ret != null){
                         Iterator<DEdge> it = swapMem.descendingIterator();
@@ -2026,7 +2027,7 @@ public class ConstrainedMesh implements Serializable {
                         return ret;
                 }
                 //
-                ret = revertibleSwapping(badEdges, swapMem);
+                ret = revertibleSwapping(badEdges, swapMem, pt);
                 if(ret != null){
                         Iterator<DEdge> it = swapMem.descendingIterator();
                         proceedSwaps(it);
