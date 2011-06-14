@@ -1220,6 +1220,19 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         }
         
         /**
+         * Return the triangle of the mesh that contains the center of this DTriangle.
+         * @return
+         *      The DTriangle that contains the circumcenter of this.<br />
+         *      The last DEdge seen, if the circumcenter is not in the mesh. <br />
+         *      <code>null<code> if a constraint is crossed while searching for the circumcenter.
+         * @throws DelaunayError 
+         */
+        public final Element getCircumCenterContainerSafe() throws DelaunayError{
+                DPoint cc = new DPoint(getCircumCenter());
+                return searchPointImpl(cc, true);
+        }
+        
+        /**
          * This method recursively search for pt in the mesh. If it's in this, this is
          * returned. Else, we search in the adjacent triangles.
          * @param pt
@@ -1229,6 +1242,17 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * @throws DelaunayError 
          */
         public final Element searchPointContainer(final DPoint pt) throws DelaunayError {
+                return searchPointImpl(pt, false);
+        }
+        
+        /**
+         * Common implementation for the search operations.
+         * @param pt
+         * @param safe
+         * @return
+         * @throws DelaunayError 
+         */
+        private Element searchPointImpl(final DPoint pt, final boolean safe) throws DelaunayError {
                 Element ret = null;
                 if(contains(pt)){
                         return this;
@@ -1236,14 +1260,17 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                         for(DEdge ed : edges){
                                 DPoint op = getOppositePoint(ed);
                                 if(ed.isRight(pt) && ed.isLeft(op)){
-                                        if(ed.getRight() != null){
+                                        if(ed.isLocked() && safe){
+                                                return null;
+                                        } else if(ed.getRight() != null){
                                                 return ed.getRight().searchPointContainer(pt );
                                         } else {
                                                 ret = ed;
                                         }
-                                } 
-                                if(ed.isLeft(pt) && ed.isRight(op)){
-                                        if(ed.getLeft() != null){
+                                } else if(ed.isLeft(pt) && ed.isRight(op)){
+                                        if(ed.isLocked() && safe){
+                                                return null;
+                                        } else if(ed.getLeft() != null){
                                                 return ed.getLeft().searchPointContainer(pt);
                                         } else {
                                                 ret = ed;
@@ -1252,6 +1279,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                         }
                 }             
                 return ret;
+                
         }
         
         /**

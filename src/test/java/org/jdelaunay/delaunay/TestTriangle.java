@@ -1004,4 +1004,27 @@ public class TestTriangle extends BaseUtility {
                 double min = tri.getMinAngle();
                 assertEquals(21.805, min, 0.01);
         }
+        
+        /**
+         * We must be able to find the point containers only when we don't intersect any constraint.
+         */
+        public void testFindCircumCenterContainerSafe() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,3,0));
+                mesh.addPoint(new DPoint(4,3,0));
+                mesh.addConstraintEdge(new DEdge(new DPoint(2,0,0), new DPoint(2,6,0)));
+                mesh.processDelaunay();
+                int index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,3,0), new DPoint(2,6,0),new DPoint(2,0,0)));
+                DTriangle tri = mesh.getTriangleList().get(index);
+                assertNull(tri.getCircumCenterContainerSafe());
+                mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,3,0));
+                mesh.addPoint(new DPoint(4,3,0));
+                mesh.addConstraintEdge(new DEdge(new DPoint(2,0,0), new DPoint(2,6,0)));
+                mesh.processDelaunay();
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,3,0), new DPoint(2,6,0),new DPoint(2,0,0)));
+                tri = mesh.getTriangleList().get(index);
+                mesh.getConstraintEdges().get(0).swap();
+                assertNull(tri.getCircumCenterContainerSafe());
+        }
 }
