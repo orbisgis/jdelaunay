@@ -2036,16 +2036,23 @@ public class ConstrainedMesh implements Serializable {
                 if(ret != null){
                         Iterator<DEdge> it = swapMem.descendingIterator();
                         proceedSwaps(it);
-                        if(!container.belongsTo(pt)){
-                                //We have updated the container using eMem0
-                                        eMem0.deepSwap();
+                        //We have made two swaps - the references from the triangles
+                        //to the edges must be reverted tobe back in the right order.
+                        eMem0.deepSwap();
+                        //Due to the swap operations, the container reference may not contain
+                        //pt anymore. We search for our triangle back.
+                        DTriangle actualContainer = container;
+                        if(eMem0.getLeft() != null && eMem0.getLeft().belongsTo(pt)){
+                                actualContainer = eMem0.getLeft();
+                        } else if(eMem0.getRight() != null && eMem0.getRight().belongsTo(pt)){
+                                actualContainer = eMem0.getRight();
                         }
                         checkMemEdges(eMem1, pt, triangleList.get(triangleList.size() -1), 
                                 triangleList.get(triangleList.size() -2));
                         checkMemEdges(eMem2, pt, triangleList.get(triangleList.size() -1), 
                                 triangleList.get(triangleList.size() -2));
 
-                        revertPointInTriangleInsertion(container, pt, mem, eMem1, eMem2);
+                        revertPointInTriangleInsertion(actualContainer, pt, mem, eMem1, eMem2);
                 }
                 return ret;
         }

@@ -274,12 +274,15 @@ public class TestRefinement extends BaseUtility {
          */
         public void testRefinementChezine3() throws DelaunayError {
                 ConstrainedMesh mesh = new ConstrainedMesh();
-                mesh.addConstraintEdge(new DEdge (0,  284, 0, 20, 286, 0));
-                mesh.addConstraintEdge(new DEdge (20, 36,  0, 40,   0, 0));
-                mesh.addConstraintEdge(new DEdge (20, 286, 0, 40, 300, 0));
+                mesh.addConstraintEdge(new DEdge (0,  142, 0, 10, 143, 0));
+                mesh.addConstraintEdge(new DEdge (10,  18, 0, 20,   0, 0));
+                mesh.addConstraintEdge(new DEdge (10, 143, 0, 20, 149, 0));
                 mesh.processDelaunay();
+                mesh.edgeSplitting(1);
+                assertTrianglesTopology(mesh);
 //                show(mesh);
-                mesh.refineMesh(1, new SkinnyEvaluator(15));
+                mesh.refineMesh(.5, new SkinnyEvaluator(15));
+                assertTrianglesTopology(mesh);
                 assertTrue(true);
         }
 }
