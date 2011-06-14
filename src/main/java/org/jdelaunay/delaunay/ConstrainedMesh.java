@@ -1298,6 +1298,17 @@ public class ConstrainedMesh implements Serializable {
                 if(minLength <=0){
                         throw new IllegalArgumentException("The minimum length must be strictly positive !");
                 }
+		edgeSplitting(minLength);
+                triangleRefinement(minLength, ev);
+	}
+        
+        /**
+         * Edges are split if encroached.
+	 * @param minLength
+	 *		The minimum length of an edge that could be inserted during the refinement.
+	 * @throws DelaunayError
+         */
+        final void edgeSplitting(double minLength) throws DelaunayError {
 		int sizeEdges = edges.size();
 		DEdge ed;
 		for(int i = 0; i< sizeEdges; i++){
@@ -1306,6 +1317,16 @@ public class ConstrainedMesh implements Serializable {
 				splitEncroachedEdge(ed, minLength);
 			}
 		}
+                
+        }
+        
+        /**
+         * We refine the triangles here.
+         * @param minLength
+         * @param ev
+         * @throws DelaunayError 
+         */
+        final void triangleRefinement(double minLength, InsertionEvaluator ev) throws DelaunayError {
                 DTriangle dt;
                 DEdge ret;
                 LinkedList<DTriangle> mem = new LinkedList<DTriangle>();
@@ -1323,7 +1344,8 @@ public class ConstrainedMesh implements Serializable {
                         }
                 }
                 triangleList = mem;
-	}
+                
+        }
 
 	/**
 	 * Split the edges that have benn found to be encroached.
