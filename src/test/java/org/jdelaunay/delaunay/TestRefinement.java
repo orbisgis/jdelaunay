@@ -246,7 +246,10 @@ public class TestRefinement extends BaseUtility {
         }
         
         /**
-         * A configuration from the contour line of the Chezine river.
+         * A configuration from the contour line of the Chezine river. A NPE
+         * was thrown, due to a mismanagement of the data structures while trying to add
+         * a point on an existing edge of the mesh. This has been fixed, by ensuring we
+         * associate well the new edges to their triangles.
          * @throws DelaunayError 
          */
         public void testRefinementChezine2() throws DelaunayError {
@@ -262,7 +265,21 @@ public class TestRefinement extends BaseUtility {
                 mesh.refineMesh(1, new SkinnyEvaluator(20));
                 assertCoherence(mesh);
                 assertTrue(true);
-                DTriangle tri = mesh.getTriangleList().get(0);
                 
+        }
+        
+        /**
+         * A configuration from the contour line of the Chezine river.
+         * @throws DelaunayError 
+         */
+        public void testRefinementChezine3() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addConstraintEdge(new DEdge (0,  284, 0, 20, 286, 0));
+                mesh.addConstraintEdge(new DEdge (20, 36,  0, 40,   0, 0));
+                mesh.addConstraintEdge(new DEdge (20, 286, 0, 40, 300, 0));
+                mesh.processDelaunay();
+//                show(mesh);
+                mesh.refineMesh(1, new SkinnyEvaluator(15));
+                assertTrue(true);
         }
 }
