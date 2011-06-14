@@ -164,6 +164,12 @@ public class BaseUtility extends TestCase {
 			assertTrue(correct);
 		}
 	}
+        
+        public void assertTrianglesTopology(ConstrainedMesh mesh){
+                for(DTriangle tri : mesh.getTriangleList()){
+                        assertTrue(tri.checkTopology());
+                }
+        }
 
 	/**
 	 * Check if each point is used in the Mesh
