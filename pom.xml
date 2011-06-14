@@ -44,7 +44,7 @@
                 <repository>
                         <id>geosysin</id>
                         <name>Geosysin repository</name>
-                        <url>http://geosysin.iict.ch/irstv-web/maven-repo</url>
+                        <url>http://repo.orbisgis.org</url>
                 </repository>
         </repositories>
         <distributionManagement>
