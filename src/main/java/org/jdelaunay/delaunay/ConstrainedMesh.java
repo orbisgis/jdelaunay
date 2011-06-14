@@ -1339,7 +1339,7 @@ public class ConstrainedMesh implements Serializable {
                                 } else {
                                         mem.add(triangleList.remove(0));
                                 }
-                        }else {
+                        }else { 
                                 mem.add(triangleList.remove(0));
                         }
                 }
@@ -1493,22 +1493,27 @@ public class ConstrainedMesh implements Serializable {
          *      If the distance between the circumcenter and the closest point of the 
          * containing triangle is inferior to minLength, the circumcenter is not inserted.
          * @return
-         *      The encroached edge created by this insertion, if any.
+         *      The encroached edge created by this insertion, if any, or null, if 
+         *      a constraint hides the circum center of its triangle, or if the insertion
+         *      has been performed.
          * @throws DelaunayError 
          */
         public final DEdge insertTriangleCircumCenter(DTriangle tri, boolean revertible, double minLength) throws DelaunayError {
-                Element container = tri.getCircumCenterContainer();
+                Element container = tri.getCircumCenterContainerSafe();
                 DPoint cc = new DPoint(tri.getCircumCenter());
                 if(container instanceof DEdge ){
                         return (DEdge) container;
+                } else if ( container == null){
+                        return null;
                 }
                 //We must interpolate the z value of the circumcenter.
                 double z = ((DTriangle) container).interpolateZ(cc);
                 cc.setZ(z);
+                DPoint pt = new DPoint(cc);
                 if(revertible){
-                        return insertIfNotEncroached(new DPoint(cc),(DTriangle) container, minLength);
+                        return insertIfNotEncroached(pt,(DTriangle) container, minLength);
                 } else {
-                        insertPointInTriangle(new DPoint(cc), (DTriangle) container, minLength);
+                        insertPointInTriangle(pt, (DTriangle) container, minLength);
                         return null;
                 }
                 
@@ -2252,6 +2257,7 @@ public class ConstrainedMesh implements Serializable {
                         container.setEdge(1, e1);
                         container.setEdge(2, e3);
                 }
+                container.forceCoherenceWithEdges();
                 addTriangle(tri2);
                 edges.add(e1);
                 edges.add(e2);

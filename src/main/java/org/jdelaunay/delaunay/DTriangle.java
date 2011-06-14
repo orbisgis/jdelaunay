@@ -248,7 +248,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param i
 	 * @param anEdge
          * @return
-         *      <code>true</code> if anEdge as been successfully inserted, false otherwise.
+         *      <code>true</code> if anEdge has been successfully inserted, false otherwise.
 	 */
 	public final boolean setEdge(int i, DEdge anEdge) {
 		if (0<=i && i<=2) {

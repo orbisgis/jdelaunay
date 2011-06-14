@@ -30,6 +30,7 @@
  */
 package org.jdelaunay.delaunay;
 
+import java.util.Collections;
 import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
 
 /**
@@ -52,8 +53,10 @@ public class TestRefinement extends BaseUtility {
                                                         12, 4, 0));
                 mesh.processDelaunay();
                 mesh.refineMesh(1, new SkinnyEvaluator(15));
+                Collections.sort(mesh.getTriangleList());
 //                show(mesh);
                 assertCoherence(mesh);
                 assertTrue(true);
+//                2.929521276595745,13.69813829787234,0.0
         }
 }
