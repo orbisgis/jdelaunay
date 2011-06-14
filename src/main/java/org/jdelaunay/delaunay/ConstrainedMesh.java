@@ -1378,11 +1378,9 @@ public class ConstrainedMesh implements Serializable {
 		//We prepare the objects that will be added after ed will have been split.
 		if(left != null){
 			ed1 = new DEdge(middle, left.getOppositePoint(ed));
-			ed1.setGID(++edgeGID);
 			last1 = left.getOppositeEdge(ed.getEndPoint());
 			startOp1 = left.getOppositeEdge(ed.getStartPoint());
 			other1 = new DTriangle(ed1, secondHalf, startOp1);
-			other1.setGID(++triangleGID);
 		}
 		DEdge ed2 = null;
 		DEdge last2 = null;
@@ -1390,11 +1388,9 @@ public class ConstrainedMesh implements Serializable {
 		DTriangle other2 = null;
 		if(right != null){
 			ed2 = new DEdge(middle, right.getOppositePoint(ed));
-			ed2.setGID(++edgeGID);
 			last2 = right.getOppositeEdge(ed.getEndPoint());
 			startOp2 = right.getOppositeEdge(ed.getStartPoint());
 			other2 = new DTriangle(ed2, secondHalf, startOp2);
-			other2.setGID(++triangleGID);
 		}
 		//this new edge is locked if ed was.
 		secondHalf.setLocked(ed.isLocked());
@@ -1417,11 +1413,14 @@ public class ConstrainedMesh implements Serializable {
 			}
 			secondHalf.setLeft(other1);
 			//We add the new triangle to the list of triangles.
+			other1.setGID(++triangleGID);
 			triangleList.add(other1);
 			//We fill the bad edges queue.
 			badEdgesQueueList.add(last1);
 			badEdgesQueueList.add(ed1);
 			badEdgesQueueList.add(startOp1);
+                        //we add the edge to the list of edges
+			ed1.setGID(++edgeGID);
 			edges.add(ed1);
 		}
 		//We try to process the right triangle of the encroached edge
@@ -1440,11 +1439,14 @@ public class ConstrainedMesh implements Serializable {
 			}
 			secondHalf.setRight(other2);
 			//We add the new triangle to the list of triangles.
+			other2.setGID(++triangleGID);
 			triangleList.add(other2);
 			//We fill the bad edges queue.
 			badEdgesQueueList.add(last2);
 			badEdgesQueueList.add(ed2);
 			badEdgesQueueList.add(startOp2);
+                        //we add the edge to the list of edges
+			ed2.setGID(++edgeGID);
 			edges.add(ed2);
 		}
 		//We perform the filap flap operations.

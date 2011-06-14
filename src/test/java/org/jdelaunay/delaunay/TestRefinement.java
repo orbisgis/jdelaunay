@@ -278,7 +278,7 @@ public class TestRefinement extends BaseUtility {
                 mesh.addConstraintEdge(new DEdge (10,  18, 0, 20,   0, 0));
                 mesh.addConstraintEdge(new DEdge (10, 143, 0, 20, 149, 0));
                 mesh.processDelaunay();
-                mesh.edgeSplitting(1);
+//                mesh.edgeSplitting(1);
                 assertTrianglesTopology(mesh);
 //                show(mesh);
                 mesh.refineMesh(.5, new SkinnyEvaluator(15));
