@@ -70,6 +70,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	private double radius;
 
 	private boolean seenForFlatRemoval;
+        //This attribute will be used to manage triangles while refining the mesh
+        private boolean processed;
 
 	/**
 	 * Initialize data structure This method is called by every constructor
@@ -81,6 +83,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		zCenter = 0;
 		this.radius = -1;
 		seenForFlatRemoval = false;
+                processed = false;
 	}
 
 	/**
@@ -295,6 +298,23 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	final void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
 		this.seenForFlatRemoval = seenForFlatRemoval;
 	}
+        
+        /**
+         * If true, the triangle is supposed to be in the structure that stores the 
+         * already processed triangles.
+         * @return 
+         */
+        final boolean isProcessed() {
+                return processed;
+        }
+        
+        /**
+         * Set the processed attribute.
+         * @param pro 
+         */
+        final void setProcessed(boolean pro) {
+                processed = pro;
+        }
         
 	@Override
 	public final BoundaryBox getBoundingBox() {

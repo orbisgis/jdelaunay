@@ -1027,4 +1027,13 @@ public class TestTriangle extends BaseUtility {
                 mesh.getConstraintEdges().get(0).swap();
                 assertNull(tri.getCircumCenterContainerSafe());
         }
+        
+        public void testIsProcessed() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DPoint(0,0,0), new DPoint(5,3,0), new DPoint(8,7,0));
+                assertFalse(dt.isProcessed());
+                dt.setProcessed(true);
+                assertTrue(dt.isProcessed());
+                dt.setProcessed(false);
+                assertFalse(dt.isProcessed());
+        }
 }
