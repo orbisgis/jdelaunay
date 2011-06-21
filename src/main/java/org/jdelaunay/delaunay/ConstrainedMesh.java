@@ -1342,7 +1342,6 @@ public class ConstrainedMesh implements Serializable {
                 //processed again.
                 processed = new HashMap<Integer, DTriangle>(triangleList.size());
                 remaining = new HashMap<Integer, DTriangle>(triangleList.size());
-                buffer = new HashMap<Integer, DTriangle>();
                 fillRemainingFromTriangles();
                 //triangleList is still alive, but empty. Consequently, it can still be used
                 //in the following steps - in splitEncroachedEdge, for instance.
@@ -1351,6 +1350,7 @@ public class ConstrainedMesh implements Serializable {
                         Map.Entry<Integer, DTriangle> entry = treatSet.iterator().next();
                         dt = entry.getValue();
                         if(ev.evaluate(dt)){
+                                buffer = new HashMap<Integer, DTriangle>();
                                 ret = insertTriangleCircumCenter(dt, true, minLength);
                                 if(ret != null && ret.get2DLength()>2*minLength){
                                         splitEncroachedEdge(ret, minLength);
@@ -2186,64 +2186,9 @@ public class ConstrainedMesh implements Serializable {
                         } else if(eMem0.getRight() != null && eMem0.getRight().belongsTo(pt)){
                                 actualContainer = eMem0.getRight();
                         }
-                        checkMemEdges(eMem1, pt, triangleList.get(triangleList.size() -1), 
-                                triangleList.get(triangleList.size() -2));
-                        checkMemEdges(eMem2, pt, triangleList.get(triangleList.size() -1), 
-                                triangleList.get(triangleList.size() -2));
-                        fixLastTriangles(eMem1, eMem2, pt);
                         revertPointInTriangleInsertion(actualContainer, pt, mem, eMem1, eMem2);
                 }
                 return ret;
-        }
-        
-        /**
-         * In some configurations, one or more of the two las triangles of the list 
-         * are just not the one we want to remove. We must force them to be in the right place...
-         * @param e1
-         * @param e2
-         * @param forget 
-         */
-        private void fixLastTriangles(DEdge e1, DEdge e2, DPoint forget){
-                DTriangle l1 = triangleList.get(triangleList.size()-1);
-                DTriangle l2 = triangleList.get(triangleList.size()-2);
-                if(!l1.belongsTo(forget) && !l2.belongsTo(forget)){
-                        //The two triangles in the end of the list must be changed.
-                        int i1 = triangleList.indexOf(getTriangleToForget(e1, forget));
-                        int i2 = triangleList.indexOf(getTriangleToForget(e2, forget));
-                        Collections.swap(triangleList, triangleList.size()-1, i1);
-                        Collections.swap(triangleList, triangleList.size()-2, i2);
-                        
-                } else if(!l1.belongsTo(forget)){
-                        //We must change triangleList.size()-1
-                        int i;
-                        if(l1.isEdgeOf(e2)){
-                                i=triangleList.indexOf(getTriangleToForget(e1, forget));
-                        } else {
-                                i=triangleList.indexOf(getTriangleToForget(e2, forget));                                
-                        }
-                        Collections.swap(triangleList, triangleList.size()-1, i);
-                        
-                } else if(!l2.belongsTo(forget)){
-                        //We must change triangleList.size()-2
-                        int i;
-                        if(l1.isEdgeOf(e2)){
-                                i=triangleList.indexOf(getTriangleToForget(e1, forget));
-                        } else {
-                                i=triangleList.indexOf(getTriangleToForget(e2, forget));                                
-                        }
-                        Collections.swap(triangleList, triangleList.size()-2, i);
-                        
-                }
-        }
-        
-        private DTriangle getTriangleToForget(DEdge e, DPoint forget){
-                if(e.getLeft().belongsTo(forget)){
-                        return e.getLeft();
-                } else if(e.getRight().belongsTo(forget)){
-                        return e.getRight();
-                } else {
-                        return null;
-                }
         }
         
         /**
