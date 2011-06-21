@@ -1380,7 +1380,7 @@ public class ConstrainedMesh implements Serializable {
 	final void splitEncroachedEdge(DEdge ed, double minLength) throws DelaunayError {
 		//We must try to avoid creation of new objects. Rather use getters and setters
 		//instead, as we will not be forced to use sorted sets this way.
-                badEdgesQueueList = new LinkedList<DEdge>();
+                LinkedList<DEdge> li = new LinkedList<DEdge>();
 		DTriangle left = ed.getLeft();
 		DTriangle right = ed.getRight();
 		DPoint middle = ed.getMiddle();
@@ -1417,7 +1417,6 @@ public class ConstrainedMesh implements Serializable {
 		secondHalf.setLocked(ed.isLocked());
 		//We must set a new end to ed.
 		ed.setEndPoint(middle);
-		badEdgesQueueList = new LinkedList<DEdge>();
 		//We try to process the left triangle of the encroached edge
 		if(left != null){
 			//we must replace an edge of left
@@ -1437,9 +1436,9 @@ public class ConstrainedMesh implements Serializable {
 			other1.setGID(++triangleGID);
 			triangleList.add(other1);
 			//We fill the bad edges queue.
-			badEdgesQueueList.add(last1);
-			badEdgesQueueList.add(ed1);
-			badEdgesQueueList.add(startOp1);
+			li.add(last1);
+			li.add(ed1);
+			li.add(startOp1);
                         //we add the edge to the list of edges
 			ed1.setGID(++edgeGID);
 			edges.add(ed1);
@@ -1463,15 +1462,15 @@ public class ConstrainedMesh implements Serializable {
 			other2.setGID(++triangleGID);
 			triangleList.add(other2);
 			//We fill the bad edges queue.
-			badEdgesQueueList.add(last2);
-			badEdgesQueueList.add(ed2);
-			badEdgesQueueList.add(startOp2);
+			li.add(last2);
+			li.add(ed2);
+			li.add(startOp2);
                         //we add the edge to the list of edges
 			ed2.setGID(++edgeGID);
 			edges.add(ed2);
 		}
 		//We perform the filap flap operations.
-		processBadEdges();
+		revertibleSwapping(li, new LinkedList<DEdge>() , middle, false);
 		//The algorithm is recursive, let's continue !
                 if(ed.isLocked()){
                         constraintEdges.add(secondHalf);
@@ -1747,12 +1746,14 @@ public class ConstrainedMesh implements Serializable {
          * @param badEdges
          * @param swapMemory
          * @param pt the point we're trying to insert.
+         * @param revert true if we want to stop when we find an encroached edge.
          * @return
          *      The found encroached DEdge, if any. If there is one, the operation 
          *      stops, and will be reverted later (in the ruppert algorithm).
          * @throws DelaunayError 
          */
-        private DEdge revertibleSwapping(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory, DPoint pt) throws DelaunayError {
+        private DEdge revertibleSwapping(LinkedList<DEdge> badEdges, Deque<DEdge> swapMemory,
+                                DPoint pt, boolean revert) throws DelaunayError {
                 LinkedList<DEdge> alreadySeen = new LinkedList<DEdge>();
                 while(!badEdges.isEmpty()){
                         DEdge ed = badEdges.removeFirst();
@@ -1767,11 +1768,11 @@ public class ConstrainedMesh implements Serializable {
                                         putInBuffer(right);
                                         LinkedList<DEdge> others = new LinkedList<DEdge>();
                                         others.add(left.getOppositeEdge(ed.getStartPoint()));
-                                        others.add(right.getOppositeEdge(ed.getEndPoint()));
+                                        others.add(left.getOppositeEdge(ed.getEndPoint()));
                                         others.add(right.getOppositeEdge(ed.getStartPoint()));
                                         others.add(right.getOppositeEdge(ed.getEndPoint()));
                                         for(DEdge edge : others){
-                                                if(edge.isEncroachedBy(pt)){
+                                                if(revert && edge.isEncroachedBy(pt)){
                                                       return edge;  
                                                 }else if(edge.getLeft() != null && edge.getRight() != null
                                                         && !badEdges.contains(edge)){
@@ -2130,7 +2131,7 @@ public class ConstrainedMesh implements Serializable {
                         return ret;
                 }
                 //Second step : we proceed to our revertible swap.
-                ret = revertibleSwapping(badEdges, swapMem, pt);
+                ret = revertibleSwapping(badEdges, swapMem, pt, true);
                 //If the returned value is not null, we come back.
                 if(ret != null){
                         Iterator<DEdge> it = swapMem.descendingIterator();
@@ -2173,7 +2174,7 @@ public class ConstrainedMesh implements Serializable {
                         return ret;
                 }
                 //
-                ret = revertibleSwapping(badEdges, swapMem, pt);
+                ret = revertibleSwapping(badEdges, swapMem, pt, true);
                 if(ret != null){
                         Iterator<DEdge> it = swapMem.descendingIterator();
                         proceedSwaps(it);
