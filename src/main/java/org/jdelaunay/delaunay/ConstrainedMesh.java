@@ -45,6 +45,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
 
@@ -103,6 +104,11 @@ public class ConstrainedMesh implements Serializable {
 	//We need a hashmap to classify the weights of the edges, according to their
 	//properties.
 	private Map<Integer, Integer> weights;
+        //we need to store triangles in a map, temporarily. These maps are here, and are not 
+        //intended to accessed externally - Don't search for accessors !
+        private Map<Integer, DTriangle> processed = null;
+        private Map<Integer, DTriangle> remaining = null;
+        private Map<Integer, DTriangle> buffer = null;
 	// constants
 	public static final int MIN_POINTS_NUMBER = 3;
 	public static final int MAXITER = 5;
@@ -1329,22 +1335,39 @@ public class ConstrainedMesh implements Serializable {
         final void triangleRefinement(double minLength, InsertionEvaluator ev) throws DelaunayError {
                 DTriangle dt;
                 DEdge ret;
-                LinkedList<DTriangle> mem = new LinkedList<DTriangle>();
-                while(!triangleList.isEmpty()) {
-                        dt = triangleList.get(0);
+                //We will use three maps to process our triangles efficietly. The first one 
+                //contains the triangles that are to be treated. The seconf one contains
+                //The triangles that have been treated. The last one is used to 
+                //retrieve in the treated triangles the one that need to be (potentially)
+                //processed again.
+                processed = new HashMap<Integer, DTriangle>(triangleList.size());
+                remaining = new HashMap<Integer, DTriangle>(triangleList.size());
+                buffer = new HashMap<Integer, DTriangle>();
+                while(!triangleList.isEmpty()){
+                        DTriangle tem = triangleList.remove(0);
+                        remaining.put(tem.getGID(), tem);
+                }
+                Set<Map.Entry<Integer, DTriangle>> treatSet = remaining.entrySet();
+                while(!treatSet.isEmpty()) {
+                        Map.Entry<Integer, DTriangle> entry = treatSet.iterator().next();
+                        dt = entry.getValue();
                         if(ev.evaluate(dt)){
                                 ret = insertTriangleCircumCenter(dt, true, minLength);
                                 if(ret != null && ret.get2DLength()>2*minLength){
                                         splitEncroachedEdge(ret, minLength);
                                 } else {
-                                        mem.add(triangleList.remove(0));
+                                        remaining.remove(entry.getKey());
+                                        processed.put(entry.getKey(), entry.getValue());
                                 }
                         }else { 
-                                mem.add(triangleList.remove(0));
+                                remaining.remove(entry.getKey());
+                                processed.put(entry.getKey(), entry.getValue());
                         }
                 }
-                triangleList = mem;
-                
+                triangleList = new LinkedList<DTriangle>(processed.values());
+                processed = null;
+                remaining = null;
+                buffer = null;
         }
         
 	/**
@@ -1807,6 +1830,36 @@ public class ConstrainedMesh implements Serializable {
 	}
         
         /**
+         * Put the given triangle in the buffer map. We use the processed attribute of the 
+         * triangle to know ig it is in the good strucutre, ie in processed. Keep
+         * it coherent, so...
+         * @param tri 
+         */
+        private void putInBuffer(DTriangle tri) {
+                if(buffer != null && processed != null && remaining != null && tri.isProcessed()){
+                        //While refining the mesh, all the triangles
+                        //that change during the swap operations must be 
+                        //added to the buffer - If they are not in the 
+                        //processed map anymore.
+                        buffer.put(tri.getGID(), tri);
+                }
+        }
+        
+        /**
+         * Transfer all the entries that are present in buffer in remaining.
+         */
+        private void fromBufferToRemaining() {
+                Set<Map.Entry<Integer, DTriangle>> entries = buffer.entrySet();
+                Iterator<Map.Entry<Integer, DTriangle>> iter = entries.iterator();
+                while(iter.hasNext()){
+                        Map.Entry<Integer, DTriangle> ent = iter.next();
+                        ent.getValue().setProcessed(false);
+                        remaining.put(ent.getKey(), ent.getValue());
+                        processed.remove(ent.getKey());
+                }
+        }
+        
+        /**
          * This method check that triangles associated to ed can be swapped.
          * @param ed
          * @return 
@@ -1867,6 +1920,53 @@ public class ConstrainedMesh implements Serializable {
                         right.recomputeCenter();
                 }
         }
+        /**
+         * The operation that "revert" a flip flap. Flip-flaps are supposed to be 
+         * symetric, but the implementation given in flip-flap has border effects on
+         * address of the objects, and on the GIDs. We can't bear such effects while refining
+         * the mesh, because they could lead to incoherences in the data structures (map) we use
+         * then.
+         * @param ed
+         * @throws DelaunayError 
+         */
+        final void revertFlipFlap(DEdge ed) throws DelaunayError {
+                //We retrieve all the needed objects.
+                DTriangle left = ed.getLeft();
+                DTriangle right = ed.getRight();
+                DPoint p1 = ed.getStartPoint();
+                DPoint p2 = ed.getEndPoint();
+                DPoint p3 = left.getAlterPoint(p1, p2);
+                DPoint p4 = right.getAlterPoint(p1, p2);
+                final DEdge anEdge11 = left.getOppositeEdge(p2);
+                final DEdge anEdge12 = right.getOppositeEdge(p2);
+                final DEdge anEdge21 = right.getOppositeEdge(p1);
+                final DEdge anEdge22 = left.getOppositeEdge(p1);
+                if (anEdge11==null || anEdge12==null || anEdge21==null || anEdge22==null) {
+                        throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_MISC, "Couldn't swap the triangles.");
+                } else {
+                        ed.setStartPoint(p3);
+                        ed.setEndPoint(p4);
+                        right.setEdge(0, ed);
+                        right.setEdge(1, anEdge11);
+                        right.setEdge(2, anEdge12);
+                        left.setEdge(0, ed);
+                        left.setEdge(1, anEdge21);
+                        left .setEdge(2, anEdge22);
+                        if (anEdge21.getLeft() == right) {
+                                anEdge21.setLeft(left);
+                        } else {
+                                anEdge21.setRight(left);
+                        }
+                        if (anEdge11.getLeft() == left) {
+                                anEdge11.setLeft(right);
+                        } else {
+                                anEdge11.setRight(right);
+                        }
+                        left.recomputeCenter();
+                        right.recomputeCenter();
+                }
+                
+        }
 
 	/**
 	 * We must be sure that the start point of the constraint is its left point
@@ -1913,8 +2013,11 @@ public class ConstrainedMesh implements Serializable {
 
         /**
          * Do a flip-flap on all the edges that can be accessed from the it iterator,
-         * moving straight ahead.<br/>
-         * There are not any check on the delaunay criterium, here.
+         * moving straight ahead. There are not any check on the delaunay criterium, here.<br/>
+         * Note that we are using revertFlipFlap rather than flipFlap in this method.
+         * Indeed, this method is first intended to be sued during the reversion of point
+         * insertion. Flip-flap operations have been made, we must be sure to revert
+         * them the right way, to keep our structures coherent.
          * @param it
          * @throws DelaunayError 
          */
@@ -1922,7 +2025,7 @@ public class ConstrainedMesh implements Serializable {
                 while(it.hasNext()){
                         DEdge ed = it.next();
                         ed.swap();
-                        flipFlap(ed);
+                        revertFlipFlap(ed);
                 }
         }
         

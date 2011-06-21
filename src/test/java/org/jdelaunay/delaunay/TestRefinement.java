@@ -58,7 +58,7 @@ public class TestRefinement extends BaseUtility {
                 edges = mesh.getEdges();
                 for(DEdge ed : cons){
                         int ind = edges.indexOf(ed);
-                        //To avoid any surprise about references, we make an affressive
+                        //To avoid any surprise about references, we make an aggressive
                         //check here
                         assertTrue(ind>=0);
                         assertTrue(ed == edges.get(ind));

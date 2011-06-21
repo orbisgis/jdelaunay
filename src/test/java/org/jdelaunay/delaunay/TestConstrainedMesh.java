@@ -2459,9 +2459,43 @@ public class TestConstrainedMesh extends BaseUtility {
                 mesh.processDelaunay();
                 int index = mesh.getEdges().indexOf(new DEdge(3,0,0,3,4,0));
                 DEdge ed = mesh.getEdges().get(index);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                assertTrue(mesh.getTriangleList().get(index).getGID()==1);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(6,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                assertTrue(mesh.getTriangleList().get(index).getGID()==2);
                 mesh.flipFlap(ed);
                 assertFalse(mesh.getEdges().contains(new DEdge(3,0,0,3,4,0)));
                 assertTrue(mesh.getEdges().contains(new DEdge(0,2,0,6,2,0)));
+                mesh.flipFlap(ed);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                assertTrue(mesh.getTriangleList().get(index).getGID()==2);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(6,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                assertTrue(mesh.getTriangleList().get(index).getGID()==1);
+        }
+        
+        public void testFlipFlapBis() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,2,0));
+                mesh.addPoint(new DPoint(6,2,0));
+                mesh.addPoint(new DPoint(3,0,0));
+                mesh.addPoint(new DPoint(3,4,0));
+                mesh.processDelaunay();
+                int index = mesh.getEdges().indexOf(new DEdge(3,0,0,3,4,0));
+                DEdge ed = mesh.getEdges().get(index);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                DTriangle tri1 = mesh.getTriangleList().get(index);
+                assertTrue(mesh.getTriangleList().get(index).getGID()==1);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(6,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                DTriangle tri2 = mesh.getTriangleList().get(index);
+                assertTrue(mesh.getTriangleList().get(index).getGID()==2);
+                mesh.flipFlap(ed);
+                mesh.revertFlipFlap(ed);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                assertTrue(mesh.getTriangleList().get(index)==tri1);
+                assertTrue(mesh.getTriangleList().get(index).getGID()==1);
+                index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(6,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
+                assertTrue(mesh.getTriangleList().get(index).getGID()==2);
+                assertTrue(mesh.getTriangleList().get(index)==tri2);
         }
 
 }
