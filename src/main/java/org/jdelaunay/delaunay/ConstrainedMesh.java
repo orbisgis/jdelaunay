@@ -1356,12 +1356,10 @@ public class ConstrainedMesh implements Serializable {
                                 if(ret != null && ret.get2DLength()>2*minLength){
                                         splitEncroachedEdge(ret, minLength);
                                 } else {
-                                        remaining.remove(entry.getKey());
-                                        processed.put(entry.getKey(), entry.getValue());
+                                        putInProcessed(dt);
                                 }
                         }else { 
-                                remaining.remove(entry.getKey());
-                                processed.put(entry.getKey(), entry.getValue());
+                                putInProcessed(dt);
                         }
                 }
                 triangleList = new LinkedList<DTriangle>(processed.values());
@@ -1860,6 +1858,19 @@ public class ConstrainedMesh implements Serializable {
         }
         
         /**
+         * If tri is in remaining, remove it from this map and put it in processed.
+         * This method set the <code>processed</code> property of the triangle to true.
+         * @param tri 
+         */
+        private void putInProcessed(DTriangle tri) {
+                int gid = tri.getGID();
+                if(remaining.remove(gid) != null){
+                        processed.put(gid, tri);
+                        tri.setProcessed(true);
+                }
+        }
+        
+        /**
          * This method check that triangles associated to ed can be swapped.
          * @param ed
          * @return 
@@ -2154,9 +2165,6 @@ public class ConstrainedMesh implements Serializable {
                 if(ret != null){
                         Iterator<DEdge> it = swapMem.descendingIterator();
                         proceedSwaps(it);
-                        //We have made two swaps - the references from the triangles
-                        //to the edges must be reverted to be back in the right order.
-                        eMem0.deepSwap();
                         //Due to the swap operations, the container reference may not contain
                         //pt anymore. We search for our triangle back.
                         DTriangle actualContainer = container;
