@@ -106,9 +106,9 @@ public class ConstrainedMesh implements Serializable {
 	private Map<Integer, Integer> weights;
         //we need to store triangles in a map, temporarily. These maps are here, and are not 
         //intended to accessed externally - Don't search for accessors !
-        private Map<Integer, DTriangle> processed = null;
-        private Map<Integer, DTriangle> remaining = null;
-        private Map<Integer, DTriangle> buffer = null;
+        private transient Map<Integer, DTriangle> processed = null;
+        private transient Map<Integer, DTriangle> remaining = null;
+        private transient Map<Integer, DTriangle> buffer = null;
 	// constants
 	public static final int MIN_POINTS_NUMBER = 3;
 	public static final int MAXITER = 5;
@@ -1763,6 +1763,8 @@ public class ConstrainedMesh implements Serializable {
                                         DTriangle left = ed.getLeft();
                                         DTriangle right = ed.getRight();
                                         swapMemory.addLast(ed);
+                                        putInBuffer(left);
+                                        putInBuffer(right);
                                         LinkedList<DEdge> others = new LinkedList<DEdge>();
                                         others.add(left.getOppositeEdge(ed.getStartPoint()));
                                         others.add(right.getOppositeEdge(ed.getEndPoint()));
@@ -1834,7 +1836,7 @@ public class ConstrainedMesh implements Serializable {
          * @param tri 
          */
         private void putInBuffer(DTriangle tri) {
-                if(buffer != null && processed != null && remaining != null && tri.isProcessed()){
+                if(buffer != null && tri.isProcessed()){
                         //While refining the mesh, all the triangles
                         //that change during the swap operations must be 
                         //added to the buffer - If they are not in the 
