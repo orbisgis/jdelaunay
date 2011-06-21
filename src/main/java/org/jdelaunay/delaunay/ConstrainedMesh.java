@@ -1343,10 +1343,9 @@ public class ConstrainedMesh implements Serializable {
                 processed = new HashMap<Integer, DTriangle>(triangleList.size());
                 remaining = new HashMap<Integer, DTriangle>(triangleList.size());
                 buffer = new HashMap<Integer, DTriangle>();
-                while(!triangleList.isEmpty()){
-                        DTriangle tem = triangleList.remove(0);
-                        remaining.put(tem.getGID(), tem);
-                }
+                fillRemainingFromTriangles();
+                //triangleList is still alive, but empty. Consequently, it can still be used
+                //in the following steps - in splitEncroachedEdge, for instance.
                 Set<Map.Entry<Integer, DTriangle>> treatSet = remaining.entrySet();
                 while(!treatSet.isEmpty()) {
                         Map.Entry<Integer, DTriangle> entry = treatSet.iterator().next();
@@ -1355,6 +1354,7 @@ public class ConstrainedMesh implements Serializable {
                                 ret = insertTriangleCircumCenter(dt, true, minLength);
                                 if(ret != null && ret.get2DLength()>2*minLength){
                                         splitEncroachedEdge(ret, minLength);
+                                        fillRemainingFromTriangles();
                                 } else {
                                         putInProcessed(dt);
                                 }
@@ -1867,6 +1867,16 @@ public class ConstrainedMesh implements Serializable {
                 if(remaining.remove(gid) != null){
                         processed.put(gid, tri);
                         tri.setProcessed(true);
+                }
+        }
+        
+        /**
+         * Take (and remove) all the trinalges in triangleList to feed the Map remaining.
+         */
+        private void fillRemainingFromTriangles(){
+                while(!triangleList.isEmpty()){
+                        DTriangle tem = triangleList.remove(0);
+                        remaining.put(tem.getGID(), tem);
                 }
         }
         
