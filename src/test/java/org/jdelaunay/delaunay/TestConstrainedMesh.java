@@ -2098,7 +2098,7 @@ public class TestConstrainedMesh extends BaseUtility {
                 int index = edges.indexOf(new DEdge(2,4,0,4,0,0));
                 DEdge e = edges.get(index);
                 DPoint ex;
-                if(e.getStart().equals(new DPoint(2,4,0))){
+                if(e.getStartPoint().equals(new DPoint(2,4,0))){
                         ex = p2;
                 } else {
                         ex = p4;

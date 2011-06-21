@@ -101,12 +101,12 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		init();
 
 		//We check the integrity of the edges given to build this triangle
-		boolean integrityE1E2 = (e1.isExtremity(e2.getStart()) && ! e3.isExtremity((e2.getStart())))
-			|| (e1.isExtremity(e2.getEnd()) && !e3.isExtremity(e2.getEnd()));
-		boolean integrityE1EptNb =  (e1.isExtremity(e3.getStart()) && ! e2.isExtremity((e3.getStart())))
-			|| (e1.isExtremity(e3.getEnd()) && !e2.isExtremity(e3.getEnd()));
-		boolean integrityEptNbE2= (e2.isExtremity(e3.getStart()) && ! e1.isExtremity((e3.getStart())))
-			|| (e2.isExtremity(e3.getEnd()) && !e1.isExtremity(e3.getEnd()));
+		boolean integrityE1E2 = (e1.isExtremity(e2.getStartPoint()) && ! e3.isExtremity((e2.getStartPoint())))
+			|| (e1.isExtremity(e2.getEndPoint()) && !e3.isExtremity(e2.getEndPoint()));
+		boolean integrityE1EptNb =  (e1.isExtremity(e3.getStartPoint()) && ! e2.isExtremity((e3.getStartPoint())))
+			|| (e1.isExtremity(e3.getEndPoint()) && !e2.isExtremity(e3.getEndPoint()));
+		boolean integrityEptNbE2= (e2.isExtremity(e3.getStartPoint()) && ! e1.isExtremity((e3.getStartPoint())))
+			|| (e2.isExtremity(e3.getEndPoint()) && !e1.isExtremity(e3.getEndPoint()));
 
 		if(integrityE1E2 && integrityE1EptNb && integrityEptNbE2){
 			edges[0] = e1;

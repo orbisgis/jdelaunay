@@ -214,8 +214,8 @@ public class ConstrainedMesh implements Serializable {
 	public final void setEdges(List<DEdge> inEdges) throws DelaunayError {
 		this.edges = new ArrayList<DEdge>();
 		for (DEdge e : inEdges) {
-			addPoint(e.getStart());
-			addPoint(e.getEnd());
+			addPoint(e.getStartPoint());
+			addPoint(e.getEndPoint());
 			addEdge(e);
 		}
 	}
@@ -988,13 +988,13 @@ public class ConstrainedMesh implements Serializable {
          * @param p 
          */
 	private void ensurePointPosition(DEdge e, DPoint p) {
-		if(e.getStart().equals2D(p)){
-			e.getStart().setX(p.getX());
-			e.getStart().setY(p.getY());
+		if(e.getStartPoint().equals2D(p)){
+			e.getStartPoint().setX(p.getX());
+			e.getStartPoint().setY(p.getY());
 		}
-		if(e.getEnd().equals2D(p)){
-			e.getEnd().setX(p.getX());
-			e.getEnd().setY(p.getY());
+		if(e.getEndPoint().equals2D(p)){
+			e.getEndPoint().setX(p.getX());
+			e.getEndPoint().setY(p.getY());
 		}
 	}
 
@@ -1985,7 +1985,7 @@ public class ConstrainedMesh implements Serializable {
                 }
                 DTriangle left = contEdge.getLeft();
                 DEdge memleft = null;
-                DPoint memExt = contEdge.getEnd();
+                DPoint memExt = contEdge.getEndPoint();
                 //We must remember what our original data was.
                 if(left != null){
                         memleft = left.getOppositeEdge(contEdge.getStartPoint());

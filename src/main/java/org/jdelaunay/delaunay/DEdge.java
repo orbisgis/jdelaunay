@@ -244,22 +244,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	/**
 	 * @return start point of edge.
 	 */
-	public final DPoint getStart() {
-		return this.startPoint;
-	}
-
-	/**
-	 * @return start point of edge.
-	 */
 	public final DPoint getStartPoint() {
 		return this.startPoint;
-	}
-
-	/**
-	 * @return end point of edge.
-	 */
-	public final DPoint getEnd() {
-		return this.endPoint;
 	}
 
 	/**
@@ -468,7 +454,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * returns 1
 	 */
 	public final int intersects(DEdge other) throws DelaunayError{
-		return intersects(other.getStart(), other.getEnd());
+		return intersects(other.getStartPoint(), other.getEndPoint());
 	}
 
 	/**
@@ -1219,8 +1205,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	public final boolean equals(Object other){
 		if (other instanceof DEdge){
 			DEdge otherEdge = (DEdge) other;
-			return (endPoint.equals(otherEdge.getEnd()) && startPoint.equals(otherEdge.getStart()))
-				|| (endPoint.equals(otherEdge.getStart()) && startPoint.equals(otherEdge.getEnd()));
+			return (endPoint.equals(otherEdge.getEndPoint()) && startPoint.equals(otherEdge.getStartPoint()))
+				|| (endPoint.equals(otherEdge.getStartPoint()) && startPoint.equals(otherEdge.getEndPoint()));
 		}else{
 			return false;
 		}
@@ -1397,9 +1383,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 */
 	public final int getGradient() {
 		int gradient;
-		if (getStart().getZ() > getEnd().getZ()) {
+		if (getStartPoint().getZ() > getEndPoint().getZ()) {
 			gradient = DEdge.DOWNSLOPE;
-		} else if (getStart().getZ() < getEnd().getZ()) {
+		} else if (getStartPoint().getZ() < getEndPoint().getZ()) {
 			gradient = DEdge.UPSLOPE;
 		} else {
 			gradient = DEdge.FLATSLOPE;

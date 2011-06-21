@@ -128,11 +128,11 @@ public class BaseUtility extends TestCase {
 		ListIterator<DEdge> iterEdge = aMesh.getEdges().listIterator();
 		while ((correct) && (iterEdge.hasNext())) {
 			myEdge = iterEdge.next();
-			if (myEdge.getStart() == null) {
+			if (myEdge.getStartPoint() == null) {
 				correct = false;
-			} else if (myEdge.getEnd() == null) {
+			} else if (myEdge.getEndPoint() == null) {
 				correct = false;
-			} else if (myEdge.getStart() == myEdge.getEnd()) {
+			} else if (myEdge.getStartPoint() == myEdge.getEndPoint()) {
 				correct = false;
 			}
 			assertTrue(correct);
@@ -187,9 +187,9 @@ public class BaseUtility extends TestCase {
 			ListIterator<DEdge> iterEdge = aMesh.getEdges().listIterator();
 			while ((! found) && (iterEdge.hasNext())) {
 				myEdge = iterEdge.next();
-				if (GID == myEdge.getStart().getGID()) {
+				if (GID == myEdge.getStartPoint().getGID()) {
 					found = true;
-				} else if (GID == myEdge.getEnd().getGID()) {
+				} else if (GID == myEdge.getEndPoint().getGID()) {
 					found = true;
 				}
 			}

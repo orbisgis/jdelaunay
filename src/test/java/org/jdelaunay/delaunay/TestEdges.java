@@ -325,8 +325,8 @@ public class TestEdges extends BaseUtility {
 	 */
 	public void testInit(){
 		DEdge edge = new DEdge();
-		assertNull(edge.getStart());
-		assertNull(edge.getEnd());
+		assertNull(edge.getStartPoint());
+		assertNull(edge.getEndPoint());
 		assertNull(edge.getLeft());
 		assertNull(edge.getRight());
 	}

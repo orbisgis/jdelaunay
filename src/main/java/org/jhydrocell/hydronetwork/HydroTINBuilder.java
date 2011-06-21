@@ -426,9 +426,9 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 while ((i < theSize) && (found == null)) {
                         DEdge anEdge = this.listServerEdges.get(i);
                         // Points can be start or end of the edge
-                        if ((sewerPoint1 == anEdge.getStart()) && (sewerPoint2 == anEdge.getEnd())) {
+                        if ((sewerPoint1 == anEdge.getStartPoint()) && (sewerPoint2 == anEdge.getEndPoint())) {
                                 found = anEdge;
-                        } else if ((sewerPoint2 == anEdge.getStart()) && (sewerPoint1 == anEdge.getEnd())) {
+                        } else if ((sewerPoint2 == anEdge.getStartPoint()) && (sewerPoint1 == anEdge.getEndPoint())) {
                                 found = anEdge;
                         } else {
                                 i++;
@@ -484,9 +484,9 @@ public class HydroTINBuilder extends ConstrainedMesh {
                 int i = 0;
                 while ((i < theSize) && (found == null)) {
                         DEdge anEdge = this.getEdges().get(i);
-                        if ((point1 == anEdge.getStart()) && (point2 == anEdge.getEnd())) {
+                        if ((point1 == anEdge.getStartPoint()) && (point2 == anEdge.getEndPoint())) {
                                 found = anEdge;
-                        } else if ((point2 == anEdge.getStart()) && (point1 == anEdge.getEnd())) {
+                        } else if ((point2 == anEdge.getStartPoint()) && (point1 == anEdge.getEndPoint())) {
                                 found = anEdge;
                         } else {
                                 i++;
@@ -601,8 +601,8 @@ public class HydroTINBuilder extends ConstrainedMesh {
                                         DEdge possibleEdge = aTriangle.getEdge(i);
                                         if (possibleEdge != previousElement) {
                                                 // The edge is not the previous one
-                                                if ((possibleEdge.getStart() == aPoint)
-                                                        || (possibleEdge.getEnd() == aPoint)) {
+                                                if ((possibleEdge.getStartPoint() == aPoint)
+                                                        || (possibleEdge.getEndPoint() == aPoint)) {
                                                         // The edge contains aPoint => it is the one we look for.
                                                         previousElement = currentElement;
                                                         currentElement = possibleEdge;
@@ -622,7 +622,7 @@ public class HydroTINBuilder extends ConstrainedMesh {
 
                                 // Get point that is lower than aPoint
                                 double theSlope = theEdge.getSlope();
-                                if (theEdge.getEnd() == aPoint) {
+                                if (theEdge.getEndPoint() == aPoint) {
                                         theSlope = -theSlope;
                                 }
 
