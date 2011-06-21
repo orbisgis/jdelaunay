@@ -761,4 +761,25 @@ public class TestEdges extends BaseUtility {
                         assertTrue(ed.isColinear(pt) == !ed.isLeft(pt));
                 }
         }
+        
+        /**
+         * This test ensures that there is not any border effect in the triangles associated to the edge,
+         * while proceeding to swap operations.
+         * @throws DelaunayError 
+         */
+        public void testFlipFlapEffectGID() throws DelaunayError {
+                DEdge ed = new DEdge(0,0,0,4,4,0);
+                DTriangle tri1 = new DTriangle(ed, new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,4,4,0));
+                DTriangle tri2 = new DTriangle(ed, new DEdge(0,0,0,0,4,0), new DEdge(0,4,0,4,4,0));
+                assertTrue(tri2 == ed.getLeft());
+                assertTrue(tri1 == ed.getRight());
+                tri1.setGID(1);
+                tri2.setGID(2);
+                ed.swap();
+                assertTrue(tri1.getGID() == 1 && tri1.equals(new DTriangle(new DEdge(0,0,0,4,4,0), new DEdge(4,4,0,4,0,0), new DEdge(4,0,0,0,0,0))));
+                assertTrue(tri2.getGID() == 2 && tri2.equals(new DTriangle(new DEdge(0,0,0,4,4,0), new DEdge(4,4,0,0,4,0), new DEdge(0,4,0,0,0,0))));
+                ed.swap();
+                assertTrue(tri1.getGID() == 1 && tri1.equals(new DTriangle(new DEdge(0,0,0,4,4,0), new DEdge(4,4,0,4,0,0), new DEdge(4,0,0,0,0,0))));
+                assertTrue(tri2.getGID() == 2 && tri2.equals(new DTriangle(new DEdge(0,0,0,4,4,0), new DEdge(4,4,0,0,4,0), new DEdge(0,4,0,0,0,0))));
+        }
 }
