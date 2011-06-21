@@ -1346,7 +1346,7 @@ public class ConstrainedMesh implements Serializable {
                 triangleList = mem;
                 
         }
-
+        
 	/**
 	 * Split the edges that have benn found to be encroached.
 	 * @param ed
@@ -1799,13 +1799,30 @@ public class ConstrainedMesh implements Serializable {
 			if (p4 != null && left.inCircle(p4) == 1) {
 				exchange = true;
 			}
-
-			if (p3 != p4 && exchange) {
+			if (p3 != p4 && exchange && canSwap(ed)) {
 				flipFlap(ed);
 			}
 		}
 		return exchange;
 	}
+        
+        /**
+         * This method check that triangles associated to ed can be swapped.
+         * @param ed
+         * @return 
+         */
+        private boolean canSwap(DEdge ed){
+                DTriangle left = ed.getLeft();
+                DTriangle right = ed.getRight();
+                DPoint p1 = ed.getStartPoint();
+                DPoint p2 = ed.getEndPoint();
+                DPoint p4 = right.getAlterPoint(p1, p2);
+                final DEdge anEdge11 = left.getOppositeEdge(p2);
+                final DEdge anEdge22 = left.getOppositeEdge(p1);
+                boolean err1 = (anEdge11.isLeft(p4) && anEdge11.isLeft(p2)) || (anEdge11.isRight(p4) && anEdge11.isRight(p2));
+                boolean err2 = (anEdge22.isLeft(p4) && anEdge22.isLeft(p1)) || (anEdge22.isRight(p4) && anEdge22.isRight(p1));
+                return err1 && err2;
+        }
         
         /**
          * Makes a flip-flap on an edge without any test.
@@ -1815,17 +1832,15 @@ public class ConstrainedMesh implements Serializable {
         final void flipFlap(DEdge ed) throws DelaunayError {
                 DTriangle left = ed.getLeft();
                 DTriangle right = ed.getRight();
-		DEdge anEdge11, anEdge12;
-		DEdge anEdge21, anEdge22;
                 DPoint p1 = ed.getStartPoint();
                 DPoint p2 = ed.getEndPoint();
                 DPoint p3 = left.getAlterPoint(p1, p2);
                 DPoint p4 = right.getAlterPoint(p1, p2);
-                anEdge11 = left.getOppositeEdge(p2);
-                anEdge12 = right.getOppositeEdge(p2);
-                anEdge21 = right.getOppositeEdge(p1);
-                anEdge22 = left.getOppositeEdge(p1);
-                if ((anEdge11 == null) || (anEdge12 == null) || (anEdge21 == null) || (anEdge22 == null)) {
+                final DEdge anEdge11 = left.getOppositeEdge(p2);
+                final DEdge anEdge12 = right.getOppositeEdge(p2);
+                final DEdge anEdge21 = right.getOppositeEdge(p1);
+                final DEdge anEdge22 = left.getOppositeEdge(p1);
+                if (anEdge11==null || anEdge12==null || anEdge21==null || anEdge22==null) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_MISC, "Couldn't swap the triangles.");
                 } else {
                         ed.setStartPoint(p3);
@@ -1846,13 +1861,8 @@ public class ConstrainedMesh implements Serializable {
                         } else {
                                 anEdge22.setRight(right);
                         }
-                        if (ed.isLeft(p1)) {
-                                ed.setLeft(left);
-                                ed.setRight(right);
-                        } else {
-                                ed.setLeft(right);
-                                ed.setRight(left);
-                        }
+                        ed.setLeft(right);
+                        ed.setRight(left);
                         left.recomputeCenter();
                         right.recomputeCenter();
                 }
@@ -2014,8 +2024,11 @@ public class ConstrainedMesh implements Serializable {
          * Our goal here is to fail fast : as soon as we find an encroached edge,
          * we stop our process and we revert our operations.
          * @param container
+         *      The container of the point. It must have been searched before.
          * @param pt
+         *      The point to insert
          * @return
+         *  The encroached edge that provoked the reversion of the process.
          * @throws DelaunayError 
          */
         private DEdge insertInTriangleRevertible(DTriangle container, DPoint pt) throws DelaunayError{
@@ -2039,7 +2052,7 @@ public class ConstrainedMesh implements Serializable {
                         Iterator<DEdge> it = swapMem.descendingIterator();
                         proceedSwaps(it);
                         //We have made two swaps - the references from the triangles
-                        //to the edges must be reverted tobe back in the right order.
+                        //to the edges must be reverted to be back in the right order.
                         eMem0.deepSwap();
                         //Due to the swap operations, the container reference may not contain
                         //pt anymore. We search for our triangle back.
@@ -2053,10 +2066,60 @@ public class ConstrainedMesh implements Serializable {
                                 triangleList.get(triangleList.size() -2));
                         checkMemEdges(eMem2, pt, triangleList.get(triangleList.size() -1), 
                                 triangleList.get(triangleList.size() -2));
-
+                        fixLastTriangles(eMem1, eMem2, pt);
                         revertPointInTriangleInsertion(actualContainer, pt, mem, eMem1, eMem2);
                 }
                 return ret;
+        }
+        
+        /**
+         * In some configurations, one or more of the two las triangles of the list 
+         * are just not the one we want to remove. We must force them to be in the right place...
+         * @param e1
+         * @param e2
+         * @param forget 
+         */
+        private void fixLastTriangles(DEdge e1, DEdge e2, DPoint forget){
+                DTriangle l1 = triangleList.get(triangleList.size()-1);
+                DTriangle l2 = triangleList.get(triangleList.size()-2);
+                if(!l1.belongsTo(forget) && !l2.belongsTo(forget)){
+                        //The two triangles in the end of the list must be changed.
+                        int i1 = triangleList.indexOf(getTriangleToForget(e1, forget));
+                        int i2 = triangleList.indexOf(getTriangleToForget(e2, forget));
+                        Collections.swap(triangleList, triangleList.size()-1, i1);
+                        Collections.swap(triangleList, triangleList.size()-2, i2);
+                        
+                } else if(!l1.belongsTo(forget)){
+                        //We must change triangleList.size()-1
+                        int i;
+                        if(l1.isEdgeOf(e2)){
+                                i=triangleList.indexOf(getTriangleToForget(e1, forget));
+                        } else {
+                                i=triangleList.indexOf(getTriangleToForget(e2, forget));                                
+                        }
+                        Collections.swap(triangleList, triangleList.size()-1, i);
+                        
+                } else if(!l2.belongsTo(forget)){
+                        //We must change triangleList.size()-2
+                        int i;
+                        if(l1.isEdgeOf(e2)){
+                                i=triangleList.indexOf(getTriangleToForget(e1, forget));
+                        } else {
+                                i=triangleList.indexOf(getTriangleToForget(e2, forget));                                
+                        }
+                        Collections.swap(triangleList, triangleList.size()-2, i);
+                        
+                }
+        }
+        
+        private DTriangle getTriangleToForget(DEdge e, DPoint forget){
+                if(e.getLeft().belongsTo(forget)){
+                        return e.getLeft();
+                } else if(e.getRight().belongsTo(forget)){
+                        return e.getRight();
+                } else {
+                        return null;
+                }
         }
         
         /**
@@ -2066,8 +2129,15 @@ public class ConstrainedMesh implements Serializable {
          * Note that we need to decrease the edge, triangle and point GIDs, and 
          * to remove the elements we don't need from each data structure.
          * @param dt
+         *      The triangle that must return in its original state
          * @param forget
+         *      The point that will finally not be inserted
          * @param apex 
+         *      The last point of dt in its original state
+         * @param o1
+         *      One of the missing edges of dt
+         * @param o2
+         *      One of the missing edges of dt
          */
         final void revertPointInTriangleInsertion(DTriangle dt, DPoint forget, DPoint apex, DEdge o1, DEdge o2)
                         throws DelaunayError {

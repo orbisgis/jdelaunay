@@ -2449,4 +2449,19 @@ public class TestConstrainedMesh extends BaseUtility {
                 mesh.processDelaunay();
                 assertTrue(true);
         }
+
+        public void testFlipFlap() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,2,0));
+                mesh.addPoint(new DPoint(6,2,0));
+                mesh.addPoint(new DPoint(3,0,0));
+                mesh.addPoint(new DPoint(3,4,0));
+                mesh.processDelaunay();
+                int index = mesh.getEdges().indexOf(new DEdge(3,0,0,3,4,0));
+                DEdge ed = mesh.getEdges().get(index);
+                mesh.flipFlap(ed);
+                assertFalse(mesh.getEdges().contains(new DEdge(3,0,0,3,4,0)));
+                assertTrue(mesh.getEdges().contains(new DEdge(0,2,0,6,2,0)));
+        }
+
 }

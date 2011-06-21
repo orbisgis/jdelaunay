@@ -285,4 +285,41 @@ public class TestRefinement extends BaseUtility {
                 assertTrianglesTopology(mesh);
                 assertTrue(true);
         }
+        
+        
+        /**
+         * A stack overflow was thrown when processing this configuration. This was due 
+         * to a mismanagement of the triangles during swap operations. In some cases,
+         * the triangles were elected for swapping, but were in a configuration that 
+         * forbids this operation. In this case, this finally led to a StackOverflow,
+         * due to an infinite recursive call when trying to locate a point in the mesh.
+         * @throws DelaunayError 
+         */
+        public void testRefinementChezine4() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addConstraintEdge(new DEdge (160.0, 89.16132207820192, 0.0, 192.72714662225917, 104.0, 0.0));
+                mesh.addConstraintEdge(new DEdge (180.0, 312.8887946992181, 0.0, 220.0, 340.1904185237363, 0.0));
+                mesh.addConstraintEdge(new DEdge (280.0, 143.28555858321488, 0.0, 320.0, 164.0, 0.0));
+                mesh.forceConstraintIntegrity();
+                mesh.processDelaunay();
+//                mesh.edgeSplitting(1);
+                mesh.refineMesh(1, new SkinnyEvaluator(15));
+                assertTrianglesTopology(mesh);
+        }
+        
+        public void testRefinementChezine5() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addConstraintEdge(new DEdge (0.0, 284.0, 0.0, 20.0, 286.6317057502456, 0.0));
+                mesh.addConstraintEdge(new DEdge (20.0, 36.340432439465076, 0.0, 40.0, 0.8422320676036179, 0.0));
+                mesh.addConstraintEdge(new DEdge (80.0, 308.9055680311285, 0.0, 100.0, 306.72714662225917, 0.0));
+                mesh.addConstraintEdge(new DEdge (120.0, 64.0, 0.0, 140.0, 89.94593479996547, 0.0));
+                mesh.addConstraintEdge(new DEdge (160.0, 89.16132207820192, 0.0, 192.72714662225917, 104.0, 0.0));
+                mesh.forceConstraintIntegrity();
+                mesh.processDelaunay();
+//                mesh.edgeSplitting(1);
+//                show(mesh);
+                mesh.refineMesh(1, new SkinnyEvaluator(15));
+                assertTrianglesTopology(mesh);
+        }
+        
 }
