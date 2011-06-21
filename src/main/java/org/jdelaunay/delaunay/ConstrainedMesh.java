@@ -1353,11 +1353,12 @@ public class ConstrainedMesh implements Serializable {
                                 buffer = new HashMap<Integer, DTriangle>();
                                 ret = insertTriangleCircumCenter(dt, true, minLength);
                                 if(ret != null && ret.get2DLength()>2*minLength){
-                                        splitEncroachedEdge(ret, minLength);
-                                        fillRemainingFromTriangles();
-                                } else {
-                                        putInProcessed(dt);
-                                }
+                                                splitEncroachedEdge(ret, minLength);
+                                                fillRemainingFromTriangles();
+                                        } else {
+                                                putInProcessed(dt);
+                                                fillRemainingFromTriangles();
+                                        }
                         }else { 
                                 putInProcessed(dt);
                         }
