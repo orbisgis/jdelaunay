@@ -1106,6 +1106,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	}
 
 	public void testWeightManagement() throws DelaunayError {
+                resetElementWeights();
 		ConstrainedMesh mesh;
 		List<DEdge> constraints;
 		DEdge e1 = new DEdge(0,0,80, 4,4,80);
@@ -1187,6 +1188,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
         }
         
         public void testIntersectionManyPoints() throws DelaunayError {
+                resetElementWeights();
                 DEdge e1 = new DEdge(0,0,0,4,4,0);
                 DEdge e2 = new DEdge(2,4,0,6,0,0);
                 DEdge e3 = new DEdge(5,0,0,7,2,0);
@@ -1211,6 +1213,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
         }
 
 	public void testIntersectionSaveProperties() throws DelaunayError {
+                resetElementWeights();
 		DEdge e1 = new DEdge(0,0,0,2,2,0);
 		e1.setProperty(RIVER);
 		DEdge e2 = new DEdge (0,2,0,2,0,0);
@@ -1227,6 +1230,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	}
 
 	public void testIntersectionManyProperties() throws DelaunayError {
+                resetElementWeights();
 		DEdge e1 = new DEdge(0,0,0,2,2,0);
 		e1.setProperty(RIVER);
 		e1.addProperty(WALL);
@@ -1249,6 +1253,7 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 	}
 
 	public void testIntersectionPropertiesOverlapping() throws DelaunayError {
+                resetElementWeights();
 		DEdge e1 = new DEdge(0,0,0,2,2,0);
 		e1.setProperty(WALL);
 		DEdge e2 = new DEdge(1,1,0,3,3,0);
@@ -1359,5 +1364,19 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		}
 		return ret;
 	}
+        
+        private void resetElementWeights() {
+                while(!Element.WEIGHTED_PROPERTIES.isEmpty()){
+                        Element.WEIGHTED_PROPERTIES.remove(0);
+                }
+                Element.WEIGHTED_PROPERTIES.add(WALL);
+                Element.WEIGHTED_PROPERTIES.add(SEWER);
+                Element.WEIGHTED_PROPERTIES.add(ROAD);
+                Element.WEIGHTED_PROPERTIES.add(DITCH);
+                Element.WEIGHTED_PROPERTIES.add(RIVER);
+                Element.WEIGHTED_PROPERTIES.add(URBAN_PARCEL);
+                Element.WEIGHTED_PROPERTIES.add(RURAL_PARCEL);
+                Element.WEIGHTED_PROPERTIES.add(LEVEL);
+        }
 }
 
