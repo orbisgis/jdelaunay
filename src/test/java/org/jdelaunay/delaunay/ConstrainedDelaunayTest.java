@@ -34,10 +34,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import org.jhydrocell.hydronetwork.HydroProperties;
 
 public class ConstrainedDelaunayTest extends BaseUtility {
-
 	/**
 	 * This test checks that constraints which intersect are split, and than
 	 * a new point is added to the Mesh.
@@ -1114,13 +1112,13 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		DEdge e2 = new DEdge(0,2,40, 4,2,40);
 		DEdge e3 = new DEdge(0,4,60, 4,0,60);
 		//We prepare our properties
-		e1.setProperty(HydroProperties.WALL);
-		e2.setProperty(HydroProperties.RIVER);
-		e3.setProperty(HydroProperties.LEVEL);
+		e1.setProperty(WALL);
+		e2.setProperty(RIVER);
+		e3.setProperty(LEVEL);
 		HashMap<Integer, Integer> weights = new HashMap<Integer, Integer>();
-		weights.put(HydroProperties.WALL,10);
-		weights.put(HydroProperties.RIVER,20);
-		weights.put(HydroProperties.LEVEL,30);
+		weights.put(WALL,10);
+		weights.put(RIVER,20);
+		weights.put(LEVEL,30);
 		//we fill the mesh
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(e3);
@@ -1133,15 +1131,15 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(mesh.getPoints().contains(new DPoint(2,2,60)));
 		assertFalse(mesh.getPoints().contains(new DPoint(2,2,80)));
 		//We prepare our properties
-		weights.put(HydroProperties.WALL,40);
-		weights.put(HydroProperties.RIVER,20);
-		weights.put(HydroProperties.LEVEL,30);
+		weights.put(WALL,40);
+		weights.put(RIVER,20);
+		weights.put(LEVEL,30);
 		e1 = new DEdge(0,0,80, 4,4,80);
 		e2 = new DEdge(0,2,40, 4,2,40);
 		e3 = new DEdge(0,4,60, 4,0,60);
-		e1.setProperty(HydroProperties.WALL);
-		e2.setProperty(HydroProperties.RIVER);
-		e3.setProperty(HydroProperties.LEVEL);
+		e1.setProperty(WALL);
+		e2.setProperty(RIVER);
+		e3.setProperty(LEVEL);
 		//we fill the mesh
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(e3);
@@ -1153,15 +1151,15 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		assertTrue(constraints.size()==6);
 		assertTrue(mesh.getPoints().contains(new DPoint(2,2,80)));
 		//We prepare our properties
-		weights.put(HydroProperties.WALL,40);
-		weights.put(HydroProperties.RIVER,50);
-		weights.put(HydroProperties.LEVEL,30);
+		weights.put(WALL,40);
+		weights.put(RIVER,50);
+		weights.put(LEVEL,30);
 		e1 = new DEdge(0,0,80, 4,4,80);
 		e2 = new DEdge(0,2,40, 4,2,40);
 		e3 = new DEdge(0,4,60, 4,0,60);
-		e1.setProperty(HydroProperties.WALL);
-		e2.setProperty(HydroProperties.RIVER);
-		e3.setProperty(HydroProperties.LEVEL);
+		e1.setProperty(WALL);
+		e2.setProperty(RIVER);
+		e3.setProperty(LEVEL);
 		//we fill the mesh
 		mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(e3);
@@ -1214,55 +1212,55 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 
 	public void testIntersectionSaveProperties() throws DelaunayError {
 		DEdge e1 = new DEdge(0,0,0,2,2,0);
-		e1.setProperty(HydroProperties.RIVER);
+		e1.setProperty(RIVER);
 		DEdge e2 = new DEdge (0,2,0,2,0,0);
-		e2.setProperty(HydroProperties.DITCH);
+		e2.setProperty(DITCH);
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(e2);
 		mesh.addConstraintEdge(e1);
 		mesh.forceConstraintIntegrity();
-		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.RIVER));
-		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.DITCH));
-		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.DITCH));
-		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(HydroProperties.RIVER));
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(RIVER));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(DITCH));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(DITCH));
+		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(RIVER));
 
 	}
 
 	public void testIntersectionManyProperties() throws DelaunayError {
 		DEdge e1 = new DEdge(0,0,0,2,2,0);
-		e1.setProperty(HydroProperties.RIVER);
-		e1.addProperty(HydroProperties.WALL);
+		e1.setProperty(RIVER);
+		e1.addProperty(WALL);
 		DEdge e2 = new DEdge (0,2,0,2,0,0);
-		e2.setProperty(HydroProperties.DITCH);
-		e2.addProperty(HydroProperties.URBAN_PARCEL);
+		e2.setProperty(DITCH);
+		e2.addProperty(URBAN_PARCEL);
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(e2);
 		mesh.addConstraintEdge(e1);
 		mesh.forceConstraintIntegrity();
-		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.RIVER));
-		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.WALL));
-		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.DITCH));
-		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.URBAN_PARCEL));
-		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.DITCH));
-		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.URBAN_PARCEL));
-		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(HydroProperties.RIVER));
-		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(HydroProperties.WALL));
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(RIVER));
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(WALL));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(DITCH));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(URBAN_PARCEL));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(DITCH));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(URBAN_PARCEL));
+		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(RIVER));
+		assertTrue(mesh.getConstraintEdges().get(3).hasProperty(WALL));
 
 	}
 
 	public void testIntersectionPropertiesOverlapping() throws DelaunayError {
 		DEdge e1 = new DEdge(0,0,0,2,2,0);
-		e1.setProperty(HydroProperties.WALL);
+		e1.setProperty(WALL);
 		DEdge e2 = new DEdge(1,1,0,3,3,0);
-		e2.setProperty(HydroProperties.RIVER);
+		e2.setProperty(RIVER);
 		ConstrainedMesh mesh = new ConstrainedMesh();
 		mesh.addConstraintEdge(e2);
 		mesh.addConstraintEdge(e1);
 		mesh.forceConstraintIntegrity();
-		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(HydroProperties.WALL));
-		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.WALL));
-		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(HydroProperties.RIVER));
-		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(HydroProperties.RIVER));
+		assertTrue(mesh.getConstraintEdges().get(0).hasProperty(WALL));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(WALL));
+		assertTrue(mesh.getConstraintEdges().get(1).hasProperty(RIVER));
+		assertTrue(mesh.getConstraintEdges().get(2).hasProperty(RIVER));
 
 	}
         

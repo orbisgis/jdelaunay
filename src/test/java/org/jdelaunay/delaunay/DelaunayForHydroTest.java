@@ -32,7 +32,6 @@ package org.jdelaunay.delaunay;
 
 import java.util.List;
 
-import org.jhydrocell.hydronetwork.HydroTINBuilder;
 
 
 public class DelaunayForHydroTest extends BaseUtility {
@@ -75,24 +74,4 @@ public class DelaunayForHydroTest extends BaseUtility {
 		assertTrue(nbFlat == 0);
 	}
 
-	public void testEdgesMorphologicalClassification() throws DelaunayError {
-
-		HydroTINBuilder aMesh = new HydroTINBuilder();
-		aMesh.setPrecision(1.0e-3);
-		aMesh.setVerbose(true);
-		aMesh.setPoints(getPoints());
-		aMesh.processDelaunay();
-		
-		
-		
-		aMesh.morphologicalQualification();
-
-		List<DEdge> edges = aMesh.getEdges();
-
-		for (DEdge myEdge : edges) {
-
-			myEdge.getProperty();
-		}
-		
-	}
 }

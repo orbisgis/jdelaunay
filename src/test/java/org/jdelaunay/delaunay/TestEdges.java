@@ -637,6 +637,7 @@ public class TestEdges extends BaseUtility {
 	}
 
         public void testRetrieveGoodZ() throws DelaunayError {
+                resetElementWeights();
                 DEdge e1 = new DEdge(0,0,0,5,5,0);
                 DEdge e2 = new DEdge(0,5,5,5,0,9);
 		HashMap<Integer,Integer> weights = new HashMap<Integer,Integer>();
@@ -653,6 +654,7 @@ public class TestEdges extends BaseUtility {
         }
 
 	public void testGetMaxWeight() throws DelaunayError {
+                resetElementWeights();
 		DEdge e1 = new DEdge(0,0,0,2,2,5);
 		e1.addProperty(1);
 		e1.addProperty(2);
@@ -781,5 +783,19 @@ public class TestEdges extends BaseUtility {
                 ed.swap();
                 assertTrue(tri1.getGID() == 1 && tri1.equals(new DTriangle(new DEdge(0,0,0,4,4,0), new DEdge(4,4,0,4,0,0), new DEdge(4,0,0,0,0,0))));
                 assertTrue(tri2.getGID() == 2 && tri2.equals(new DTriangle(new DEdge(0,0,0,4,4,0), new DEdge(4,4,0,0,4,0), new DEdge(0,4,0,0,0,0))));
+        }
+        
+        private void resetElementWeights() {
+                while(!Element.WEIGHTED_PROPERTIES.isEmpty()){
+                        Element.WEIGHTED_PROPERTIES.remove(0);
+                }
+                Element.WEIGHTED_PROPERTIES.add(WALL);
+                Element.WEIGHTED_PROPERTIES.add(SEWER);
+                Element.WEIGHTED_PROPERTIES.add(ROAD);
+                Element.WEIGHTED_PROPERTIES.add(DITCH);
+                Element.WEIGHTED_PROPERTIES.add(RIVER);
+                Element.WEIGHTED_PROPERTIES.add(URBAN_PARCEL);
+                Element.WEIGHTED_PROPERTIES.add(RURAL_PARCEL);
+                Element.WEIGHTED_PROPERTIES.add(LEVEL);
         }
 }

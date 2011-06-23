@@ -42,6 +42,28 @@ import junit.framework.TestCase;
 
 public class BaseUtility extends TestCase {
 
+        
+        // The object is a wall
+        public static final int WALL = 1;
+        // The object is a sewer
+        public static final int SEWER = 1 << 1;
+        // the object is a road
+        public static final int ROAD = 1 << 2;
+        // The object is a ditch
+        public static final int DITCH = 1 << 3;
+        // The object is a river
+        public static final int RIVER = 1 << 4;
+        // The object is an urban parcel
+        public static final int URBAN_PARCEL = 1 << 5;
+        // The object is a rural parcel
+        public static final int RURAL_PARCEL = 1 << 6;
+        // The object is a level line
+        public static final int LEVEL = 1 << 7;
+        // The object is a sewer input
+        public static final int SEWER_INPUT = 1 << 8;
+        // The object is a sewer output
+        public static final int SEWER_OUTPUT = 1 << 9;
+        
 	// ---------------------------------------------------------------------------
 	// Utilities
 	/**

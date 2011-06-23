@@ -34,7 +34,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.jhydrocell.hydronetwork.HydroProperties;
 
 
 /**
@@ -48,7 +47,12 @@ public abstract class Element {
 	 * 
 	 */
 	private static final long serialVersionUID = 5437683478248244942L;
-	public static final List<Integer> WEIGHTED_PROPERTIES;
+        /**
+         * The list that will contains the property values that will be used during the intersection. Note that
+         * it is up to you to fill the list with the property values you need. Property
+         * values must be managed as described in addProperty.
+         */
+	public static final List<Integer> WEIGHTED_PROPERTIES = new ArrayList<Integer>();
 	private int gid;
 	private int property;
 	//An identifier to use correspondance maps externally, to affect properties efficiently.
@@ -56,17 +60,6 @@ public abstract class Element {
 
 	//If this edge is an obstacle, it must have a height
 	private double height ;
-	static {
-		WEIGHTED_PROPERTIES = new ArrayList<Integer>();
-		WEIGHTED_PROPERTIES.add(HydroProperties.WALL);
-		WEIGHTED_PROPERTIES.add(HydroProperties.SEWER);
-		WEIGHTED_PROPERTIES.add(HydroProperties.ROAD);
-		WEIGHTED_PROPERTIES.add(HydroProperties.DITCH);
-		WEIGHTED_PROPERTIES.add(HydroProperties.RIVER);
-		WEIGHTED_PROPERTIES.add(HydroProperties.URBAN_PARCEL);
-		WEIGHTED_PROPERTIES.add(HydroProperties.RURAL_PARCEL);
-		WEIGHTED_PROPERTIES.add(HydroProperties.LEVEL);
-	}
 	/**
 	 * Default initialization
 	 */
