@@ -33,6 +33,11 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
+import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  * Used to build a local Constrained Voronoi graph. You have the coice to build

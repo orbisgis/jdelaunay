@@ -32,6 +32,10 @@
 package org.jdelaunay.delaunay;
 
 import java.util.List;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * Class that performs test on the voronoi graph

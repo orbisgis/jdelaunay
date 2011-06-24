@@ -39,6 +39,10 @@ import java.util.List;
 import java.util.ListIterator;
 
 import junit.framework.TestCase;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 public class BaseUtility extends TestCase {
 

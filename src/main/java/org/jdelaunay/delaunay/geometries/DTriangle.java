@@ -28,7 +28,7 @@
  * or contact directly:
  * info_at_ orbisgis.org
  */
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import java.awt.Color;
@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  * This is the class representing a Triangle in the DelaunayTriangulation. A DTriangle
@@ -295,7 +297,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * process flat triangles only once during the flat tiangles removal operation.
 	 * @param seenForFlatRemoval
 	 */
-	final void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
+	public final void setSeenForFlatRemoval(boolean seenForFlatRemoval) {
 		this.seenForFlatRemoval = seenForFlatRemoval;
 	}
         
@@ -304,7 +306,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * already processed triangles.
          * @return 
          */
-        final boolean isProcessed() {
+        public final boolean isProcessed() {
                 return processed;
         }
         
@@ -312,7 +314,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
          * Set the processed attribute.
          * @param pro 
          */
-        final void setProcessed(boolean pro) {
+        public final void setProcessed(boolean pro) {
                 processed = pro;
         }
         
@@ -832,7 +834,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param p2
 	 * @return alterPoint
 	 */
-	protected final DPoint getAlterPoint(DPoint p1, DPoint p2) {
+	public final DPoint getAlterPoint(DPoint p1, DPoint p2) {
 		DPoint t1 = getPoint(0);
 		DPoint t2 = getPoint(1);
 		DPoint t3 = getPoint(2);
@@ -973,7 +975,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param scaleX
 	 * @param scaleY
 	 */
-	protected final void displayObject(Graphics g, int decalageX, int decalageY,
+	public final void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		int[] xPoints, yPoints;
 		xPoints = new int[PT_NB];

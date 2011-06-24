@@ -33,6 +33,10 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * A class that reprensent a node in the voronoi graph, that is constructed in order to remove

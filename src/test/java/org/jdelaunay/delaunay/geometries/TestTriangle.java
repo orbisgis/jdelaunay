@@ -29,18 +29,22 @@
  * info_at_ orbisgis.org
  */
 
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import junit.framework.TestCase;
+import org.jdelaunay.delaunay.ConstrainedMesh;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  * This class checks the reliability of the methods written in DTriangle
  * @author alexis
  */
-public class TestTriangle extends BaseUtility {
+public class TestTriangle extends TestCase {
 
         public void testConstructors() throws DelaunayError {
                 DTriangle dt = new DTriangle(new DEdge(0,0,0,4,0,0), new DEdge(4,0,0,2,2,0), new DEdge(2,2,0,0,0,0));

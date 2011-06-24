@@ -31,9 +31,9 @@
 package org.jdelaunay.delaunay.evaluator;
 
 import junit.framework.TestCase;
-import org.jdelaunay.delaunay.DEdge;
-import org.jdelaunay.delaunay.DTriangle;
-import org.jdelaunay.delaunay.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DTriangle;
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
  * Class used to test the skinny evaluator.

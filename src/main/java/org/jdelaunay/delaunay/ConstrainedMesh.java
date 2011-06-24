@@ -48,6 +48,13 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.ConstraintPolygon;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
+import org.jdelaunay.delaunay.geometries.Element;
+import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  * This class is used to compute the constrained delaunay triangulation on a set of

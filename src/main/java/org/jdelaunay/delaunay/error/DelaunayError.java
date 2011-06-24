@@ -28,7 +28,7 @@
  * or contact directly:
  * info_at_ orbisgis.org
  */
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.error;
 
 /**
  * The exception that is used to describe the kind of errors that can happen when

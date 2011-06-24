@@ -29,15 +29,17 @@
  * info_at_ orbisgis.org
  */
 
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import java.util.List;
+import junit.framework.TestCase;
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
  *
  * @author alexis
  */
-public class TestBoundaryBox extends BaseUtility {
+public class TestBoundaryBox extends TestCase {
 
 	public void testGetPoints() throws DelaunayError{
 		BoundaryBox bb = new BoundaryBox(0, 4, 0, 4, 7, 4);

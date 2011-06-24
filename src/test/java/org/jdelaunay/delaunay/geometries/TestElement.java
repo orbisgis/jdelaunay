@@ -28,13 +28,16 @@
  * or contact directly:
  * info_at_ orbisgis.org
  */
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
+
+import junit.framework.TestCase;
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
  * Test methods that are common to the children of Element
  * @author alexis
  */
-public class TestElement extends BaseUtility {
+public class TestElement extends TestCase {
 
 	public void testProperty() throws DelaunayError{
 		DPoint pt = new DPoint();

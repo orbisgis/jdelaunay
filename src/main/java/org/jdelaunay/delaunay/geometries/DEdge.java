@@ -28,7 +28,7 @@
  * or contact directly:
  * info_at_ orbisgis.org
  */
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import java.awt.BasicStroke;
@@ -39,6 +39,8 @@ import java.awt.Graphics2D;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.LinkedList;
 import java.util.Map;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  * An edge in the tringulation. A DEdge is formed with two DPoint instances.
@@ -278,7 +280,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @return
          *      <code>true</code> if this is shared between two boundary parts.
 	 */
-	final boolean isShared(){
+	public final boolean isShared(){
 		return shared;
 	}
 
@@ -286,7 +288,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * set the shared status of this DEdge.
 	 * @param share
 	 */
-	final void setShared(boolean share){
+	public final void setShared(boolean share){
 		shared = share;
 	}
 
@@ -347,7 +349,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * get squared 2D length
          * @return the square of the 2D-length of this edge.
 	 */
-	protected final double getSquared2DLength() {
+	public final double getSquared2DLength() {
 		return startPoint.squareDistance2D(endPoint);
 	}
 
@@ -1262,7 +1264,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * @param scaleX
 	 * @param scaleY
 	 */
-	protected final void displayObject(Graphics g, int decalageX, int decalageY,
+	public final void displayObject(Graphics g, int decalageX, int decalageY,
 		double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
 		g.drawLine((int) ((this.startPoint.getX() - minX) * scaleX + decalageX),

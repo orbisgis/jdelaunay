@@ -31,6 +31,8 @@
 package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DPoint;
 
 public class Test {
 

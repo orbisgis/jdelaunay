@@ -28,12 +28,13 @@
  * or contact directly:
  * info_at_ orbisgis.org
  */
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 
 /**

@@ -30,7 +30,7 @@
  */
 package org.jdelaunay.delaunay.evaluator;
 
-import org.jdelaunay.delaunay.DTriangle;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * Evaluator used to determine if a triangle is skinny (ie if it has an angle 

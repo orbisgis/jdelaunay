@@ -33,6 +33,10 @@ package org.jdelaunay.delaunay;
 import java.io.Serializable;
 import java.util.Comparator;
 import org.apache.log4j.Logger;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  * The VerticalComparator class will be used to perform sorting and searching operations

@@ -30,7 +30,7 @@
  */
 package org.jdelaunay.delaunay.evaluator;
 
-import org.jdelaunay.delaunay.DTriangle;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * Instances of evaluator are used to decide if we need, when refining the mesh,

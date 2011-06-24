@@ -34,6 +34,10 @@ package org.jdelaunay.delaunay;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * Provides tests that run on the BoundaryPart class.

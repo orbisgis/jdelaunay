@@ -29,15 +29,17 @@
  * info_at_ orbisgis.org
  */
 
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import junit.framework.TestCase;
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
  * This class is dedicated to the tests related to the point class.
  * @author alexis
  */
-public class TestPoint extends BaseUtility {
+public class TestPoint extends TestCase {
 
         /**
          * Tests the use of MyTools.Epsilon when comparing to points, or testing 

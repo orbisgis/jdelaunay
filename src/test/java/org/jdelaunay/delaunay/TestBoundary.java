@@ -32,6 +32,10 @@ package org.jdelaunay.delaunay;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * Tests dedicated to the testing of boundary.

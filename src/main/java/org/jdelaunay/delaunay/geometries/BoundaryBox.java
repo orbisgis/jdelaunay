@@ -28,13 +28,14 @@
  * or contact directly:
  * info_at_ orbisgis.org
  */
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
  * An horizontal rectangle.

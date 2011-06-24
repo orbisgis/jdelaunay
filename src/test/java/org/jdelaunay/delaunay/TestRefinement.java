@@ -33,6 +33,10 @@ package org.jdelaunay.delaunay;
 import java.util.Collections;
 import java.util.List;
 import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * This class gathers some tests related to the mesh refinement.

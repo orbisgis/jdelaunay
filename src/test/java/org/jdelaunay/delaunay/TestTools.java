@@ -29,6 +29,9 @@
  * info_at_ orbisgis.org
  */
 package org.jdelaunay.delaunay;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  *

@@ -28,11 +28,13 @@
  * or contact directly:
  * info_at_ orbisgis.org
  */
-package org.jdelaunay.delaunay;
+package org.jdelaunay.delaunay.geometries;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import com.vividsolutions.jts.geom.Coordinate;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.tools.Tools;
 
 
 /**
@@ -214,7 +216,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @param aPoint
 	 * @return distance
 	 */
-	protected final double squareDistance(DPoint aPoint) {
+	public final double squareDistance(DPoint aPoint) {
 		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
 	}
 
@@ -364,7 +366,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @param decalageX
 	 * @param decalageY
 	 */
-	protected final void displayObject(Graphics g, int decalageX, int decalageY,
+	public final void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
 		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
