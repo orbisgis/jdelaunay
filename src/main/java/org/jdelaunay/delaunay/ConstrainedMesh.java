@@ -1824,8 +1824,12 @@ public class ConstrainedMesh implements Serializable {
 			if (p4 != null && left.inCircle(p4) == 1) {
 				exchange = true;
 			}
-			if (p3 != p4 && exchange && canSwap(ed)) {
-				flipFlap(ed);
+			if (p3 != p4 && exchange ) {
+                                if( canSwap(ed)){
+                                        flipFlap(ed);
+                                } else {
+                                        exchange = false;
+                                }
 			}
 		}
 		return exchange;
@@ -2281,6 +2285,12 @@ public class ConstrainedMesh implements Serializable {
                 points.remove(points.size()-1);
         }
         
+        /**
+         * After each insertion or rejected insertion, we must return to a coherent state.
+         * This method is intended ot achieve such a goal, by forcing the triangle 
+         * in parameter and its edges to be effectively linked after the call to it.
+         * @param dt 
+         */
         private void forceCoherence(DTriangle dt ){
                 dt.forceCoherenceWithEdges();
                 for(DEdge ed : dt.getEdges()){

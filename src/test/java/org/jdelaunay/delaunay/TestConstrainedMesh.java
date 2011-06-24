@@ -2081,6 +2081,10 @@ public class TestConstrainedMesh extends BaseUtility {
                 
         } 
         
+        /**
+         * We insert a point on an edge, and then we revert this insertion.
+         * @throws DelaunayError 
+         */
         public void testRevertPointInEdgeInit() throws DelaunayError {
                 ConstrainedMesh mesh = new ConstrainedMesh();
                 DPoint p1 =new DPoint(0,2,0);
@@ -2473,6 +2477,13 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(mesh.getTriangleList().get(index).getGID()==1);
         }
         
+
+        /**
+         * We test here that the the flip-flap operation is well reverted when using 
+         * revertFlipFlap. We don't check only the geometries, but also the references
+         * to the objects. The operation must be transparent for both edges and triangles.
+         * @throws DelaunayError 
+         */
         public void testFlipFlapBis() throws DelaunayError {
                 ConstrainedMesh mesh = new ConstrainedMesh();
                 mesh.addPoint(new DPoint(0,2,0));
@@ -2480,8 +2491,21 @@ public class TestConstrainedMesh extends BaseUtility {
                 mesh.addPoint(new DPoint(3,0,0));
                 mesh.addPoint(new DPoint(3,4,0));
                 mesh.processDelaunay();
+                //We retrieve the index of the edge we'll flap and revert. 
+                //We make a copy of it, to store its reference more than its geometry.
                 int index = mesh.getEdges().indexOf(new DEdge(3,0,0,3,4,0));
                 DEdge ed = mesh.getEdges().get(index);
+                //We retrieve the references to the 4 other edges. They are not supposed
+                //to change. Their geometries neither.
+                index = mesh.getEdges().indexOf(new DEdge(3,0,0,0,2,0));
+                DEdge ed11 = mesh.getEdges().get(index);
+                index = mesh.getEdges().indexOf(new DEdge(0,2,0,3,4,0));
+                DEdge ed12 = mesh.getEdges().get(index);
+                index = mesh.getEdges().indexOf(new DEdge(3,0,0,6,2,0));
+                DEdge ed21 = mesh.getEdges().get(index);
+                index = mesh.getEdges().indexOf(new DEdge(6,2,0,3,4,0));
+                DEdge ed22 = mesh.getEdges().get(index);
+                //We retrieve the references to the two triangles.
                 index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
                 DTriangle tri1 = mesh.getTriangleList().get(index);
                 assertTrue(mesh.getTriangleList().get(index).getGID()==1);
@@ -2490,12 +2514,22 @@ public class TestConstrainedMesh extends BaseUtility {
                 assertTrue(mesh.getTriangleList().get(index).getGID()==2);
                 mesh.flipFlap(ed);
                 mesh.revertFlipFlap(ed);
+                //We check the references to the triangles
                 index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
                 assertTrue(mesh.getTriangleList().get(index)==tri1);
                 assertTrue(mesh.getTriangleList().get(index).getGID()==1);
                 index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(6,2,0), new DPoint(3,0,0), new DPoint(3,4,0)));
                 assertTrue(mesh.getTriangleList().get(index).getGID()==2);
                 assertTrue(mesh.getTriangleList().get(index)==tri2);
+                //We check the references to the edges
+                index = mesh.getEdges().indexOf(new DEdge(3,0,0,0,2,0));
+                assertTrue(ed11 == mesh.getEdges().get(index));
+                index = mesh.getEdges().indexOf(new DEdge(0,2,0,3,4,0));
+                assertTrue(ed12 == mesh.getEdges().get(index));
+                index = mesh.getEdges().indexOf(new DEdge(3,0,0,6,2,0));
+                assertTrue(ed21 == mesh.getEdges().get(index));
+                index = mesh.getEdges().indexOf(new DEdge(6,2,0,3,4,0));
+                assertTrue(ed22 == mesh.getEdges().get(index));
         }
 
 }
