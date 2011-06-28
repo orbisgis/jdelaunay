@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
@@ -48,7 +49,7 @@ public final class ConstraintPolygon extends Element {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Polygon polygon;
-	private ArrayList<DEdge> edges;
+	private List<DEdge> edges;
 	private DTriangle refTriangle;
 
 	
@@ -250,7 +251,7 @@ public final class ConstraintPolygon extends Element {
 	 * 
 	 * @return edges
 	 */
-	public ArrayList<DEdge> getEdges() {
+	public List<DEdge> getEdges() {
 		return edges;
 	}
 	
@@ -260,8 +261,8 @@ public final class ConstraintPolygon extends Element {
 	 * @return points
 	 * @throws DelaunayError 
 	 */
-	public ArrayList<DPoint> getPoints() throws DelaunayError {
-		ArrayList<DPoint> points= new ArrayList<DPoint>();
+	public List<DPoint> getPoints() throws DelaunayError {
+		ArrayList<DPoint> points= new ArrayList<DPoint>(polygon.getNumPoints());
 		DPoint aPoint;
 		for (int i = 0; i < polygon.getNumPoints()-1; i++)
 		{	
@@ -313,7 +314,9 @@ public final class ConstraintPolygon extends Element {
 				intersectEdge = true;
 			}
 		}
-		return (intersectPolygon && !intersectEdge) || (!intersectPolygon && edgeColinear && !intersectEdge);
+                boolean c1 = intersectPolygon && !intersectEdge;
+                boolean c2 = !intersectPolygon && edgeColinear && !intersectEdge;
+		return c1 || c2;
 	}
 	
 	/**

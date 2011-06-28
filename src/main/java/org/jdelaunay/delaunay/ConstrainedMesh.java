@@ -77,7 +77,7 @@ import org.jdelaunay.delaunay.tools.Tools;
  * @author alexis
  */
 public class ConstrainedMesh implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	private static final Logger LOG = Logger.getLogger(ConstrainedMesh.class);
 	//The list of triangles during the triangulation process.
@@ -611,11 +611,12 @@ public class ConstrainedMesh implements Serializable {
 	 *
 	 * @param weights
 	 */
-	public final void setWeights(HashMap<Integer, Integer> weights) {
+	public final void setWeights(Map<Integer, Integer> weights) {
 		if(weights == null){
-			weights = new HashMap<Integer, Integer>();
-		}
-		this.weights = weights;
+			this.weights = new HashMap<Integer, Integer>();
+		} else {
+                        this.weights = weights;
+                }
 	}
 
 	/**
@@ -2020,8 +2021,8 @@ public class ConstrainedMesh implements Serializable {
          * @param replacePoints
          * @param theList
          */
-        private void changeUnqualifiedEdges(HashMap<DPoint, DPoint> replacePoints, List<DEdge> theList) {
-                ArrayList<DEdge> EdgeToRemove = new ArrayList<DEdge>();
+        private void changeUnqualifiedEdges(Map<DPoint, DPoint> replacePoints, List<DEdge> theList) {
+                ArrayList<DEdge> edgeToRemove = new ArrayList<DEdge>();
                 for (DEdge anEdge : theList) {
                         DPoint aPoint1 = anEdge.getStartPoint();
                         DPoint replaced1 = aPoint1;
@@ -2037,11 +2038,11 @@ public class ConstrainedMesh implements Serializable {
                         }
                         // Ensure the two points are not equal
                         if (replaced1.equals(replaced2)) {
-                                EdgeToRemove.add(anEdge);
+                                edgeToRemove.add(anEdge);
                         }
                 }
                 // Remove bad edges
-                for (DEdge anEdge : EdgeToRemove) {
+                for (DEdge anEdge : edgeToRemove) {
                         theList.remove(anEdge);
                 }
 
@@ -2610,15 +2611,15 @@ public class ConstrainedMesh implements Serializable {
                         changeUnqualifiedEdges(replacePoints, edges);
                         changeUnqualifiedEdges(replacePoints, constraintEdges);
 
-                        ArrayList<ConstraintPolygon> PolygonToRemove = new ArrayList<ConstraintPolygon>();
+                        ArrayList<ConstraintPolygon> polygonToRemove = new ArrayList<ConstraintPolygon>();
                         for (ConstraintPolygon aPolygon : polygons) {
                                 changeUnqualifiedEdges(replacePoints, aPolygon.getEdges());
                                 if (aPolygon.getEdges().isEmpty()) {
-                                        PolygonToRemove.add(aPolygon);
+                                        polygonToRemove.add(aPolygon);
                                 }
                         }
                         // Remove bad polygons
-                        for (ConstraintPolygon aPolygon : PolygonToRemove) {
+                        for (ConstraintPolygon aPolygon : polygonToRemove) {
                                 polygons.remove(aPolygon);
                         }
 

@@ -216,10 +216,8 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 		DPoint last;
 		//To be sure that the current edge is connected to two triangles, as we don't want to
 		//add points outside the current mesh.
-		boolean twoAssociatedTriangles;
 		for(int i =0; i<DTriangle.PT_NB; i++){
 			last = parent.getOppositePoint(edges[i]);
-			twoAssociatedTriangles = edges[i].getRight() != null && edges[i].getLeft()!=null;
 			//If the circumcenter is right to one edge where the last point is
 			//on the left (or the contrary) we must make further process.
 			if(!edges[i].isRight(last)==edges[i].isRight(defloc)){
@@ -230,43 +228,6 @@ class VoronoiNode implements Comparable<VoronoiNode>{
 		location = defloc;
 		double z = parent.interpolateZ(location);
 		location.setZ(z);
-	}
-
-	/**
-	 * This method tries to find an intersection between ray (which is an edge
-	 * between the triangle and its circumcenter) and a constraint edge.
-	 * @param center
-	 * @param ray
-	 * @param line
-	 * @param prev
-	 * @return
-	 * @throws DelaunayError
-	 */
-	private DPoint checkLocationValidity(final DPoint center, DEdge ray, DEdge line, DTriangle prev) throws DelaunayError {
-		DTriangle next = line.getOtherTriangle(prev);
-		if(next==null){
-			return null;
-		}
-		boolean stop = true;
-		DEdge[] edges = next.getEdges();
-		DEdge nextEd = null;
-		for(int i=0; i<DTriangle.PT_NB; i++){
-			if(!edges[i].equals(line) ){
-				int inter =edges[i].intersects(ray);
-				if(inter == DEdge.INTERSECT || inter ==DEdge.SHARE_EXTREMITY || inter == DEdge.SHARE_EDGE_PART){
-					stop = false;
-					nextEd = edges[i];
-					if(nextEd.isLocked()){
-						return null;
-					}
-				}
-			}
-		}
-		if(stop){
-			return center;
-		} else {
-			return checkLocationValidity(center, ray, nextEd, next);
-		}
 	}
 
 	/**

@@ -34,13 +34,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.geometries.DTriangle;
-import org.jdelaunay.delaunay.geometries.Element;
-import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  * The boundary of the mesh. During the computation of the mesh, the boundary is
