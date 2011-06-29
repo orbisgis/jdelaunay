@@ -62,12 +62,6 @@ public final class ConstraintPolygon extends Element {
 	 * True, if we want to remove triangle who are inside the polygon.
 	 */
 	private boolean isEmpty;
-
-	
-	/**
-	 * True, if we want to make new triangulation inside the polygon.
-	 */
-	private boolean mustBeTriangulated;
 	
 	/**
 	 * Generate a polygon.
@@ -203,26 +197,7 @@ public final class ConstraintPolygon extends Element {
 	 */
 	public void setEmpty(boolean isEmpty) { 
 		this.isEmpty = isEmpty;
-	}
-	
-	
-	/**
-	 * @return True, if we make new triangulation inside the polygon.
-	 */
-	public boolean mustBeTriangulated()
-	{
-		return mustBeTriangulated;
-	}
-	
-	/**
-	 * True, if we want to make new triangulation inside the polygon.
-	 */
-	public void setMustBeTriangulated(boolean mustBeTriangulated)
-	{
-		this.mustBeTriangulated=mustBeTriangulated;
-		setEmpty(mustBeTriangulated);
-	}
-	
+	}	
 	
 	/**
 	 * @return The reference triangle.
@@ -305,8 +280,7 @@ public final class ConstraintPolygon extends Element {
 		DPoint aPoint = anEdge.getBarycenter();
 		boolean intersectPolygon=polygon.contains(new GeometryFactory().createPoint(aPoint.getCoordinate()));
 		boolean edgeColinear=false, intersectEdge=false;
-		for(int i=0;i<edges.size();i++ )
-		{
+		for(int i=0;i<edges.size();i++ ) {
 			if(edges.get(i).haveSamePoint(anEdge)) {
 				edgeColinear = true;
 			}
@@ -341,8 +315,7 @@ public final class ConstraintPolygon extends Element {
 	 */
 	public boolean isIntersect(DEdge anEdge) throws DelaunayError{
 		boolean intersect=false;
-		for(int i=0;i<edges.size() && !intersect;i++ )
-		{
+		for(int i=0;i<edges.size() && !intersect;i++ ) {
 			intersect=edges.get(i).intersects(anEdge.getStartPoint(),anEdge.getEndPoint()) == DEdge.INTERSECT;
 		}
 			
