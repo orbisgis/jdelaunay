@@ -379,60 +379,28 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		}
 
 	}
-
-	/**
-	 * We check that event points can be added efficiently from secant edges
-	 *
-	 */
-	public void testAddIntersectionPoints() throws DelaunayError{
-		ArrayList<DEdge> list = new ArrayList<DEdge>();
-		ConstrainedMesh mesh = new ConstrainedMesh();
-		ArrayList<DPoint> events = new ArrayList<DPoint>();
-		//We first check with only two edges which intersect in three
-		//dimensions
-		list.add(new DEdge(0,0,0,5,5,5));
-		list.add(new DEdge(0,5,0,5,0,5));
-		mesh.addPointsFromNeighbourEdges(list, events);
-		assertTrue(events.size()==1);
-		DPoint inter = events.get(0);
-		assertTrue(inter.equals2D(new DPoint(2.5,2.5,0)));
-		assertTrue(inter.equals(new DPoint(2.5,2.5,2.5)));
-		//We check with two edges which intersect in only two dimensions
-		list = new ArrayList<DEdge>();
-		events = new ArrayList<DPoint>();
-		list.add(new DEdge(0,0,0,5,5,5));
-		list.add(new DEdge(0,5,0,5,0,0));
-		mesh.addPointsFromNeighbourEdges(list, events);
-		assertTrue(events.size()==1);
-		inter = events.get(0);
-		assertTrue(inter.equals2D(new DPoint(2.5,2.5,0)));
-		assertTrue(inter.equals(new DPoint(2.5,2.5,2.5)));
-	}
+        
 	/**
 	 * This test checks that edges and their points are properly added to the mesh
 	 */
-	public void testAddConstraintEdge(){
+	public void testAddConstraintEdge() throws DelaunayError {
 		ConstrainedMesh mesh = new ConstrainedMesh();
-		try{
-			mesh.addConstraintEdge(new DEdge(new DPoint(0,0,0), new DPoint(3,3,0)));
-			mesh.addConstraintEdge(new DEdge(new DPoint(2,3,0), new DPoint(5,3,0)));
-			//We check that the points are in the points list
-			List<DPoint> list = mesh.getPoints();
-			assertTrue(list.get(0).equals2D(new DPoint(0,0,0)));
-			assertTrue(list.get(1).equals2D(new DPoint(2,3,0)));
-			assertTrue(list.get(2).equals2D(new DPoint(3,3,0)));
-			assertTrue(list.get(3).equals2D(new DPoint(5,3,0)));
+                mesh.addConstraintEdge(new DEdge(new DPoint(0,0,0), new DPoint(3,3,0)));
+                mesh.addConstraintEdge(new DEdge(new DPoint(2,3,0), new DPoint(5,3,0)));
+                //We check that the points are in the points list
+                List<DPoint> list = mesh.getPoints();
+                assertTrue(list.get(0).equals2D(new DPoint(0,0,0)));
+                assertTrue(list.get(1).equals2D(new DPoint(2,3,0)));
+                assertTrue(list.get(2).equals2D(new DPoint(3,3,0)));
+                assertTrue(list.get(3).equals2D(new DPoint(5,3,0)));
 
-			//We check that the edges are in the list
-			DEdge m1 = new DEdge(new DPoint(0,0,0), new DPoint(3,3,0));
-			DEdge m2 = new DEdge(new DPoint(2,3,0), new DPoint(5,3,0));
+                //We check that the edges are in the list
+                DEdge m1 = new DEdge(new DPoint(0,0,0), new DPoint(3,3,0));
+                DEdge m2 = new DEdge(new DPoint(2,3,0), new DPoint(5,3,0));
 
-			List<DEdge> listConst = mesh.getConstraintEdges();
-			assertTrue(listConst.get(0).haveSamePoint(m1));
-			assertTrue(listConst.get(1).haveSamePoint(m2));
-		} catch(DelaunayError d){
-			System.out.println(d.getMessage());
-		}
+                List<DEdge> listConst = mesh.getConstraintEdges();
+                assertTrue(listConst.get(0).haveSamePoint(m1));
+                assertTrue(listConst.get(1).haveSamePoint(m2));
 
 	}
 
@@ -876,23 +844,6 @@ public class ConstrainedDelaunayTest extends BaseUtility {
 		DEdge e2 = new DEdge(0,0,0,2,2,0);
 		mesh.addEdge(e2);
 		assertTrue(mesh.getEdges().get(0)==e1);
-	}
-
-	/**
-	 * Test that the methods who checks that a list is vertically sorted works well
-	 */
-	public void testIsVerticallySorted() throws DelaunayError{
-		List<DEdge> list = new ArrayList<DEdge>();
-		ConstrainedMesh mesh = new ConstrainedMesh();
-		list.add(new DEdge(0,0,0,2,2,2));
-		list.add(new DEdge(0,1,0,2,3,2));
-		list.add(new DEdge(0,2,0,2,4,2));
-		list.add(new DEdge(0,3,0,2,5,2));
-		list.add(new DEdge(0,4,0,2,6,2));
-		assertTrue(mesh.isVerticallySorted(list, 1));
-		list.add(new DEdge(0,-1,0,2,0,2));
-		assertFalse(mesh.isVerticallySorted(list, 1));
-
 	}
 
 	/**

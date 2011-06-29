@@ -487,7 +487,6 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		// default is outside the circle
 		int returnedValue = 0;
 
-		// double distance = squareDistance(Center, aPoint);
 		double ux = aPoint.getX() - xCenter;
 		double uy = aPoint.getY() - yCenter;
 		double distance = ux * ux + uy * uy;

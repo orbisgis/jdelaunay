@@ -911,8 +911,6 @@ public class ConstrainedMesh implements Serializable {
 							if (inter3 != null) {
 								//inter3 must be processed further.
 								addEdgeToLeftSortedList(edgeMemory, inter3);
-//								mem = insertEdgeVerticalList(inter3, edgeBuffer, abs);
-//								j = j <= mem ? j : mem;
 							}
 							j = j - 2 < 0 ? 0 : j - 2;
 						} else {
@@ -1067,26 +1065,6 @@ public class ConstrainedMesh implements Serializable {
 	}
 
 	/**
-	 * Check if the list given in argument is vertically sorted or not.
-	 * @param edgeList
-	 * @return
-         *      true if edgeList is vertically sorted.
-         * @see org.jdelaunay.delaunay.VerticalComparator
-	 */
-	public final boolean isVerticallySorted(List<DEdge> edgeList, double abs) throws DelaunayError {
-		DEdge e1, e2;
-		e2 = edgeList.get(0);
-		for (int i = 1; i < edgeList.size(); i++) {
-			e1 = e2;
-			e2 = edgeList.get(i);
-                        if (e1.verticalSort(e2, abs) == 1) {
-                                return false;
-                        }
-		}
-		return true;
-	}
-
-	/**
 	 * Checks that edge does not intersect the existing edges of the mesh.
 	 * @param edge
 	 * @return
@@ -1102,35 +1080,6 @@ public class ConstrainedMesh implements Serializable {
 			}
 		}
 		return false;
-	}
-	/**
-	 * This method simply travels the list given in argument. If edges edgelist.get(i)
-	 * and edgeList.get(i+1) intersect, then we add the intersection point in
-	 * the eventList.
-	 * @param edgeList
-	 */
-	public final void addPointsFromNeighbourEdges(List<DEdge> edgeList, List<DPoint> eventList) throws DelaunayError {
-		DEdge e1;
-		DEdge e2;
-		Element inter = null;
-		//we check that our paremeters are not null, and that our edge list contains
-		//at least two edges, because they couldn't be intersections otherwise.
-		if (edgeList == null || eventList == null || edgeList.size() < 2) {
-			return;
-		} else {
-			for (int i = 0; i < edgeList.size() - 1; i++) {
-				e1 = edgeList.get(i);
-				e2 = edgeList.get(i + 1);
-				inter = e1.getIntersection(e2);
-				if (inter != null) {
-					if (inter instanceof DPoint) {
-						eventList.add((DPoint) inter);
-					} else {
-						eventList.add(((DEdge) inter).getPointLeft());
-					}
-				}
-			}
-		}
 	}
 
 	/**

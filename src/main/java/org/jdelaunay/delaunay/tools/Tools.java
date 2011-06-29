@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.geometries.Element;
 
@@ -186,5 +187,25 @@ public final class Tools {
 	}
 
 
+
+	/**
+	 * Check if the list given in argument is vertically sorted or not.
+	 * @param edgeList
+	 * @return
+         *      true if edgeList is vertically sorted.
+         * @see org.jdelaunay.delaunay.VerticalComparator
+	 */
+	public static boolean isVerticallySorted(List<DEdge> edgeList, double abs) throws DelaunayError {
+		DEdge e1, e2;
+		e2 = edgeList.get(0);
+		for (int i = 1; i < edgeList.size(); i++) {
+			e1 = e2;
+			e2 = edgeList.get(i);
+                        if (e1.verticalSort(e2, abs) == 1) {
+                                return false;
+                        }
+		}
+		return true;
+	}
 
 }

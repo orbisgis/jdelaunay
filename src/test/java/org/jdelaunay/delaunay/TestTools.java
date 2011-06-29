@@ -29,7 +29,10 @@
  * info_at_ orbisgis.org
  */
 package org.jdelaunay.delaunay;
+import java.util.ArrayList;
+import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.tools.Tools;
 
@@ -47,4 +50,20 @@ public class TestTools extends BaseUtility {
                 assertFalse(Tools.isColinear(p1, p2));
         }
         
+
+	/**
+	 * Test that the methods who checks that a list is vertically sorted works well
+	 */
+	public void testIsVerticallySorted() throws DelaunayError{
+		List<DEdge> list = new ArrayList<DEdge>();
+		list.add(new DEdge(0,0,0,2,2,2));
+		list.add(new DEdge(0,1,0,2,3,2));
+		list.add(new DEdge(0,2,0,2,4,2));
+		list.add(new DEdge(0,3,0,2,5,2));
+		list.add(new DEdge(0,4,0,2,6,2));
+		assertTrue(Tools.isVerticallySorted(list, 1));
+		list.add(new DEdge(0,-1,0,2,0,2));
+		assertFalse(Tools.isVerticallySorted(list, 1));
+
+	}
 }
