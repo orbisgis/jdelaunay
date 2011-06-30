@@ -1264,6 +1264,42 @@ public class ConstrainedMesh implements Serializable {
 		edgeSplitting(minLength);
                 triangleRefinement(minLength, ev);
 	}
+
+	/**
+	 * Refine the mesh, using a derivate of the Ruppert algorithm. We won't split any constraint
+         * edges here.
+	 * @param minLength
+	 *		The minimum length of an edge that could be inserted during the refinement.
+	 * @throws DelaunayError
+         * @throws IllegalArgumentException if <code>minLength</code> is inferior or equal to 0
+	 */
+	public final void refineTriangles(double minLength, InsertionEvaluator ev) throws DelaunayError {
+                if(minLength <=0){
+                        throw new IllegalArgumentException("The minimum length must be strictly positive !");
+                }
+                processed = new HashMap<Integer, DTriangle>(triangleList.size());
+                remaining = new HashMap<Integer, DTriangle>(triangleList.size());
+                fillRemainingFromTriangles();
+                Set<Map.Entry<Integer, DTriangle>> treatSet = remaining.entrySet();
+                while(!treatSet.isEmpty()) {
+                        Map.Entry<Integer, DTriangle> entry = treatSet.iterator().next();
+                        DTriangle dt = entry.getValue();
+                        if(ev.evaluate(dt)){
+                                buffer = new HashMap<Integer, DTriangle>();
+                                DEdge ret = insertTriangleCircumCenter(dt, true, minLength);
+                                putInProcessed(dt);
+                                if(ret == null){
+                                        fillRemainingFromTriangles();
+                                }
+                        }else {
+                                putInProcessed(dt);
+                        }
+                }
+                triangleList = new LinkedList<DTriangle>(processed.values());
+                processed = null;
+                remaining = null;
+                buffer = null;
+	}
         
         /**
          * Edges are split if encroached.

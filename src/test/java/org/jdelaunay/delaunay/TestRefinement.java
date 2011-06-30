@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
 import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
 import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.geometries.DTriangle;
@@ -245,8 +246,7 @@ public class TestRefinement extends BaseUtility {
                 Collections.sort(mesh.getTriangleList());
 //                show(mesh);
                 assertCoherence(mesh);
-                assertTrue(true);
-//                2.929521276595745,13.69813829787234,0.0
+                assertTrianglesTopology(mesh);
         }
         
         /**
@@ -268,7 +268,7 @@ public class TestRefinement extends BaseUtility {
 //                show(mesh);
                 mesh.refineMesh(1, new SkinnyEvaluator(20));
                 assertCoherence(mesh);
-                assertTrue(true);
+                assertTrianglesTopology(mesh);
                 
         }
         
@@ -282,12 +282,11 @@ public class TestRefinement extends BaseUtility {
                 mesh.addConstraintEdge(new DEdge (10,  18, 0, 20,   0, 0));
                 mesh.addConstraintEdge(new DEdge (10, 143, 0, 20, 149, 0));
                 mesh.processDelaunay();
-//                mesh.edgeSplitting(1);
                 assertTrianglesTopology(mesh);
 //                show(mesh);
                 mesh.refineMesh(.5, new SkinnyEvaluator(15));
+                assertCoherence(mesh);
                 assertTrianglesTopology(mesh);
-                assertTrue(true);
         }
         
         
@@ -306,9 +305,9 @@ public class TestRefinement extends BaseUtility {
                 mesh.addConstraintEdge(new DEdge (280.0, 143.28555858321488, 0.0, 320.0, 164.0, 0.0));
                 mesh.forceConstraintIntegrity();
                 mesh.processDelaunay();
-//                mesh.edgeSplitting(1);
                 mesh.refineMesh(1, new SkinnyEvaluator(15));
                 assertTrianglesTopology(mesh);
+                assertCoherence(mesh);
         }
         
         public void testRefinementChezine5() throws DelaunayError {
@@ -320,10 +319,58 @@ public class TestRefinement extends BaseUtility {
                 mesh.addConstraintEdge(new DEdge (160.0, 89.16132207820192, 0.0, 192.72714662225917, 104.0, 0.0));
                 mesh.forceConstraintIntegrity();
                 mesh.processDelaunay();
-//                mesh.edgeSplitting(1);
 //                show(mesh);
                 mesh.refineMesh(1, new SkinnyEvaluator(15));
                 assertTrianglesTopology(mesh);
+                assertCoherence(mesh);
+        }
+        
+        public void testSafeRefinement() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,6,0));
+                mesh.addPoint(new DPoint(2,9,0));
+                mesh.addPoint(new DPoint(3,0,0));
+                mesh.addPoint(new DPoint(11,8,0));
+                mesh.processDelaunay();
+                assertTrue(mesh.getTriangleList().size()==2);
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(0,6,0),new DPoint(2,9,0),new DPoint(3,0,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(11,8,0),new DPoint(2,9,0),new DPoint(3,0,0))));
+                InsertionEvaluator ie = new SkinnyEvaluator(25);
+                int index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,6,0),new DPoint(2,9,0),new DPoint(3,0,0)));
+                DTriangle tri = mesh.getTriangleList().get(index);
+                assertTrue(ie.evaluate(tri));
+                mesh.refineTriangles(0.5, ie);
+                assertTrue(mesh.getTriangleList().size()==2);
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(0,6,0),new DPoint(2,9,0),new DPoint(3,0,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(11,8,0),new DPoint(2,9,0),new DPoint(3,0,0))));
+        }
+        
+        public void testSafeRefinementSucceed() throws DelaunayError {
+                ConstrainedMesh mesh = new ConstrainedMesh();
+                mesh.addPoint(new DPoint(0,6,0));
+                mesh.addPoint(new DPoint(2,9,0));
+                mesh.addPoint(new DPoint(3,0,0));
+                mesh.addPoint(new DPoint(7,13,0));
+                mesh.addPoint(new DPoint(11,-1,0));
+                mesh.addPoint(new DPoint(11,8,0));
+                mesh.processDelaunay();
+                assertTrue(mesh.getTriangleList().size()==4);
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(0,6,0),new DPoint(2,9,0),new DPoint(3,0,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(11,8,0),new DPoint(2,9,0),new DPoint(3,0,0))));
+                InsertionEvaluator ie = new SkinnyEvaluator(25);
+                int index = mesh.getTriangleList().indexOf(new DTriangle(new DPoint(0,6,0),new DPoint(2,9,0),new DPoint(3,0,0)));
+                DTriangle tri = mesh.getTriangleList().get(index);
+                DPoint cc = new DPoint(tri.getCircumCenter());
+                assertTrue(ie.evaluate(tri));
+                mesh.refineTriangles(0.5, ie);
+                assertTrue(mesh.getTriangleList().size()==6);
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(0,6,0),cc,new DPoint(3,0,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(0,6,0),cc,new DPoint(2,9,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(7,13,0),cc,new DPoint(2,9,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(7,13,0),cc,new DPoint(11,8,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(11,-1,0),cc,new DPoint(11,8,0))));
+                assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(11,-1,0),cc,new DPoint(3,0,0))));
+                
         }
         
 }
