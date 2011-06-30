@@ -30,15 +30,14 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
- * An horizontal rectangle.
+ * A parallepiped defined by two points.
  * 
  * @author Jean-Yves MARTIN, Erwan BOCHER, Adelin PIAU, Alexis Guéganno.
  */
@@ -78,11 +77,17 @@ public class BoundaryBox implements Serializable {
 	/**
 	 * set a box according to coordinates
 	 * @param pminx
+         *      The first x value
 	 * @param pmaxx
+         *      The second x value
 	 * @param pminy
+         *      The first y value
 	 * @param pmaxy
+         *      The second y value
 	 * @param pminz
+         *      The first z value
 	 * @param pmaxz
+         *      The second z value
 	 */
 	public BoundaryBox(double pminx, double pmaxx, double pminy, double pmaxy,
 			double pminz, double pmaxz) {
@@ -92,33 +97,39 @@ public class BoundaryBox implements Serializable {
 	}
 
 	/**
-	 * set a box according to coordinates
+	 * set a box according to another existing box.
 	 * @param aBox
 	 */
 	public BoundaryBox(BoundaryBox aBox) {
 		init();
-
+                empty = aBox.empty;
 		setBox(aBox.minx,aBox.maxx, aBox.miny, aBox.maxy, aBox.minz, aBox.maxz);
 	}
 
 	/**
-	 * set box coordinates
+	 * Set the coordinates of the extremities of this box.
 	 * 
-	 * @param pminx
-	 * @param pmaxx
-	 * @param pminy
-	 * @param pmaxy
-	 * @param pminz
-	 * @param pmaxz
+	 * @param x1
+         *      The first x value
+	 * @param x2
+         *      The second x value
+	 * @param y1
+         *      The first y value
+	 * @param y2
+         *      The second y value
+	 * @param z1
+         *      The first z value
+	 * @param z2
+         *      The second z value
 	 */
-	public final void setBox(double pminx, double pmaxx, double pminy, double pmaxy,
-			double pminz, double pmaxz) {
-		minx = pminx;
-		maxx = pmaxx;
-		miny = pminy;
-		maxy = pmaxy;
-		minz = pminz;
-		maxz = pmaxz;
+	public final void setBox(double x1, double x2, double y1, double y2,
+			double z1, double z2) {
+		minx = x1 < x2 ? x1 : x2;
+		maxx = x1 < x2 ? x2 : x1;
+		miny = y1 < y2 ? y1 : y2;
+		maxy = y1 < y2 ? y2 : y1;
+		minz = z1 < z2 ? z1 : z2;
+		maxz = z1 < z2 ? z2 : z1;
 		empty = false;
 		updateMiddle();
 	}
@@ -150,8 +161,7 @@ public class BoundaryBox implements Serializable {
 			minz = z;
 			maxz = z;
 			empty = false;
-		}
-		else {
+		} else {
 			if (minx > x) {
 				minx = x;
 			}
@@ -179,19 +189,25 @@ public class BoundaryBox implements Serializable {
 	 * 
 	 * @param aPoint
 	 */
-	public final void alterBox(DPoint aPoint) {
-		double x = aPoint.getX();
-		double y = aPoint.getY();
-		double z = aPoint.getZ();
-		alterBox(x,y,z);
+	public final void alterBox(Coordinate aPoint) {
+		alterBox(aPoint.x,aPoint.y,aPoint.z);
+	}
+
+	/**
+	 * alter box coordinates according to the new point
+	 * 
+	 * @param aPoint
+	 */
+	public final void alterBox(DPoint point) {
+                Coordinate aPoint = point.getCoordinate();
+		alterBox(aPoint);
 	}
 	
 	
 	/**
 	 * @return Coordinate of the middle of the box.
 	 */
-	public final Coordinate getMiddle()
-	{
+	public final Coordinate getMiddle() {
 		return middle;
 	}
 	
@@ -202,17 +218,23 @@ public class BoundaryBox implements Serializable {
 	}
 
 	/**
-	 * Get the lis of points that define this boundary box.
+	 * Get the list of points that define this boundary box. We just need two of them,
+         * as we can build a parallelepiped just from two opposite points of it.
 	 * @return
-         *      The apex of the box, in a List of DPoint instances.
+         *      The min and max apex of the box, in a List of DPoint instances, if it is not
+         *      empty. The List contains two DPoint instances, consequently.<br/>
+         *      An empty list if the box is empty.
 	 * @throws DelaunayError
 	 */
 	public final List<DPoint> getPoints() throws DelaunayError {
-		ArrayList<DPoint> points = new ArrayList<DPoint>();
-		points.add(new DPoint(minx, miny, 0));
-		points.add(new DPoint(minx, maxy, 0));
-		points.add(new DPoint(maxx, miny, 0));
-		points.add(new DPoint(maxx, maxy, 0));
-		return points;
+                if(empty){
+                        return new ArrayList<DPoint>();
+                } else {
+                        ArrayList<DPoint> points = new ArrayList<DPoint>();
+                        points.add(new DPoint(minx, miny, minz));
+                        points.add(new DPoint(maxx, maxy, maxz));
+                        return points;
+                }
 	}
+        
 }

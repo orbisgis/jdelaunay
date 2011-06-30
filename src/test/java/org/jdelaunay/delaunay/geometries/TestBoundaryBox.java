@@ -31,6 +31,7 @@
 
 package org.jdelaunay.delaunay.geometries;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 import junit.framework.TestCase;
 import org.jdelaunay.delaunay.error.DelaunayError;
@@ -44,9 +45,53 @@ public class TestBoundaryBox extends TestCase {
 	public void testGetPoints() throws DelaunayError{
 		BoundaryBox bb = new BoundaryBox(0, 4, 0, 4, 7, 4);
 		List<DPoint> list = bb.getPoints();
-		assertTrue(list.contains(new DPoint(0,0,0)));
-		assertTrue(list.contains(new DPoint(0,4,0)));
-		assertTrue(list.contains(new DPoint(4,4,0)));
-		assertTrue(list.contains(new DPoint(4,0,0)));
+		assertTrue(list.contains(new DPoint(0,0,4)));
+		assertTrue(list.contains(new DPoint(4,4,7)));
 	}
+        
+        public void testExpandBox() throws DelaunayError {
+                BoundaryBox bb = new BoundaryBox();
+                assertTrue(bb.getPoints().isEmpty());
+                bb.alterBox(new Coordinate(0,0,0));
+		List<DPoint> list = bb.getPoints();
+		assertTrue(list.get(0).equals(new DPoint(0,0,0)));
+		assertTrue(list.get(1).equals(new DPoint(0,0,0)));
+                bb.alterBox(new Coordinate(2,0,0));
+		list = bb.getPoints();
+		assertTrue(list.get(0).equals(new DPoint(0,0,0)));
+		assertTrue(list.get(1).equals(new DPoint(2,0,0)));
+                bb.alterBox(new Coordinate(-2,0,0));
+		list = bb.getPoints();
+		assertTrue(list.get(0).equals(new DPoint(-2,0,0)));
+		assertTrue(list.get(1).equals(new DPoint(2,0,0)));
+                bb.alterBox(new Coordinate(0,2,0));
+		list = bb.getPoints();
+		assertTrue(list.get(0).equals(new DPoint(-2,0,0)));
+		assertTrue(list.get(1).equals(new DPoint(2,2,0)));
+                bb.alterBox(new Coordinate(0,-2,0));
+		list = bb.getPoints();
+		assertTrue(list.get(0).equals(new DPoint(-2,-2,0)));
+		assertTrue(list.get(1).equals(new DPoint(2,2,0)));
+                bb.alterBox(new Coordinate(0,0,2));
+		list = bb.getPoints();
+		assertTrue(list.get(0).equals(new DPoint(-2,-2,0)));
+		assertTrue(list.get(1).equals(new DPoint(2,2,2)));
+                bb.alterBox(new Coordinate(0,0,-2));
+		list = bb.getPoints();
+		assertTrue(list.get(0).equals(new DPoint(-2,-2,-2)));
+		assertTrue(list.get(1).equals(new DPoint(2,2,2)));
+                
+        }
+        
+        /**
+         * We check that the empty attribute is well transmitted.
+         * @throws DelaunayError 
+         */
+        public void testAlternativeConstructor() throws DelaunayError {
+                BoundaryBox bb = new BoundaryBox();
+                assertTrue(bb.getPoints().isEmpty());
+                BoundaryBox bb2 = new BoundaryBox(bb);
+                assertTrue(bb.getPoints().isEmpty());
+                
+        }
 }

@@ -168,8 +168,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	@Override
 	public final BoundaryBox getBoundingBox() {
 		BoundaryBox aBox = new BoundaryBox();
-		aBox.alterBox( this);
-		
+		aBox.alterBox(coord);
 		return aBox;
 	}
 
