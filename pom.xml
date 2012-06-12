@@ -19,12 +19,12 @@
                 <dependency>
                         <groupId>com.vividsolutions</groupId>
                         <artifactId>jts</artifactId>
-                        <version>1.11</version>
+                        <version>1.12</version>
                 </dependency>
                 <dependency>
                         <groupId>log4j</groupId>
                         <artifactId>log4j</artifactId>
-                        <version>1.2.13</version>
+                        <version>1.2.16</version>
                 </dependency>
         </dependencies>
         <build>
@@ -39,6 +39,13 @@
                                 <version>2.3.2</version>
                         </plugin>
                 </plugins>
+                <extensions>
+                        <extension>
+                                <groupId>org.apache.maven.wagon</groupId> 
+                                <artifactId>wagon-ssh</artifactId> 
+                                <version>2.2</version> 
+                        </extension> 
+                </extensions>
         </build>
         <repositories>
                 <repository>
@@ -51,7 +58,7 @@
                 <repository>
                         <id>IRSTV</id>
                         <name>IRSTV repository</name>
-                        <url>sftp://irstv@www.orbisgis.org:/var/www/repo.orbisgis.org/htdocs</url>
+                        <url>sftp://alexis@repo.orbisgis.org:/var/www/repo.orbisgis.org/</url>
                 </repository>
         </distributionManagement>
 </project>

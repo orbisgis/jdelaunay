@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
-import org.jdelaunay.delaunay.geometries.DTriangle;
 
 /**
  * Perform tests on the VerticalList class
