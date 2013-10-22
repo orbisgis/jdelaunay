@@ -32,6 +32,7 @@ package org.jdelaunay.delaunay.geometries;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.HashMap;
+import static junit.framework.Assert.assertEquals;
 import junit.framework.TestCase;
 import org.jdelaunay.delaunay.VerticalComparator;
 import org.jdelaunay.delaunay.error.DelaunayError;
@@ -659,6 +660,11 @@ public class TestEdges extends TestCase {
 		e = new DEdge(0,0,0,0,0,5);
 		assertTrue(Double.isNaN(e.getSlope()));
 	}
+        
+        public void testGetFlatSlope() throws DelaunayError {
+            DEdge e = new DEdge(0,0,0,5,0,0);
+            assertEquals(e.getSlope(), 0, Tools.EPSILON);
+        }
 
         public void testRetrieveGoodZ() throws DelaunayError {
                 resetElementWeights();

@@ -34,6 +34,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import static junit.framework.Assert.assertEquals;
 import junit.framework.TestCase;
 import org.jdelaunay.delaunay.ConstrainedMesh;
 import org.jdelaunay.delaunay.error.DelaunayError;
@@ -719,7 +720,14 @@ public class TestTriangle extends TestCase {
 		DTriangle tri = new DTriangle(e1, e2, e3);
 		assertEquals(tri.getSlope(), -1, Tools.EPSILON);
 		assertEquals(tri.getSlopeInDegree(), -45, Tools.EPSILON);
-
+	 }
+         
+         public void testGetFlatSlope() throws DelaunayError {
+		DEdge e1 = new DEdge(0, 0, 0, 2, 0, 0);
+		DEdge e2 = new DEdge(2, 0 ,0, 0, 2, 0);
+		DEdge e3 = new DEdge(0, 2, 0, 0, 0, 0);
+		DTriangle tri = new DTriangle(e1, e2, e3);
+		assertEquals(tri.getSlope(), 0, Tools.EPSILON);
 	 }
 
 

@@ -808,6 +808,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 */
 	public final double getSlope() {
 		double dz = endPoint.getZ() - startPoint.getZ();
+                if(dz==0){
+                    return 0;
+                }
 		double projSize = get2DLength();
 		if(Math.abs(projSize)<Tools.EPSILON){
 			return Double.NaN;
