@@ -628,7 +628,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 						z = p4.getZ() * t2 + (1 - t2) * p3.getZ();
 					}
 					intersection = new DPoint(x, y, z);
-
+                    intersection.setProperty(getProperty());
 				}
 			} else if ((-Tools.EPSILON <= t1) && (t1 <= 1 + Tools.EPSILON) && (-Tools.EPSILON <= t2)
 				&& (t2 <= 1 + Tools.EPSILON)) {
@@ -1088,7 +1088,9 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		} else {
 			double y = startPoint.getY() + p * (endPoint.getY() - startPoint.getY());
 			double z = startPoint.getZ() + p * (endPoint.getZ() - startPoint.getZ());
-			return new DPoint(abs, y, z);
+            DPoint dPoint = new DPoint(abs, y, z);
+            dPoint.setProperty(getProperty());
+			return dPoint;
 		}
 	}
 
@@ -1111,7 +1113,11 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		double dx = endPoint.getX() - startPoint.getX();
 		double dy = endPoint.getY() - startPoint.getY();
 		double dz = endPoint.getZ() - startPoint.getZ();
-		return new DPoint(startPoint.getX()+dx/2, startPoint.getY()+dy/2, startPoint.getZ()+dz/2);
+        DPoint dPoint = new DPoint(startPoint);
+        dPoint.setX(startPoint.getX()+dx/2);
+        dPoint.setY(startPoint.getY()+dy/2);
+        dPoint.setZ(startPoint.getZ()+dz/2);
+		return dPoint;
 	}
 
 	/**
