@@ -1526,6 +1526,8 @@ public class ConstrainedMesh implements Serializable {
                 double z = ((DTriangle) container).interpolateZ(cc);
                 cc.setZ(z);
                 DPoint pt = new DPoint(cc);
+                // Set container property to point
+                pt.setProperty(((DTriangle) container).getPoint(0).getProperty());
                 if(revertible){
                         return insertIfNotEncroached(pt,(DTriangle) container, minLength);
                 } else {

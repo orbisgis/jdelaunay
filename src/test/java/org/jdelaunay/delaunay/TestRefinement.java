@@ -35,6 +35,7 @@ import java.util.List;
 import org.jdelaunay.delaunay.evaluator.SkinnyEvaluator;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
+import org.jdelaunay.delaunay.evaluator.TriangleQuality;
 import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.geometries.DTriangle;
@@ -372,5 +373,43 @@ public class TestRefinement extends BaseUtility {
                 assertTrue(mesh.getTriangleList().contains(new DTriangle(new DPoint(11,-1,0),cc,new DPoint(3,0,0))));
                 
         }
-        
+
+    public void testRefinementQuality() throws DelaunayError {
+        ConstrainedMesh mesh = new ConstrainedMesh();
+        DEdge constr = new DEdge(0,3,0,8,3,0);
+        mesh.addConstraintEdge(constr);
+        constr = new DEdge(9,0,0,9,6,0);
+        mesh.addConstraintEdge(constr);
+        constr = new DEdge(12,6,0,8,7,0);
+        mesh.addConstraintEdge(constr);
+        constr = new DEdge(5,4,0,8,7,0);
+        mesh.addConstraintEdge(constr);
+        constr = new DEdge(12,6,0,12,7,0);
+        mesh.addConstraintEdge(constr);
+        constr = new DEdge(8,3,0,9,6,0);
+        mesh.addConstraintEdge(constr);
+        constr = new DEdge(8,7,0,12,12,0);
+        mesh.addConstraintEdge(constr);
+        mesh.addPoint(new DPoint(4,5,0));
+        mesh.addPoint(new DPoint(4,1,0));
+        mesh.addPoint(new DPoint(10,3,0));
+        mesh.addPoint(new DPoint(11,9,0));
+        mesh.processDelaunay();
+        TriangleQuality se = new TriangleQuality();
+        List<DTriangle> triangles = mesh.getTriangleList();
+        assertEquals(18, triangles.size());
+        double sumArea = 0;
+        for(DTriangle triangle : triangles) {
+            sumArea+=triangle.getArea();
+        }
+        mesh.refineMesh(1, se);
+        assertTrianglesTopology(mesh);
+        triangles = mesh.getTriangleList();
+        assertEquals(54, triangles.size());
+        double refineArea = 0;
+        for(DTriangle triangle : triangles) {
+            refineArea+=triangle.getArea();
+        }
+        assertEquals(sumArea, refineArea, 1e-12);
+    }
 }
