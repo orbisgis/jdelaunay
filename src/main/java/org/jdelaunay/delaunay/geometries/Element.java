@@ -214,8 +214,9 @@ public abstract class Element {
 	 * 
 	 * @return
          *      The boundary box of this element.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public abstract BoundaryBox getBoundingBox();
+	public abstract BoundaryBox getBoundingBox() throws DelaunayError;
 	
 	/**
 	 * Check if the point is inside the element

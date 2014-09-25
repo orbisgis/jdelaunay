@@ -253,9 +253,10 @@ public final class ConstraintPolygon extends Element {
 	 * Get the minimum boundary of this element.
 	 * @return
          *      The bounding box of the polygon.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	@Override
-	public BoundaryBox getBoundingBox() {
+	public BoundaryBox getBoundingBox() throws DelaunayError{
 		BoundaryBox aBox = new BoundaryBox();
 
 		int nbPoints = polygon.getNumPoints();

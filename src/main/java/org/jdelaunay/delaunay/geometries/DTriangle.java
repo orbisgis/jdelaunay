@@ -35,7 +35,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -280,9 +279,10 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 *
 	 * @return
          *      The circumcenter of the triangle, as a JTS Coordinate.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public final Coordinate getCircumCenter() {
-		return new Coordinate(this.xCenter, this.yCenter, zCenter);
+	public final DPoint getCircumCenter() throws DelaunayError {
+		return new DPoint(this.xCenter, this.yCenter, zCenter);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         }
         
 	@Override
-	public final BoundaryBox getBoundingBox() {
+	public final BoundaryBox getBoundingBox() throws DelaunayError {
 		BoundaryBox aBox = new BoundaryBox();
 
 		DPoint p1,p2,pptNb;
@@ -388,12 +388,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	@Override
 	public final boolean contains(DPoint aPoint) {
 		return isInside(aPoint);
-	}
+	}	
 	
-	@Override
-	public final boolean contains(Coordinate c) throws DelaunayError {
-		return isInside(new DPoint(c));
-	}
 
 	/**
 	 * Determines if pt lies on one of the edges of this triangle.
@@ -572,7 +568,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Take into account triangles connected to the edge
 	 *
 	 * @param aPoint
-	 * @return ZValue
+	 * @return ZValuei
 	 */
 	public final double softInterpolateZ(DPoint aPoint) {
 		double weight = (double) PT_NB;
@@ -618,6 +614,43 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 		return area<0 ? -area : area ;
 	}
+        
+        /**
+         * Computes the 3D area of a triangle based on the same approach of JTS
+         * @return 
+         */
+        public final double getArea3D() {
+            DPoint p1,p2,pptNb;
+		p1 = edges[0].getStartPoint();
+		p2 = edges[0].getEndPoint();
+		pptNb = edges[1].getStartPoint();
+		if ((pptNb.equals(p1))||(pptNb.equals(p2))) {
+			pptNb = edges[1].getEndPoint();
+		}
+            /**
+             * Uses the formula 1/2 * | u x v | where u,v are the side vectors
+             * of the triangle x is the vector cross-product
+             */
+            // side vectors u and v
+            double ux = p2.getX() - p1.getX();
+            double uy = p2.getY() - p1.getY();
+            double uz = p2.getZ() - p1.getZ();
+
+            double vx = pptNb.getX() - p1.getX();
+            double vy = pptNb.getY() - p1.getY();
+            double vz = pptNb.getZ() - p1.getZ();
+
+            // cross-product = u x v
+            double crossx = uy * vz - uz * vy;
+            double crossy = uz * vx - ux * vz;
+            double crossz = ux * vy - uy * vx;
+
+            // tri area = 1/2 * | u x v |
+            double absSq = crossx * crossx + crossy * crossy + crossz * crossz;
+            double area3D = Math.sqrt(absSq) / 2;
+
+            return area3D;
+        }
 
 	/**
 	 * Get the normal vector to this triangle, of length 1.
@@ -1063,8 +1096,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	@Override
 	public final int compareTo(DTriangle t) {
-		Coordinate midT = getBoundingBox().getMiddle();
-		Coordinate midO = t.getBoundingBox().getMiddle();
+		DPoint midT = getBoundingBox().getMiddle();
+		DPoint midO = t.getBoundingBox().getMiddle();
 		int c = midT.compareTo(midO);
 		if(c==0){
 			try {
@@ -1124,9 +1157,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	public final double getSlopeAspect() throws DelaunayError {
 		double orientationPente;
-		Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
-		Coordinate c2 = getSteepestVector().getCoordinate();
-		if (c2.z > 0.0) {
+		DPoint c1 = new DPoint(0.0, 0.0, 0.0);
+		DPoint c2 = getSteepestVector();
+		if (c2.getZ() > 0.0) {
 			c2.setCoordinate(new Coordinate(-c2.x, -c2.y, -c2.z));
 		}
 		// l'ordre des coordonnees correspond a l'orientation de l'arc

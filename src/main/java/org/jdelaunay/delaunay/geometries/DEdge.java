@@ -397,7 +397,7 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	}
 
 	@Override
-	public final BoundaryBox getBoundingBox() {
+	public final BoundaryBox getBoundingBox() throws DelaunayError {
 
 		BoundaryBox box = new BoundaryBox();
 		box.alterBox(this.startPoint);
