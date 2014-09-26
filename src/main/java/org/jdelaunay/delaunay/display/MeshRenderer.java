@@ -31,23 +31,26 @@
 package org.jdelaunay.delaunay.display;
 
 import java.awt.Graphics;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import org.jdelaunay.delaunay.ConstrainedMesh;
+import org.jdelaunay.delaunay.error.DelaunayError;
 
 /**
  * Delaunay Package.
  *
  * @author Jean-Yves Martin, Erwan BOCHER
  */
-public class MeshDrawer extends JFrame {
+public class MeshRenderer extends JFrame {
         private static final long serialVersionUID = 1L;
         private ConstrainedMesh myMesh;
 
         /**
          * Default constructor.
          */
-        public MeshDrawer() {
+        public MeshRenderer() {
                 super("Display Panel");
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		final int height = 1200;
@@ -73,7 +76,11 @@ public class MeshDrawer extends JFrame {
 	@Override
         public final void paint(Graphics g) {
                 if (myMesh != null) {
-			myMesh.displayObject(g);
+                    try {
+                        myMesh.displayObject(g);
+                    } catch (DelaunayError ex) {
+                        throw new IllegalArgumentException(ex.getLocalizedMessage(), ex);
+                    }
 		}
         }
 

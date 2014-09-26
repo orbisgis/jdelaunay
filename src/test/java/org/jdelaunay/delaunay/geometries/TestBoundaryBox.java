@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 import junit.framework.TestCase;
 import org.jdelaunay.delaunay.error.DelaunayError;

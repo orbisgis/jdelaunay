@@ -30,7 +30,7 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.algorithm.Angle;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
@@ -1076,9 +1076,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	@Override
 	public final int hashCode() {
-		int hash = HASHBASE;
-		hash = HASHMULT * hash + Arrays.deepHashCode(this.edges);
-		return hash;
+		return HASHMULT * HASHBASE + Arrays.deepHashCode(this.edges);
 	}
 
 	/**
@@ -1096,17 +1094,21 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	@Override
 	public final int compareTo(DTriangle t) {
-		DPoint midT = getBoundingBox().getMiddle();
-		DPoint midO = t.getBoundingBox().getMiddle();
-		int c = midT.compareTo(midO);
-		if(c==0){
-			try {
-				c = getBarycenter().compareTo(t.getBarycenter());
-			} catch (DelaunayError ex) {
-				Logger.getLogger(DTriangle.class.getName()).log(Level.WARNING, null, ex);
-			}
-		}
-		return c;
+            try {
+                DPoint midT = getBoundingBox().getMiddle();
+                DPoint midO = t.getBoundingBox().getMiddle();
+                int c = midT.compareTo(midO);
+                if (c == 0) {
+                    try {
+                        c = getBarycenter().compareTo(t.getBarycenter());
+                    } catch (DelaunayError ex) {
+                        Logger.getLogger(DTriangle.class.getName()).log(Level.WARNING, null, ex);
+                    }
+                }
+                return c;
+            } catch (DelaunayError e) {
+                throw new IllegalArgumentException(e.getLocalizedMessage(), e);
+            }
 	}
 
 	/**
@@ -1168,8 +1170,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		// "sommet haut vers sommet bas"
 		double angleAxeXrad = Tools.angle(c1, c2);
 		// on considere que l'axe nord correspond a l'axe Y positif
-		double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
-		double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
+		double angleAxeNordrad = Tools.PI_OVER_2 - angleAxeXrad;
+		double angleAxeNorddeg = Math.toDegrees(angleAxeNordrad);
 		// on renvoie toujours une valeur d'angle >= 0
 		orientationPente = angleAxeNorddeg < 0.0 ? 360.0 + angleAxeNorddeg
 			: angleAxeNorddeg;

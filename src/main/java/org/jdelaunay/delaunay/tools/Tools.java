@@ -56,6 +56,8 @@ public final class Tools {
 	public static final int BIT_ZUSED = 5;
 	public static final int BIT_MARKED = 6;
         
+        public static final double PI_OVER_2 = Math.PI / 2.0;
+        
 
 
 	/**

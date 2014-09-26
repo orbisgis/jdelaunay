@@ -44,9 +44,11 @@ import org.jdelaunay.delaunay.tools.Tools;
  * @author Erwan Bocher
  */
 public class DPoint extends Element implements Comparable<DPoint> {
-	/**
-	 * 
-	 */
+	
+    
+        private static final int HASHBASE = 5;
+	private static final int HASHMULT = 97;
+        
 	private static final long serialVersionUID = 1L;
 
 	private double X, Y, Z;
@@ -269,11 +271,11 @@ public class DPoint extends Element implements Comparable<DPoint> {
      */
     @Override
     public final int hashCode() {
-        int result = 17;
+        int result = HASHBASE;
         long lB = Double.doubleToLongBits(getX());
-        result = 37 * result + (int) (lB ^ (lB >>> 32));
+        result = HASHMULT * result + (int) (lB ^ (lB >>> 32));
         lB = Double.doubleToLongBits(getY());
-        result = 37 * result + (int) (lB ^ (lB >>> 32));
+        result = HASHMULT * result + (int) (lB ^ (lB >>> 32));
         return result;
     }
      

@@ -30,13 +30,12 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.algorithm.Angle;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.LinkedList;
 import java.util.Map;
 import org.jdelaunay.delaunay.error.DelaunayError;
@@ -1415,8 +1414,8 @@ public class DEdge extends Element implements Comparable<DEdge> {
 			double angleAxeXrad = startPoint.getZ() >= endPoint.getZ() ? Tools.angle(startPoint, endPoint) : Tools
 					.angle(endPoint, startPoint);
 			// on considere que l'axe nord correspond a l'axe Y positif
-			double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
-			double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
+			double angleAxeNordrad = Tools.PI_OVER_2 - angleAxeXrad;
+			double angleAxeNorddeg = Math.toDegrees(angleAxeNordrad);
 			// on renvoie toujours une valeur d'angle >= 0		
 		
 		return angleAxeNorddeg < 0.0 ? circleDegrees + angleAxeNorddeg
