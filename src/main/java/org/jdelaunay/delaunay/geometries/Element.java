@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,8 +60,6 @@ public abstract class Element {
 	//An identifier to use correspondance maps externally, to affect properties efficiently.
 	private int externalGID;
 
-	//If this edge is an obstacle, it must have a height
-	private double height ;
 	/**
 	 * Default initialization
 	 */
@@ -70,7 +67,6 @@ public abstract class Element {
 		this.gid = -1;
 		this.property = 0;
 		externalGID = -1;
-		height = 0;
 	}
 	/**
 	 * default constructor
@@ -81,6 +77,7 @@ public abstract class Element {
 	
 	/**
 	 * Constructor
+         * @param element
 	 */
 	public Element(Element element) {
 		init();
@@ -89,6 +86,7 @@ public abstract class Element {
 
 	/**
 	 * Constructor
+         * @param property
 	 */
 	public Element(int property) {
 		init();
@@ -105,6 +103,7 @@ public abstract class Element {
 
 	/**
 	 * get GID value
+         * @return 
 	 */
 	public final int getGID() {
 		return this.gid;
@@ -193,22 +192,7 @@ public abstract class Element {
 		return externalGID;
 	}
 
-	/**
-	 * Get the height of the element.
-	 * @return
-         * The height in double
-	 */
-	public final double getHeight() {
-		return height;
-	}
-
-	/**
-	 * Set the height of the element
-	 * @param height
-	 */
-	public final void setHeight(double height) {
-		this.height = height;
-	}
+	
 	/**
 	 * Computed bounding box
 	 * 
@@ -225,16 +209,6 @@ public abstract class Element {
 	 * @return bool
 	 */
 	public abstract boolean contains(DPoint aPoint);
-	
-	/**
-	 * Check if the coordinate is inside the element
-	 * 
-	 * @param c
-	 * @return bool
-	 * @throws DelaunayError 
-	 */
-	public abstract boolean contains(Coordinate c) throws DelaunayError;	
-	
 	
 
 }

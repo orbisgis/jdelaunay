@@ -234,5 +234,45 @@ public class BoundaryBox implements Serializable {
                         return points;
                 }
 	}
+
+    /**
+     * 
+     * @return 
+     */    
+    public double getMaxX() {
+        return maxx;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public double getMaxY() {
+        return maxy;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public double getMinX() {
+        return minx;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public double getMinY() {
+        return miny;
+    }
+    
+    
+    
+    
+    
+    
+        
+        
         
 }

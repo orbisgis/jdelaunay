@@ -208,5 +208,20 @@ public final class Tools {
 		}
 		return true;
 	}
+        
+    /**
+     * Returns the angle of the vector from p0 to p1, relative to the positive
+     * X-axis. The angle is normalized to be in the range [ -Pi, Pi ].
+     *
+     * @param p0
+     * @param p1
+     * @return the normalized angle (in radians) that p0-p1 makes with the
+     * positive x-axis.
+     */
+    public static double angle(DPoint p0, DPoint p1) {
+        double dx = p1.getX() - p0.getX();
+        double dy = p1.getY() - p0.getY();
+        return Math.atan2(dy, dx);
+    }
 
 }

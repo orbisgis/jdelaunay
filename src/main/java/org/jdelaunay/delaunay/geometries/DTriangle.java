@@ -1160,11 +1160,13 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 		DPoint c1 = new DPoint(0.0, 0.0, 0.0);
 		DPoint c2 = getSteepestVector();
 		if (c2.getZ() > 0.0) {
-			c2.setCoordinate(new Coordinate(-c2.x, -c2.y, -c2.z));
+			c2.setX(-c2.getX());
+                        c2.setY(-c2.getY());
+                        c2.setZ(-c2.getZ());
 		}
 		// l'ordre des coordonnees correspond a l'orientation de l'arc
 		// "sommet haut vers sommet bas"
-		double angleAxeXrad = Angle.angle(c1, c2);
+		double angleAxeXrad = Tools.angle(c1, c2);
 		// on considere que l'axe nord correspond a l'axe Y positif
 		double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
 		double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
@@ -1179,9 +1181,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param ed
 	 * @return
          *      true if this is pouring into ed.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	public final boolean isTopoOrientedToEdge(DEdge ed) throws DelaunayError {
-		boolean res = false;
 		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
 		// sur e
 		DPoint a = ed.getStartPoint();
@@ -1203,17 +1205,15 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			ab = Tools.vectorialDiff(b, a);
 		}
 		// test d'intersection entre AB et P
-		DPoint p =getSteepestVector();
-
-		res = Tools.vectorProduct(ab, p).getZ() < 0;
-
-		return res;
+		DPoint p =getSteepestVector();		
+		return Tools.vectorProduct(ab, p).getZ() < 0;
 	}
 
 
         /**
          * Compute the intersection point according the steepest vector.
          * We assume that the point is in the Triangle
+         * @param dPoint
          * @return DPoint
          * @throws DelaunayError
          */

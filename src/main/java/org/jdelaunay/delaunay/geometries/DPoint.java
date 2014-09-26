@@ -32,7 +32,6 @@ package org.jdelaunay.delaunay.geometries;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import com.vividsolutions.jts.geom.Coordinate;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.tools.Tools;
 
@@ -51,9 +50,6 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	private static final long serialVersionUID = 1L;
 
 	private double X, Y, Z;
-
-	private static final int HASHBASE = 7;
-	private static final int HASHMULT = 67;
 
 	/**
 	 * Initialize point 
@@ -170,11 +166,6 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	public final boolean contains(DPoint aPoint) {
 		return squareDistance(aPoint) < Tools.EPSILON2;
 	}
-	
-	@Override
-	public final boolean contains(Coordinate c) {
-		return squareDistance(c.x, c.y, c.z) < Tools.EPSILON2;
-	}
 
 	/**
 	 * plane square distance to another point
@@ -204,7 +195,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return distance
 	 */
 	public final double squareDistance(DPoint aPoint) {
-		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
+		return squareDistance(aPoint.getX(), aPoint.getY(), aPoint.getZ());
 	}
 
 	/**
@@ -215,7 +206,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return distance
 	 */
 	protected final double squareDistance(double x, double y) {
-		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y);
+		return (x - getX()) * (x - getX()) + (y - getY()) * (y - getY());
 	}
 
 	/**
@@ -227,8 +218,8 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return distance
 	 */
 	protected final double squareDistance(double x, double y, double z) {
-		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y)
-				+ (z - this.coord.z) * (z - this.coord.z);
+		return (x - getX()) * (x - getX()) + (y - getY()) * (y - getY())
+				+ (z - getZ()) * (z - getZ());
 	}
 
 	/**
@@ -249,7 +240,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 */
 	@Override
 	public final String toString() {
-		return "Point "+getGID()+" [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
+		return "Point "+getGID()+" [" + getX() + " " + getY() + " " + getZ() + "]";
 	}
 
 	/**
@@ -271,17 +262,21 @@ public class DPoint extends Element implements Comparable<DPoint> {
 		}
 	}
 
-	/**
-	 * Generate an hashcode based on the coordinates of the point.
-	 * @return
-         * a hash
-	 */
-	@Override
-	public final int hashCode() {
-		int hash = HASHBASE;
-		hash = HASHMULT * hash + (this.coord != null ? this.coord.hashCode() : 0);
-		return hash;
-	}
+    /**
+     * Generate an hashcode based on the coordinates of the point.
+     *
+     * @return a hash
+     */
+    @Override
+    public final int hashCode() {
+        int result = 17;
+        long lB = Double.doubleToLongBits(getX());
+        result = 37 * result + (int) (lB ^ (lB >>> 32));
+        lB = Double.doubleToLongBits(getY());
+        result = 37 * result + (int) (lB ^ (lB >>> 32));
+        return result;
+    }
+     
 
 	/**
 	 * Check if this==y, considering only the first two coordinates.
@@ -352,11 +347,15 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
+         * @param minX
+         * @param minY
+         * @param scaleX
+         * @param scaleY
 	 */
 	public final void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
-		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
-				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);
+		g.drawOval((int) ((getX() - minX) * scaleX + decalageX) - 1,
+				(int) ((getY() - minY) * scaleY + decalageY) - 1, 1, 1);
 	}
 }

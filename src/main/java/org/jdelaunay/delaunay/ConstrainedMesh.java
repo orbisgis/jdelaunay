@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay;
 
-import com.vividsolutions.jts.geom.Envelope;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
@@ -49,7 +48,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
 import org.jdelaunay.delaunay.error.DelaunayError;
-import org.jdelaunay.delaunay.geometries.ConstraintPolygon;
+import org.jdelaunay.delaunay.geometries.BoundaryBox;
 import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.geometries.DTriangle;
@@ -90,8 +89,6 @@ public class ConstrainedMesh implements Serializable {
 	private List<DPoint> points;
 	//The lis of constraints used during the triangulation
 	private List<DEdge> constraintEdges;
-	//A list of polygons that will be emptied after the triangulation
-	private List<ConstraintPolygon> polygons;
 	//
 	private double precision;
 	//The minimum distance between two distinct points
@@ -141,7 +138,6 @@ public class ConstrainedMesh implements Serializable {
 		edges = new ArrayList<DEdge>();
 		constraintEdges = new ArrayList<DEdge>();
 		points = new ArrayList<DPoint>();
-		polygons = new ArrayList<ConstraintPolygon>();
 		meshComputed = false;
 		precision = 0;
 		tolerance = Tools.EPSILON;
@@ -399,6 +395,7 @@ public class ConstrainedMesh implements Serializable {
 	 * @param z
 	 * @return
          *      The corresponding DPoint instance, if it exists in the mesh, null otherwise.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	public final DPoint getPoint(double x, double y, double z) throws DelaunayError{
 		DPoint pt = new DPoint(x,y,z);
@@ -431,11 +428,12 @@ public class ConstrainedMesh implements Serializable {
 	 * Get the bounding box of this mesh.
 	 * @return
          *      The bounding box, as a JTS Envelope instance.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public final Envelope getBoundingBox() {
-		Envelope env = new Envelope();
+	public final BoundaryBox getBoundingBox() throws DelaunayError {
+		BoundaryBox env = new BoundaryBox();
 		for (DPoint p : points) {
-			env.expandToInclude(p.getCoordinate());
+			env.alterBox(p);
 		}
 		return env;
 	}
@@ -2542,7 +2540,7 @@ public class ConstrainedMesh implements Serializable {
         public final void dataQualification(double epsilon) throws DelaunayError {
                 if (isMeshComputed()) {
                         throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_GENERATED);
-                } else if (points == null || edges == null || constraintEdges == null || polygons == null) {
+                } else if (points == null || edges == null || constraintEdges == null) {
                         throw new DelaunayError("Structures not defined");
                 } else if (epsilon <= 0) {
                         throw new DelaunayError("Epsilon must be positive");
@@ -2596,21 +2594,7 @@ public class ConstrainedMesh implements Serializable {
                         //      - polygons
 
                         changeUnqualifiedEdges(replacePoints, edges);
-                        changeUnqualifiedEdges(replacePoints, constraintEdges);
-
-                        ArrayList<ConstraintPolygon> polygonToRemove = new ArrayList<ConstraintPolygon>();
-                        for (ConstraintPolygon aPolygon : polygons) {
-                                changeUnqualifiedEdges(replacePoints, aPolygon.getEdges());
-                                if (aPolygon.getEdges().isEmpty()) {
-                                        polygonToRemove.add(aPolygon);
-                                }
-                        }
-                        // Remove bad polygons
-                        for (ConstraintPolygon aPolygon : polygonToRemove) {
-                                polygons.remove(aPolygon);
-                        }
-
-                        // points are still sorted because we did not change their position
+                        changeUnqualifiedEdges(replacePoints, constraintEdges);                        
                 }
         }
 
@@ -2619,11 +2603,12 @@ public class ConstrainedMesh implements Serializable {
 	 * also display it Must be used only when using package drawing
 	 *
 	 * @param g
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	//NO-SONAR
-	public final void displayObject(Graphics g) {
+	public final void displayObject(Graphics g) throws DelaunayError {
 		try {
-			Envelope theBox = getBoundingBox();
+                        BoundaryBox theBox = getBoundingBox();
 			double scaleX, scaleY;
 			double minX, minY;
 			final int xSize = 1200;

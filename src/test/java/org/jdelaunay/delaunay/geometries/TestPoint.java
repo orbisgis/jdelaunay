@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import junit.framework.TestCase;
 import org.jdelaunay.delaunay.error.DelaunayError;
 
@@ -64,9 +63,7 @@ public class TestPoint extends TestCase {
         public void testContains() throws DelaunayError {
                 DPoint p1 = new DPoint(0,0,0);
                 assertTrue(p1.contains(new DPoint(0,0,0.00000001)));
-                assertTrue(p1.contains(new Coordinate(0,0,0.00000001)));
                 assertFalse(p1.contains(new DPoint(0,0,0.001)));
-                assertFalse(p1.contains(new Coordinate(0,0,0.001)));
         }
         
         /**
@@ -115,7 +112,7 @@ public class TestPoint extends TestCase {
 	 * @throws DelaunayError
 	 */
 	public void testInstanciation() throws DelaunayError {
-		DPoint pt = new DPoint(new Coordinate(1,2,3));
+		DPoint pt = new DPoint(new DPoint(1,2,3));
 		assertTrue(pt.getX()==1);
 		assertTrue(pt.getY()==2);
 		assertTrue(pt.getZ()==3);

@@ -408,22 +408,17 @@ public class DEdge extends Element implements Comparable<DEdge> {
 
 	@Override
 	public final boolean contains(DPoint aPoint) {
-		return contains(aPoint.getCoordinate());
-	}
-
-	@Override
-	public final boolean contains(Coordinate c) {
 		DPoint p1 = this.startPoint;
 		DPoint p2 = this.endPoint;
 		double ux = p2.getX() - p1.getX();
 		double uy = p2.getY() - p1.getY();
-		double vx = c.x - p1.getX();
-		double vy = c.y - p1.getY();
+		double vx = aPoint.getX() - p1.getX();
+		double vy = aPoint.getY() - p1.getY();
 		double res = ux * vy - uy * vx;
-		boolean px = (ux >= 0 ? (p1.getX() - Tools.EPSILON <= c.x && c.x <= p2.getX() + Tools.EPSILON) :
-			(p2.getX() - Tools.EPSILON <= c.x && c.x <= p1.getX() + Tools.EPSILON));/* px is in [p1x, p2x]*/
-		boolean py = (uy >= 0 ? (p1.getY() - Tools.EPSILON <= c.y && c.y <= p2.getY() + Tools.EPSILON) : (
-			p2.getY() - Tools.EPSILON <= c.y && c.y <= p1.getY() + Tools.EPSILON));/* py is in [p1y, p2y]*/
+		boolean px = (ux >= 0 ? (p1.getX() - Tools.EPSILON <= aPoint.getX() && aPoint.getX() <= p2.getX() + Tools.EPSILON) :
+			(p2.getX() - Tools.EPSILON <= aPoint.getX() && aPoint.getX() <= p1.getX() + Tools.EPSILON));/* px is in [p1x, p2x]*/
+		boolean py = (uy >= 0 ? (p1.getY() - Tools.EPSILON <= aPoint.getY() && aPoint.getY() <= p2.getY() + Tools.EPSILON) : (
+			p2.getY() - Tools.EPSILON <= aPoint.getY() && aPoint.getY() <= p1.getY() + Tools.EPSILON));/* py is in [p1y, p2y]*/
 		return res <= Tools.EPSILON && res >= -Tools.EPSILON/* p is on p1, p2 line */
 			&& px && py;
 	}
@@ -1236,7 +1231,6 @@ public class DEdge extends Element implements Comparable<DEdge> {
 		DPoint p1 = this.startPoint;
 		DPoint p2 = this.endPoint;
 		int hashValue = 0;
-
 		int v1 = p1.hashCode();
 		int v2 = p2.hashCode();
 		if (v1 < v2) {
@@ -1343,13 +1337,15 @@ public class DEdge extends Element implements Comparable<DEdge> {
 	 * this method returns :
 	 *  * -1 if p1 &lt; p2 or ( p1 == p2 and this is "under" edge)<br/>
 	 *  * 0 if p1 == p2 and (this and edge are colinear)<br/>
-	 *  * 1 if p1 &gt; p2 or (p1 == p2 and edge is under this)<br/>
-	 * @param edge
-	 * @return
+	 *  * 1 if p1 &gt; p2 or (p1 == p2 and edge is under this)<br/>	 
          * 
 	 *  * -1 if p1 &lt; p2 or ( p1 == p2 and this is "under" edge)<br/>
 	 *  * 0 if p1 == p2 and (this and edge are colinear)<br/>
 	 *  * 1 if p1 &gt; p2 or (p1 == p2 and edge is under this)<br/>
+         * @param edge
+         * @param abs
+	 * @return
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	public final int verticalSort(DEdge edge, double abs) throws DelaunayError {
 		DPoint pThis = this.getPointFromItsX(abs);
@@ -1413,13 +1409,11 @@ public class DEdge extends Element implements Comparable<DEdge> {
          *      The aspect of this edge.
 	 */
 	public final double getSlopeAspect() {
-			Coordinate c1 = startPoint.getCoordinate();
-			Coordinate c2 = endPoint.getCoordinate();
 			final double circleDegrees = 360.0;
 			// l'ordre des coordonnees correspond a l'orientation de l'arc
 			// "sommet haut vers sommet bas"
-			double angleAxeXrad = c1.z >= c2.z ? Angle.angle(c1, c2) : Angle
-					.angle(c2, c1);
+			double angleAxeXrad = startPoint.getZ() >= endPoint.getZ() ? Tools.angle(startPoint, endPoint) : Tools
+					.angle(endPoint, startPoint);
 			// on considere que l'axe nord correspond a l'axe Y positif
 			double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
 			double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);

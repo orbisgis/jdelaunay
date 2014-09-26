@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.HashMap;
 import static junit.framework.Assert.assertEquals;
 import junit.framework.TestCase;
@@ -391,7 +390,7 @@ public class TestEdges extends TestCase {
 		DEdge edge = new DEdge(0,0,0,4,0,0);
 		DPoint pt = new DPoint(2,0,0);
 		assertTrue(edge.contains(pt));
-		assertTrue(edge.contains(new Coordinate(2,0,0)));
+		assertTrue(edge.contains(new DPoint(2,0,0)));
 		assertTrue(edge.contains(new DPoint(2,0.000000001,0)));
 		assertFalse(edge.contains(new DPoint(2,2,2)));
 	}
@@ -628,13 +627,7 @@ public class TestEdges extends TestCase {
 		e1 = new DEdge(0,0,0,0,2,0);
 		assertTrue(e1.getDistance2D(p)==1);
 	}
-
-	public void testHeight() throws DelaunayError {
-		DEdge e1 = new DEdge(0,0,0,5,5,5);
-		assertTrue(e1.getHeight()==0);
-		e1.setHeight(8);
-		assertTrue(e1.getHeight()==8);
-	}
+	
 
 	public void testForceTopographicOrientation() throws DelaunayError {
 		DEdge e1 = new DEdge(0,0,0,5,5,5);
