@@ -1414,7 +1414,7 @@ public class ConstrainedMesh implements Serializable {
 			//we must replace an edge of left
 			int indexExc = left.getEdgeIndex(startOp1);
 			left.setEdge(indexExc, ed1);
-                        left.recomputeCenter();
+                        left.computeCenter();
 			//We set the right and left triangles of each edge properly
 			ed1.setLeft(left);
 			ed1.setRight(other1);
@@ -1440,7 +1440,7 @@ public class ConstrainedMesh implements Serializable {
 			//we must replace an edge of right
 			int indexExc = right.getEdgeIndex(startOp2);
 			right.setEdge(indexExc, ed2);
-                        right.recomputeCenter();
+                        right.computeCenter();
 			//We set the right and left triangles of each edge properly
 			ed2.setRight(right);
 			ed2.setLeft(other2);
@@ -1938,8 +1938,8 @@ public class ConstrainedMesh implements Serializable {
                         }
                         ed.setLeft(right);
                         ed.setRight(left);
-                        left.recomputeCenter();
-                        right.recomputeCenter();
+                        left.computeCenter();
+                        right.computeCenter();
                 }
         }
         /**
@@ -1984,8 +1984,8 @@ public class ConstrainedMesh implements Serializable {
                         } else {
                                 anEdge11.setRight(right);
                         }
-                        left.recomputeCenter();
-                        right.recomputeCenter();
+                        left.computeCenter();
+                        right.computeCenter();
                 }
                 
         }
@@ -2219,7 +2219,7 @@ public class ConstrainedMesh implements Serializable {
                         dt.setEdge(index, o1);
                         dt.setEdge(index2, o2);
                 }
-                dt.recomputeCenter();
+                dt.computeCenter();
                 //remove the point :
                 points.remove(points.size()-1);
                 //remove the edges
@@ -2319,9 +2319,8 @@ public class ConstrainedMesh implements Serializable {
                 DEdge rep = tri.getOppositeEdge(op);
                 int i = tri.getEdgeIndex(rep);
                 tri.setEdge(i, ed);
-                tri.recomputeCenter();
+                tri.computeCenter();
         }
-        
         /**
          * Insert the point pt in the triangle container.<br/>
          * This method does not check if there are any new encroached edge
@@ -2513,7 +2512,7 @@ public class ConstrainedMesh implements Serializable {
                 //We must still return the first encroached edge we find, if any.
                 //Analyze left first.
                 if(left != null){
-                        left.recomputeCenter();
+                        left.computeCenter();
                         if(l1.isEncroached()){
                                 return l1;
                         } else if(l2.isEncroached()){
@@ -2522,7 +2521,7 @@ public class ConstrainedMesh implements Serializable {
                 } 
                 //Then analyze right.
                 if(right != null){
-                        right.recomputeCenter();
+                        right.computeCenter();
                         if(r1.isEncroached()){
                                 return r1;
                         } else if(r2.isEncroached()){

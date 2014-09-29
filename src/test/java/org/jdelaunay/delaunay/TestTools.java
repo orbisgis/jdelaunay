@@ -66,4 +66,20 @@ public class TestTools extends BaseUtility {
 		assertFalse(Tools.isVerticallySorted(list, 1));
 
 	}
+        
+        
+        public void testProjectDPoint() throws DelaunayError {
+                DPoint p = new DPoint(2,2,1);                
+                DEdge dEdge = new DEdge(0, 0, 1, 4, 0, 1);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 1)));
+                dEdge = new DEdge(4, 0, 1, 0, 0, 1);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 1)));
+                dEdge = new DEdge(4, 0, 0, 0, 0, 1);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 0.5)));
+                dEdge = new DEdge(4, 0, 1, 0, 0, 0);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 0.5)));
+                p = new DPoint(-2,-2,1);
+                dEdge = new DEdge(0, 0, 1, 4, 0, 1);           
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(-2, 0, 0.5)));
+        }
 }

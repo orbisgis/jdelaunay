@@ -55,9 +55,7 @@ import org.jdelaunay.delaunay.tools.Tools;
  */
 public class DTriangle extends Element implements Comparable<DTriangle>{
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 
 	public static final int PT_NB = 3;
@@ -121,7 +119,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			edges[2] = e3;
 
 			connectEdges();
-			recomputeCenter();
+			computeCenter();
 			radius = e1.getStartPoint().squareDistance2D(xCenter, yCenter);
 		} else {
 			throw new DelaunayError("Problem while generating the Triangle : "+
@@ -147,7 +145,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 edges[1] = e2;
                 edges[2] = e3;
                 connectEdges();
-                recomputeCenter();
+                computeCenter();
                 radius = e1.getStartPoint().squareDistance2D(xCenter, yCenter);
                 
         }
@@ -236,9 +234,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Get the index of the edge in the triangle.
 	 * @param ed
 	 * @return
-	 *		The index of the edge in its array of edges, -1 if ed
-	 *		is not an edge of this triangle.
-	 */
+	 * The index of the edge in its array of edges, -1 if ed is not an
+         * edge of this triangle.
+         */
 	public final int getEdgeIndex(DEdge ed){
 		for(int i=0; i<PT_NB; i++){
 			if(edges[i].equals(ed)){
@@ -410,7 +408,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Recompute the center of the circle that joins the ptNb points : the CircumCenter
 	 * @throws DelaunayError
 	 */
-	public final void recomputeCenter() throws DelaunayError {
+	public final void computeCenter() throws DelaunayError {
 		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
@@ -647,9 +645,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
             // tri area = 1/2 * | u x v |
             double absSq = crossx * crossx + crossy * crossy + crossz * crossz;
-            double area3D = Math.sqrt(absSq) / 2;
-
-            return area3D;
+            return Math.sqrt(absSq) / 2;
         }
 
 	/**
@@ -844,6 +840,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Return the edge that is not linked to pt, or null if pt is not a
 	 * point of this triangle.
 	 * @param pt
+         * @return 
 	 */
 	public final DEdge getOppositeEdge(DPoint pt){
 		if(!belongsTo(pt)){

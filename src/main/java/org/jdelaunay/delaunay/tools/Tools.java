@@ -43,6 +43,7 @@ import org.jdelaunay.delaunay.geometries.Element;
  *
  * @author Alexis Guéganno
  * @author Jean-Yves Martin
+ * @author Erwan Bocher
  */
 
 public final class Tools {
@@ -224,6 +225,34 @@ public final class Tools {
         double dx = p1.getX() - p0.getX();
         double dy = p1.getY() - p0.getY();
         return Math.atan2(dy, dx);
+    }
+    
+    /**
+     * Compute the projection of a DPoint onto a DEdge
+     * @param p
+     * @param dEdge
+     * @return
+     * @throws DelaunayError 
+     */
+    public static DPoint project(DPoint p, DEdge dEdge) throws DelaunayError {
+        DPoint p0 = dEdge.getStartPoint();
+        DPoint p1 = dEdge.getEndPoint();
+        if (p.equals(p0) || p.equals(p1)) {
+            return p;
+        }
+        
+        double dx = p1.getX() - p0.getX();
+        double dy = p1.getY() - p0.getY();
+        double dz = p1.getZ()-p0.getZ();
+        double hypo = dx * dx + dy * dy;
+        
+        double r = ((p.getX() - p0.getX()) * dx + (p.getY() - p0.getY()) * dy)/ hypo;
+
+        double xPoint = p0.getX() + r * dx;
+        double yPoint = p0.getY() + r * dy;
+        double zPoint = p0.getZ()+ r * dz;
+        
+        return new DPoint(xPoint, yPoint, zPoint);
     }
 
 }
