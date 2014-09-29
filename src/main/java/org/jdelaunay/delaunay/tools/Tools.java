@@ -36,6 +36,7 @@ import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 import org.jdelaunay.delaunay.geometries.Element;
 
 /**
@@ -239,20 +240,28 @@ public final class Tools {
         DPoint p1 = dEdge.getEndPoint();
         if (p.equals(p0) || p.equals(p1)) {
             return p;
-        }
-        
+        }        
         double dx = p1.getX() - p0.getX();
         double dy = p1.getY() - p0.getY();
         double dz = p1.getZ()-p0.getZ();
-        double hypo = dx * dx + dy * dy;
-        
+        double hypo = dx * dx + dy * dy;        
         double r = ((p.getX() - p0.getX()) * dx + (p.getY() - p0.getY()) * dy)/ hypo;
-
         double xPoint = p0.getX() + r * dx;
         double yPoint = p0.getY() + r * dy;
-        double zPoint = p0.getZ()+ r * dz;
-        
+        double zPoint = p0.getZ()+ r * dz;        
         return new DPoint(xPoint, yPoint, zPoint);
+    }
+    
+    
+    public DEdge[] getPerpendicularBisectors(DTriangle dTriangle) throws DelaunayError {
+        DPoint centerPoint = dTriangle.getCircumCenter();
+        DEdge[] bisectors = new DEdge[3];
+        int i = 0;
+        for (DEdge edge : dTriangle.getEdges()) {
+            bisectors[i] = new DEdge(centerPoint, project(centerPoint, edge));
+            i++;
+        }
+        return bisectors;
     }
 
 }
