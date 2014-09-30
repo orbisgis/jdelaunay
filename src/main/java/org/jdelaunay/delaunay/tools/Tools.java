@@ -252,8 +252,14 @@ public final class Tools {
         return new DPoint(xPoint, yPoint, zPoint);
     }
     
-    
-    public DEdge[] getPerpendicularBisectors(DTriangle dTriangle) throws DelaunayError {
+    /**
+     * Return the perpendicular bisectors for a triangle.
+     * 
+     * @param dTriangle
+     * @return
+     * @throws DelaunayError 
+     */
+    public static DEdge[] getPerpendicularBisectors(DTriangle dTriangle) throws DelaunayError {
         DPoint centerPoint = dTriangle.getCircumCenter();
         DEdge[] bisectors = new DEdge[3];
         int i = 0;
