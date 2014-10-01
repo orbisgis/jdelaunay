@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +52,13 @@ public class BoundaryBox implements Serializable {
 	private double minx, maxx;
 	private double miny, maxy;
 	private double minz, maxz;
-	private Coordinate middle;
+	private DPoint middle;
 	private boolean empty;
 
 	/**
 	 *  initialization method
 	 */
-	private void init() {
+	private void init() throws DelaunayError {
 		minx = 0.0;
                 maxx = 0.0;
                 miny = 0.0;
@@ -67,13 +66,14 @@ public class BoundaryBox implements Serializable {
                 minz = 0.0;
                 maxz = 0.0;
 		empty = true;
-		middle=new Coordinate(0, 0, 0);
+		middle=new DPoint(0, 0, 0);
 	}
 
 	/**
 	 * generate an empty box centered on 0,0,0
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public BoundaryBox() {
+	public BoundaryBox() throws DelaunayError {
 		init();
 	}
 
@@ -91,9 +91,10 @@ public class BoundaryBox implements Serializable {
          *      The first z value
 	 * @param pmaxz
          *      The second z value
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	public BoundaryBox(double pminx, double pmaxx, double pminy, double pmaxy,
-			double pminz, double pmaxz) {
+			double pminz, double pmaxz) throws DelaunayError {
 		init();
 
 		setBox(pminx, pmaxx, pminy, pmaxy, pminz, pmaxz);
@@ -102,8 +103,9 @@ public class BoundaryBox implements Serializable {
 	/**
 	 * set a box according to another existing box.
 	 * @param aBox
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public BoundaryBox(BoundaryBox aBox) {
+	public BoundaryBox(BoundaryBox aBox) throws DelaunayError {
 		init();
                 empty = aBox.empty;
 		setBox(aBox.minx,aBox.maxx, aBox.miny, aBox.maxy, aBox.minz, aBox.maxz);
@@ -124,9 +126,10 @@ public class BoundaryBox implements Serializable {
          *      The first z value
 	 * @param z2
          *      The second z value
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	public final void setBox(double x1, double x2, double y1, double y2,
-			double z1, double z2) {
+			double z1, double z2) throws DelaunayError {
 		minx = x1 < x2 ? x1 : x2;
 		maxx = x1 < x2 ? x2 : x1;
 		miny = y1 < y2 ? y1 : y2;
@@ -141,11 +144,11 @@ public class BoundaryBox implements Serializable {
 	/**
 	 * Update middle coordinate. 
 	 */
-	private void updateMiddle(){
+	private void updateMiddle() throws DelaunayError{
 		double mx = (maxx-minx)/2;
 		double my = (maxy-miny)/2;
 		double mz = (maxz-minz)/2;
-		middle=new Coordinate(minx+mx, miny+my, minz+mz);
+		middle=new DPoint(minx+mx, miny+my, minz+mz);
 	}
 
 	/**
@@ -154,8 +157,9 @@ public class BoundaryBox implements Serializable {
 	 * @param x
 	 * @param y
 	 * @param z
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public final void alterBox(double x, double y, double z) {
+	public final void alterBox(double x, double y, double z) throws DelaunayError {
 		if (empty) {
 			minx = x;
 			maxx = x;
@@ -191,26 +195,17 @@ public class BoundaryBox implements Serializable {
 	 * alter box coordinates according to the new point
 	 * 
 	 * @param aPoint
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public final void alterBox(Coordinate aPoint) {
-		alterBox(aPoint.x,aPoint.y,aPoint.z);
-	}
-
-	/**
-	 * alter box coordinates according to the new point
-	 * 
-	 * @param aPoint
-	 */
-	public final void alterBox(DPoint point) {
-                Coordinate aPoint = point.getCoordinate();
-		alterBox(aPoint);
-	}
+	public final void alterBox(DPoint aPoint) throws DelaunayError {
+		alterBox(aPoint.getX(),aPoint.getY(),aPoint.getZ());
+	}	
 	
 	
 	/**
 	 * @return Coordinate of the middle of the box.
 	 */
-	public final Coordinate getMiddle() {
+	public final DPoint getMiddle() {
 		return middle;
 	}
 	
@@ -239,5 +234,45 @@ public class BoundaryBox implements Serializable {
                         return points;
                 }
 	}
+
+    /**
+     * 
+     * @return 
+     */    
+    public double getMaxX() {
+        return maxx;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public double getMaxY() {
+        return maxy;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public double getMinX() {
+        return minx;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public double getMinY() {
+        return miny;
+    }
+    
+    
+    
+    
+    
+    
+        
+        
         
 }

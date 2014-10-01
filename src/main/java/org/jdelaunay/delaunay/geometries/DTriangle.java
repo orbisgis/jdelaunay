@@ -30,12 +30,11 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.algorithm.Angle;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Arrays;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -56,9 +55,7 @@ import org.jdelaunay.delaunay.tools.Tools;
  */
 public class DTriangle extends Element implements Comparable<DTriangle>{
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 
 	public static final int PT_NB = 3;
@@ -122,7 +119,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			edges[2] = e3;
 
 			connectEdges();
-			recomputeCenter();
+			computeCenter();
 			radius = e1.getStartPoint().squareDistance2D(xCenter, yCenter);
 		} else {
 			throw new DelaunayError("Problem while generating the Triangle : "+
@@ -148,7 +145,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
                 edges[1] = e2;
                 edges[2] = e3;
                 connectEdges();
-                recomputeCenter();
+                computeCenter();
                 radius = e1.getStartPoint().squareDistance2D(xCenter, yCenter);
                 
         }
@@ -237,9 +234,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Get the index of the edge in the triangle.
 	 * @param ed
 	 * @return
-	 *		The index of the edge in its array of edges, -1 if ed
-	 *		is not an edge of this triangle.
-	 */
+	 * The index of the edge in its array of edges, -1 if ed is not an
+         * edge of this triangle.
+         */
 	public final int getEdgeIndex(DEdge ed){
 		for(int i=0; i<PT_NB; i++){
 			if(edges[i].equals(ed)){
@@ -280,9 +277,10 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 *
 	 * @return
          *      The circumcenter of the triangle, as a JTS Coordinate.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
-	public final Coordinate getCircumCenter() {
-		return new Coordinate(this.xCenter, this.yCenter, zCenter);
+	public final DPoint getCircumCenter() throws DelaunayError {
+		return new DPoint(this.xCenter, this.yCenter, zCenter);
 	}
 
 	/**
@@ -322,7 +320,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
         }
         
 	@Override
-	public final BoundaryBox getBoundingBox() {
+	public final BoundaryBox getBoundingBox() throws DelaunayError {
 		BoundaryBox aBox = new BoundaryBox();
 
 		DPoint p1,p2,pptNb;
@@ -388,12 +386,8 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	@Override
 	public final boolean contains(DPoint aPoint) {
 		return isInside(aPoint);
-	}
+	}	
 	
-	@Override
-	public final boolean contains(Coordinate c) throws DelaunayError {
-		return isInside(new DPoint(c));
-	}
 
 	/**
 	 * Determines if pt lies on one of the edges of this triangle.
@@ -414,7 +408,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Recompute the center of the circle that joins the ptNb points : the CircumCenter
 	 * @throws DelaunayError
 	 */
-	public final void recomputeCenter() throws DelaunayError {
+	public final void computeCenter() throws DelaunayError {
 		DPoint p1,p2,pptNb;
 		p1 = edges[0].getStartPoint();
 		p2 = edges[0].getEndPoint();
@@ -572,7 +566,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Take into account triangles connected to the edge
 	 *
 	 * @param aPoint
-	 * @return ZValue
+	 * @return ZValuei
 	 */
 	public final double softInterpolateZ(DPoint aPoint) {
 		double weight = (double) PT_NB;
@@ -618,6 +612,41 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 		return area<0 ? -area : area ;
 	}
+        
+        /**
+         * Computes the 3D area of a triangle based on the same approach of JTS
+         * @return 
+         */
+        public final double getArea3D() {
+            DPoint p1,p2,pptNb;
+		p1 = edges[0].getStartPoint();
+		p2 = edges[0].getEndPoint();
+		pptNb = edges[1].getStartPoint();
+		if ((pptNb.equals(p1))||(pptNb.equals(p2))) {
+			pptNb = edges[1].getEndPoint();
+		}
+            /**
+             * Uses the formula 1/2 * | u x v | where u,v are the side vectors
+             * of the triangle x is the vector cross-product
+             */
+            // side vectors u and v
+            double ux = p2.getX() - p1.getX();
+            double uy = p2.getY() - p1.getY();
+            double uz = p2.getZ() - p1.getZ();
+
+            double vx = pptNb.getX() - p1.getX();
+            double vy = pptNb.getY() - p1.getY();
+            double vz = pptNb.getZ() - p1.getZ();
+
+            // cross-product = u x v
+            double crossx = uy * vz - uz * vy;
+            double crossy = uz * vx - ux * vz;
+            double crossz = ux * vy - uy * vx;
+
+            // tri area = 1/2 * | u x v |
+            double absSq = crossx * crossx + crossy * crossy + crossz * crossz;
+            return Math.sqrt(absSq) / 2;
+        }
 
 	/**
 	 * Get the normal vector to this triangle, of length 1.
@@ -811,6 +840,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * Return the edge that is not linked to pt, or null if pt is not a
 	 * point of this triangle.
 	 * @param pt
+         * @return 
 	 */
 	public final DEdge getOppositeEdge(DPoint pt){
 		if(!belongsTo(pt)){
@@ -1043,9 +1073,7 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 
 	@Override
 	public final int hashCode() {
-		int hash = HASHBASE;
-		hash = HASHMULT * hash + Arrays.deepHashCode(this.edges);
-		return hash;
+		return HASHMULT * HASHBASE + Arrays.deepHashCode(this.edges);
 	}
 
 	/**
@@ -1063,17 +1091,21 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	@Override
 	public final int compareTo(DTriangle t) {
-		Coordinate midT = getBoundingBox().getMiddle();
-		Coordinate midO = t.getBoundingBox().getMiddle();
-		int c = midT.compareTo(midO);
-		if(c==0){
-			try {
-				c = getBarycenter().compareTo(t.getBarycenter());
-			} catch (DelaunayError ex) {
-				Logger.getLogger(DTriangle.class.getName()).log(Level.WARNING, null, ex);
-			}
-		}
-		return c;
+            try {
+                DPoint midT = getBoundingBox().getMiddle();
+                DPoint midO = t.getBoundingBox().getMiddle();
+                int c = midT.compareTo(midO);
+                if (c == 0) {
+                    try {
+                        c = getBarycenter().compareTo(t.getBarycenter());
+                    } catch (DelaunayError ex) {
+                        Logger.getLogger(DTriangle.class.getName()).log(Level.WARNING, null, ex);
+                    }
+                }
+                return c;
+            } catch (DelaunayError e) {
+                throw new IllegalArgumentException(e.getLocalizedMessage(), e);
+            }
 	}
 
 	/**
@@ -1124,17 +1156,19 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 */
 	public final double getSlopeAspect() throws DelaunayError {
 		double orientationPente;
-		Coordinate c1 = new Coordinate(0.0, 0.0, 0.0);
-		Coordinate c2 = getSteepestVector().getCoordinate();
-		if (c2.z > 0.0) {
-			c2.setCoordinate(new Coordinate(-c2.x, -c2.y, -c2.z));
+		DPoint c1 = new DPoint(0.0, 0.0, 0.0);
+		DPoint c2 = getSteepestVector();
+		if (c2.getZ() > 0.0) {
+			c2.setX(-c2.getX());
+                        c2.setY(-c2.getY());
+                        c2.setZ(-c2.getZ());
 		}
 		// l'ordre des coordonnees correspond a l'orientation de l'arc
 		// "sommet haut vers sommet bas"
-		double angleAxeXrad = Angle.angle(c1, c2);
+		double angleAxeXrad = Tools.angle(c1, c2);
 		// on considere que l'axe nord correspond a l'axe Y positif
-		double angleAxeNordrad = Angle.PI_OVER_2 - angleAxeXrad;
-		double angleAxeNorddeg = Angle.toDegrees(angleAxeNordrad);
+		double angleAxeNordrad = Tools.PI_OVER_2 - angleAxeXrad;
+		double angleAxeNorddeg = Math.toDegrees(angleAxeNordrad);
 		// on renvoie toujours une valeur d'angle >= 0
 		orientationPente = angleAxeNorddeg < 0.0 ? 360.0 + angleAxeNorddeg
 			: angleAxeNorddeg;
@@ -1146,9 +1180,9 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 	 * @param ed
 	 * @return
          *      true if this is pouring into ed.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
 	 */
 	public final boolean isTopoOrientedToEdge(DEdge ed) throws DelaunayError {
-		boolean res = false;
 		// on determine les sommets A,B et C du triangle et on calle AB (ou BA)
 		// sur e
 		DPoint a = ed.getStartPoint();
@@ -1170,17 +1204,15 @@ public class DTriangle extends Element implements Comparable<DTriangle>{
 			ab = Tools.vectorialDiff(b, a);
 		}
 		// test d'intersection entre AB et P
-		DPoint p =getSteepestVector();
-
-		res = Tools.vectorProduct(ab, p).getZ() < 0;
-
-		return res;
+		DPoint p =getSteepestVector();		
+		return Tools.vectorProduct(ab, p).getZ() < 0;
 	}
 
 
         /**
          * Compute the intersection point according the steepest vector.
          * We assume that the point is in the Triangle
+         * @param dPoint
          * @return DPoint
          * @throws DelaunayError
          */

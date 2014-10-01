@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -186,8 +185,8 @@ public class TestTriangle extends TestCase {
 		DEdge e3 = new DEdge(p3,p1);
 		DTriangle t = null;
 		t= new DTriangle(e1,e2,e3);
-		Coordinate center = t.getCircumCenter();
-		assertTrue(center.equals(new Coordinate(1.5,1.5,0)));
+		DPoint center = t.getCircumCenter();
+		assertTrue(center.equals(new DPoint(1.5,1.5,0)));
 	}
 
 	/**
@@ -751,20 +750,20 @@ public class TestTriangle extends TestCase {
                          new DEdge(5,0,0,3,1,0));
                  double x = 15.5/3;
                  double y = -x+8;
-                 assertEquals(dt.getCircumCenter().x, x, 0.00001);
-                 assertEquals(dt.getCircumCenter().y, y, 0.00001);
+                 assertEquals(dt.getCircumCenter().getX(), x, 0.00001);
+                 assertEquals(dt.getCircumCenter().getY(), y, 0.00001);
                  dt = new DTriangle( 
                          new DEdge(8,3,0,5,0,0), 
                          new DEdge(5,0,0,3,1,0),
                          new DEdge(3,1,0,8,3,0));
-                 assertEquals(dt.getCircumCenter().x, x, 0.00001);
-                 assertEquals(dt.getCircumCenter().y, y, 0.00001);
+                 assertEquals(dt.getCircumCenter().getX(), x, 0.00001);
+                 assertEquals(dt.getCircumCenter().getY(), y, 0.00001);
                  dt = new DTriangle(  
                          new DEdge(5,0,0,3,1,0),
                          new DEdge(3,1,0,8,3,0),
                          new DEdge(8,3,0,5,0,0));
-                 assertEquals(dt.getCircumCenter().x, x, 0.00001);
-                 assertEquals(dt.getCircumCenter().y, y, 0.00001);
+                 assertEquals(dt.getCircumCenter().getX(), x, 0.00001);
+                 assertEquals(dt.getCircumCenter().getY(), y, 0.00001);
          }
         
          /**
@@ -1009,6 +1008,7 @@ public class TestTriangle extends TestCase {
         
         /**
          * We test that we are able to retrieve the minimal angle of a triangle
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
          */
         public void testGetMinAngle() throws DelaunayError {
                 DTriangle tri = new DTriangle(new DEdge(0,0,0,0,2,0), new DEdge(0,2,0,5,0,0), new DEdge(5,0,0,0,0,0));
@@ -1018,6 +1018,7 @@ public class TestTriangle extends TestCase {
         
         /**
          * We must be able to find the point containers only when we don't intersect any constraint.
+         * @throws org.jdelaunay.delaunay.error.DelaunayError
          */
         public void testFindCircumCenterContainerSafe() throws DelaunayError {
                 ConstrainedMesh mesh = new ConstrainedMesh();
@@ -1046,5 +1047,10 @@ public class TestTriangle extends TestCase {
                 assertTrue(dt.isProcessed());
                 dt.setProcessed(false);
                 assertFalse(dt.isProcessed());
+        }
+        
+        public void test3DArea() throws DelaunayError {
+                DTriangle dt = new DTriangle(new DPoint(0,0,0), new DPoint(4,0,0), new DPoint(3,2,0));
+                assertEquals(4, dt.getArea3D(), 0);
         }
 }

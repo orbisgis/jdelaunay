@@ -30,7 +30,6 @@
  */
 package org.jdelaunay.delaunay.geometries;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 import junit.framework.TestCase;
 import org.jdelaunay.delaunay.error.DelaunayError;
@@ -51,31 +50,31 @@ public class TestBoundaryBox extends TestCase {
         public void testExpandBox() throws DelaunayError {
                 BoundaryBox bb = new BoundaryBox();
                 assertTrue(bb.getPoints().isEmpty());
-                bb.alterBox(new Coordinate(0,0,0));
+                bb.alterBox(new DPoint(0,0,0));
 		List<DPoint> list = bb.getPoints();
 		assertTrue(list.get(0).equals(new DPoint(0,0,0)));
 		assertTrue(list.get(1).equals(new DPoint(0,0,0)));
-                bb.alterBox(new Coordinate(2,0,0));
+                bb.alterBox(new DPoint(2,0,0));
 		list = bb.getPoints();
 		assertTrue(list.get(0).equals(new DPoint(0,0,0)));
 		assertTrue(list.get(1).equals(new DPoint(2,0,0)));
-                bb.alterBox(new Coordinate(-2,0,0));
+                bb.alterBox(new DPoint(-2,0,0));
 		list = bb.getPoints();
 		assertTrue(list.get(0).equals(new DPoint(-2,0,0)));
 		assertTrue(list.get(1).equals(new DPoint(2,0,0)));
-                bb.alterBox(new Coordinate(0,2,0));
+                bb.alterBox(new DPoint(0,2,0));
 		list = bb.getPoints();
 		assertTrue(list.get(0).equals(new DPoint(-2,0,0)));
 		assertTrue(list.get(1).equals(new DPoint(2,2,0)));
-                bb.alterBox(new Coordinate(0,-2,0));
+                bb.alterBox(new DPoint(0,-2,0));
 		list = bb.getPoints();
 		assertTrue(list.get(0).equals(new DPoint(-2,-2,0)));
 		assertTrue(list.get(1).equals(new DPoint(2,2,0)));
-                bb.alterBox(new Coordinate(0,0,2));
+                bb.alterBox(new DPoint(0,0,2));
 		list = bb.getPoints();
 		assertTrue(list.get(0).equals(new DPoint(-2,-2,0)));
 		assertTrue(list.get(1).equals(new DPoint(2,2,2)));
-                bb.alterBox(new Coordinate(0,0,-2));
+                bb.alterBox(new DPoint(0,0,-2));
 		list = bb.getPoints();
 		assertTrue(list.get(0).equals(new DPoint(-2,-2,-2)));
 		assertTrue(list.get(1).equals(new DPoint(2,2,2)));

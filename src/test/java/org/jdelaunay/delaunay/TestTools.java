@@ -34,11 +34,13 @@ import java.util.List;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.geometries.DEdge;
 import org.jdelaunay.delaunay.geometries.DPoint;
+import org.jdelaunay.delaunay.geometries.DTriangle;
 import org.jdelaunay.delaunay.tools.Tools;
 
 /**
  *
  * @author Alexis Guéganno
+ * @author Erwan Bocher
  */
 public class TestTools extends BaseUtility {
         
@@ -66,4 +68,58 @@ public class TestTools extends BaseUtility {
 		assertFalse(Tools.isVerticallySorted(list, 1));
 
 	}
+        
+        
+        public void testProjectDPoint() throws DelaunayError {
+                DPoint p = new DPoint(2,2,1);                
+                DEdge dEdge = new DEdge(0, 0, 1, 4, 0, 1);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 1)));
+                dEdge = new DEdge(4, 0, 1, 0, 0, 1);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 1)));
+                dEdge = new DEdge(4, 0, 0, 0, 0, 1);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 0.5)));
+                dEdge = new DEdge(4, 0, 1, 0, 0, 0);             
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(2, 0, 0.5)));
+                p = new DPoint(-2,-2,1);
+                dEdge = new DEdge(0, 0, 1, 4, 0, 1);           
+                assertTrue(Tools.project(p, dEdge).equals(new DPoint(-2, 0, 1)));
+        }
+       
+    public void testPerpendicularBisectors() throws DelaunayError {
+        DTriangle dTriangle = new DTriangle(new DPoint(206, 314, 1),
+                new DPoint(100, 90, 1), new DPoint(368, 85, 1));
+        DEdge[] bis = Tools.getPerpendicularBisectors(dTriangle);
+        ArrayList<DEdge> bisValid = new ArrayList<DEdge>();
+        bisValid.add(new DEdge(235.4086390806116, 163.00305472078202, 1, 234, 87.5, 1));
+        bisValid.add(new DEdge(235.4086390806116, 163.00305472078202, 1, 287, 199.5, 1));
+        bisValid.add(new DEdge(235.4086390806116, 163.00305472078202, 1, 153, 202, 1));
+        int count = 0;
+        for (DEdge dEdge : bis) {
+            for (DEdge dEdgeValid : bisValid) {
+                if (dEdge.equals(dEdgeValid)) {
+                    count++;
+                }
+            }
+        }
+        assertEquals(3, count);
+    }
+
+    public void testPerpendicularBisectors1() throws DelaunayError {
+        DTriangle dTriangle = new DTriangle(new DPoint(0, 0, 1),
+                new DPoint(100, 0, 1), new DPoint(50, 100, 1));
+        DEdge[] bis = Tools.getPerpendicularBisectors(dTriangle);
+        ArrayList<DEdge> bisValid = new ArrayList<DEdge>();
+        bisValid.add(new DEdge(50, 37.5, 1, 75, 50, 1));
+        bisValid.add(new DEdge(50, 37.5, 1,25 , 50, 1));
+        bisValid.add(new DEdge(50 , 37.5, 1, 50, 0, 1));
+        int count = 0;
+        for (DEdge dEdge : bis) {
+            for (DEdge dEdgeValid : bisValid) {
+                if (dEdge.equals(dEdgeValid)) {
+                    count++;
+                }
+            }
+        }
+        assertEquals(3, count);
+    }
 }

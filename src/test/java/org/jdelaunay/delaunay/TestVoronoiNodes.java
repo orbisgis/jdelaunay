@@ -65,7 +65,6 @@ public class TestVoronoiNodes extends BaseUtility {
 		DEdge other = new DEdge(0, 3, 0, 3, 0, 0);
 		constr.setLocked(true);
 		DTriangle tri = new DTriangle(new DEdge(3,0,0,6,0,0), constr, other);
-		DTriangle tri2 = new DTriangle(constr, new DEdge(0,3,0,4,3,0), new DEdge(4,3,0,6,0,0));
 		VoronoiNode vn = new VoronoiNode(tri);
 		assertTrue(vn.getLocation().equals(tri.getBarycenter()));
 		vn.setParent(tri);

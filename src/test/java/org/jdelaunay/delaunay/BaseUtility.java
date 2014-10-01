@@ -33,7 +33,7 @@ package org.jdelaunay.delaunay;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdelaunay.delaunay.display.MeshDrawer;
+import org.jdelaunay.delaunay.display.MeshRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -129,7 +129,7 @@ public class BaseUtility extends TestCase {
 	 * @param myMesh
 	 */
 	public static void show(ConstrainedMesh myMesh) {
-		MeshDrawer aff2 = new MeshDrawer();
+		MeshRenderer aff2 = new MeshRenderer();
 		aff2.add(myMesh);
                 aff2.setVisible(true);
                 try {

@@ -32,7 +32,6 @@ package org.jdelaunay.delaunay.geometries;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import com.vividsolutions.jts.geom.Coordinate;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.tools.Tools;
 
@@ -45,15 +44,14 @@ import org.jdelaunay.delaunay.tools.Tools;
  * @author Erwan Bocher
  */
 public class DPoint extends Element implements Comparable<DPoint> {
-	/**
-	 * 
-	 */
+	
+    
+        private static final int HASHBASE = 5;
+	private static final int HASHMULT = 97;
+        
 	private static final long serialVersionUID = 1L;
 
-	private Coordinate coord;
-
-	private static final int HASHBASE = 7;
-	private static final int HASHMULT = 67;
+	private double X, Y, Z;
 
 	/**
 	 * Initialize point 
@@ -66,10 +64,10 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	private void init(double x, double y, double z) throws DelaunayError {
 		if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
 			throw new DelaunayError(DelaunayError.DELAUNAY_ERROR_ERROR_POINT_XYZ);
-		}
-		
-		this.coord = new Coordinate(x,y,z);
-
+		}		
+		this.X = x;
+                this.Y=y;
+                this.Z =z;
 	}
 
 	/**
@@ -96,28 +94,21 @@ public class DPoint extends Element implements Comparable<DPoint> {
 
 	/**
 	 * Build a point as a copy of another point
+         * @param pt
 	 * @throws DelaunayError DelaunayError
 	 */
 	public DPoint(DPoint pt) throws DelaunayError {
 		super((Element) pt);
-		init(pt.coord.x,pt.coord.y,pt.coord.z);
+		init(pt.getX(),pt.getY(),pt.getZ());
 	}
-
-	/**
-	 * Build a point as a copy of jts Coordinates
-	 * @throws DelaunayError If x, y or z is not set.
-	 */
-	public DPoint(Coordinate coord) throws DelaunayError {
-		super();
-		init(coord.x,coord.y,coord.z);
-	}
+	
 
 	/**
 	 * Get X coordinate
 	 * @return x
 	 */
 	public final double getX() {
-		return this.coord.x;
+		return this.X;
 	}
 
 	/**
@@ -125,7 +116,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return y
 	 */
 	public final double getY() {
-		return this.coord.y;
+		return this.Y;
 	}
 
 	/**
@@ -133,7 +124,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return z
 	 */
 	public final double getZ() {
-		return this.coord.z;
+		return this.Z;
 	}
 
 	/**
@@ -141,36 +132,29 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @param x
 	 */
 	public final void setX(double x) {
-		this.coord.x = x;
+		this.X = x;
 	}
 	/**
 	 * Set Y coordinate
 	 * @param y
 	 */
 	public final void setY(double y) {
-		this.coord.y = y;
+		this.Y = y;
 	}
 	/**
 	 * Set Z coordinate
 	 * @param z
 	 */
 	public final void setZ(double z) {
-		this.coord.z = z;
+		this.Z = z;
 	}	
 	
-	/**
-	 * return jts Coordinate
-	 * @return
-         * A representation of this DPoint as a JTS Coordinate.
-	 */
-	public final Coordinate getCoordinate() {
-		return coord;
-	}
+	
         
 	@Override
-	public final BoundaryBox getBoundingBox() {
+	public final BoundaryBox getBoundingBox() throws DelaunayError {
 		BoundaryBox aBox = new BoundaryBox();
-		aBox.alterBox(coord);
+		aBox.alterBox(X, Y, Z);
 		return aBox;
 	}
 
@@ -184,11 +168,6 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	public final boolean contains(DPoint aPoint) {
 		return squareDistance(aPoint) < Tools.EPSILON2;
 	}
-	
-	@Override
-	public final boolean contains(Coordinate c) {
-		return squareDistance(c.x, c.y, c.z) < Tools.EPSILON2;
-	}
 
 	/**
 	 * plane square distance to another point
@@ -197,7 +176,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return distance
 	 */
 	protected final double squareDistance2D(DPoint aPoint) {
-		return squareDistance(aPoint.coord.x, aPoint.coord.y);
+		return squareDistance(aPoint.getX(), aPoint.getY());
 	}
 
 	/**
@@ -218,7 +197,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return distance
 	 */
 	public final double squareDistance(DPoint aPoint) {
-		return squareDistance(aPoint.coord.x, aPoint.coord.y, aPoint.coord.z);
+		return squareDistance(aPoint.getX(), aPoint.getY(), aPoint.getZ());
 	}
 
 	/**
@@ -229,7 +208,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return distance
 	 */
 	protected final double squareDistance(double x, double y) {
-		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y);
+		return (x - getX()) * (x - getX()) + (y - getY()) * (y - getY());
 	}
 
 	/**
@@ -241,8 +220,8 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @return distance
 	 */
 	protected final double squareDistance(double x, double y, double z) {
-		return (x - this.coord.x) * (x - this.coord.x) + (y - this.coord.y) * (y - this.coord.y)
-				+ (z - this.coord.z) * (z - this.coord.z);
+		return (x - getX()) * (x - getX()) + (y - getY()) * (y - getY())
+				+ (z - getZ()) * (z - getZ());
 	}
 
 	/**
@@ -263,7 +242,7 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 */
 	@Override
 	public final String toString() {
-		return "Point "+getGID()+" [" + this.coord.x + " " + this.coord.y + " " + this.coord.z + "]";
+		return "Point "+getGID()+" [" + getX() + " " + getY() + " " + getZ() + "]";
 	}
 
 	/**
@@ -285,17 +264,21 @@ public class DPoint extends Element implements Comparable<DPoint> {
 		}
 	}
 
-	/**
-	 * Generate an hashcode based on the coordinates of the point.
-	 * @return
-         * a hash
-	 */
-	@Override
-	public final int hashCode() {
-		int hash = HASHBASE;
-		hash = HASHMULT * hash + (this.coord != null ? this.coord.hashCode() : 0);
-		return hash;
-	}
+    /**
+     * Generate an hashcode based on the coordinates of the point.
+     *
+     * @return a hash
+     */
+    @Override
+    public final int hashCode() {
+        int result = HASHBASE;
+        long lB = Double.doubleToLongBits(getX());
+        result = HASHMULT * result + (int) (lB ^ (lB >>> 32));
+        lB = Double.doubleToLongBits(getY());
+        result = HASHMULT * result + (int) (lB ^ (lB >>> 32));
+        return result;
+    }
+     
 
 	/**
 	 * Check if this==y, considering only the first two coordinates.
@@ -366,11 +349,15 @@ public class DPoint extends Element implements Comparable<DPoint> {
 	 * @param g
 	 * @param decalageX
 	 * @param decalageY
+         * @param minX
+         * @param minY
+         * @param scaleX
+         * @param scaleY
 	 */
 	public final void displayObject(Graphics g, int decalageX, int decalageY,
 			double minX, double minY, double scaleX, double scaleY) {
 		setColor(g);
-		g.drawOval((int) ((this.coord.x - minX) * scaleX + decalageX) - 1,
-				(int) ((this.coord.y - minY) * scaleY + decalageY) - 1, 1, 1);
+		g.drawOval((int) ((getX() - minX) * scaleX + decalageX) - 1,
+				(int) ((getY() - minY) * scaleY + decalageY) - 1, 1, 1);
 	}
 }

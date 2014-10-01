@@ -40,7 +40,7 @@ import org.jdelaunay.delaunay.geometries.DTriangle;
 import org.jdelaunay.delaunay.tools.Tools;
 
 /**
- * Used to build a local Constrained Voronoi graph. You have the coice to build
+ * Used to build a local Constrained Voronoi graph. You have the choice to build
  * the complete graph that can be found from a triangle, or only the partial graph that
  * link flat triangles together.
  * @author Alexis Guéganno
