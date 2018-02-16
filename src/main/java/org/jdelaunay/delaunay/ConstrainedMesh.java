@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import org.apache.log4j.Logger;
 import org.jdelaunay.delaunay.evaluator.InsertionEvaluator;
 import org.jdelaunay.delaunay.error.DelaunayError;
 import org.jdelaunay.delaunay.geometries.BoundaryBox;
@@ -54,6 +53,8 @@ import org.jdelaunay.delaunay.geometries.DPoint;
 import org.jdelaunay.delaunay.geometries.DTriangle;
 import org.jdelaunay.delaunay.geometries.Element;
 import org.jdelaunay.delaunay.tools.Tools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to compute the constrained delaunay triangulation on a set of
@@ -76,9 +77,8 @@ import org.jdelaunay.delaunay.tools.Tools;
  * @author Alexis Guéganno
  */
 public class ConstrainedMesh implements Serializable {
+	private static final Logger LOG = LoggerFactory.getLogger(ConstrainedMesh.class);
 	private static final long serialVersionUID = 2L;
-
-	private static final Logger LOG = Logger.getLogger(ConstrainedMesh.class);
 	//The list of triangles during the triangulation process.
 	//This list is sorted by using the implementation of Comparable in
 	//DTriangle.
