@@ -2,15 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
         <modelVersion>4.0.0</modelVersion>
         <artifactId>jdelaunay</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <name>jdelaunay</name>
         <description>Library in Java dedicated to the processing of Delaunay and constrained Delaunay triangulations.</description>
         <packaging>bundle</packaging>
-        <parent>
-                <groupId>org.orbisgis</groupId>
-                <artifactId>orbisgis-nexus</artifactId>
-                <version>1</version>
-        </parent>
         <developers>
                 <developer>
                         <name>Alexis Guéganno</name>
@@ -36,10 +31,10 @@
                 </license>
         </licenses>
         <organization>
-                <name>IRSTV CNRS-FR-2488</name>
-                <url>http://www.irstv.fr/</url>
+                <name>Lab-STICC - UMR CNRS 6285</name>
+                <url>http://www.labsticc.fr/</url>
         </organization>
-        <url>http://github.com/irstv/jdelaunay</url>
+        <url>http://github.com/orbisgis/jdelaunay</url>
         <scm>
                 <connection>scm:git:https://github.com/irstv/jdelaunay.git</connection>
                 <developerConnection>scm:git:https://github.com/irstv/jdelaunay.git</developerConnection>
@@ -81,4 +76,29 @@
                         </plugin>
                 </plugins>
         </build>
+        <repositories>
+                <repository>
+                        <id>osgi-maven-5.1</id>
+                        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven-5.1</url>
+                </repository>
+                <repository>
+                        <id>osgi-maven-5.1-snapshot</id>
+                        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven-5.1-snapshot</url>
+                </repository>
+        </repositories>
+        <pluginRepositories>
+                <pluginRepository>
+                        <id>osgi-maven-5.1</id>
+                        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven-5.1</url>
+                </pluginRepository>
+                <pluginRepository>
+                        <id>osgi-maven-5.1-snapshot</id>
+                        <url>http://nexus.orbisgis.org/content/repositories/osgi-maven-5.1-snapshot</url>
+                </pluginRepository>
+        </pluginRepositories>
+        <parent>
+                <groupId>org.orbisgis</groupId>
+                <artifactId>orbisgis-nexus</artifactId>
+                <version>5.1.0</version>
+        </parent>
 </project>
